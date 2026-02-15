@@ -443,7 +443,11 @@
                 <p>Complete this form and we'll be in touch within 24 hours to schedule your personalised consultation.</p>
             </div>
 
-            <form action="#" method="POST">
+            <form name="find-match" method="POST" data-netlify="true" netlify-honeypot="bot-field" action="/thank-you.html">
+                <input type="hidden" name="form-name" value="find-match">
+                <p style="display:none;">
+                    <label>Don't fill this out: <input name="bot-field"></label>
+                </p>
                 <div class="form-group">
                     <label for="name">Full Name *</label>
                     <input type="text" id="name" name="name" required>

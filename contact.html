@@ -366,7 +366,12 @@
                     <p>Fill out the form below and we'll get back to you as soon as possible.</p>
                 </div>
 
-                <form action="#" method="POST">
+                <form name="contact" method="POST" data-netlify="true" netlify-honeypot="bot-field" action="/thank-you.html">
+                    <input type="hidden" name="form-name" value="contact">
+                    <p style="display:none;">
+                        <label>Don't fill this out: <input name="bot-field"></label>
+                    </p>
+                    
                     <div class="form-group">
                         <label for="name">Your Name *</label>
                         <input type="text" id="name" name="name" required>

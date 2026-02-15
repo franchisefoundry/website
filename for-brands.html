@@ -500,7 +500,11 @@
                 <p>Tell us about your brand and we'll be in touch to explore how we can work together.</p>
             </div>
 
-            <form action="#" method="POST">
+            <form name="for-brands" method="POST" data-netlify="true" netlify-honeypot="bot-field" action="/thank-you.html">
+                <input type="hidden" name="form-name" value="for-brands">
+                <p style="display:none;">
+                    <label>Don't fill this out: <input name="bot-field"></label>
+                </p>
                 <div class="form-group">
                     <label for="brand-name">Brand / Company Name *</label>
                     <input type="text" id="brand-name" name="brand-name" required>
