@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us - Franchise Foundry</title>
+    <link rel="icon" type="image/png" href="images/favicon.png">
+    <link rel="apple-touch-icon" href="images/favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Sora', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #2d3748;
+            background: #ffffff;
+        }
+
+        /* Navigation */
+        .navbar {
+            background: #5f725f;
+            padding: 20px 40px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar img {
+            height: 50px;
+            display: block;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 35px;
+            list-style: none;
+            align-items: center;
+        }
+
+        .nav-menu a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1rem;
+            transition: opacity 0.2s;
+        }
+
+        .nav-menu a:hover {
+            opacity: 0.8;
+        }
+
+        .nav-menu a.active {
+            font-weight: 600;
+            border-bottom: 2px solid white;
+            padding-bottom: 4px;
+        }
+
+        /* Page Header */
+        .page-header {
+            background: linear-gradient(135deg, #5f725f 0%, #4a5a4a 100%);
+            padding: 100px 40px 80px;
+            text-align: center;
+        }
+
+        .page-header h1 {
+            font-size: 3.5rem;
+            color: white;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .page-header p {
+            font-size: 1.3rem;
+            color: rgba(255,255,255,0.9);
+            max-width: 700px;
+            margin: 0 auto;
+            font-weight: 300;
+        }
+
+        /* Content Sections */
+        .section {
+            padding: 100px 40px;
+        }
+
+        .content-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 80px;
+            align-items: center;
+        }
+
+        .content-text h2 {
+            font-size: 2.5rem;
+            color: #2d3748;
+            margin-bottom: 24px;
+            font-weight: 700;
+        }
+
+        .content-text h3 {
+            font-size: 1.8rem;
+            color: #5f725f;
+            margin-bottom: 20px;
+            margin-top: 40px;
+            font-weight: 600;
+        }
+
+        .content-text p {
+            font-size: 1.1rem;
+            color: #4a5568;
+            margin-bottom: 20px;
+            line-height: 1.8;
+            font-weight: 300;
+        }
+
+        .content-text strong {
+            color: #2d3748;
+            font-weight: 600;
+        }
+
+        .highlight-box {
+            background: #f8f9fa;
+            border-left: 4px solid #5f725f;
+            padding: 30px;
+            margin: 40px 0;
+            border-radius: 8px;
+        }
+
+        .highlight-box p {
+            margin: 0;
+            font-size: 1.2rem;
+            color: #2d3748;
+            font-style: italic;
+        }
+
+        /* Experience Cards */
+        .experience-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin: 40px 0;
+        }
+
+        .experience-card {
+            background: white;
+            border: 2px solid #e8e8e8;
+            border-radius: 16px;
+            padding: 32px;
+            transition: all 0.3s;
+        }
+
+        .experience-card:hover {
+            border-color: #5f725f;
+            transform: translateY(-5px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+        }
+
+        .experience-card h4 {
+            font-size: 1.5rem;
+            color: #5f725f;
+            margin-bottom: 16px;
+            font-weight: 600;
+        }
+
+        .experience-card p {
+            font-size: 1rem;
+            color: #4a5568;
+            margin: 0;
+            line-height: 1.7;
+        }
+
+        /* Values Grid */
+        .values-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+            margin-top: 60px;
+        }
+
+        .value-item {
+            text-align: center;
+            padding: 40px 30px;
+        }
+
+        .value-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .value-item h3 {
+            font-size: 1.5rem;
+            color: #2d3748;
+            margin-bottom: 16px;
+            font-weight: 600;
+        }
+
+        .value-item p {
+            font-size: 1rem;
+            color: #4a5568;
+            line-height: 1.7;
+            font-weight: 300;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            background: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
+            padding: 100px 40px;
+            text-align: center;
+        }
+
+        .cta-section h2 {
+            font-size: 3rem;
+            color: white;
+            margin-bottom: 24px;
+            font-weight: 700;
+        }
+
+        .cta-section p {
+            font-size: 1.3rem;
+            color: rgba(255,255,255,0.9);
+            margin-bottom: 40px;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .cta-button {
+            background: white;
+            color: #5f725f;
+            padding: 18px 40px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            display: inline-block;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+
+        /* Footer */
+        footer {
+            background: #5f725f;
+            color: white;
+            padding: 60px 40px 30px;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .footer-section h3 {
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .footer-section p,
+        .footer-section a {
+            color: rgba(255, 255, 255, 0.9);
+            text-decoration: none;
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 300;
+        }
+
+        .footer-section a:hover {
+            color: white;
+            text-decoration: underline;
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 10px;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            color: rgba(255, 255, 255, 0.8);
+            font-weight: 300;
+        }
+
+        /* Responsive */
+        @media (max-width: 968px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .page-header h1 {
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html"><div class="navbar-logo">
+                <img src="images/logo.png" alt="Franchise Foundry">
+            </div></a>
+            <ul class="nav-menu">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="about.html" class="active">About Us</a></li>
+                <li><a href="find-match.html">Find Your Match</a></li>
+                <li><a href="for-brands.html">For Franchise Brands</a></li>
+                <li><a href="contact.html">Contact Us</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <section class="page-header">
+        <h1>We've Been in Your Shoes</h1>
+        <p>Founded by franchise operators, not brokers. We understand what it takes to succeed because we've done it ourselves.</p>
+    </section>
+
+    <!-- Our Story -->
+    <section class="section">
+        <div class="content-container">
+            <div class="content-grid">
+                <div class="content-text">
+                    <h2>Our Story</h2>
+                    <p>Franchise Foundry was founded by two franchise operators with over 30 years of combined experience building, scaling, and running successful franchise businesses across the UK.</p>
+                    <p>We're not recruiters or brokers-we're people who've lived the franchisee journey firsthand. We've experienced the excitement of opening new locations, the challenges of maintaining brand standards, and the satisfaction of building something that lasts.</p>
+                    <p>Now, we're using that hard-earned knowledge to help aspiring franchisees like you make better, more informed decisions about which franchise is right for you.</p>
+                </div>
+                <div>
+                    <div class="experience-cards">
+                        <div class="experience-card">
+                            <h4>17-Site Burger Chain</h4>
+                            <p>Built and scaled a successful multi-unit burger franchise from the ground up.</p>
+                        </div>
+                        <div class="experience-card">
+                            <h4>International Pilates Franchise</h4>
+                            <p>Operated and expanded an international fitness concept across multiple territories.</p>
+                        </div>
+                        <div class="experience-card">
+                            <h4>Multi-Unit Asian Food Brand</h4>
+                            <p>Grew and managed a thriving Asian food franchise with multiple locations.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Why We Do This -->
+    <section class="section" style="background: #f8f9fa;">
+        <div class="content-container">
+            <h2 style="font-size: 2.5rem; text-align: center; margin-bottom: 60px; color: #2d3748; font-weight: 700;">Why We Do This</h2>
+            <div class="content-text">
+                <p>Through our years in franchising, we've seen what happens when people rush into the wrong franchise. We've seen mismatches between franchisees and brands. We've watched good people struggle because they weren't properly prepared or didn't truly understand what they were getting into.</p>
+                
+                <div class="highlight-box">
+                    <p>"Not every franchisee is the right franchisee-and not every franchise is the right fit for every person."</p>
+                </div>
+
+                <p>That's why we created Franchise Foundry. We wanted to change the way people find franchises-to make it more personal, more honest, and more focused on long-term success rather than quick sales.</p>
+
+                <h3>Our Approach is Different</h3>
+                <p>We don't just throw a list of franchises at you and hope something sticks. We take the time to understand <strong>you</strong>-your goals, your budget, your lifestyle, and what you're truly looking for in a business.</p>
+                
+                <p>Then, we use our decades of experience to match you with opportunities that genuinely fit. And we're with you every step of the way, offering honest advice and ongoing support-completely free.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Our Values -->
+    <section class="section">
+        <div class="content-container">
+            <h2 style="font-size: 2.5rem; text-align: center; margin-bottom: 20px; color: #2d3748; font-weight: 700;">What We Believe</h2>
+            <p style="text-align: center; font-size: 1.2rem; color: #4a5568; margin-bottom: 60px; font-weight: 300;">The principles that guide everything we do.</p>
+            
+            <div class="values-grid">
+                <div class="value-item">
+                    <span class="value-icon">🎯</span>
+                    <h3>Quality Over Quantity</h3>
+                    <p>We'd rather help you find one perfect match than show you dozens of options that don't fit.</p>
+                </div>
+                <div class="value-item">
+                    <span class="value-icon">💯</span>
+                    <h3>Complete Transparency</h3>
+                    <p>No hidden fees. No pressure tactics. Just honest guidance from people who've been where you are.</p>
+                </div>
+                <div class="value-item">
+                    <span class="value-icon">🤝</span>
+                    <h3>Long-Term Partnership</h3>
+                    <p>Our support doesn't end when you sign. We're here for the journey, not just the sale.</p>
+                </div>
+                <div class="value-item">
+                    <span class="value-icon">📊</span>
+                    <h3>Experience Matters</h3>
+                    <p>We bring real-world franchise operator experience-not just theory or sales pitches.</p>
+                </div>
+                <div class="value-item">
+                    <span class="value-icon">⚡</span>
+                    <h3>Personalised Approach</h3>
+                    <p>Every aspiring franchisee is different. Your journey should reflect your unique goals and circumstances.</p>
+                </div>
+                <div class="value-item">
+                    <span class="value-icon">🎓</span>
+                    <h3>Education First</h3>
+                    <p>We want you to understand exactly what you're getting into, so you can make confident, informed decisions.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Meet the Team -->
+    <section class="section" style="background: #f8f9fa;">
+        <div class="content-container">
+            <h2 style="font-size: 2.5rem; text-align: center; margin-bottom: 60px; color: #2d3748; font-weight: 700;">Meet Your Advisors</h2>
+            <div class="content-text">
+                <p style="text-align: center; font-size: 1.2rem; max-width: 800px; margin: 0 auto 60px;">With over 30 years of combined experience in hospitality and franchising, Ben and Harry have built, scaled, and operated successful franchise businesses from the inside. They understand what it takes to succeed as a franchisee because they've done it themselves.</p>
+                
+                <h3>What Makes Us Different</h3>
+                <p><strong>We're operators, not salespeople.</strong> We've been on the inside of franchise growth, scaling, and protecting brand standards. We've helped build multi-unit concepts across multiple sectors. We know what works-and what doesn't.</p>
+                
+                <p><strong>We're passionate about hospitality.</strong> It's what we know and care about. If you're looking to enter the hospitality or service franchise space, you're talking to people who live and breathe this industry.</p>
+                
+                <p><strong>We're committed to your success.</strong> We're a small, hands-on team. When you work with us, you're not just a number in a database-you're working directly with experienced franchise professionals who genuinely want to see you succeed.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <h2>Ready to Start Your Franchise Journey?</h2>
+        <p>Let's have a conversation about your goals and find the franchise opportunities that truly fit.</p>
+        <a href="find-match.html" class="cta-button">Book Your Free Consultation</a>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Franchise Foundry</h3>
+                <p>Helping aspiring franchisees find the perfect franchise opportunity since 2024.</p>
+                <p style="margin-top: 20px;"><em>Discover. Connect. Franchise.</em></p>
+            </div>
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <ul class="footer-links">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="about.html">About Us</a></li>
+                    <li><a href="find-match.html">Find Your Match</a></li>
+                    <li><a href="for-brands.html">For Franchise Brands</a></li>
+                    <li><a href="contact.html">Contact Us</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Contact</h3>
+                <p><a href="/cdn-cgi/l/email-protection#06656968686365724660746768656e6f75636069736862747f28656928736d"><span class="__cf_email__" data-cfemail="ec8f838282898f98ac8a9e8d828f84859f898a839982889e95c28f83c29987">[email&#160;protected]</span></a></p>
+            </div>
+        <

@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For Franchise Brands - Franchise Foundry</title>
+    <link rel="icon" type="image/png" href="images/favicon.png">
+    <link rel="apple-touch-icon" href="images/favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Sora', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #2d3748;
+            background: #ffffff;
+        }
+
+        /* Navigation */
+        .navbar {
+            background: #5f725f;
+            padding: 20px 40px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar img {
+            height: 50px;
+            display: block;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 35px;
+            list-style: none;
+            align-items: center;
+        }
+
+        .nav-menu a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1rem;
+            transition: opacity 0.2s;
+        }
+
+        .nav-menu a:hover {
+            opacity: 0.8;
+        }
+
+        .nav-menu a.active {
+            font-weight: 600;
+            border-bottom: 2px solid white;
+            padding-bottom: 4px;
+        }
+
+        /* Page Header */
+        .page-header {
+            background: linear-gradient(135deg, #5f725f 0%, #4a5a4a 100%);
+            padding: 100px 40px 80px;
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .page-header h1 {
+            font-size: 3.5rem;
+            color: white;
+            margin-bottom: 24px;
+            font-weight: 700;
+        }
+
+        .page-header p {
+            font-size: 1.3rem;
+            color: rgba(255,255,255,0.9);
+            max-width: 800px;
+            margin: 0 auto 40px;
+            font-weight: 300;
+        }
+
+        .cta-button {
+            background: white;
+            color: #5f725f;
+            padding: 18px 40px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            display: inline-block;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+
+        /* Content Sections */
+        .section {
+            padding: 100px 40px;
+        }
+
+        .content-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            font-size: 2.8rem;
+            text-align: center;
+            color: #2d3748;
+            margin-bottom: 24px;
+            font-weight: 700;
+        }
+
+        .section-subtitle {
+            font-size: 1.2rem;
+            text-align: center;
+            color: #4a5568;
+            max-width: 800px;
+            margin: 0 auto 60px;
+            font-weight: 300;
+        }
+
+        /* Benefits Grid */
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 40px;
+            margin-top: 60px;
+        }
+
+        .benefit-card {
+            background: #f8f9fa;
+            padding: 40px;
+            border-radius: 16px;
+            transition: all 0.3s;
+        }
+
+        .benefit-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+        }
+
+        .benefit-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .benefit-card h3 {
+            font-size: 1.6rem;
+            color: #2d3748;
+            margin-bottom: 16px;
+            font-weight: 600;
+        }
+
+        .benefit-card p {
+            font-size: 1.05rem;
+            color: #4a5568;
+            line-height: 1.8;
+            font-weight: 300;
+        }
+
+        /* Process Section */
+        .process-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            margin-top: 60px;
+        }
+
+        .process-step {
+            text-align: center;
+        }
+
+        .step-number {
+            background: #5f725f;
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin: 0 auto 24px;
+        }
+
+        .process-step h3 {
+            font-size: 1.4rem;
+            color: #2d3748;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+
+        .process-step p {
+            font-size: 1rem;
+            color: #4a5568;
+            line-height: 1.7;
+            font-weight: 300;
+        }
+
+        /* Contact Form Section */
+        .form-section {
+            background: #f8f9fa;
+            padding: 100px 40px;
+        }
+
+        .form-container {
+            max-width: 700px;
+            margin: 0 auto;
+            background: white;
+            padding: 50px;
+            border-radius: 16px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+        }
+
+        .form-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .form-header h2 {
+            font-size: 2.2rem;
+            color: #2d3748;
+            margin-bottom: 12px;
+            font-weight: 700;
+        }
+
+        .form-header p {
+            font-size: 1.05rem;
+            color: #4a5568;
+            font-weight: 300;
+        }
+
+        .form-group {
+            margin-bottom: 28px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 14px 18px;
+            border: 2px solid #e8e8e8;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: 'Sora', sans-serif;
+            transition: border-color 0.2s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #5f725f;
+        }
+
+        .form-group textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .submit-button {
+            background: #5f725f;
+            color: white;
+            padding: 18px 48px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s;
+            font-family: 'Sora', sans-serif;
+        }
+
+        .submit-button:hover {
+            background: #4a5a4a;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+        }
+
+        /* Footer */
+        footer {
+            background: #5f725f;
+            color: white;
+            padding: 60px 40px 30px;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .footer-section h3 {
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .footer-section p,
+        .footer-section a {
+            color: rgba(255, 255, 255, 0.9);
+            text-decoration: none;
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 300;
+        }
+
+        .footer-section a:hover {
+            color: white;
+            text-decoration: underline;
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 10px;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            color: rgba(255, 255, 255, 0.8);
+            font-weight: 300;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .page-header h1 {
+                font-size: 2.5rem;
+            }
+
+            .form-container {
+                padding: 40px 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html"><div class="navbar-logo">
+                <img src="images/logo.png" alt="Franchise Foundry">
+            </div></a>
+            <ul class="nav-menu">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="about.html">About Us</a></li>
+                <li><a href="find-match.html">Find Your Match</a></li>
+                <li><a href="for-brands.html" class="active">For Franchise Brands</a></li>
+                <li><a href="contact.html">Contact Us</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <section class="page-header">
+        <div class="header-content">
+            <h1>Partner with Franchise Foundry</h1>
+            <p>We connect high-quality franchise brands with pre-vetted, investment-ready franchisee candidates who are genuinely prepared to succeed.</p>
+            <a href="#contact-form" class="cta-button">Discuss a Partnership</a>
+        </div>
+    </section>
+
+    <!-- Why Partner Section -->
+    <section class="section">
+        <div class="content-container">
+            <h2 class="section-title">Why Partner with Us?</h2>
+            <p class="section-subtitle">We deliver quality franchisee candidates, not just volume. Our rigorous vetting process means you only meet people who are truly ready.</p>
+            
+            <div class="benefits-grid">
+                <div class="benefit-card">
+                    <span class="benefit-icon">🎯</span>
+                    <h3>Pre-Qualified Candidates</h3>
+                    <p>Every candidate we introduce has been thoroughly assessed for fit, financial readiness, and genuine commitment-saving you time and reducing false starts.</p>
+                </div>
+                <div class="benefit-card">
+                    <span class="benefit-icon">⚡</span>
+                    <h3>Faster Conversion</h3>
+                    <p>Candidates are prepared, educated, and decision-ready before they meet you. This means shorter sales cycles and higher conversion rates.</p>
+                </div>
+                <div class="benefit-card">
+                    <span class="benefit-icon">🤝</span>
+                    <h3>Operator Experience</h3>
+                    <p>We've built and scaled franchises ourselves. We understand what makes a successful franchisee and we know how to identify them.</p>
+                </div>
+                <div class="benefit-card">
+                    <span class="benefit-icon">📊</span>
+                    <h3>Quality Over Quantity</h3>
+                    <p>We focus on finding the right franchisees, not just any franchisees. Smaller pipeline, higher quality, better long-term outcomes.</p>
+                </div>
+                <div class="benefit-card">
+                    <span class="benefit-icon">💰</span>
+                    <h3>Success-Based Model</h3>
+                    <p>We only succeed when you do. Our fee structure aligns our incentives with your growth goals.</p>
+                </div>
+                <div class="benefit-card">
+                    <span class="benefit-icon">🔍</span>
+                    <h3>Deep Candidate Vetting</h3>
+                    <p>We assess capability, commitment, financial resilience, and cultural fit before making introductions-reducing your risk of wrong-fit franchisees.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section class="section" style="background: #f8f9fa;">
+        <div class="content-container">
+            <h2 class="section-title">How Partnership Works</h2>
+            <p class="section-subtitle">A straightforward process designed to deliver quality franchisee candidates to your network.</p>
+            
+            <div class="process-grid">
+                <div class="process-step">
+                    <div class="step-number">1</div>
+                    <h3>Discovery Call</h3>
+                    <p>We'll discuss your ideal franchisee profile, growth targets, and current recruitment process.</p>
+                </div>
+                <div class="process-step">
+                    <div class="step-number">2</div>
+                    <h3>Alignment</h3>
+                    <p>We'll agree on terms, candidate criteria, and how we'll work together.</p>
+                </div>
+                <div class="process-step">
+                    <div class="step-number">3</div>
+                    <h3>Candidate Sourcing</h3>
+                    <p>We source, assess, and prepare candidates who match your specific requirements.</p>
+                </div>
+                <div class="process-step">
+                    <div class="step-number">4</div>
+                    <h3>Introductions</h3>
+                    <p>We introduce pre-qualified, investment-ready candidates directly to you.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Who We Work With -->
+    <section class="section">
+        <div class="content-container">
+            <h2 class="section-title">Who We Partner With</h2>
+            <p class="section-subtitle">We work with ambitious franchise brands across multiple sectors, with a particular focus on hospitality and services.</p>
+            
+            <div style="max-width: 800px; margin: 0 auto; background: #f8f9fa; padding: 50px; border-radius: 16px; text-align: center;">
+                <h3 style="font-size: 1.8rem; color: #2d3748; margin-bottom: 20px; font-weight: 600;">Ideal Partner Profile</h3>
+                <p style="font-size: 1.1rem; color: #4a5568; line-height: 1.8; font-weight: 300; text-align: left;">
+                    ✓ Established franchise brands with proven unit economics<br>
+                    ✓ Clear franchisee support systems and training programmes<br>
+                    ✓ Realistic growth targets and territory availability<br>
+                    ✓ Commitment to quality franchisee selection over speed<br>
+                    ✓ Transparent about investment requirements and expectations
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Form -->
+    <section class="form-section" id="contact-form">
+        <div class="form-container">
+            <div class="form-header">
+                <h2>Let's Discuss a Partnership</h2>
+                <p>Tell us about your brand and we'll be in touch to explore how we can work together.</p>
+            </div>
+
+            <form action="#" method="POST">
+                <div class="form-group">
+                    <label for="brand-name">Brand / Company Name *</label>
+                    <input type="text" id="brand-name" name="brand-name" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="contact-name">Your Name *</label>
+                    <input type="text" id="contact-name" name="contact-name" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email Address *</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="phone">Phone Number *</label>
+                    <input type="tel" id="phone" name="phone" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="industry">Industry Sector</label>
+                    <select id="industry" name="industry">
+                        <option value="">Select your sector</option>
+                        <option value="food-beverage">Food & Beverage</option>
+                        <option value="health-fitness">Health & Fitness</option>
+                        <option value="retail">Retail</option>
+                        <option value="services">Home & Business Services</option>
+                        <option value="education">Education & Childcare</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="current-units">Current Number of Franchise Units</label>
+                    <input type="text" id="current-units" name="current-units" placeholder="e.g., 15 units">
+                </div>
+
+                <div class="form-group">
+                    <label for="message">Tell us about your franchise opportunity and growth plans</label>
+                    <textarea id="message" name="message" placeholder="What makes your franchise unique? What are your expansion goals?"></textarea>
+                </div>
+
+                <button type="submit" class="submit-button">Request Partnership Discussion</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Franchise Foundry</h3>
+                <p>Helping aspiring franchisees find the perfect franchise opportunity since 2024.</p>
+                <p style="margin-top: 20px;"><em>Discover. Connect. Franchise.</em></p>
+            </div>
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <ul class="footer-links">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="about.html">About Us</a></li>
+                    <li><a href="find-match.html">Find Your Match</a></li>
+                    <li><a href="for-brands.html">For Franchise Brands</a></li>
+                    <li><a href="contact.html">Contact Us</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Contact</h3>
+                <p><a href="/cdn-cgi/l/email-protection#a4c7cbcacac1c7d0e4c2d6c5cac7cccdd7c1c2cbd1cac0d6dd8ac7cb8ad1cf"><span class="__cf_email__" data-cfemail="9ffcf0f1f1fafcebdff9edfef1fcf7f6ecfaf9f0eaf1fbede6b1fcf0b1eaf4">[email&#160;protected]</span></a></p>
+            </div>
+        <
