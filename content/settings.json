@@ -2,15 +2,15 @@
   "companyName": "Franchise Foundry",
   "email": "connect@franchisefoundry.co.uk",
   "tagline": "Discover. Connect. Franchise.",
-  "logo": "/images/copy-of-franchise-foundry-logo-final-2.png",
+  "logo": "/images/logo.png",
   "favicon": "/images/favicon.png",
   "partners": [
     {
-      "logo": "/images/images-1-.png",
+      "logo": "https://via.placeholder.com/150x80/5f725f/ffffff?text=Partner+1",
       "name": "Partner 1"
     },
     {
-      "logo": "/images/favicon.png",
+      "logo": "https://via.placeholder.com/150x80/5f725f/ffffff?text=Partner+2",
       "name": "Partner 2"
     },
     {
@@ -28,10 +28,6 @@
     {
       "logo": "https://via.placeholder.com/150x80/5f725f/ffffff?text=Partner+6",
       "name": "Partner 6"
-    },
-    {
-      "logo": "/images/favicon.png",
-      "name": "Franchise Foundry"
     }
   ]
 }

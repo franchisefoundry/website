@@ -125,6 +125,28 @@ collections:
               - { label: "Title", name: "title", widget: "string" }
               - { label: "Description", name: "description", widget: "text" }
       
+      - label: "Contact Page"
+        name: "contact"
+        file: "content/contact.json"
+        fields:
+          - { label: "Page Title", name: "title", widget: "string" }
+          - { label: "Introduction", name: "intro", widget: "text" }
+      
+      - label: "Find Your Match Page"
+        name: "findmatch"
+        file: "content/findmatch.json"
+        fields:
+          - { label: "Page Title", name: "title", widget: "string" }
+          - { label: "Introduction", name: "intro", widget: "text" }
+          - { label: "Form Title", name: "formTitle", widget: "string" }
+      
+      - label: "For Brands Page"
+        name: "forbrands"
+        file: "content/forbrands.json"
+        fields:
+          - { label: "Page Title", name: "title", widget: "string" }
+          - { label: "Introduction", name: "intro", widget: "text" }
+      
       - label: "Settings"
         name: "settings"
         file: "content/settings.json"

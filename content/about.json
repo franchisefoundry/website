@@ -1,0 +1,64 @@
+{
+  "header": {
+    "title": "About Franchise Foundry",
+    "subtitle": "We've Been Where You Are"
+  },
+  "story": {
+    "title": "We're Not Brokers. We're Operators.",
+    "text1": "We're not salespeople or consultants who've just read about franchising-we've built, scaled, and run successful franchise businesses ourselves-including a 17-site burger chain, an international Pilates franchise, and a multi-unit Asian food brand.",
+    "text2": "We've experienced the highs and lows firsthand, and we know that choosing the right franchise is one of the most important decisions you'll make. That's why we're committed to helping you find the right fit, not just any franchise.",
+    "text3": "Our approach is simple: we take the time to understand your goals, budget, and lifestyle, then match you with franchise opportunities that truly align with your vision."
+  },
+  "experience": [
+    {
+      "title": "17-Site Burger Chain",
+      "description": "Grew from single location to 17 sites across the UK"
+    },
+    {
+      "title": "International Pilates Franchise",
+      "description": "Scaled operations across multiple countries"
+    },
+    {
+      "title": "Multi-Unit Asian Food Brand",
+      "description": "Built and managed successful restaurant portfolio"
+    }
+  ],
+  "why": {
+    "quote": "We know what it takes to succeed because we've done it ourselves.",
+    "text1": "Having been franchise operators ourselves, we understand the challenges, the opportunities, and the critical decisions that can make or break your success.",
+    "text2": "We're here to share that knowledge with you-completely free.",
+    "text3": "Our success comes from your success, which is why we only work with franchisees and franchisors we believe in."
+  },
+  "values": [
+    {
+      "icon": "✓",
+      "title": "Transparency",
+      "description": "No hidden fees, no pressure. Just honest, expert guidance."
+    },
+    {
+      "icon": "✓",
+      "title": "Experience",
+      "description": "Over 30 years of hands-on franchise operations experience."
+    },
+    {
+      "icon": "✓",
+      "title": "Quality First",
+      "description": "We prioritise fit over volume. We'd rather find you the right franchise than any franchise."
+    },
+    {
+      "icon": "✓",
+      "title": "Personalised Matching",
+      "description": "We assess your goals, budget, and lifestyle to find franchises that truly fit."
+    },
+    {
+      "icon": "✓",
+      "title": "Ongoing Support",
+      "description": "We're here for you even after you've signed-not just until."
+    },
+    {
+      "icon": "✓",
+      "title": "UK Focused",
+      "description": "Deep understanding of the UK franchise market and opportunities."
+    }
+  ]
+}

@@ -423,4 +423,208 @@
             </div>
             <div class="footer-section">
                 <h3>Contact</h3>
-                <p><a href="/cdn-cgi/l/email-protection#60030f0e0e050314200612010e0308091305060f150e0412194e030f4e150b"><span class="_
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 Franchise Foundry. All rights reserved.</p>
+        </div>
+    </footer>
+            </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 Franchise Foundry. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+// Load content from CMS
+async function loadCMSContent() {
+    try {
+        const [homepage, about, contact, findmatch, forbrands, settings] = await Promise.all([
+            fetch('/content/homepage.json').then(r => r.json()).catch(() => null),
+            fetch('/content/about.json').then(r => r.json()).catch(() => null),
+            fetch('/content/contact.json').then(r => r.json()).catch(() => null),
+            fetch('/content/findmatch.json').then(r => r.json()).catch(() => null),
+            fetch('/content/forbrands.json').then(r => r.json()).catch(() => null),
+            fetch('/content/settings.json').then(r => r.json()).catch(() => null)
+        ]);
+        
+        // Determine which page we're on
+        const path = window.location.pathname;
+        const isHomepage = path === '/' || path.includes('index.html');
+        const isAbout = path.includes('about.html');
+        const isContact = path.includes('contact.html');
+        const isFindMatch = path.includes('find-match.html');
+        const isForBrands = path.includes('for-brands.html');
+        
+        // Load homepage content
+        if (isHomepage && homepage) {
+            // Hero section
+            if (homepage.hero) {
+                setText('.hero-text h1', homepage.hero.title);
+                setText('.hero-text .subtitle', homepage.hero.subtitle);
+                setText('.hero-text .description', homepage.hero.description);
+            }
+            
+            // Statistics
+            if (homepage.stats) {
+                const stats = document.querySelectorAll('.stat-item');
+                if (stats[0]) {
+                    setText(stats[0].querySelector('.stat-number'), homepage.stats.years);
+                    setText(stats[0].querySelector('.stat-label'), homepage.stats.yearsDesc);
+                }
+                if (stats[1]) {
+                    setText(stats[1].querySelector('.stat-number'), homepage.stats.freeLabel);
+                    setText(stats[1].querySelector('.stat-label'), homepage.stats.freeDesc);
+                }
+                if (stats[2]) {
+                    setText(stats[2].querySelector('.stat-number'), homepage.stats.worth);
+                    setText(stats[2].querySelector('.stat-label'), homepage.stats.worthDesc);
+                }
+            }
+            
+            // Benefits
+            if (homepage.benefits) {
+                const benefitCards = document.querySelectorAll('.benefit-card');
+                homepage.benefits.forEach((benefit, i) => {
+                    if (benefitCards[i]) {
+                        setText(benefitCards[i].querySelector('h3'), benefit.title);
+                        setText(benefitCards[i].querySelector('p'), benefit.description);
+                    }
+                });
+            }
+            
+            // How It Works
+            if (homepage.howItWorks) {
+                setText('.how-it-works .section-title', homepage.howItWorks.title);
+                setText('.how-it-works .section-subtitle', homepage.howItWorks.subtitle);
+            }
+            
+            // Steps
+            if (homepage.steps) {
+                const stepCards = document.querySelectorAll('.step-card');
+                homepage.steps.forEach((step, i) => {
+                    if (stepCards[i]) {
+                        setText(stepCards[i].querySelector('.step-number'), step.number);
+                        setText(stepCards[i].querySelector('h3'), step.title);
+                        setText(stepCards[i].querySelector('p'), step.description);
+                    }
+                });
+            }
+            
+            // Final CTA
+            if (homepage.finalCTA) {
+                setText('.final-cta h2', homepage.finalCTA.title);
+                setText('.final-cta > p', homepage.finalCTA.description);
+            }
+        }
+        
+        // Load About page content
+        if (isAbout && about) {
+            if (about.header) {
+                setText('.page-header h1', about.header.title);
+                setText('.page-header p', about.header.subtitle);
+            }
+            
+            if (about.story) {
+                const storySection = document.querySelector('.story-section');
+                if (storySection) {
+                    setText(storySection.querySelector('h2'), about.story.title);
+                    const paragraphs = storySection.querySelectorAll('p');
+                    if (paragraphs[0]) paragraphs[0].textContent = about.story.text1;
+                    if (paragraphs[1]) paragraphs[1].textContent = about.story.text2;
+                    if (paragraphs[2]) paragraphs[2].textContent = about.story.text3;
+                }
+            }
+            
+            if (about.experience) {
+                const expCards = document.querySelectorAll('.experience-card');
+                about.experience.forEach((exp, i) => {
+                    if (expCards[i]) {
+                        setText(expCards[i].querySelector('h3'), exp.title);
+                        setText(expCards[i].querySelector('p'), exp.description);
+                    }
+                });
+            }
+            
+            if (about.values) {
+                const valueCards = document.querySelectorAll('.value-card');
+                about.values.forEach((val, i) => {
+                    if (valueCards[i]) {
+                        setText(valueCards[i].querySelector('h3'), val.title);
+                        setText(valueCards[i].querySelector('p'), val.description);
+                    }
+                });
+            }
+        }
+        
+        // Load Contact page content
+        if (isContact && contact) {
+            setText('.contact-intro h1', contact.title);
+            setText('.contact-intro p', contact.intro);
+        }
+        
+        // Load Find Match page content
+        if (isFindMatch && findmatch) {
+            setText('.page-intro h1', findmatch.title);
+            setText('.page-intro p', findmatch.intro);
+            setText('.form-section h2', findmatch.formTitle);
+        }
+        
+        // Load For Brands page content
+        if (isForBrands && forbrands) {
+            setText('.page-intro h1', forbrands.title);
+            setText('.page-intro p', forbrands.intro);
+        }
+        
+        // Load settings (applies to all pages)
+        if (settings) {
+            // Logo
+            if (settings.logo) {
+                document.querySelectorAll('img[alt="Franchise Foundry"]').forEach(img => {
+                    if (!img.closest('.partner-logo') && !img.src.includes('partner')) {
+                        img.src = settings.logo;
+                    }
+                });
+            }
+            
+            // Email
+            if (settings.email) {
+                document.querySelectorAll('a[href^="mailto"]').forEach(a => {
+                    a.href = `mailto:${settings.email}`;
+                    if (a.textContent.includes('@') || a.querySelector('[data-cfemail]')) {
+                        a.textContent = settings.email;
+                    }
+                });
+            }
+            
+            // Partner logos
+            if (settings.partners && settings.partners.length > 0) {
+                const partnerContainer = document.querySelector('.partner-logos');
+                if (partnerContainer) {
+                    partnerContainer.innerHTML = '';
+                    settings.partners.forEach(partner => {
+                        const img = document.createElement('img');
+                        img.src = partner.logo;
+                        img.alt = partner.name;
+                        img.className = 'partner-logo';
+                        partnerContainer.appendChild(img);
+                    });
+                }
+            }
+        }
+        
+    } catch (e) {
+        console.log('CMS content loading:', e.message);
+    }
+}
+
+function setText(el, text) {
+    const elem = typeof el === 'string' ? document.querySelector(el) : el;
+    if (elem && text) elem.textContent = text;
+}
+
+document.addEventListener('DOMContentLoaded', loadCMSContent);
+    </script>
+</body>
+</html>
