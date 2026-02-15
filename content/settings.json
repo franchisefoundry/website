@@ -6,7 +6,7 @@
   "favicon": "/images/favicon.png",
   "partners": [
     {
-      "logo": "https://via.placeholder.com/150x80/5f725f/ffffff?text=Partner+1",
+      "logo": "/images/favicon.png",
       "name": "Partner 1"
     },
     {
