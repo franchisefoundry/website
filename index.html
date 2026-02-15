@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Franchise Foundry - Find Your Perfect Franchise Match</title>
+    <link rel="icon" type="image/png" href="images/favicon.png">
+    <link rel="apple-touch-icon" href="images/favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Sora', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #2d3748;
+            background: #ffffff;
+        }
+
+        /* Navigation */
+        .navbar {
+            background: rgba(95, 114, 95, 0.95);
+            padding: 15px 40px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 35px;
+            list-style: none;
+            align-items: center;
+        }
+
+        .nav-menu a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1rem;
+            transition: opacity 0.2s;
+        }
+
+        .nav-menu a:hover {
+            opacity: 0.8;
+        }
+
+        .nav-menu a.active {
+            font-weight: 600;
+            border-bottom: 2px solid white;
+            padding-bottom: 4px;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #5f725f 0%, #4a5a4a 100%);
+            padding: 80px 40px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><defs><pattern id="grid" width="100" height="100" patternUnits="userSpaceOnUse"><path d="M 100 0 L 0 0 0 100" fill="none" stroke="rgba(255,255,255,0.03)" stroke-width="1"/></pattern></defs><rect width="100%" height="100%" fill="url(%23grid)"/></svg>');
+            opacity: 0.5;
+        }
+
+        .hero-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-grid {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+
+        .hero-text h1 {
+            font-size: 3.5rem;
+            color: white;
+            margin-bottom: 24px;
+            font-weight: 700;
+            line-height: 1.1;
+        }
+
+        .hero-text .subtitle {
+            font-size: 1.3rem;
+            color: rgba(255,255,255,0.95);
+            margin-bottom: 16px;
+            font-weight: 400;
+        }
+
+        .hero-text .description {
+            font-size: 1.1rem;
+            color: rgba(255,255,255,0.85);
+            margin-bottom: 40px;
+            font-weight: 300;
+            line-height: 1.7;
+        }
+
+        .cta-group {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .cta-button {
+            background: white;
+            color: #5f725f;
+            padding: 18px 40px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            display: inline-block;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+
+        .cta-button.secondary {
+            background: transparent;
+            color: white;
+            border: 2px solid white;
+        }
+
+        .cta-button.secondary:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .hero-stats {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 32px;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .stat-item {
+            margin-bottom: 24px;
+        }
+
+        .stat-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #d4a574;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 0.95rem;
+            color: rgba(255,255,255,0.9);
+            font-weight: 400;
+        }
+
+        /* Trust Bar */
+        .trust-bar {
+            background: #f8f9fa;
+            padding: 30px 40px;
+            border-bottom: 1px solid #e8e8e8;
+        }
+
+        .trust-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 60px;
+            flex-wrap: wrap;
+        }
+
+        .trust-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .trust-icon {
+            font-size: 1.5rem;
+        }
+
+        .trust-text {
+            font-size: 0.95rem;
+            color: #4a5568;
+            font-weight: 500;
+        }
+
+        /* Main Content Sections */
+        .section {
+            padding: 100px 40px;
+        }
+
+        .section-header {
+            max-width: 800px;
+            margin: 0 auto 60px;
+            text-align: center;
+        }
+
+        .section-title {
+            font-size: 2.8rem;
+            color: #2d3748;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .section-subtitle {
+            font-size: 1.2rem;
+            color: #4a5568;
+            font-weight: 300;
+            line-height: 1.7;
+        }
+
+        .content-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Why Choose - Two Column Layout */
+        .why-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: start;
+        }
+
+        .why-content h3 {
+            font-size: 2rem;
+            color: #5f725f;
+            margin-bottom: 24px;
+            font-weight: 600;
+        }
+
+        .why-content p {
+            font-size: 1.1rem;
+            color: #4a5568;
+            margin-bottom: 32px;
+            line-height: 1.8;
+            font-weight: 300;
+        }
+
+        .benefit-list {
+            list-style: none;
+        }
+
+        .benefit-item {
+            display: flex;
+            align-items: start;
+            gap: 16px;
+            margin-bottom: 24px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            transition: all 0.3s;
+        }
+
+        .benefit-item:hover {
+            background: #e8f4e8;
+            transform: translateX(5px);
+        }
+
+        .benefit-icon {
+            font-size: 1.5rem;
+            color: #5f725f;
+            flex-shrink: 0;
+        }
+
+        .benefit-text h4 {
+            font-size: 1.1rem;
+            color: #2d3748;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .benefit-text p {
+            font-size: 0.95rem;
+            color: #4a5568;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* Match Preview - Prominent Section */
+        .match-preview-section {
+            background: linear-gradient(135deg, #5f725f 0%, #4a5a4a 100%);
+            padding: 100px 40px;
+        }
+
+        .match-preview-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .match-preview-header h2 {
+            font-size: 3rem;
+            color: white;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .match-preview-header p {
+            font-size: 1.2rem;
+            color: rgba(255,255,255,0.9);
+            max-width: 700px;
+            margin: 0 auto;
+            font-weight: 300;
+        }
+
+        .preview-mockup {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 48px;
+            background: rgba(255,255,255,0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        .mockup-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .mockup-header h3 {
+            font-size: 1.8rem;
+            color: #2d3748;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+
+        .mockup-header p {
+            font-size: 1rem;
+            color: #4a5568;
+        }
+
+        .mockup-brands {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+
+        .blurred-brand {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e8e8e8 100%);
+            border: 2px solid #d4a574;
+            border-radius: 16px;
+            padding: 32px 24px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .blurred-brand::before {
+            content: "🔒";
+            font-size: 2.5rem;
+            display: block;
+            margin-bottom: 16px;
+            opacity: 0.7;
+        }
+
+        .blurred-brand h5 {
+            font-size: 1.3rem;
+            margin-bottom: 12px;
+            filter: blur(5px);
+            color: #2d3748;
+            font-weight: 600;
+        }
+
+        .blurred-brand p {
+            font-size: 0.95rem;
+            margin-bottom: 8px;
+            filter: blur(3px);
+            color: #4a5568;
+        }
+
+        .blurred-brand .match-score {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: #d4a574;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .unlock-cta-container {
+            text-align: center;
+        }
+
+        .unlock-cta {
+            background: #5f725f;
+            color: white;
+            padding: 20px 48px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.2rem;
+            display: inline-block;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .unlock-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+            background: #4a5a4a;
+        }
+
+        /* How It Works */
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+        }
+
+        .step {
+            text-align: center;
+            padding: 40px 30px;
+            background: #f8f9fa;
+            border-radius: 16px;
+            transition: all 0.3s;
+        }
+
+        .step:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+        }
+
+        .step-number {
+            background: #5f725f;
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin: 0 auto 24px;
+        }
+
+        .step h3 {
+            color: #2d3748;
+            font-size: 1.4rem;
+            margin-bottom: 16px;
+            font-weight: 600;
+        }
+
+        .step p {
+            color: #4a5568;
+            line-height: 1.7;
+            font-weight: 300;
+        }
+
+        /* Trusted Partners */
+        .partners-section {
+            background: #f8f9fa;
+            padding: 80px 40px;
+        }
+
+        .partners-scroll {
+            overflow: hidden;
+            position: relative;
+            mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+        }
+
+        .partners-track {
+            display: flex;
+            gap: 60px;
+            animation: scroll 30s linear infinite;
+            padding: 20px 0;
+        }
+
+        .partner-logo {
+            flex-shrink: 0;
+            width: 180px;
+            height: 100px;
+            background: white;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            padding: 20px;
+        }
+
+        .partner-logo img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        @keyframes scroll {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        /* CTA Section */
+        .cta-section {
+            background: #4a4a4a;
+            padding: 100px 40px;
+            text-align: center;
+        }
+
+        .cta-section h2 {
+            font-size: 3rem;
+            color: white;
+            margin-bottom: 24px;
+            font-weight: 700;
+        }
+
+        .cta-section p {
+            font-size: 1.3rem;
+            color: rgba(255,255,255,0.9);
+            margin-bottom: 40px;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Footer */
+        footer {
+            background: #5f725f;
+            color: white;
+            padding: 60px 40px 30px;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .footer-section h3 {
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .footer-section p,
+        .footer-section a {
+            color: rgba(255, 255, 255, 0.9);
+            text-decoration: none;
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 300;
+        }
+
+        .footer-section a:hover {
+            color: white;
+            text-decoration: underline;
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 10px;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            color: rgba(255, 255, 255, 0.8);
+            font-weight: 300;
+        }
+
+        /* Responsive */
+        @media (max-width: 968px) {
+            .hero-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .why-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .hero-text h1 {
+                font-size: 2.5rem;
+            }
+
+            .section-title {
+                font-size: 2.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <ul class="nav-menu">
+                <li><a href="index.html" class="active">Home</a></li>
+                <li><a href="about.html">About Us</a></li>
+                <li><a href="find-match.html">Find Your Match</a></li>
+                <li><a href="for-brands.html">For Franchise Brands</a></li>
+                <li><a href="contact.html">Contact Us</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <!-- Large Centered Logo -->
+            <div style="text-align: center; margin-bottom: 60px;">
+                <img src="images/logo.png" alt="Franchise Foundry" style="height: 120px; max-width: 600px; width: auto;">
+            </div>
+            
+            <div class="hero-grid">
+                <div class="hero-text">
+                    <h1>Finding Your Perfect Franchise Shouldn't Feel Like Guesswork</h1>
+                    <p class="subtitle">We match you with franchise opportunities that truly fit your goals, budget, and lifestyle.</p>
+                    <p class="description">With over 30 years of hands-on experience building and scaling franchises across the UK, we know what makes a successful franchisee. We're here to guide you every step of the way-completely free.</p>
+                    <div class="cta-group">
+                        <a href="find-match.html" class="cta-button">Get Your Free Match</a>
+                        <a href="about.html" class="cta-button secondary">Learn About Our Process</a>
+                    </div>
+                </div>
+                <div class="hero-stats">
+                    <div class="stat-item">
+                        <span class="stat-number">30+</span>
+                        <span class="stat-label">Years of combined hospitality & franchising experience</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">100%</span>
+                        <span class="stat-label">Free consultation - no hidden fees, ever</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">Only</span>
+                        <span class="stat-label">Franchisee-first matching agency in the UK</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Trust Bar -->
+    <div class="trust-bar">
+        <div class="trust-content">
+            <div class="trust-item">
+                <span class="trust-icon">✓</span>
+                <span class="trust-text">100% Free Consultation</span>
+            </div>
+            <div class="trust-item">
+                <span class="trust-icon">✓</span>
+                <span class="trust-text">30+ Years Experience</span>
+            </div>
+            <div class="trust-item">
+                <span class="trust-icon">✓</span>
+                <span class="trust-text">Personalised Matching</span>
+            </div>
+            <div class="trust-item">
+                <span class="trust-icon">✓</span>
+                <span class="trust-text">Ongoing Expert Support</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Trusted Partners -->
+    <section class="partners-section">
+        <div class="content-container">
+            <div class="section-header" style="margin-bottom: 40px;">
+                <h2 class="section-title" style="font-size: 2rem; margin-bottom: 0;">Trusted by Leading Franchise Brands</h2>
+            </div>
+            <div class="partners-scroll">
+                <div class="partners-track">
+                    <div class="partner-logo"><img src="https://via.placeholder.com/150x80/5f725f/ffffff?text=Partner+1" alt="Partner 1"></div>
+                    <div class="partner-logo"><img src="https://via.placeholder.com/150x80/5f725f/ffffff?text=Partner+2" alt="Partner 2"></div>
+                    <div class="partner-logo"><img src="https://via.placeholder.com/150x80/5f725f/ffffff?text=Partner+3" alt="Partner 3"></div>
+                    <div class="partner-logo"><img src="https://via.placeholder.com/150x80/5f725f/ffffff?text=Partner+4" alt="Partner 4"></div>
+                    <div class="partner-logo"><img src="https://via.placeholder.com/150x80/5f725f/ffffff?text=Partner+5" alt="Partner 5"></div>
+                    <div class="partner-logo"><img src="https://via.placeholder.com/150x80/5f725f/ffffff?text=Partner+6" alt="Partner 6"></div>
+                    <!-- Duplicate for infinite scroll -->
+                    <div class="partner-logo"><img src="https://via.placeholder.com/150x80/5f725f/ffffff?text=Partner+1" alt="Partner 1"></div>
+                    <div class="partner-logo"><img src="https://via.placeholder.com/150x80/5f725f/ffffff?text=Partner+2" alt="Partner 2"></div>
+                    <div class="partner-logo"><img src="https://via.placeholder.com/150x80/5f725f/ffffff?text=Partner+3" alt="Partner 3"></div>
+                    <div class="partner-logo"><img src="https://via.placeholder.com/150x80/5f725f/ffffff?text=Partner+4" alt="Partner 4"></div>
+                    <div class="partner-logo"><img src="https://via.placeholder.com/150x80/5f725f/ffffff?text=Partner+5" alt="Partner 5"></div>
+                    <div class="partner-logo"><img src="https://via.placeholder.com/150x80/5f725f/ffffff?text=Partner+6" alt="Partner 6"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Match Preview Section -->
+    <section class="match-preview-section">
+        <div class="match-preview-header">
+            <h2>See Your Personalised Matches</h2>
+            <p>We'll show you a curated selection of franchise opportunities that align with your investment budget, location preferences, and business goals.</p>
+        </div>
+        <div class="preview-mockup">
+            <div class="mockup-header">
+                <h3>Your Franchise Matches (Preview)</h3>
+                <p>Book your free consultation to unlock full details and connect with these brands</p>
+            </div>
+            <div class="mockup-brands">
+                <div class="blurred-brand">
+                    <span class="match-score">94% Match</span>
+                    <h5>Premium Coffee Concept</h5>
+                    <p>Investment: £100k-£200k</p>
+                    <p>Industry: Food & Beverage</p>
+                    <p>Location: London, Southeast</p>
+                </div>
+                <div class="blurred-brand">
+                    <span class="match-score">89% Match</span>
+                    <h5>Fitness Studio Brand</h5>
+                    <p>Investment: £150k-£250k</p>
+                    <p>Industry: Health & Wellness</p>
+                    <p>Location: Manchester, Midlands</p>
+                </div>
+                <div class="blurred-brand">
+                    <span class="match-score">87% Match</span>
+                    <h5>Home Services Leader</h5>
+                    <p>Investment: £50k-£100k</p>
+                    <p>Industry: Services</p>
+                    <p>Location: UK-wide</p>
+                </div>
+            </div>
+            <div class="unlock-cta-container">
+                <a href="find-match.html" class="unlock-cta">Book Your Free Consultation to Unlock Matches</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section class="section" style="background: #f8f9fa;">
+        <div class="section-header">
+            <h2 class="section-title">How It Works</h2>
+            <p class="section-subtitle">A simple, transparent process designed to find you the right franchise, not just any franchise.</p>
+        </div>
+        <div class="content-container">
+            <div class="steps-grid">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <h3>Share Your Goals</h3>
+                    <p>Tell us about your investment budget, industry interests, location preferences, and what you're looking for in a business.</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <h3>Get Personalised Matches</h3>
+                    <p>We'll analyse your profile and match you with franchise opportunities that align with your criteria and goals.</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <h3>Free Consultation</h3>
+                    <p>Book a free consultation with our experienced advisors to review your matches and get expert guidance.</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <h3>Make Your Decision</h3>
+                    <p>We'll connect you with the right franchise brands and support you throughout the decision process.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Final CTA -->
+    <section class="cta-section">
+        <h2>Ready to Find Your Perfect Franchise?</h2>
+        <p>Book your free, no-obligation consultation with our franchise experts today.</p>
+        <a href="find-match.html" class="cta-button">Get Started Now</a>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Franchise Foundry</h3>
+                <p>Helping aspiring franchisees find the perfect franchise opportunity since 2024.</p>
+                <p style="margin-top: 20px;"><em>Discover. Connect. Franchise.</em></p>
+            </div>
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <ul class="footer-links">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="about.html">About Us</a></li>
+                    <li><a href="find-match.html">Find Your Match</a></li>
+                    <li><a href="for-brands.html">For Franchise Brands</a></li>
+                    <li><a href="contact.html">Contact Us</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Contact</h3>
+                <p><a href="/cdn-cgi/l/email-protection#dfbcb0b1b1babcab9fb9adbeb1bcb7b6acbab9b0aab1bbada6f1bcb0f1aab4"><span class="__cf_email__" data-cfemail="67040809090204132701150609040f0e14020108120903151e49040849120c">[email&#160;protected]</span></a></p>
+            </div>
+        </
+    <script>
+// Load content from CMS
+async function loadCMSContent() {
+    try {
+        const [homepage, settings] = await Promise.all([
+            fetch('/content/homepage.json').then(r => r.json()),
+            fetch('/content/settings.json').then(r => r.json())
+        ]);
+        
+        // Hero section
+        if (homepage.hero) {
+            setText('.hero-text h1', homepage.hero.title);
+            setText('.hero-text .subtitle', homepage.hero.subtitle);
+            setText('.hero-text .description', homepage.hero.description);
+        }
+        
+        // Statistics
+        if (homepage.stats) {
+            const stats = document.querySelectorAll('.stat-item');
+            if (stats[0]) {
+                setText(stats[0].querySelector('.stat-number'), homepage.stats.years);
+                setText(stats[0].querySelector('.stat-label'), homepage.stats.yearsDesc);
+            }
+            if (stats[1]) {
+                setText(stats[1].querySelector('.stat-number'), homepage.stats.freeLabel);
+                setText(stats[1].querySelector('.stat-label'), homepage.stats.freeDesc);
+            }
+            if (stats[2]) {
+                setText(stats[2].querySelector('.stat-number'), homepage.stats.worth);
+                setText(stats[2].querySelector('.stat-label'), homepage.stats.worthDesc);
+            }
+        }
+        
+        // Logo
+        if (settings.logo) {
+            document.querySelectorAll('img[alt="Franchise Foundry"]').forEach(img => {
+                if (!img.closest('.partner-logo')) img.src = settings.logo;
+            });
+        }
+        
+        // Email
+        if (settings.email) {
+            document.querySelectorAll('a[href^="mailto"]').forEach(a => {
+                a.href = `mailto:${settings.email}`;
+                a.textContent = settings.email;
+            });
+        }
+        
+    } catch (e) {
+        console.log('Using default content');
+    }
+}
+
+function setText(el, text) {
+    const elem = typeof el === 'string' ? document.querySelector(el) : el;
+    if (elem && text) elem.textContent = text;
+}
+
+document.addEventListener('DOMContentLoaded', loadCMSContent);
+    </script>
+</body>
+</html>
