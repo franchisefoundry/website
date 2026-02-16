@@ -38,8 +38,13 @@
             max-width: 1400px;
             margin: 0 auto;
             display: flex;
-            justify-content: center;
+            justify-content: space-between;
             align-items: center;
+        }
+
+        .navbar-logo {
+            height: 40px;
+            display: block;
         }
 
         .nav-menu {
@@ -620,8 +625,17 @@
         @media (max-width: 968px) {
             .nav-menu {
                 flex-wrap: wrap;
-                gap: 15px;
+                gap: 12px;
                 justify-content: center;
+            }
+
+            .nav-container {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .navbar-logo {
+                height: 35px;
             }
 
             .nav-separator {
@@ -637,11 +651,19 @@
             }
 
             .hero-text h1 {
-                font-size: 2.5rem;
+                font-size: 1.8rem;
+            }
+
+            .hero-text .subtitle {
+                font-size: 1rem;
+            }
+
+            .hero-text .description {
+                font-size: 0.9rem;
             }
 
             .section-title {
-                font-size: 2.2rem;
+                font-size: 1.6rem;
             }
 
             .benefit-grid {
@@ -666,48 +688,137 @@
             .stat-item {
                 padding: 15px;
             }
+
+            /* Hero logo smaller on tablet */
+            .hero-content > div[style*="text-align: center"] img {
+                height: 70px !important;
+                max-width: 350px !important;
+            }
         }
 
         @media (max-width: 600px) {
             .navbar {
-                padding: 15px 20px;
+                padding: 10px 15px;
+            }
+
+            .navbar-logo {
+                height: 28px;
             }
 
             .nav-menu {
-                gap: 10px;
-                font-size: 0.9rem;
+                gap: 8px;
+                font-size: 0.75rem;
+            }
+
+            .nav-menu a {
+                font-size: 0.75rem;
             }
 
             .hero {
-                padding: 40px 20px;
+                padding: 25px 15px !important;
+            }
+
+            .hero-content {
+                padding: 0 !important;
+            }
+
+            /* Much smaller hero logo on mobile */
+            .hero-content > div[style*="text-align: center"] {
+                margin-bottom: 25px !important;
+            }
+
+            .hero-content > div[style*="text-align: center"] img {
+                height: 50px !important;
+                max-width: 250px !important;
             }
 
             .hero-text h1 {
-                font-size: 2rem;
+                font-size: 1.4rem !important;
+                line-height: 1.3 !important;
+                margin-bottom: 15px !important;
             }
 
-            .hero-logo img {
-                height: 80px !important;
+            .hero-text .subtitle {
+                font-size: 0.95rem !important;
+                margin-bottom: 12px !important;
+            }
+
+            .hero-text .description {
+                font-size: 0.85rem !important;
+                line-height: 1.5 !important;
             }
 
             .section-title {
-                font-size: 1.8rem;
+                font-size: 1.3rem !important;
             }
 
             .cta-group {
                 flex-direction: column;
+                gap: 12px !important;
             }
 
             .cta-button {
-                width: 100%;
+                width: 100% !important;
+                padding: 14px 20px !important;
+                font-size: 0.9rem !important;
+            }
+
+            .stat-number {
+                font-size: 2rem !important;
+            }
+
+            .stat-label {
+                font-size: 0.8rem !important;
+            }
+
+            .benefit-card h3,
+            .step-card h3 {
+                font-size: 1.1rem !important;
+            }
+
+            .benefit-card p,
+            .step-card p {
+                font-size: 0.85rem !important;
+            }
+
+            .section {
+                padding: 40px 20px !important;
             }
         }
-    </style>
+
+        @media (max-width: 400px) {
+            .nav-menu {
+                font-size: 0.65rem;
+                gap: 6px;
+            }
+
+            .nav-menu a {
+                font-size: 0.65rem;
+            }
+
+            .hero-content > div[style*="text-align: center"] img {
+                height: 40px !important;
+                max-width: 200px !important;
+            }
+
+            .hero-text h1 {
+                font-size: 1.2rem !important;
+            }
+
+            .hero-text .subtitle {
+                font-size: 0.85rem !important;
+            }
+
+            .hero-text .description {
+                font-size: 0.75rem !important;
+            }
+        }
 </head>
 <body>
     <!-- Navigation -->
     <nav class="navbar">
         <div class="nav-container">
+            <img src="images/logo.png" alt="Franchise Foundry" class="navbar-logo">
             <ul class="nav-menu">
                 <li><a href="index.html" class="active">Home</a></li>
                 <li><a href="about.html">About Us</a></li>
@@ -1175,13 +1286,18 @@ async function loadCMSContent() {
         
         // Load settings (applies to all pages)
         if (settings) {
-            // Logo
+            // Logo - update both hero and navbar
             if (settings.logo) {
+                // Hero logo
                 document.querySelectorAll('img[alt="Franchise Foundry"]').forEach(img => {
                     if (!img.closest('.partner-logo') && !img.src.includes('partner')) {
                         img.src = settings.logo;
                     }
                 });
+                
+                // Navbar logo
+                const navbarLogo = document.querySelector('.navbar-logo');
+                if (navbarLogo) navbarLogo.src = settings.logo;
             }
             
             // Email

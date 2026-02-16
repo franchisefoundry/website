@@ -34,11 +34,46 @@
         }
 
         .nav-container {
+
+        .navbar-logo {
+            height: 40px;
+            display: block;
+        }
             max-width: 1400px;
+
+        .navbar-logo {
+            height: 40px;
+            display: block;
+        }
             margin: 0 auto;
+
+        .navbar-logo {
+            height: 40px;
+            display: block;
+        }
             display: flex;
+
+        .navbar-logo {
+            height: 40px;
+            display: block;
+        }
             justify-content: space-between;
+
+        .navbar-logo {
+            height: 40px;
+            display: block;
+        }
             align-items: center;
+
+        .navbar-logo {
+            height: 40px;
+            display: block;
+        }
+        }
+
+        .navbar-logo {
+            height: 40px;
+            display: block;
         }
 
         .navbar img {
@@ -215,7 +250,7 @@
             border-radius: 50%;
             display: flex;
             align-items: center;
-            justify-content: center;
+            justify-content: space-between;
             font-size: 1.8rem;
             font-weight: 700;
             margin: 0 auto 24px;
@@ -434,6 +469,7 @@
     <!-- Navigation -->
     <nav class="navbar">
         <div class="nav-container">
+            <img src="images/logo.png" alt="Franchise Foundry" class="navbar-logo">
             <a href="index.html"><div class="navbar-logo">
                 <img src="images/logo.png" alt="Franchise Foundry">
             </div></a>
@@ -1159,6 +1195,221 @@ async function loadCMSContent() {
             }
             
             // Ideal Partner
+            // Hero section
+            if (homepage.hero) {
+                setText('.hero-text h1', homepage.hero.title);
+                setText('.hero-text .subtitle', homepage.hero.subtitle);
+                setText('.hero-text .description', homepage.hero.description);
+            }
+            
+            // Statistics
+            if (homepage.stats) {
+                const stats = document.querySelectorAll('.stat-item');
+                if (stats[0]) {
+                    setText(stats[0].querySelector('.stat-number'), homepage.stats.years);
+                    setText(stats[0].querySelector('.stat-label'), homepage.stats.yearsDesc);
+                }
+                if (stats[1]) {
+                    setText(stats[1].querySelector('.stat-number'), homepage.stats.freeLabel);
+                    setText(stats[1].querySelector('.stat-label'), homepage.stats.freeDesc);
+                }
+                if (stats[2]) {
+                    setText(stats[2].querySelector('.stat-number'), homepage.stats.worth);
+                    setText(stats[2].querySelector('.stat-label'), homepage.stats.worthDesc);
+                }
+            }
+            
+            // Benefits
+            if (homepage.benefits) {
+                const benefitCards = document.querySelectorAll('.benefit-card');
+                homepage.benefits.forEach((benefit, i) => {
+                    if (benefitCards[i]) {
+                        setText(benefitCards[i].querySelector('h3'), benefit.title);
+                        setText(benefitCards[i].querySelector('p'), benefit.description);
+                    }
+                });
+            }
+            
+            // How It Works
+            if (homepage.howItWorks) {
+                setText('.how-it-works .section-title', homepage.howItWorks.title);
+                setText('.how-it-works .section-subtitle', homepage.howItWorks.subtitle);
+            }
+            
+            // Steps
+            if (homepage.steps) {
+                const stepCards = document.querySelectorAll('.step-card');
+                homepage.steps.forEach((step, i) => {
+                    if (stepCards[i]) {
+                        setText(stepCards[i].querySelector('.step-number'), step.number);
+                        setText(stepCards[i].querySelector('h3'), step.title);
+                        setText(stepCards[i].querySelector('p'), step.description);
+                    }
+                });
+            }
+            
+            // Final CTA
+            if (homepage.finalCTA) {
+                setText('.final-cta h2', homepage.finalCTA.title);
+                setText('.final-cta > p', homepage.finalCTA.description);
+            }
+        }
+        
+        // Load About page content
+        if (isAbout && about) {
+            if (about.header) {
+                setText('.page-header h1', about.header.title);
+                setText('.page-header p', about.header.subtitle);
+            }
+            
+            if (about.story) {
+                const storySection = document.querySelector('.story-section');
+                if (storySection) {
+                    setText(storySection.querySelector('h2'), about.story.title);
+                    const paragraphs = storySection.querySelectorAll('p');
+                    if (paragraphs[0]) paragraphs[0].textContent = about.story.text1;
+                    if (paragraphs[1]) paragraphs[1].textContent = about.story.text2;
+                    if (paragraphs[2]) paragraphs[2].textContent = about.story.text3;
+                }
+            }
+            
+            if (about.experience) {
+                const expCards = document.querySelectorAll('.experience-card');
+                about.experience.forEach((exp, i) => {
+                    if (expCards[i]) {
+                        setText(expCards[i].querySelector('h3'), exp.title);
+                        setText(expCards[i].querySelector('p'), exp.description);
+                    }
+                });
+            }
+            
+            if (about.values) {
+                const valueCards = document.querySelectorAll('.value-card');
+                about.values.forEach((val, i) => {
+                    if (valueCards[i]) {
+                        setText(valueCards[i].querySelector('h3'), val.title);
+                        setText(valueCards[i].querySelector('p'), val.description);
+                    }
+                });
+            }
+        }
+        
+        // Load Contact page content
+        if (isContact && contact) {
+            setText('.contact-intro h1', contact.title);
+            setText('.contact-intro p', contact.intro);
+            
+            // Contact methods
+            if (contact.methods) {
+                setText('.contact-methods .email-label', contact.methods.emailLabel);
+                setText('.contact-methods .avail-label', contact.methods.availLabel);
+                setText('.contact-methods .avail-text', contact.methods.availText);
+            }
+            
+            // Form fields
+            if (contact.form) {
+                setText('.contact-form h2', contact.form.title);
+                const labels = {
+                    'name': contact.form.nameLabel,
+                    'email': contact.form.emailLabel,
+                    'phone': contact.form.phoneLabel,
+                    'subject': contact.form.subjectLabel,
+                    'message': contact.form.messageLabel
+                };
+                Object.keys(labels).forEach(key => {
+                    const label = document.querySelector(`label[for="${key}"]`);
+                    if (label && labels[key]) label.textContent = labels[key];
+                });
+                const submitBtn = document.querySelector('.contact-form button[type="submit"]');
+                if (submitBtn && contact.form.submitButton) {
+                    submitBtn.textContent = contact.form.submitButton;
+                }
+            }
+        }
+        
+        // Load Find Match page content
+        if (isFindMatch && findmatch) {
+            setText('.page-intro h1', findmatch.title);
+            setText('.page-intro p', findmatch.intro);
+            setText('.form-section h2', findmatch.formTitle);
+            
+            // Form fields
+            if (findmatch.formFields) {
+                const fieldMap = {
+                    'name': 'nameLabel',
+                    'email': 'emailLabel',
+                    'phone': 'phoneLabel',
+                    'location': 'locationLabel',
+                    'budget': 'budgetLabel',
+                    'industry': 'industryLabel',
+                    'timeline': 'timelineLabel',
+                    'goals': 'goalsLabel'
+                };
+                Object.keys(fieldMap).forEach(key => {
+                    const label = document.querySelector(`label[for="${key}"]`);
+                    if (label && findmatch.formFields[fieldMap[key]]) {
+                        label.textContent = findmatch.formFields[fieldMap[key]];
+                    }
+                });
+                const submitBtn = document.querySelector('.consultation-form button[type="submit"]');
+                if (submitBtn && findmatch.formFields.submitButton) {
+                    submitBtn.textContent = findmatch.formFields.submitButton;
+                }
+            }
+            
+            // Next steps
+            if (findmatch.nextSteps) {
+                setText('.next-steps h2', findmatch.nextSteps.title);
+                if (findmatch.nextSteps.steps) {
+                    const stepItems = document.querySelectorAll('.timeline-step');
+                    findmatch.nextSteps.steps.forEach((step, i) => {
+                        if (stepItems[i]) {
+                            setText(stepItems[i].querySelector('h3'), step.title);
+                            setText(stepItems[i].querySelector('p'), step.description);
+                        }
+                    });
+                }
+            }
+            
+            // Privacy
+            if (findmatch.privacy) {
+                setText('.privacy-section h3', findmatch.privacy.title);
+                setText('.privacy-section p', findmatch.privacy.text);
+            }
+        }
+        
+        // Load For Brands page content
+        if (isForBrands && forbrands) {
+            setText('.page-intro h1', forbrands.title);
+            setText('.page-intro p', forbrands.intro);
+            
+            // Benefits
+            if (forbrands.benefits) {
+                const benefitCards = document.querySelectorAll('.benefit-card');
+                forbrands.benefits.forEach((benefit, i) => {
+                    if (benefitCards[i]) {
+                        setText(benefitCards[i].querySelector('h3'), benefit.title);
+                        setText(benefitCards[i].querySelector('p'), benefit.description);
+                    }
+                });
+            }
+            
+            // How It Works
+            if (forbrands.howItWorks) {
+                setText('.how-partnership-works h2', forbrands.howItWorks.title);
+                const stepCards = document.querySelectorAll('.partnership-step');
+                if (forbrands.howItWorks.steps) {
+                    forbrands.howItWorks.steps.forEach((step, i) => {
+                        if (stepCards[i]) {
+                            setText(stepCards[i].querySelector('.step-number'), step.number);
+                            setText(stepCards[i].querySelector('h3'), step.title);
+                            setText(stepCards[i].querySelector('p'), step.description);
+                        }
+                    });
+                }
+            }
+            
+            // Ideal Partner
             if (forbrands.idealPartner) {
                 setText('.ideal-partner h2', forbrands.idealPartner.title);
                 setText('.ideal-partner > p', forbrands.idealPartner.description);
@@ -1185,13 +1436,18 @@ async function loadCMSContent() {
         
         // Load settings (applies to all pages)
         if (settings) {
-            // Logo
+            // Logo - update both hero and navbar
             if (settings.logo) {
+                // Hero logo
                 document.querySelectorAll('img[alt="Franchise Foundry"]').forEach(img => {
                     if (!img.closest('.partner-logo') && !img.src.includes('partner')) {
                         img.src = settings.logo;
                     }
                 });
+                
+                // Navbar logo
+                const navbarLogo = document.querySelector('.navbar-logo');
+                if (navbarLogo) navbarLogo.src = settings.logo;
             }
             
             // Email
