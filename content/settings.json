@@ -2,31 +2,31 @@
   "companyName": "Franchise Foundry",
   "email": "connect@franchisefoundry.co.uk",
   "tagline": "Discover. Connect. Franchise.",
-  "logo": "/images/copy-of-franchise-foundry-logo-final-2.png",
+  "logo": "/images/logo.png",
   "favicon": "/images/favicon.png",
   "partners": [
     {
-      "logo": "/images/5bbc6001c4b4b.jpg",
+      "logo": "https://via.placeholder.com/150x80/5f725f/ffffff?text=Partner+1",
       "name": "Partner 1"
     },
     {
-      "logo": "https://cdn.shopify.com/s/files/1/0374/3694/8611/files/UB006-White-Logotype_e3b36bfe-14e9-41ea-abf3-f76dfc4a0537.png?v=1630588141",
+      "logo": "https://via.placeholder.com/150x80/5f725f/ffffff?text=Partner+2",
       "name": "Partner 2"
     },
     {
-      "logo": "/images/oakberry_logo.jpg",
+      "logo": "https://via.placeholder.com/150x80/5f725f/ffffff?text=Partner+3",
       "name": "Partner 3"
     },
     {
-      "logo": "/images/sides.webp",
+      "logo": "https://via.placeholder.com/150x80/5f725f/ffffff?text=Partner+4",
       "name": "Partner 4"
     },
     {
-      "logo": "/images/images-1-.png",
+      "logo": "https://via.placeholder.com/150x80/5f725f/ffffff?text=Partner+5",
       "name": "Partner 5"
     },
     {
-      "logo": "/images/ub006-white-logotype_e3b36bfe-14e9-41ea-abf3-f76dfc4a0537.webp",
+      "logo": "https://via.placeholder.com/150x80/5f725f/ffffff?text=Partner+6",
       "name": "Partner 6"
     }
   ]

@@ -67,6 +67,18 @@
             padding-bottom: 4px;
         }
 
+        .nav-separator {
+            width: 1px;
+            height: 20px;
+            background: rgba(255, 255, 255, 0.3);
+            margin: 0 10px;
+        }
+
+        .for-brands-link {
+            color: #d4a574 !important;
+            font-weight: 600;
+        }
+
         /* Hero Section */
         .hero {
             background: linear-gradient(135deg, #5f725f 0%, #4a5a4a 100%);
@@ -606,6 +618,16 @@
 
         /* Responsive */
         @media (max-width: 968px) {
+            .nav-menu {
+                flex-wrap: wrap;
+                gap: 15px;
+                justify-content: center;
+            }
+
+            .nav-separator {
+                display: none;
+            }
+
             .hero-grid {
                 grid-template-columns: 1fr;
             }
@@ -621,6 +643,64 @@
             .section-title {
                 font-size: 2.2rem;
             }
+
+            .benefit-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .step-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .partner-scroll {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            .partner-logos {
+                display: flex;
+                flex-wrap: nowrap;
+                min-width: max-content;
+            }
+
+            .stat-item {
+                padding: 15px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .navbar {
+                padding: 15px 20px;
+            }
+
+            .nav-menu {
+                gap: 10px;
+                font-size: 0.9rem;
+            }
+
+            .hero {
+                padding: 40px 20px;
+            }
+
+            .hero-text h1 {
+                font-size: 2rem;
+            }
+
+            .hero-logo img {
+                height: 80px !important;
+            }
+
+            .section-title {
+                font-size: 1.8rem;
+            }
+
+            .cta-group {
+                flex-direction: column;
+            }
+
+            .cta-button {
+                width: 100%;
+            }
         }
     </style>
 </head>
@@ -632,8 +712,9 @@
                 <li><a href="index.html" class="active">Home</a></li>
                 <li><a href="about.html">About Us</a></li>
                 <li><a href="find-match.html">Find Your Match</a></li>
-                <li><a href="for-brands.html">For Franchise Brands</a></li>
                 <li><a href="contact.html">Contact Us</a></li>
+                <li class="nav-separator"></li>
+                <li><a href="for-brands.html" class="for-brands-link">For Franchise Brands</a></li>
             </ul>
         </div>
     </nav>
@@ -956,6 +1037,33 @@ async function loadCMSContent() {
         if (isContact && contact) {
             setText('.contact-intro h1', contact.title);
             setText('.contact-intro p', contact.intro);
+            
+            // Contact methods
+            if (contact.methods) {
+                setText('.contact-methods .email-label', contact.methods.emailLabel);
+                setText('.contact-methods .avail-label', contact.methods.availLabel);
+                setText('.contact-methods .avail-text', contact.methods.availText);
+            }
+            
+            // Form fields
+            if (contact.form) {
+                setText('.contact-form h2', contact.form.title);
+                const labels = {
+                    'name': contact.form.nameLabel,
+                    'email': contact.form.emailLabel,
+                    'phone': contact.form.phoneLabel,
+                    'subject': contact.form.subjectLabel,
+                    'message': contact.form.messageLabel
+                };
+                Object.keys(labels).forEach(key => {
+                    const label = document.querySelector(`label[for="${key}"]`);
+                    if (label && labels[key]) label.textContent = labels[key];
+                });
+                const submitBtn = document.querySelector('.contact-form button[type="submit"]');
+                if (submitBtn && contact.form.submitButton) {
+                    submitBtn.textContent = contact.form.submitButton;
+                }
+            }
         }
         
         // Load Find Match page content
@@ -963,12 +1071,106 @@ async function loadCMSContent() {
             setText('.page-intro h1', findmatch.title);
             setText('.page-intro p', findmatch.intro);
             setText('.form-section h2', findmatch.formTitle);
+            
+            // Form fields
+            if (findmatch.formFields) {
+                const fieldMap = {
+                    'name': 'nameLabel',
+                    'email': 'emailLabel',
+                    'phone': 'phoneLabel',
+                    'location': 'locationLabel',
+                    'budget': 'budgetLabel',
+                    'industry': 'industryLabel',
+                    'timeline': 'timelineLabel',
+                    'goals': 'goalsLabel'
+                };
+                Object.keys(fieldMap).forEach(key => {
+                    const label = document.querySelector(`label[for="${key}"]`);
+                    if (label && findmatch.formFields[fieldMap[key]]) {
+                        label.textContent = findmatch.formFields[fieldMap[key]];
+                    }
+                });
+                const submitBtn = document.querySelector('.consultation-form button[type="submit"]');
+                if (submitBtn && findmatch.formFields.submitButton) {
+                    submitBtn.textContent = findmatch.formFields.submitButton;
+                }
+            }
+            
+            // Next steps
+            if (findmatch.nextSteps) {
+                setText('.next-steps h2', findmatch.nextSteps.title);
+                if (findmatch.nextSteps.steps) {
+                    const stepItems = document.querySelectorAll('.timeline-step');
+                    findmatch.nextSteps.steps.forEach((step, i) => {
+                        if (stepItems[i]) {
+                            setText(stepItems[i].querySelector('h3'), step.title);
+                            setText(stepItems[i].querySelector('p'), step.description);
+                        }
+                    });
+                }
+            }
+            
+            // Privacy
+            if (findmatch.privacy) {
+                setText('.privacy-section h3', findmatch.privacy.title);
+                setText('.privacy-section p', findmatch.privacy.text);
+            }
         }
         
         // Load For Brands page content
         if (isForBrands && forbrands) {
             setText('.page-intro h1', forbrands.title);
             setText('.page-intro p', forbrands.intro);
+            
+            // Benefits
+            if (forbrands.benefits) {
+                const benefitCards = document.querySelectorAll('.benefit-card');
+                forbrands.benefits.forEach((benefit, i) => {
+                    if (benefitCards[i]) {
+                        setText(benefitCards[i].querySelector('h3'), benefit.title);
+                        setText(benefitCards[i].querySelector('p'), benefit.description);
+                    }
+                });
+            }
+            
+            // How It Works
+            if (forbrands.howItWorks) {
+                setText('.how-partnership-works h2', forbrands.howItWorks.title);
+                const stepCards = document.querySelectorAll('.partnership-step');
+                if (forbrands.howItWorks.steps) {
+                    forbrands.howItWorks.steps.forEach((step, i) => {
+                        if (stepCards[i]) {
+                            setText(stepCards[i].querySelector('.step-number'), step.number);
+                            setText(stepCards[i].querySelector('h3'), step.title);
+                            setText(stepCards[i].querySelector('p'), step.description);
+                        }
+                    });
+                }
+            }
+            
+            // Ideal Partner
+            if (forbrands.idealPartner) {
+                setText('.ideal-partner h2', forbrands.idealPartner.title);
+                setText('.ideal-partner > p', forbrands.idealPartner.description);
+                if (forbrands.idealPartner.criteria) {
+                    const criteriaItems = document.querySelectorAll('.criteria-list li');
+                    forbrands.idealPartner.criteria.forEach((item, i) => {
+                        if (criteriaItems[i]) {
+                            criteriaItems[i].textContent = item.text;
+                        }
+                    });
+                }
+            }
+            
+            // CTA
+            if (forbrands.cta) {
+                setText('.partnership-cta h2', forbrands.cta.title);
+                setText('.partnership-cta p', forbrands.cta.description);
+                const ctaButton = document.querySelector('.partnership-cta .cta-button');
+                if (ctaButton && forbrands.cta.buttonText) {
+                    ctaButton.textContent = forbrands.cta.buttonText;
+                }
+            }
         }
         
         // Load settings (applies to all pages)
@@ -994,16 +1196,21 @@ async function loadCMSContent() {
             
             // Partner logos
             if (settings.partners && settings.partners.length > 0) {
-                const partnerContainer = document.querySelector('.partner-logos');
+                const partnerContainer = document.querySelector('.partners-track');
                 if (partnerContainer) {
                     partnerContainer.innerHTML = '';
-                    settings.partners.forEach(partner => {
-                        const img = document.createElement('img');
-                        img.src = partner.logo;
-                        img.alt = partner.name;
-                        img.className = 'partner-logo';
-                        partnerContainer.appendChild(img);
-                    });
+                    // Add logos twice for infinite scroll effect
+                    for (let i = 0; i < 2; i++) {
+                        settings.partners.forEach(partner => {
+                            const div = document.createElement('div');
+                            div.className = 'partner-logo';
+                            const img = document.createElement('img');
+                            img.src = partner.logo;
+                            img.alt = partner.name;
+                            div.appendChild(img);
+                            partnerContainer.appendChild(div);
+                        });
+                    }
                 }
             }
         }

@@ -131,6 +131,24 @@ collections:
         fields:
           - { label: "Page Title", name: "title", widget: "string" }
           - { label: "Introduction", name: "intro", widget: "text" }
+          - label: "Contact Methods"
+            name: "methods"
+            widget: "object"
+            fields:
+              - { label: "Email Label", name: "emailLabel", widget: "string" }
+              - { label: "Availability Label", name: "availLabel", widget: "string" }
+              - { label: "Availability Text", name: "availText", widget: "string" }
+          - label: "Form Section"
+            name: "form"
+            widget: "object"
+            fields:
+              - { label: "Form Title", name: "title", widget: "string" }
+              - { label: "Name Field Label", name: "nameLabel", widget: "string" }
+              - { label: "Email Field Label", name: "emailLabel", widget: "string" }
+              - { label: "Phone Field Label", name: "phoneLabel", widget: "string" }
+              - { label: "Subject Field Label", name: "subjectLabel", widget: "string" }
+              - { label: "Message Field Label", name: "messageLabel", widget: "string" }
+              - { label: "Submit Button Text", name: "submitButton", widget: "string" }
       
       - label: "Find Your Match Page"
         name: "findmatch"
@@ -139,6 +157,36 @@ collections:
           - { label: "Page Title", name: "title", widget: "string" }
           - { label: "Introduction", name: "intro", widget: "text" }
           - { label: "Form Title", name: "formTitle", widget: "string" }
+          - label: "Form Fields"
+            name: "formFields"
+            widget: "object"
+            fields:
+              - { label: "Name Field", name: "nameLabel", widget: "string" }
+              - { label: "Email Field", name: "emailLabel", widget: "string" }
+              - { label: "Phone Field", name: "phoneLabel", widget: "string" }
+              - { label: "Location Field", name: "locationLabel", widget: "string" }
+              - { label: "Budget Field", name: "budgetLabel", widget: "string" }
+              - { label: "Industry Field", name: "industryLabel", widget: "string" }
+              - { label: "Timeline Field", name: "timelineLabel", widget: "string" }
+              - { label: "Goals Field", name: "goalsLabel", widget: "string" }
+              - { label: "Submit Button", name: "submitButton", widget: "string" }
+          - label: "What Happens Next"
+            name: "nextSteps"
+            widget: "object"
+            fields:
+              - { label: "Section Title", name: "title", widget: "string" }
+              - label: "Steps"
+                name: "steps"
+                widget: "list"
+                fields:
+                  - { label: "Step Title", name: "title", widget: "string" }
+                  - { label: "Description", name: "description", widget: "text" }
+          - label: "Privacy Section"
+            name: "privacy"
+            widget: "object"
+            fields:
+              - { label: "Title", name: "title", widget: "string" }
+              - { label: "Text", name: "text", widget: "text" }
       
       - label: "For Brands Page"
         name: "forbrands"
@@ -146,6 +194,42 @@ collections:
         fields:
           - { label: "Page Title", name: "title", widget: "string" }
           - { label: "Introduction", name: "intro", widget: "text" }
+          - label: "Partnership Benefits"
+            name: "benefits"
+            widget: "list"
+            fields:
+              - { label: "Title", name: "title", widget: "string" }
+              - { label: "Description", name: "description", widget: "text" }
+          - label: "How Partnership Works"
+            name: "howItWorks"
+            widget: "object"
+            fields:
+              - { label: "Section Title", name: "title", widget: "string" }
+              - label: "Steps"
+                name: "steps"
+                widget: "list"
+                fields:
+                  - { label: "Step Number", name: "number", widget: "string" }
+                  - { label: "Title", name: "title", widget: "string" }
+                  - { label: "Description", name: "description", widget: "text" }
+          - label: "Ideal Partner Profile"
+            name: "idealPartner"
+            widget: "object"
+            fields:
+              - { label: "Section Title", name: "title", widget: "string" }
+              - { label: "Description", name: "description", widget: "text" }
+              - label: "Criteria"
+                name: "criteria"
+                widget: "list"
+                fields:
+                  - { label: "Criterion", name: "text", widget: "string" }
+          - label: "CTA Section"
+            name: "cta"
+            widget: "object"
+            fields:
+              - { label: "Title", name: "title", widget: "string" }
+              - { label: "Description", name: "description", widget: "text" }
+              - { label: "Button Text", name: "buttonText", widget: "string" }
       
       - label: "Settings"
         name: "settings"
