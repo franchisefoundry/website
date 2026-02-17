@@ -1,0 +1,1520 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us - Franchise Foundry</title>
+    <link rel="icon" type="image/png" href="images/favicon.png">
+    <link rel="apple-touch-icon" href="images/favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Sora', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #2d3748;
+            background: #ffffff;
+        }
+
+        /* Navigation */
+        .navbar {
+            background: #5f725f;
+            padding: 20px 40px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-container {
+
+        .navbar-logo {
+            height: 40px;
+            display: block;
+        }
+            max-width: 1400px;
+
+        .navbar-logo {
+            height: 40px;
+            display: block;
+        }
+            margin: 0 auto;
+
+        .navbar-logo {
+            height: 40px;
+            display: block;
+        }
+            display: flex;
+
+        .navbar-logo {
+            height: 40px;
+            display: block;
+        }
+            justify-content: space-between;
+
+        .navbar-logo {
+            height: 40px;
+            display: block;
+        }
+            align-items: center;
+
+        .navbar-logo {
+            height: 40px;
+            display: block;
+        }
+        }
+
+        .navbar-logo {
+            height: 40px;
+            display: block;
+        }
+
+        .navbar img {
+            height: 50px;
+            display: block;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 35px;
+            list-style: none;
+            align-items: center;
+        }
+
+        .nav-menu a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1rem;
+            transition: opacity 0.2s;
+        }
+
+        .nav-menu a:hover {
+            opacity: 0.8;
+        }
+
+        .nav-menu a.active {
+        }
+
+        .nav-separator {
+            width: 1px;
+            height: 20px;
+            background: rgba(255, 255, 255, 0.3);
+            margin: 0 10px;
+        }
+
+        .for-brands-link {
+            color: #d4a574 !important;
+            font-weight: 600;
+            font-weight: 600;
+            border-bottom: 2px solid white;
+            padding-bottom: 4px;
+        }
+
+        /* Page Header */
+        .page-header {
+            background: linear-gradient(135deg, #5f725f 0%, #4a5a4a 100%);
+            padding: 100px 40px 80px;
+            text-align: center;
+        }
+
+        .page-header h1 {
+            font-size: 3.5rem;
+            color: white;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .page-header p {
+            font-size: 1.3rem;
+            color: rgba(255,255,255,0.9);
+            max-width: 700px;
+            margin: 0 auto;
+            font-weight: 300;
+        }
+
+        /* Contact Section */
+        .contact-section {
+            padding: 100px 40px;
+        }
+
+        .contact-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 80px;
+        }
+
+        .contact-info h2 {
+            font-size: 2.5rem;
+            color: #2d3748;
+            margin-bottom: 24px;
+            font-weight: 700;
+        }
+
+        .contact-info p {
+            font-size: 1.1rem;
+            color: #4a5568;
+            margin-bottom: 40px;
+            line-height: 1.8;
+            font-weight: 300;
+        }
+
+        .contact-methods {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .contact-method {
+            display: flex;
+            gap: 20px;
+            padding: 24px;
+            background: #f8f9fa;
+            border-radius: 12px;
+        }
+
+        .contact-icon {
+            font-size: 2rem;
+            color: #5f725f;
+        }
+
+        .contact-details h3 {
+            font-size: 1.3rem;
+            color: #2d3748;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .contact-details p {
+            margin: 0;
+            font-size: 1.05rem;
+        }
+
+        .contact-details a {
+            color: #5f725f;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .contact-details a:hover {
+            text-decoration: underline;
+        }
+
+        /* Form */
+        .contact-form {
+            background: #f8f9fa;
+            padding: 50px;
+            border-radius: 16px;
+        }
+
+        .form-header {
+            margin-bottom: 32px;
+        }
+
+        .form-header h3 {
+            font-size: 1.8rem;
+            color: #2d3748;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+
+        .form-header p {
+            font-size: 1rem;
+            color: #4a5568;
+            margin: 0;
+            font-weight: 300;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 14px 18px;
+            border: 2px solid #e8e8e8;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: 'Sora', sans-serif;
+            background: white;
+            transition: border-color 0.2s;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #5f725f;
+        }
+
+        .form-group textarea {
+            min-height: 140px;
+            resize: vertical;
+        }
+
+        .submit-button {
+            background: #5f725f;
+            color: white;
+            padding: 16px 40px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s;
+            font-family: 'Sora', sans-serif;
+        }
+
+        .submit-button:hover {
+            background: #4a5a4a;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+        }
+
+        /* Footer */
+        footer {
+            background: #5f725f;
+            color: white;
+            padding: 60px 40px 30px;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .footer-section h3 {
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .footer-section p,
+        .footer-section a {
+            color: rgba(255, 255, 255, 0.9);
+            text-decoration: none;
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 300;
+        }
+
+        .footer-section a:hover {
+            color: white;
+            text-decoration: underline;
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 10px;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            color: rgba(255, 255, 255, 0.8);
+            font-weight: 300;
+        }
+
+        /* Responsive */
+        @media (max-width: 968px) {
+            .nav-menu {
+                flex-wrap: wrap;
+                gap: 12px;
+                justify-content: center;
+            }
+
+            .nav-container {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .navbar-logo {
+                height: 35px;
+            }
+
+            .nav-separator {
+                display: none;
+            }
+
+            .hero-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .why-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .hero-text h1 {
+                font-size: 1.8rem;
+            }
+
+            .hero-text .subtitle {
+                font-size: 1rem;
+            }
+
+            .hero-text .description {
+                font-size: 0.9rem;
+            }
+
+            .section-title {
+                font-size: 1.6rem;
+            }
+
+            .benefit-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .step-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .partner-scroll {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            .partner-logos {
+                display: flex;
+                flex-wrap: nowrap;
+                min-width: max-content;
+            }
+
+            .stat-item {
+                padding: 15px;
+            }
+
+            /* Hero logo smaller on tablet */
+            .hero-content > div[style*="text-align: center"] img {
+                height: 70px !important;
+                max-width: 350px !important;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .navbar {
+                padding: 10px 15px;
+            }
+
+            .navbar-logo {
+                height: 28px;
+            }
+
+            .nav-menu {
+                gap: 8px;
+                font-size: 0.75rem;
+            }
+
+            .nav-menu a {
+                font-size: 0.75rem;
+            }
+
+            .hero {
+                padding: 25px 15px !important;
+            }
+
+            .hero-content {
+                padding: 0 !important;
+            }
+
+            /* Much smaller hero logo on mobile */
+            .hero-content > div[style*="text-align: center"] {
+                margin-bottom: 25px !important;
+            }
+
+            .hero-content > div[style*="text-align: center"] img {
+                height: 50px !important;
+                max-width: 250px !important;
+            }
+
+            .hero-text h1 {
+                font-size: 1.4rem !important;
+                line-height: 1.3 !important;
+                margin-bottom: 15px !important;
+            }
+
+            .hero-text .subtitle {
+                font-size: 0.95rem !important;
+                margin-bottom: 12px !important;
+            }
+
+            .hero-text .description {
+                font-size: 0.85rem !important;
+                line-height: 1.5 !important;
+            }
+
+            .section-title {
+                font-size: 1.3rem !important;
+            }
+
+            .cta-group {
+                flex-direction: column;
+                gap: 12px !important;
+            }
+
+            .cta-button {
+                width: 100% !important;
+                padding: 14px 20px !important;
+                font-size: 0.9rem !important;
+            }
+
+            .stat-number {
+                font-size: 2rem !important;
+            }
+
+            .stat-label {
+                font-size: 0.8rem !important;
+            }
+
+            .benefit-card h3,
+            .step-card h3 {
+                font-size: 1.1rem !important;
+            }
+
+            .benefit-card p,
+            .step-card p {
+                font-size: 0.85rem !important;
+            }
+
+            .section {
+                padding: 40px 20px !important;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .nav-menu {
+                font-size: 0.65rem;
+                gap: 6px;
+            }
+
+            .nav-menu a {
+                font-size: 0.65rem;
+            }
+
+            .hero-content > div[style*="text-align: center"] img {
+                height: 40px !important;
+                max-width: 200px !important;
+            }
+
+            .hero-text h1 {
+                font-size: 1.2rem !important;
+            }
+
+            .hero-text .subtitle {
+                font-size: 0.85rem !important;
+            }
+
+            .hero-text .description {
+                font-size: 0.75rem !important;
+            }
+        }
+            }
+
+        @media (max-width: 600px) {
+            .navbar {
+                padding: 15px 20px;
+            }
+
+            .nav-menu {
+                gap: 10px;
+                font-size: 0.9rem;
+            }
+
+            .hero {
+                padding: 40px 20px;
+            }
+
+            .section-title {
+                font-size: 1.8rem;
+            }
+
+            .cta-button {
+                width: 100%;
+            }
+        }
+
+            .nav-separator {
+                display: none;
+            }
+            .contact-container {
+                grid-template-columns: 1fr;
+            }
+
+            .contact-form {
+                padding: 40px 30px;
+            }
+
+            .page-header h1 {
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <img src="images/logo.png" alt="Franchise Foundry" class="navbar-logo">
+            <a href="index.html"><div class="navbar-logo">
+                <img src="images/logo.png" alt="Franchise Foundry">
+            </div></a>
+            <ul class="nav-menu">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="about.html">About Us</a></li>
+                <li><a href="find-match.html">Find Your Match</a></li>
+                
+                <li class="nav-separator"></li>
+                <li><a href="for-brands.html">For Franchise Brands</a></li>
+                <li><a href="contact.html" class="active">Contact Us</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <section class="page-header">
+        <h1>Get in Touch</h1>
+        <p>Have a question? Want to learn more? We're here to help.</p>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="contact-section">
+        <div class="contact-container">
+            <div class="contact-info">
+                <h2>Let's Have a Conversation</h2>
+                <p>Whether you're an aspiring franchisee looking for guidance or a franchise brand interested in partnering with us, we'd love to hear from you.</p>
+                <p>We typically respond within 24 hours.</p>
+
+                <div class="contact-methods">
+                    <div class="contact-method">
+                        <div class="contact-icon">📧</div>
+                        <div class="contact-details">
+                            <h3>Email</h3>
+                            <p><a href="/cdn-cgi/l/email-protection#42212d2c2c272136022430232c212a2b3127242d372c26303b6c212d6c3729"><span class="__cf_email__" data-cfemail="2d4e424343484e596d4b5f4c434e45445e484b425843495f54034e42035846">[email&#160;protected]</span></a></p>
+                        </div>
+                    </div>
+
+                    <div class="contact-method">
+                        <div class="contact-icon">⏰</div>
+                        <div class="contact-details">
+                            <h3>Availability</h3>
+                            <p>Monday - Friday: 9:00 AM - 6:00 PM</p>
+                            <p>Saturday: By appointment</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="contact-form">
+                <div class="form-header">
+                    <h3>Send Us a Message</h3>
+                    <p>Fill out the form below and we'll get back to you as soon as possible.</p>
+                </div>
+
+                <form name="contact" method="POST" data-netlify="true" netlify-honeypot="bot-field" action="/thank-you.html">
+                    <input type="hidden" name="form-name" value="contact">
+                    <p style="display:none;">
+                        <label>Don't fill this out: <input name="bot-field"></label>
+                    </p>
+                    
+                    <div class="form-group">
+                        <label for="name">Your Name *</label>
+                        <input type="text" id="name" name="name" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Email Address *</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="phone">Phone Number</label>
+                        <input type="tel" id="phone" name="phone">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="subject">Subject</label>
+                        <input type="text" id="subject" name="subject" placeholder="How can we help?">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="message">Message *</label>
+                        <textarea id="message" name="message" required placeholder="Tell us what's on your mind..."></textarea>
+                    </div>
+
+                    <button type="submit" class="submit-button">Send Message</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Franchise Foundry</h3>
+                <p>Helping aspiring franchisees find the perfect franchise opportunity since 2024.</p>
+                <p style="margin-top: 20px;"><em>Discover. Connect. Franchise.</em></p>
+            </div>
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <ul class="footer-links">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="about.html">About Us</a></li>
+                    <li><a href="find-match.html">Find Your Match</a></li>
+                    
+                <li class="nav-separator"></li>
+                <li><a href="for-brands.html">For Franchise Brands</a></li>
+                    
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Contact</h3>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 Franchise Foundry. All rights reserved.</p>
+        </div>
+    </footer>
+            </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 Franchise Foundry. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+// Load content from CMS
+async function loadCMSContent() {
+    try {
+        const [homepage, about, contact, findmatch, forbrands, settings] = await Promise.all([
+            fetch('/content/homepage.json').then(r => r.json()).catch(() => null),
+            fetch('/content/about.json').then(r => r.json()).catch(() => null),
+            fetch('/content/contact.json').then(r => r.json()).catch(() => null),
+            fetch('/content/findmatch.json').then(r => r.json()).catch(() => null),
+            fetch('/content/forbrands.json').then(r => r.json()).catch(() => null),
+            fetch('/content/settings.json').then(r => r.json()).catch(() => null)
+        ]);
+        
+        // Determine which page we're on
+        const path = window.location.pathname;
+        const isHomepage = path === '/' || path.includes('index.html');
+        const isAbout = path.includes('about.html');
+        const isContact = path.includes('contact.html');
+        const isFindMatch = path.includes('find-match.html');
+        const isForBrands = path.includes('for-brands.html');
+        
+        // Load homepage content
+        if (isHomepage && homepage) {
+            // Hero section
+            if (homepage.hero) {
+                setText('.hero-text h1', homepage.hero.title);
+                setText('.hero-text .subtitle', homepage.hero.subtitle);
+                setText('.hero-text .description', homepage.hero.description);
+            }
+            
+            // Statistics
+            if (homepage.stats) {
+                const stats = document.querySelectorAll('.stat-item');
+                if (stats[0]) {
+                    setText(stats[0].querySelector('.stat-number'), homepage.stats.years);
+                    setText(stats[0].querySelector('.stat-label'), homepage.stats.yearsDesc);
+                }
+                if (stats[1]) {
+                    setText(stats[1].querySelector('.stat-number'), homepage.stats.freeLabel);
+                    setText(stats[1].querySelector('.stat-label'), homepage.stats.freeDesc);
+                }
+                if (stats[2]) {
+                    setText(stats[2].querySelector('.stat-number'), homepage.stats.worth);
+                    setText(stats[2].querySelector('.stat-label'), homepage.stats.worthDesc);
+                }
+            }
+            
+            // Benefits
+            if (homepage.benefits) {
+                const benefitCards = document.querySelectorAll('.benefit-card');
+                homepage.benefits.forEach((benefit, i) => {
+                    if (benefitCards[i]) {
+                        setText(benefitCards[i].querySelector('h3'), benefit.title);
+                        setText(benefitCards[i].querySelector('p'), benefit.description);
+                    }
+                });
+            }
+            
+            // How It Works
+            if (homepage.howItWorks) {
+                setText('.how-it-works .section-title', homepage.howItWorks.title);
+                setText('.how-it-works .section-subtitle', homepage.howItWorks.subtitle);
+            }
+            
+            // Steps
+            if (homepage.steps) {
+                const stepCards = document.querySelectorAll('.step-card');
+                homepage.steps.forEach((step, i) => {
+                    if (stepCards[i]) {
+                        setText(stepCards[i].querySelector('.step-number'), step.number);
+                        setText(stepCards[i].querySelector('h3'), step.title);
+                        setText(stepCards[i].querySelector('p'), step.description);
+                    }
+                });
+            }
+            
+            // Final CTA
+            if (homepage.finalCTA) {
+                setText('.final-cta h2', homepage.finalCTA.title);
+                setText('.final-cta > p', homepage.finalCTA.description);
+            }
+        }
+        
+        // Load About page content
+        if (isAbout && about) {
+            if (about.header) {
+                setText('.page-header h1', about.header.title);
+                setText('.page-header p', about.header.subtitle);
+            }
+            
+            if (about.story) {
+                const storySection = document.querySelector('.story-section');
+                if (storySection) {
+                    setText(storySection.querySelector('h2'), about.story.title);
+                    const paragraphs = storySection.querySelectorAll('p');
+                    if (paragraphs[0]) paragraphs[0].textContent = about.story.text1;
+                    if (paragraphs[1]) paragraphs[1].textContent = about.story.text2;
+                    if (paragraphs[2]) paragraphs[2].textContent = about.story.text3;
+                }
+            }
+            
+            if (about.experience) {
+                const expCards = document.querySelectorAll('.experience-card');
+                about.experience.forEach((exp, i) => {
+                    if (expCards[i]) {
+                        setText(expCards[i].querySelector('h3'), exp.title);
+                        setText(expCards[i].querySelector('p'), exp.description);
+                    }
+                });
+            }
+            
+            if (about.values) {
+                const valueCards = document.querySelectorAll('.value-card');
+                about.values.forEach((val, i) => {
+                    if (valueCards[i]) {
+                        setText(valueCards[i].querySelector('h3'), val.title);
+                        setText(valueCards[i].querySelector('p'), val.description);
+                    }
+                });
+            }
+        }
+        
+        </div>
+    </footer>
+
+    <script>
+// Load content from CMS
+async function loadCMSContent() {
+    try {
+        const [homepage, about, contact, findmatch, forbrands, settings] = await Promise.all([
+            fetch('/content/homepage.json').then(r => r.json()).catch(() => null),
+            fetch('/content/about.json').then(r => r.json()).catch(() => null),
+            fetch('/content/contact.json').then(r => r.json()).catch(() => null),
+            fetch('/content/findmatch.json').then(r => r.json()).catch(() => null),
+            fetch('/content/forbrands.json').then(r => r.json()).catch(() => null),
+            fetch('/content/settings.json').then(r => r.json()).catch(() => null)
+        ]);
+        
+        // Determine which page we're on
+        const path = window.location.pathname;
+        const isHomepage = path === '/' || path.includes('index.html');
+        const isAbout = path.includes('about.html');
+        const isContact = path.includes('contact.html');
+        const isFindMatch = path.includes('find-match.html');
+        const isForBrands = path.includes('for-brands.html');
+        
+        // Load homepage content
+        if (isHomepage && homepage) {
+            // Hero section
+            if (homepage.hero) {
+                setText('.hero-text h1', homepage.hero.title);
+                setText('.hero-text .subtitle', homepage.hero.subtitle);
+                setText('.hero-text .description', homepage.hero.description);
+            }
+            
+            // Statistics
+            if (homepage.stats) {
+                const stats = document.querySelectorAll('.stat-item');
+                if (stats[0]) {
+                    setText(stats[0].querySelector('.stat-number'), homepage.stats.years);
+                    setText(stats[0].querySelector('.stat-label'), homepage.stats.yearsDesc);
+                }
+                if (stats[1]) {
+                    setText(stats[1].querySelector('.stat-number'), homepage.stats.freeLabel);
+                    setText(stats[1].querySelector('.stat-label'), homepage.stats.freeDesc);
+                }
+                if (stats[2]) {
+                    setText(stats[2].querySelector('.stat-number'), homepage.stats.worth);
+                    setText(stats[2].querySelector('.stat-label'), homepage.stats.worthDesc);
+                }
+            }
+            
+            // Benefits
+            if (homepage.benefits) {
+                const benefitCards = document.querySelectorAll('.benefit-card');
+                homepage.benefits.forEach((benefit, i) => {
+                    if (benefitCards[i]) {
+                        setText(benefitCards[i].querySelector('h3'), benefit.title);
+                        setText(benefitCards[i].querySelector('p'), benefit.description);
+                    }
+                });
+            }
+            
+            // How It Works
+            if (homepage.howItWorks) {
+                setText('.how-it-works .section-title', homepage.howItWorks.title);
+                setText('.how-it-works .section-subtitle', homepage.howItWorks.subtitle);
+            }
+            
+            // Steps
+            if (homepage.steps) {
+                const stepCards = document.querySelectorAll('.step-card');
+                homepage.steps.forEach((step, i) => {
+                    if (stepCards[i]) {
+                        setText(stepCards[i].querySelector('.step-number'), step.number);
+                        setText(stepCards[i].querySelector('h3'), step.title);
+                        setText(stepCards[i].querySelector('p'), step.description);
+                    }
+                });
+            }
+            
+            // Final CTA
+            if (homepage.finalCTA) {
+                setText('.final-cta h2', homepage.finalCTA.title);
+                setText('.final-cta > p', homepage.finalCTA.description);
+            }
+        }
+        
+        // Load About page content
+        if (isAbout && about) {
+            if (about.header) {
+                setText('.page-header h1', about.header.title);
+                setText('.page-header p', about.header.subtitle);
+            }
+            
+            if (about.story) {
+                const storySection = document.querySelector('.story-section');
+                if (storySection) {
+                    setText(storySection.querySelector('h2'), about.story.title);
+                    const paragraphs = storySection.querySelectorAll('p');
+                    if (paragraphs[0]) paragraphs[0].textContent = about.story.text1;
+                    if (paragraphs[1]) paragraphs[1].textContent = about.story.text2;
+                    if (paragraphs[2]) paragraphs[2].textContent = about.story.text3;
+                }
+            }
+            
+            if (about.experience) {
+                const expCards = document.querySelectorAll('.experience-card');
+                about.experience.forEach((exp, i) => {
+                    if (expCards[i]) {
+                        setText(expCards[i].querySelector('h3'), exp.title);
+                        setText(expCards[i].querySelector('p'), exp.description);
+                    }
+                });
+            }
+            
+            if (about.values) {
+                const valueCards = document.querySelectorAll('.value-card');
+                about.values.forEach((val, i) => {
+                    if (valueCards[i]) {
+                        setText(valueCards[i].querySelector('h3'), val.title);
+                        setText(valueCards[i].querySelector('p'), val.description);
+                    }
+                });
+            }
+        }
+        
+        // Load Contact page content
+        if (isContact && contact) {
+            setText('.contact-intro h1', contact.title);
+            setText('.contact-intro p', contact.intro);
+        }
+        
+        // Load Find Match page content
+        if (isFindMatch && findmatch) {
+            setText('.page-intro h1', findmatch.title);
+            setText('.page-intro p', findmatch.intro);
+            setText('.form-section h2', findmatch.formTitle);
+        }
+        
+        // Load For Brands page content
+        if (isForBrands && forbrands) {
+            setText('.page-intro h1', forbrands.title);
+            setText('.page-intro p', forbrands.intro);
+            
+            // Benefits
+            if (forbrands.benefits) {
+                const benefitCards = document.querySelectorAll('.benefit-card');
+                forbrands.benefits.forEach((benefit, i) => {
+                    if (benefitCards[i]) {
+                        setText(benefitCards[i].querySelector('h3'), benefit.title);
+                        setText(benefitCards[i].querySelector('p'), benefit.description);
+                    }
+                });
+            }
+            
+            // How It Works
+            if (forbrands.howItWorks) {
+                setText('.how-partnership-works h2', forbrands.howItWorks.title);
+                const stepCards = document.querySelectorAll('.partnership-step');
+                if (forbrands.howItWorks.steps) {
+                    forbrands.howItWorks.steps.forEach((step, i) => {
+                        if (stepCards[i]) {
+                            setText(stepCards[i].querySelector('.step-number'), step.number);
+                            setText(stepCards[i].querySelector('h3'), step.title);
+                            setText(stepCards[i].querySelector('p'), step.description);
+                        }
+                    });
+                }
+            }
+            
+            // Ideal Partner
+        const isFindMatch = path.includes('find-match.html');
+        const isForBrands = path.includes('for-brands.html');
+        
+        // Load homepage content
+        if (isHomepage && homepage) {
+            // Hero section
+            if (homepage.hero) {
+                setText('.hero-text h1', homepage.hero.title);
+                setText('.hero-text .subtitle', homepage.hero.subtitle);
+                setText('.hero-text .description', homepage.hero.description);
+            }
+            
+            // Statistics
+            if (homepage.stats) {
+                const stats = document.querySelectorAll('.stat-item');
+                if (stats[0]) {
+                    setText(stats[0].querySelector('.stat-number'), homepage.stats.years);
+                    setText(stats[0].querySelector('.stat-label'), homepage.stats.yearsDesc);
+                }
+                if (stats[1]) {
+                    setText(stats[1].querySelector('.stat-number'), homepage.stats.freeLabel);
+                    setText(stats[1].querySelector('.stat-label'), homepage.stats.freeDesc);
+                }
+                if (stats[2]) {
+                    setText(stats[2].querySelector('.stat-number'), homepage.stats.worth);
+                    setText(stats[2].querySelector('.stat-label'), homepage.stats.worthDesc);
+                }
+            }
+            
+            // Benefits
+            if (homepage.benefits) {
+                const benefitCards = document.querySelectorAll('.benefit-card');
+                homepage.benefits.forEach((benefit, i) => {
+                    if (benefitCards[i]) {
+                        setText(benefitCards[i].querySelector('h3'), benefit.title);
+                        setText(benefitCards[i].querySelector('p'), benefit.description);
+                    }
+                });
+            }
+            
+            // How It Works
+            if (homepage.howItWorks) {
+                setText('.how-it-works .section-title', homepage.howItWorks.title);
+                setText('.how-it-works .section-subtitle', homepage.howItWorks.subtitle);
+            }
+            
+            // Steps
+            if (homepage.steps) {
+                const stepCards = document.querySelectorAll('.step-card');
+                homepage.steps.forEach((step, i) => {
+                    if (stepCards[i]) {
+                        setText(stepCards[i].querySelector('.step-number'), step.number);
+                        setText(stepCards[i].querySelector('h3'), step.title);
+                        setText(stepCards[i].querySelector('p'), step.description);
+                    }
+                });
+            }
+            
+            // Final CTA
+            if (homepage.finalCTA) {
+                setText('.final-cta h2', homepage.finalCTA.title);
+                setText('.final-cta > p', homepage.finalCTA.description);
+            }
+        }
+        
+        // Load About page content
+        if (isAbout && about) {
+            if (about.header) {
+                setText('.page-header h1', about.header.title);
+                setText('.page-header p', about.header.subtitle);
+            }
+            
+            if (about.story) {
+                const storySection = document.querySelector('.story-section');
+                if (storySection) {
+                    setText(storySection.querySelector('h2'), about.story.title);
+                    const paragraphs = storySection.querySelectorAll('p');
+                    if (paragraphs[0]) paragraphs[0].textContent = about.story.text1;
+                    if (paragraphs[1]) paragraphs[1].textContent = about.story.text2;
+                    if (paragraphs[2]) paragraphs[2].textContent = about.story.text3;
+                }
+            }
+            
+            if (about.experience) {
+                const expCards = document.querySelectorAll('.experience-card');
+                about.experience.forEach((exp, i) => {
+                    if (expCards[i]) {
+                        setText(expCards[i].querySelector('h3'), exp.title);
+                        setText(expCards[i].querySelector('p'), exp.description);
+                    }
+                });
+            }
+            
+            if (about.values) {
+                const valueCards = document.querySelectorAll('.value-card');
+                about.values.forEach((val, i) => {
+                    if (valueCards[i]) {
+                        setText(valueCards[i].querySelector('h3'), val.title);
+                        setText(valueCards[i].querySelector('p'), val.description);
+                    }
+                });
+            }
+        }
+        
+        // Load Contact page content
+        if (isContact && contact) {
+            setText('.contact-intro h1', contact.title);
+            setText('.contact-intro p', contact.intro);
+            
+            // Contact methods
+            if (contact.methods) {
+                setText('.contact-methods .email-label', contact.methods.emailLabel);
+                setText('.contact-methods .avail-label', contact.methods.availLabel);
+                setText('.contact-methods .avail-text', contact.methods.availText);
+            }
+            
+            // Form fields
+            if (contact.form) {
+                setText('.contact-form h2', contact.form.title);
+                const labels = {
+                    'name': contact.form.nameLabel,
+                    'email': contact.form.emailLabel,
+                    'phone': contact.form.phoneLabel,
+                    'subject': contact.form.subjectLabel,
+                    'message': contact.form.messageLabel
+                };
+                Object.keys(labels).forEach(key => {
+                    const label = document.querySelector(`label[for="${key}"]`);
+                    if (label && labels[key]) label.textContent = labels[key];
+                });
+                const submitBtn = document.querySelector('.contact-form button[type="submit"]');
+                if (submitBtn && contact.form.submitButton) {
+                    submitBtn.textContent = contact.form.submitButton;
+                }
+            }
+        }
+        
+        // Load Find Match page content
+        if (isFindMatch && findmatch) {
+            setText('.page-intro h1', findmatch.title);
+            setText('.page-intro p', findmatch.intro);
+            setText('.form-section h2', findmatch.formTitle);
+            
+            // Form fields
+            if (findmatch.formFields) {
+                const fieldMap = {
+                    'name': 'nameLabel',
+                    'email': 'emailLabel',
+                    'phone': 'phoneLabel',
+                    'location': 'locationLabel',
+                    'budget': 'budgetLabel',
+                    'industry': 'industryLabel',
+                    'timeline': 'timelineLabel',
+                    'goals': 'goalsLabel'
+                };
+                Object.keys(fieldMap).forEach(key => {
+                    const label = document.querySelector(`label[for="${key}"]`);
+                    if (label && findmatch.formFields[fieldMap[key]]) {
+                        label.textContent = findmatch.formFields[fieldMap[key]];
+                    }
+                });
+                const submitBtn = document.querySelector('.consultation-form button[type="submit"]');
+                if (submitBtn && findmatch.formFields.submitButton) {
+                    submitBtn.textContent = findmatch.formFields.submitButton;
+                }
+            }
+            
+            // Next steps
+            if (findmatch.nextSteps) {
+                setText('.next-steps h2', findmatch.nextSteps.title);
+                if (findmatch.nextSteps.steps) {
+                    const stepItems = document.querySelectorAll('.timeline-step');
+                    findmatch.nextSteps.steps.forEach((step, i) => {
+                        if (stepItems[i]) {
+                            setText(stepItems[i].querySelector('h3'), step.title);
+                            setText(stepItems[i].querySelector('p'), step.description);
+                        }
+                    });
+                }
+            }
+            
+            // Privacy
+            if (findmatch.privacy) {
+                setText('.privacy-section h3', findmatch.privacy.title);
+                setText('.privacy-section p', findmatch.privacy.text);
+            }
+        }
+        
+        // Load For Brands page content
+        if (isForBrands && forbrands) {
+            setText('.page-intro h1', forbrands.title);
+            setText('.page-intro p', forbrands.intro);
+            
+            // Benefits
+            if (forbrands.benefits) {
+                const benefitCards = document.querySelectorAll('.benefit-card');
+                forbrands.benefits.forEach((benefit, i) => {
+                    if (benefitCards[i]) {
+                        setText(benefitCards[i].querySelector('h3'), benefit.title);
+                        setText(benefitCards[i].querySelector('p'), benefit.description);
+                    }
+                });
+            }
+            
+            // How It Works
+            if (forbrands.howItWorks) {
+                setText('.how-partnership-works h2', forbrands.howItWorks.title);
+                const stepCards = document.querySelectorAll('.partnership-step');
+                if (forbrands.howItWorks.steps) {
+                    forbrands.howItWorks.steps.forEach((step, i) => {
+                        if (stepCards[i]) {
+                            setText(stepCards[i].querySelector('.step-number'), step.number);
+                            setText(stepCards[i].querySelector('h3'), step.title);
+                            setText(stepCards[i].querySelector('p'), step.description);
+                        }
+                    });
+                }
+            }
+            
+            // Ideal Partner
+            // Hero section
+            if (homepage.hero) {
+                setText('.hero-text h1', homepage.hero.title);
+                setText('.hero-text .subtitle', homepage.hero.subtitle);
+                setText('.hero-text .description', homepage.hero.description);
+            }
+            
+            // Statistics
+            if (homepage.stats) {
+                const stats = document.querySelectorAll('.stat-item');
+                if (stats[0]) {
+                    setText(stats[0].querySelector('.stat-number'), homepage.stats.years);
+                    setText(stats[0].querySelector('.stat-label'), homepage.stats.yearsDesc);
+                }
+                if (stats[1]) {
+                    setText(stats[1].querySelector('.stat-number'), homepage.stats.freeLabel);
+                    setText(stats[1].querySelector('.stat-label'), homepage.stats.freeDesc);
+                }
+                if (stats[2]) {
+                    setText(stats[2].querySelector('.stat-number'), homepage.stats.worth);
+                    setText(stats[2].querySelector('.stat-label'), homepage.stats.worthDesc);
+                }
+            }
+            
+            // Benefits
+            if (homepage.benefits) {
+                const benefitCards = document.querySelectorAll('.benefit-card');
+                homepage.benefits.forEach((benefit, i) => {
+                    if (benefitCards[i]) {
+                        setText(benefitCards[i].querySelector('h3'), benefit.title);
+                        setText(benefitCards[i].querySelector('p'), benefit.description);
+                    }
+                });
+            }
+            
+            // How It Works
+            if (homepage.howItWorks) {
+                setText('.how-it-works .section-title', homepage.howItWorks.title);
+                setText('.how-it-works .section-subtitle', homepage.howItWorks.subtitle);
+            }
+            
+            // Steps
+            if (homepage.steps) {
+                const stepCards = document.querySelectorAll('.step-card');
+                homepage.steps.forEach((step, i) => {
+                    if (stepCards[i]) {
+                        setText(stepCards[i].querySelector('.step-number'), step.number);
+                        setText(stepCards[i].querySelector('h3'), step.title);
+                        setText(stepCards[i].querySelector('p'), step.description);
+                    }
+                });
+            }
+            
+            // Final CTA
+            if (homepage.finalCTA) {
+                setText('.final-cta h2', homepage.finalCTA.title);
+                setText('.final-cta > p', homepage.finalCTA.description);
+            }
+        }
+        
+        // Load About page content
+        if (isAbout && about) {
+            if (about.header) {
+                setText('.page-header h1', about.header.title);
+                setText('.page-header p', about.header.subtitle);
+            }
+            
+            if (about.story) {
+                const storySection = document.querySelector('.story-section');
+                if (storySection) {
+                    setText(storySection.querySelector('h2'), about.story.title);
+                    const paragraphs = storySection.querySelectorAll('p');
+                    if (paragraphs[0]) paragraphs[0].textContent = about.story.text1;
+                    if (paragraphs[1]) paragraphs[1].textContent = about.story.text2;
+                    if (paragraphs[2]) paragraphs[2].textContent = about.story.text3;
+                }
+            }
+            
+            if (about.experience) {
+                const expCards = document.querySelectorAll('.experience-card');
+                about.experience.forEach((exp, i) => {
+                    if (expCards[i]) {
+                        setText(expCards[i].querySelector('h3'), exp.title);
+                        setText(expCards[i].querySelector('p'), exp.description);
+                    }
+                });
+            }
+            
+            if (about.values) {
+                const valueCards = document.querySelectorAll('.value-card');
+                about.values.forEach((val, i) => {
+                    if (valueCards[i]) {
+                        setText(valueCards[i].querySelector('h3'), val.title);
+                        setText(valueCards[i].querySelector('p'), val.description);
+                    }
+                });
+            }
+        }
+        
+        // Load Contact page content
+        if (isContact && contact) {
+            setText('.contact-intro h1', contact.title);
+            setText('.contact-intro p', contact.intro);
+            
+            // Contact methods
+            if (contact.methods) {
+                setText('.contact-methods .email-label', contact.methods.emailLabel);
+                setText('.contact-methods .avail-label', contact.methods.availLabel);
+                setText('.contact-methods .avail-text', contact.methods.availText);
+            }
+            
+            // Form fields
+            if (contact.form) {
+                setText('.contact-form h2', contact.form.title);
+                const labels = {
+                    'name': contact.form.nameLabel,
+                    'email': contact.form.emailLabel,
+                    'phone': contact.form.phoneLabel,
+                    'subject': contact.form.subjectLabel,
+                    'message': contact.form.messageLabel
+                };
+                Object.keys(labels).forEach(key => {
+                    const label = document.querySelector(`label[for="${key}"]`);
+                    if (label && labels[key]) label.textContent = labels[key];
+                });
+                const submitBtn = document.querySelector('.contact-form button[type="submit"]');
+                if (submitBtn && contact.form.submitButton) {
+                    submitBtn.textContent = contact.form.submitButton;
+                }
+            }
+        }
+        
+        // Load Find Match page content
+        if (isFindMatch && findmatch) {
+            setText('.page-intro h1', findmatch.title);
+            setText('.page-intro p', findmatch.intro);
+            setText('.form-section h2', findmatch.formTitle);
+            
+            // Form fields
+            if (findmatch.formFields) {
+                const fieldMap = {
+                    'name': 'nameLabel',
+                    'email': 'emailLabel',
+                    'phone': 'phoneLabel',
+                    'location': 'locationLabel',
+                    'budget': 'budgetLabel',
+                    'industry': 'industryLabel',
+                    'timeline': 'timelineLabel',
+                    'goals': 'goalsLabel'
+                };
+                Object.keys(fieldMap).forEach(key => {
+                    const label = document.querySelector(`label[for="${key}"]`);
+                    if (label && findmatch.formFields[fieldMap[key]]) {
+                        label.textContent = findmatch.formFields[fieldMap[key]];
+                    }
+                });
+                const submitBtn = document.querySelector('.consultation-form button[type="submit"]');
+                if (submitBtn && findmatch.formFields.submitButton) {
+                    submitBtn.textContent = findmatch.formFields.submitButton;
+                }
+            }
+            
+            // Next steps
+            if (findmatch.nextSteps) {
+                setText('.next-steps h2', findmatch.nextSteps.title);
+                if (findmatch.nextSteps.steps) {
+                    const stepItems = document.querySelectorAll('.timeline-step');
+                    findmatch.nextSteps.steps.forEach((step, i) => {
+                        if (stepItems[i]) {
+                            setText(stepItems[i].querySelector('h3'), step.title);
+                            setText(stepItems[i].querySelector('p'), step.description);
+                        }
+                    });
+                }
+            }
+            
+            // Privacy
+            if (findmatch.privacy) {
+                setText('.privacy-section h3', findmatch.privacy.title);
+                setText('.privacy-section p', findmatch.privacy.text);
+            }
+        }
+        
+        // Load For Brands page content
+        if (isForBrands && forbrands) {
+            setText('.page-intro h1', forbrands.title);
+            setText('.page-intro p', forbrands.intro);
+            
+            // Benefits
+            if (forbrands.benefits) {
+                const benefitCards = document.querySelectorAll('.benefit-card');
+                forbrands.benefits.forEach((benefit, i) => {
+                    if (benefitCards[i]) {
+                        setText(benefitCards[i].querySelector('h3'), benefit.title);
+                        setText(benefitCards[i].querySelector('p'), benefit.description);
+                    }
+                });
+            }
+            
+            // How It Works
+            if (forbrands.howItWorks) {
+                setText('.how-partnership-works h2', forbrands.howItWorks.title);
+                const stepCards = document.querySelectorAll('.partnership-step');
+                if (forbrands.howItWorks.steps) {
+                    forbrands.howItWorks.steps.forEach((step, i) => {
+                        if (stepCards[i]) {
+                            setText(stepCards[i].querySelector('.step-number'), step.number);
+                            setText(stepCards[i].querySelector('h3'), step.title);
+                            setText(stepCards[i].querySelector('p'), step.description);
+                        }
+                    });
+                }
+            }
+            
+            // Ideal Partner
+            if (forbrands.idealPartner) {
+                setText('.ideal-partner h2', forbrands.idealPartner.title);
+                setText('.ideal-partner > p', forbrands.idealPartner.description);
+                if (forbrands.idealPartner.criteria) {
+                    const criteriaItems = document.querySelectorAll('.criteria-list li');
+                    forbrands.idealPartner.criteria.forEach((item, i) => {
+                        if (criteriaItems[i]) {
+                            criteriaItems[i].textContent = item.text;
+                        }
+                    });
+                }
+            }
+            
+            // CTA
+            if (forbrands.cta) {
+                setText('.partnership-cta h2', forbrands.cta.title);
+                setText('.partnership-cta p', forbrands.cta.description);
+                const ctaButton = document.querySelector('.partnership-cta .cta-button');
+                if (ctaButton && forbrands.cta.buttonText) {
+                    ctaButton.textContent = forbrands.cta.buttonText;
+                }
+            }
+        }
+        
+        // Load settings (applies to all pages)
+        if (settings) {
+            // Logo - update both hero and navbar
+            if (settings.logo) {
+                // Hero logo
+                document.querySelectorAll('img[alt="Franchise Foundry"]').forEach(img => {
+                    if (!img.closest('.partner-logo') && !img.src.includes('partner')) {
+                        img.src = settings.logo;
+                    }
+                });
+                
+                // Navbar logo
+                const navbarLogo = document.querySelector('.navbar-logo');
+                if (navbarLogo) navbarLogo.src = settings.logo;
+            }
+            
+            // Email
+            if (settings.email) {
+                document.querySelectorAll('a[href^="mailto"]').forEach(a => {
+                    a.href = `mailto:${settings.email}`;
+                    if (a.textContent.includes('@') || a.querySelector('[data-cfemail]')) {
+                        a.textContent = settings.email;
+                    }
+                });
+            }
+            
+            // Partner logos
+            if (settings.partners && settings.partners.length > 0) {
+                const partnerContainer = document.querySelector('.partners-track');
+                if (partnerContainer) {
+                    partnerContainer.innerHTML = '';
+                    // Add logos twice for infinite scroll effect
+                    for (let i = 0; i < 2; i++) {
+                        settings.partners.forEach(partner => {
+                            const div = document.createElement('div');
+                            div.className = 'partner-logo';
+                            const img = document.createElement('img');
+                            img.src = partner.logo;
+                            img.alt = partner.name;
+                            div.appendChild(img);
+                            partnerContainer.appendChild(div);
+                        });
+                    }
+                }
+            }
+        }
+        
+    } catch (e) {
+        console.log('CMS content loading:', e.message);
+    }
+}
+
+function setText(el, text) {
+    const elem = typeof el === 'string' ? document.querySelector(el) : el;
+    if (elem && text) elem.textContent = text;
+}
+
+document.addEventListener('DOMContentLoaded', loadCMSContent);
+    </script>
+</body>
+</html>
