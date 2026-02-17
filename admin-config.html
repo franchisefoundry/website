@@ -1,0 +1,248 @@
+backend:
+  name: git-gateway
+  branch: main
+
+media_folder: "images"
+public_folder: "/images"
+
+collections:
+  - name: "pages"
+    label: "Pages"
+    files:
+      - label: "Homepage"
+        name: "homepage"
+        file: "content/homepage.json"
+        fields:
+          - label: "Hero Section"
+            name: "hero"
+            widget: "object"
+            fields:
+              - { label: "Title", name: "title", widget: "string" }
+              - { label: "Subtitle", name: "subtitle", widget: "text" }
+              - { label: "Description", name: "description", widget: "text" }
+              - { label: "Primary Button Text", name: "primaryButton", widget: "string" }
+              - { label: "Secondary Button Text", name: "secondaryButton", widget: "string" }
+          
+          - label: "Statistics"
+            name: "stats"
+            widget: "object"
+            fields:
+              - { label: "Years Experience", name: "years", widget: "string" }
+              - { label: "Years Description", name: "yearsDesc", widget: "string" }
+              - { label: "Free Consultation Label", name: "freeLabel", widget: "string" }
+              - { label: "Free Consultation Description", name: "freeDesc", widget: "string" }
+              - { label: "Sector Worth", name: "worth", widget: "string" }
+              - { label: "Sector Worth Description", name: "worthDesc", widget: "string" }
+          
+          - label: "Match Preview Section"
+            name: "matchPreview"
+            widget: "object"
+            fields:
+              - { label: "Section Title", name: "title", widget: "string" }
+              - { label: "Section Description", name: "description", widget: "text" }
+              - { label: "Unlock Button Text", name: "buttonText", widget: "string" }
+          
+          - label: "Why Choose Us"
+            name: "whyChoose"
+            widget: "object"
+            fields:
+              - { label: "Main Title", name: "title", widget: "string" }
+              - { label: "Main Text Paragraph 1", name: "text1", widget: "text" }
+              - { label: "Main Text Paragraph 2", name: "text2", widget: "text" }
+          
+          - label: "Benefits"
+            name: "benefits"
+            widget: "list"
+            fields:
+              - { label: "Icon", name: "icon", widget: "string" }
+              - { label: "Title", name: "title", widget: "string" }
+              - { label: "Description", name: "description", widget: "text" }
+          
+          - label: "How It Works Section"
+            name: "howItWorks"
+            widget: "object"
+            fields:
+              - { label: "Title", name: "title", widget: "string" }
+              - { label: "Subtitle", name: "subtitle", widget: "text" }
+          
+          - label: "Steps"
+            name: "steps"
+            widget: "list"
+            fields:
+              - { label: "Number", name: "number", widget: "string" }
+              - { label: "Title", name: "title", widget: "string" }
+              - { label: "Description", name: "description", widget: "text" }
+          
+          - label: "Final CTA"
+            name: "finalCTA"
+            widget: "object"
+            fields:
+              - { label: "Title", name: "title", widget: "string" }
+              - { label: "Description", name: "description", widget: "text" }
+              - { label: "Button Text", name: "buttonText", widget: "string" }
+      
+      - label: "About Us"
+        name: "about"
+        file: "content/about.json"
+        fields:
+          - label: "Page Header"
+            name: "header"
+            widget: "object"
+            fields:
+              - { label: "Title", name: "title", widget: "string" }
+              - { label: "Subtitle", name: "subtitle", widget: "text" }
+          
+          - label: "Our Story"
+            name: "story"
+            widget: "object"
+            fields:
+              - { label: "Title", name: "title", widget: "string" }
+              - { label: "Paragraph 1", name: "text1", widget: "text" }
+              - { label: "Paragraph 2", name: "text2", widget: "text" }
+              - { label: "Paragraph 3", name: "text3", widget: "text" }
+          
+          - label: "Experience Cards"
+            name: "experience"
+            widget: "list"
+            fields:
+              - { label: "Title", name: "title", widget: "string" }
+              - { label: "Description", name: "description", widget: "text" }
+          
+          - label: "Why We Do This"
+            name: "why"
+            widget: "object"
+            fields:
+              - { label: "Quote", name: "quote", widget: "text" }
+              - { label: "Text Paragraph 1", name: "text1", widget: "text" }
+              - { label: "Text Paragraph 2", name: "text2", widget: "text" }
+              - { label: "Text Paragraph 3", name: "text3", widget: "text" }
+          
+          - label: "Values"
+            name: "values"
+            widget: "list"
+            fields:
+              - { label: "Icon", name: "icon", widget: "string" }
+              - { label: "Title", name: "title", widget: "string" }
+              - { label: "Description", name: "description", widget: "text" }
+      
+      - label: "Contact Page"
+        name: "contact"
+        file: "content/contact.json"
+        fields:
+          - { label: "Page Title", name: "title", widget: "string" }
+          - { label: "Introduction", name: "intro", widget: "text" }
+          - label: "Contact Methods"
+            name: "methods"
+            widget: "object"
+            fields:
+              - { label: "Email Label", name: "emailLabel", widget: "string" }
+              - { label: "Availability Label", name: "availLabel", widget: "string" }
+              - { label: "Availability Text", name: "availText", widget: "string" }
+          - label: "Form Section"
+            name: "form"
+            widget: "object"
+            fields:
+              - { label: "Form Title", name: "title", widget: "string" }
+              - { label: "Name Field Label", name: "nameLabel", widget: "string" }
+              - { label: "Email Field Label", name: "emailLabel", widget: "string" }
+              - { label: "Phone Field Label", name: "phoneLabel", widget: "string" }
+              - { label: "Subject Field Label", name: "subjectLabel", widget: "string" }
+              - { label: "Message Field Label", name: "messageLabel", widget: "string" }
+              - { label: "Submit Button Text", name: "submitButton", widget: "string" }
+      
+      - label: "Find Your Match Page"
+        name: "findmatch"
+        file: "content/findmatch.json"
+        fields:
+          - { label: "Page Title", name: "title", widget: "string" }
+          - { label: "Introduction", name: "intro", widget: "text" }
+          - { label: "Form Title", name: "formTitle", widget: "string" }
+          - label: "Form Fields"
+            name: "formFields"
+            widget: "object"
+            fields:
+              - { label: "Name Field", name: "nameLabel", widget: "string" }
+              - { label: "Email Field", name: "emailLabel", widget: "string" }
+              - { label: "Phone Field", name: "phoneLabel", widget: "string" }
+              - { label: "Location Field", name: "locationLabel", widget: "string" }
+              - { label: "Budget Field", name: "budgetLabel", widget: "string" }
+              - { label: "Industry Field", name: "industryLabel", widget: "string" }
+              - { label: "Timeline Field", name: "timelineLabel", widget: "string" }
+              - { label: "Goals Field", name: "goalsLabel", widget: "string" }
+              - { label: "Submit Button", name: "submitButton", widget: "string" }
+          - label: "What Happens Next"
+            name: "nextSteps"
+            widget: "object"
+            fields:
+              - { label: "Section Title", name: "title", widget: "string" }
+              - label: "Steps"
+                name: "steps"
+                widget: "list"
+                fields:
+                  - { label: "Step Title", name: "title", widget: "string" }
+                  - { label: "Description", name: "description", widget: "text" }
+          - label: "Privacy Section"
+            name: "privacy"
+            widget: "object"
+            fields:
+              - { label: "Title", name: "title", widget: "string" }
+              - { label: "Text", name: "text", widget: "text" }
+      
+      - label: "For Brands Page"
+        name: "forbrands"
+        file: "content/forbrands.json"
+        fields:
+          - { label: "Page Title", name: "title", widget: "string" }
+          - { label: "Introduction", name: "intro", widget: "text" }
+          - label: "Partnership Benefits"
+            name: "benefits"
+            widget: "list"
+            fields:
+              - { label: "Title", name: "title", widget: "string" }
+              - { label: "Description", name: "description", widget: "text" }
+          - label: "How Partnership Works"
+            name: "howItWorks"
+            widget: "object"
+            fields:
+              - { label: "Section Title", name: "title", widget: "string" }
+              - label: "Steps"
+                name: "steps"
+                widget: "list"
+                fields:
+                  - { label: "Step Number", name: "number", widget: "string" }
+                  - { label: "Title", name: "title", widget: "string" }
+                  - { label: "Description", name: "description", widget: "text" }
+          - label: "Ideal Partner Profile"
+            name: "idealPartner"
+            widget: "object"
+            fields:
+              - { label: "Section Title", name: "title", widget: "string" }
+              - { label: "Description", name: "description", widget: "text" }
+              - label: "Criteria"
+                name: "criteria"
+                widget: "list"
+                fields:
+                  - { label: "Criterion", name: "text", widget: "string" }
+          - label: "CTA Section"
+            name: "cta"
+            widget: "object"
+            fields:
+              - { label: "Title", name: "title", widget: "string" }
+              - { label: "Description", name: "description", widget: "text" }
+              - { label: "Button Text", name: "buttonText", widget: "string" }
+      
+      - label: "Settings"
+        name: "settings"
+        file: "content/settings.json"
+        fields:
+          - { label: "Company Name", name: "companyName", widget: "string" }
+          - { label: "Contact Email", name: "email", widget: "string" }
+          - { label: "Tagline", name: "tagline", widget: "string" }
+          - { label: "Logo", name: "logo", widget: "image" }
+          - { label: "Favicon", name: "favicon", widget: "image" }
+          - label: "Partner Logos"
+            name: "partners"
+            widget: "list"
+            fields:
+              - { label: "Partner Logo", name: "logo", widget: "image" }
+              - { label: "Partner Name", name: "name", widget: "string" }
