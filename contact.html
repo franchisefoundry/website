@@ -639,30 +639,36 @@
     </section>
 
     <!-- Footer -->
-    <footer>
+        <footer>
         <div class="footer-content">
-            <div class="footer-section">
-                <h3>Franchise Foundry</h3>
-                <p>Helping aspiring franchisees find the perfect franchise opportunity since 2024.</p>
-                <p style="margin-top: 20px;"><em>Discover. Connect. Franchise.</em></p>
+            <div class="footer-section" id="footer-brand-section">
+                <h3 id="footer-brand-name">Franchise Foundry</h3>
+                <p id="footer-brand-desc">Helping aspiring franchisees find the perfect franchise opportunity since 2024.</p>
+                <p id="footer-brand-tagline" style="margin-top: 20px;"><em>Discover. Connect. Franchise.</em></p>
             </div>
-            <div class="footer-section">
-                <h3>Quick Links</h3>
-                <ul class="footer-links">
+            <div class="footer-section" id="footer-links-section">
+                <h3 id="footer-links-title">Quick Links</h3>
+                <ul class="footer-links" id="footer-links-list">
                     <li><a href="index.html">Home</a></li>
                     <li><a href="about.html">About Us</a></li>
                     <li><a href="find-match.html">Find Your Match</a></li>
-                    
-                <li class="nav-separator"></li>
-                <li><a href="for-brands.html">For Franchise Brands</a></li>
-                    
+                    <li><a href="for-brands.html">For Franchise Brands</a></li>
+                    <li><a href="contact.html">Contact Us</a></li>
                 </ul>
             </div>
-            <div class="footer-section">
-                <h3>Contact</h3>
+            <div class="footer-section" id="footer-contact-section">
+                <h3 id="footer-contact-title">Contact</h3>
+                <p id="footer-contact-email"><a href="mailto:hello@franchisefoundry.co.uk">hello@franchisefoundry.co.uk</a></p>
+                <p id="footer-contact-phone" style="display:none"></p>
+                <p id="footer-contact-address" style="display:none"></p>
+            </div>
+            <div class="footer-section" id="footer-social-section" style="display:none">
+                <h3 id="footer-social-title">Follow Us</h3>
+                <div id="footer-social-links"></div>
+            </div>
         </div>
         <div class="footer-bottom">
-            <p>&copy; 2026 Franchise Foundry. All rights reserved.</p>
+            <p id="footer-copyright">&copy; 2026 Franchise Foundry. All rights reserved.</p>
         </div>
     </footer>
             </div>
@@ -677,13 +683,14 @@
 // Load content from CMS
 async function loadCMSContent() {
     try {
-        const [homepage, about, contact, findmatch, forbrands, settings] = await Promise.all([
+        const [homepage, about, contact, findmatch, forbrands, settings, footer] = await Promise.all([
             fetch('/content/homepage.json').then(r => r.json()).catch(() => null),
             fetch('/content/about.json').then(r => r.json()).catch(() => null),
             fetch('/content/contact.json').then(r => r.json()).catch(() => null),
             fetch('/content/findmatch.json').then(r => r.json()).catch(() => null),
             fetch('/content/forbrands.json').then(r => r.json()).catch(() => null),
-            fetch('/content/settings.json').then(r => r.json()).catch(() => null)
+            fetch('/content/settings.json').then(r => r.json()).catch(() => null),
+            fetch('/content/footer.json').then(r => r.json()).catch(() => null)
         ]);
         
         // Determine which page we're on
@@ -1339,6 +1346,53 @@ async function loadCMSContent() {
             }
         }
         
+
+        // ── Footer rendering (all pages) ──────────────────────────────────────
+        if (footer) {
+            const f = footer;
+            if (f.brandName)        setText('#footer-brand-name', f.brandName);
+            if (f.brandDescription) setText('#footer-brand-desc', f.brandDescription);
+            if (f.brandTagline) {
+                const tEl = document.querySelector('#footer-brand-tagline em');
+                if (tEl) tEl.textContent = f.brandTagline;
+            }
+            if (f.quickLinksTitle) setText('#footer-links-title', f.quickLinksTitle);
+            if (f.links && f.links.length > 0) {
+                const list = document.getElementById('footer-links-list');
+                if (list) {
+                    list.innerHTML = f.links.map(l =>
+                        '<li><a href="' + l.url + '">' + l.label + '</a></li>'
+                    ).join('');
+                }
+            }
+            if (f.contactTitle) setText('#footer-contact-title', f.contactTitle);
+            if (f.email) {
+                const eEl = document.getElementById('footer-contact-email');
+                if (eEl) eEl.innerHTML = '<a href="mailto:' + f.email + '">' + f.email + '</a>';
+            }
+            if (f.phone) {
+                const pEl = document.getElementById('footer-contact-phone');
+                if (pEl) { pEl.textContent = f.phone; pEl.style.display = ''; }
+            }
+            if (f.address) {
+                const aEl = document.getElementById('footer-contact-address');
+                if (aEl) { aEl.textContent = f.address; aEl.style.display = ''; }
+            }
+            if (f.socialLinks && f.socialLinks.length > 0) {
+                const sSection = document.getElementById('footer-social-section');
+                if (sSection) sSection.style.display = '';
+                if (f.socialTitle) setText('#footer-social-title', f.socialTitle);
+                const sLinks = document.getElementById('footer-social-links');
+                if (sLinks) {
+                    sLinks.innerHTML = f.socialLinks.map(l =>
+                        '<p><a href="' + l.url + '" target="_blank" rel="noopener">' + l.platform + '</a></p>'
+                    ).join('');
+                }
+            }
+            if (f.copyrightText) setText('#footer-copyright', f.copyrightText);
+        }
+        // ── End footer rendering ──────────────────────────────────────────────
+
     } catch (e) {
         console.log('CMS content loading:', e.message);
     }

@@ -1,0 +1,20 @@
+{
+  "brandName": "Franchise Foundry",
+  "brandDescription": "Helping aspiring franchisees find the perfect franchise opportunity since 2024.",
+  "brandTagline": "Discover. Connect. Franchise.",
+  "quickLinksTitle": "Quick Links",
+  "links": [
+    { "label": "Home", "url": "index.html" },
+    { "label": "About Us", "url": "about.html" },
+    { "label": "Find Your Match", "url": "find-match.html" },
+    { "label": "For Franchise Brands", "url": "for-brands.html" },
+    { "label": "Contact Us", "url": "contact.html" }
+  ],
+  "contactTitle": "Contact",
+  "email": "hello@franchisefoundry.co.uk",
+  "phone": "",
+  "address": "",
+  "socialTitle": "Follow Us",
+  "socialLinks": [],
+  "copyrightText": "© 2026 Franchise Foundry. All rights reserved."
+}
