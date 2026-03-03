@@ -1,20 +1,47 @@
 {
-  "brandName": "Franchise Foundry",
-  "brandDescription": "Helping aspiring franchisees find the perfect franchise opportunity since 2024.",
+  "contactSection": {
+    "email": "connect@franchisefoundry.co.uk",
+    "contactTitle": "Contact"
+  },
   "brandTagline": "Discover. Connect. Franchise.",
-  "quickLinksTitle": "Quick Links",
-  "links": [
-    { "label": "Home", "url": "index.html" },
-    { "label": "About Us", "url": "about.html" },
-    { "label": "Find Your Match", "url": "find-match.html" },
-    { "label": "For Franchise Brands", "url": "for-brands.html" },
-    { "label": "Contact Us", "url": "contact.html" }
-  ],
-  "contactTitle": "Contact",
-  "email": "hello@franchisefoundry.co.uk",
-  "phone": "",
-  "address": "",
   "socialTitle": "Follow Us",
   "socialLinks": [],
-  "copyrightText": "© 2026 Franchise Foundry. All rights reserved."
+  "quickLinksTitle": "Quick Links",
+  "phone": "",
+  "brandName": "Franchise Foundry",
+  "copyrightText": "© 2026 Franchise Foundry. All rights reserved.",
+  "address": "",
+  "brandDescription": "Helping aspiring franchisees find the perfect franchise opportunity since 2024.",
+  "contactTitle": "Contact",
+  "socialSection": {
+    "socialTitle": "Social Media"
+  },
+  "links": [
+    {
+      "label": "Home",
+      "url": "index.html"
+    },
+    {
+      "label": "About Us",
+      "url": "about.html"
+    },
+    {
+      "label": "Find Your Match",
+      "url": "find-match.html"
+    },
+    {
+      "label": "For Franchise Brands",
+      "url": "for-brands.html"
+    },
+    {
+      "label": "Contact Us",
+      "url": "contact.html"
+    }
+  ],
+  "email": "hello@franchisefoundry.co.uk",
+  "brandSection": {
+    "brandName": "TBC",
+    "brandDescription": "TBC",
+    "brandTagline": "TBC"
+  }
 }
