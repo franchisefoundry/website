@@ -235,18 +235,11 @@ collections:
         name: "footer"
         file: "content/footer.json"
         fields:
-          - label: "Brand Section"
-            name: "brandSection"
-            widget: "object"
-            collapsed: false
-            fields:
-              - { label: "Brand Name", name: "brandName", widget: "string" }
-              - { label: "Brand Description", name: "brandDescription", widget: "text" }
-              - { label: "Brand Tagline", name: "brandTagline", widget: "string" }
+          - { label: "Brand Name", name: "brandName", widget: "string" }
+          - { label: "Brand Description", name: "brandDescription", widget: "text" }
+          - { label: "Brand Tagline", name: "brandTagline", widget: "string" }
 
-          - label: "Quick Links"
-            name: "quickLinksTitle"
-            widget: "string"
+          - { label: "Quick Links Title", name: "quickLinksTitle", widget: "string" }
 
           - label: "Navigation Links"
             name: "links"
@@ -255,29 +248,19 @@ collections:
               - { label: "Label", name: "label", widget: "string" }
               - { label: "URL", name: "url", widget: "string" }
 
-          - label: "Contact Section"
-            name: "contactSection"
-            widget: "object"
-            collapsed: false
-            fields:
-              - { label: "Section Title", name: "contactTitle", widget: "string" }
-              - { label: "Email Address", name: "email", widget: "string" }
-              - { label: "Phone Number", name: "phone", widget: "string", required: false, hint: "Leave blank to hide" }
-              - { label: "Address", name: "address", widget: "string", required: false, hint: "Leave blank to hide" }
+          - { label: "Contact Section Title", name: "contactTitle", widget: "string" }
+          - { label: "Email Address", name: "email", widget: "string" }
+          - { label: "Phone Number", name: "phone", widget: "string", required: false, hint: "Leave blank to hide" }
+          - { label: "Address", name: "address", widget: "string", required: false, hint: "Leave blank to hide" }
 
-          - label: "Social Media"
-            name: "socialSection"
-            widget: "object"
-            collapsed: true
+          - { label: "Social Media Title", name: "socialTitle", widget: "string", required: false }
+          - label: "Social Links"
+            name: "socialLinks"
+            widget: "list"
+            required: false
             fields:
-              - { label: "Section Title", name: "socialTitle", widget: "string" }
-              - label: "Social Links"
-                name: "socialLinks"
-                widget: "list"
-                required: false
-                fields:
-                  - { label: "Platform Name", name: "platform", widget: "string" }
-                  - { label: "URL", name: "url", widget: "string" }
+              - { label: "Platform Name", name: "platform", widget: "string" }
+              - { label: "URL", name: "url", widget: "string" }
 
           - { label: "Copyright Text", name: "copyrightText", widget: "string" }
 
