@@ -6,6 +6,41 @@ media_folder: "images"
 public_folder: "/images"
 
 collections:
+  - name: "franchisors"
+    label: "Franchise Partners"
+    label_singular: "Franchise Partner"
+    folder: "content/franchisors"
+    create: true
+    slug: "{{slug}}"
+    extension: "json"
+    format: "json"
+    fields:
+      - { label: "Brand Category", name: "category", widget: "string", hint: "e.g. Quick Service Restaurant, Coffee Shop, Pizza" }
+      - { label: "Emoji Icon", name: "emoji", widget: "string", hint: "Single emoji to represent the category, e.g. 🍔 🍕 ☕" }
+      - { label: "Teaser Description", name: "teaser", widget: "text", hint: "Shown to prospects. No brand name — describe the concept only." }
+      - { label: "Minimum Investment (£)", name: "investmentMin", widget: "number", value_type: "int" }
+      - { label: "Maximum Investment (£)", name: "investmentMax", widget: "number", value_type: "int" }
+      - { label: "Investment Display Text", name: "investmentDisplay", widget: "string", hint: "e.g. £10,000 – £25,000" }
+      - { label: "Available Locations (lowercase, comma separated)", name: "locationsAvailable", widget: "list", hint: "e.g. london, manchester, leeds" }
+      - { label: "Locations Display Text", name: "locationsDisplay", widget: "string", hint: "e.g. London, Manchester & Leeds" }
+      - label: "Sector Tags"
+        name: "sectors"
+        widget: "select"
+        multiple: true
+        options:
+          - { label: "Food & Beverage", value: "food-beverage" }
+          - { label: "Health & Fitness", value: "health-fitness" }
+          - { label: "Retail", value: "retail" }
+          - { label: "Home & Business Services", value: "services" }
+          - { label: "Education & Childcare", value: "education" }
+          - { label: "Other", value: "other" }
+      - { label: "Typical Setup Timeline (months)", name: "timelineMonths", widget: "number", value_type: "int" }
+      - label: "Highlights (up to 3)"
+        name: "highlights"
+        widget: "list"
+        max: 3
+        hint: "Short selling points shown on match cards, e.g. Low entry investment"
+
   - name: "pages"
     label: "Pages"
     files:

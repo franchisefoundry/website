@@ -1,0 +1,13 @@
+{
+  "category": "Japanese Cuisine",
+  "emoji": "🍣",
+  "teaser": "A premium sushi concept bringing authentic Japanese dining to high-footfall UK locations, with proven systems and full operational support.",
+  "investmentMin": 75000,
+  "investmentMax": 110000,
+  "investmentDisplay": "£75,000 – £110,000",
+  "locationsAvailable": ["london", "liverpool", "manchester", "brighton"],
+  "locationsDisplay": "London, Liverpool, Manchester & Brighton",
+  "sectors": ["food-beverage"],
+  "timelineMonths": 3,
+  "highlights": ["Premium market positioning", "Growing UK demand", "Comprehensive support"]
+}

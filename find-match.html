@@ -428,6 +428,211 @@
             }
         }
     </style>
+
+    <!-- ── Match Results Styles ───────────────────────────────────────── -->
+    <style>
+    /* Loading overlay */
+    .match-loading {
+        display: none;
+        text-align: center;
+        padding: 60px 20px;
+        background: #fff;
+        border-radius: 16px;
+        margin-top: 20px;
+    }
+    .match-loading.active { display: block; }
+    .loading-dots { display: flex; justify-content: center; gap: 8px; margin: 20px 0; }
+    .loading-dots span {
+        width: 12px; height: 12px;
+        background: #e8630a;
+        border-radius: 50%;
+        animation: bounce 1.2s infinite ease-in-out;
+    }
+    .loading-dots span:nth-child(2) { animation-delay: 0.2s; }
+    .loading-dots span:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes bounce {
+        0%, 80%, 100% { transform: scale(0.6); opacity: 0.4; }
+        40% { transform: scale(1); opacity: 1; }
+    }
+    .loading-text { font-size: 1.2rem; color: #555; font-weight: 500; }
+    .loading-sub  { font-size: 0.9rem; color: #999; margin-top: 8px; }
+
+    /* Results section */
+    .match-results-section {
+        display: none;
+        padding: 60px 20px;
+        background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
+        opacity: 0;
+        transform: translateY(30px);
+        transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .match-results-section.visible {
+        display: block;
+        opacity: 1;
+        transform: translateY(0);
+    }
+    .results-inner { max-width: 900px; margin: 0 auto; }
+    .results-headline {
+        text-align: center;
+        color: #fff;
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 8px;
+    }
+    .results-subline {
+        text-align: center;
+        color: #aaa;
+        font-size: 1rem;
+        margin-bottom: 40px;
+    }
+    .results-subline strong { color: #e8630a; }
+
+    /* Match cards */
+    .match-cards-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+        gap: 24px;
+        margin-bottom: 40px;
+    }
+    .match-card {
+        background: #fff;
+        border-radius: 16px;
+        padding: 28px;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+        opacity: 0;
+        transform: translateY(40px);
+        transition: opacity 0.5s ease, transform 0.5s ease, box-shadow 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+    .match-card.revealed { opacity: 1; transform: translateY(0); }
+    .match-card:hover { box-shadow: 0 12px 40px rgba(232,99,10,0.25); }
+
+    /* Top bar: category + score */
+    .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; }
+    .card-category {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .card-emoji { font-size: 1.8rem; }
+    .card-category-name {
+        font-size: 0.9rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: #e8630a;
+    }
+
+    /* Match score ring */
+    .score-ring-wrap { position: relative; width: 64px; height: 64px; flex-shrink: 0; }
+    .score-ring-wrap svg { transform: rotate(-90deg); }
+    .score-bg { fill: none; stroke: #f0f0f0; stroke-width: 5; }
+    .score-arc {
+        fill: none;
+        stroke: #e8630a;
+        stroke-width: 5;
+        stroke-linecap: round;
+        stroke-dasharray: 163; /* 2π × 26 */
+        stroke-dashoffset: 163;
+        transition: stroke-dashoffset 1.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .score-label {
+        position: absolute;
+        top: 50%; left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 0.78rem;
+        font-weight: 800;
+        color: #222;
+        text-align: center;
+        line-height: 1.1;
+    }
+
+    /* Card body */
+    .card-teaser { font-size: 0.95rem; color: #444; line-height: 1.55; margin-bottom: 16px; }
+
+    .card-meta { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
+    .card-meta-row { display: flex; align-items: center; gap: 8px; font-size: 0.88rem; color: #555; }
+    .card-meta-row span:first-child { font-size: 1rem; }
+    .meta-label { font-weight: 600; color: #333; }
+
+    /* Highlights */
+    .card-highlights { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 20px; }
+    .highlight-tag {
+        background: #fff4ed;
+        color: #c25208;
+        border: 1px solid #fdd5b5;
+        border-radius: 20px;
+        padding: 3px 10px;
+        font-size: 0.78rem;
+        font-weight: 600;
+    }
+
+    /* Locked brand reveal */
+    .card-lock-bar {
+        background: linear-gradient(135deg, #f8f8f8, #ececec);
+        border: 1.5px dashed #ccc;
+        border-radius: 10px;
+        padding: 14px 16px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 16px;
+    }
+    .lock-left { display: flex; align-items: center; gap: 10px; }
+    .lock-icon { font-size: 1.3rem; }
+    .lock-text { font-size: 0.85rem; color: #888; }
+    .lock-text strong { display: block; color: #333; font-size: 0.9rem; }
+    .lock-blurred {
+        font-size: 1rem;
+        font-weight: 800;
+        color: transparent;
+        text-shadow: 0 0 8px rgba(0,0,0,0.35);
+        letter-spacing: 2px;
+        user-select: none;
+    }
+
+    /* CTA button */
+    .card-cta-btn {
+        display: block;
+        width: 100%;
+        padding: 13px;
+        background: #e8630a;
+        color: #fff;
+        border: none;
+        border-radius: 10px;
+        font-size: 0.95rem;
+        font-weight: 700;
+        text-align: center;
+        cursor: pointer;
+        text-decoration: none;
+        transition: background 0.2s, transform 0.15s;
+    }
+    .card-cta-btn:hover { background: #c25208; transform: translateY(-1px); }
+
+    /* Results footer disclaimer */
+    .results-disclaimer {
+        text-align: center;
+        color: #888;
+        font-size: 0.82rem;
+        margin-top: 8px;
+        padding: 0 20px;
+    }
+    .results-disclaimer strong { color: #ccc; }
+
+    /* No matches */
+    .no-matches {
+        text-align: center;
+        color: #ccc;
+        padding: 40px 20px;
+    }
+
+    @media (max-width: 600px) {
+        .match-cards-grid { grid-template-columns: 1fr; }
+        .results-headline { font-size: 1.5rem; }
+    }
+    </style>
 </head>
 <body>
     <!-- Navigation -->
@@ -460,7 +665,7 @@
                 <p>Complete this form and we'll be in touch within 24 hours to schedule your personalised consultation.</p>
             </div>
 
-            <form name="find-match" method="POST" data-netlify="true" netlify-honeypot="bot-field" action="/thank-you.html">
+            <form name="find-match" id="find-match-form" method="POST" data-netlify="true" netlify-honeypot="bot-field" action="/thank-you.html">
                 <input type="hidden" name="form-name" value="find-match">
                 <p style="display:none;">
                     <label>Don't fill this out: <input name="bot-field"></label>
@@ -550,6 +755,28 @@
                     <p>🔒 Your information is secure and will never be shared with third parties. We only use it to find you the best franchise matches.</p>
                 </div>
             </form>
+        </div>
+    </section>
+
+    <!-- Loading State -->
+    <div class="match-loading" id="match-loading">
+        <div class="loading-dots">
+            <span></span><span></span><span></span>
+        </div>
+        <p class="loading-text">Analysing your profile…</p>
+        <p class="loading-sub">Matching against our franchise network</p>
+    </div>
+
+    <!-- Match Results Section -->
+    <section class="match-results-section" id="match-results">
+        <div class="results-inner">
+            <h2 class="results-headline" id="results-headline">Your Franchise Matches</h2>
+            <p class="results-subline" id="results-subline">Based on your profile — brand names revealed during your free consultation</p>
+            <div class="match-cards-grid" id="match-cards-grid"></div>
+            <p class="results-disclaimer">
+                <strong>Why are brand names hidden?</strong> We protect both you and our franchise partners.
+                Full details — including brand names, financials, and introductions — are shared exclusively during your free consultation call.
+            </p>
         </div>
     </section>
 
@@ -650,6 +877,180 @@
     </footer>
 
     <script>
+// ── Franchise Matching ────────────────────────────────────────────────────────
+
+(function () {
+    const form = document.getElementById('find-match-form');
+    if (!form) return;
+
+    form.addEventListener('submit', async function (e) {
+        e.preventDefault();
+
+        // Collect form data
+        const fd = new FormData(form);
+        const industries = fd.getAll('industry');
+        const prospect = {
+            name:     fd.get('name')     || '',
+            email:    fd.get('email')    || '',
+            phone:    fd.get('phone')    || '',
+            location: fd.get('location') || '',
+            budget:   fd.get('budget')   || '',
+            industry: industries,
+            timeline: fd.get('timeline') || '',
+            message:  fd.get('message')  || ''
+        };
+
+        // Show loading, hide form
+        form.closest('.form-container').style.display = 'none';
+        const loading = document.getElementById('match-loading');
+        loading.classList.add('active');
+
+        // Also submit to Netlify Forms for lead capture (fire and forget)
+        fetch('/', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: new URLSearchParams(Object.assign(
+                { 'form-name': 'find-match' },
+                prospect,
+                { industry: industries.join(', ') }
+            )).toString()
+        }).catch(() => {});
+
+        // Small delay so loading state feels real
+        await new Promise(r => setTimeout(r, 1600));
+
+        try {
+            const res  = await fetch('/.netlify/functions/match', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(prospect)
+            });
+            const data = await res.json();
+            loading.classList.remove('active');
+            renderResults(data.matches || [], prospect.name);
+        } catch (err) {
+            loading.classList.remove('active');
+            // Fallback: redirect to thank-you
+            window.location.href = '/thank-you.html';
+        }
+    });
+
+    function renderResults(matches, name) {
+        const section = document.getElementById('match-results');
+        const grid    = document.getElementById('match-cards-grid');
+        const hl      = document.getElementById('results-headline');
+        const sub     = document.getElementById('results-subline');
+
+        const firstName = (name || '').split(' ')[0] || 'you';
+
+        if (matches.length === 0) {
+            hl.textContent = 'No exact matches found';
+            sub.innerHTML  = 'Our team will personally reach out to find the right fit for you.';
+            grid.innerHTML = '<div class="no-matches"><p>📞 We\'ll be in touch within 24 hours with personalised recommendations.</p></div>';
+        } else {
+            hl.textContent = matches.length === 1
+                ? `We found 1 franchise match for you, ${firstName}!`
+                : `We found ${matches.length} franchise matches for you, ${firstName}!`;
+            sub.innerHTML  = `Ranked by compatibility — <strong>brand names revealed during your free consultation</strong>`;
+            grid.innerHTML = matches.map((m, i) => buildCard(m, i + 1)).join('');
+        }
+
+        // Show results section
+        section.style.display = 'block';
+        requestAnimationFrame(() => {
+            section.classList.add('visible');
+            section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+
+        // Stagger card animations + animate score rings
+        const cards = grid.querySelectorAll('.match-card');
+        cards.forEach((card, i) => {
+            setTimeout(() => {
+                card.classList.add('revealed');
+                const arc   = card.querySelector('.score-arc');
+                const score = parseInt(card.dataset.score, 10);
+                if (arc && score) {
+                    const circumference = 163;
+                    const offset = circumference - (score / 100) * circumference;
+                    arc.style.strokeDashoffset = offset;
+                }
+                // Animate score counter
+                const label = card.querySelector('.score-number');
+                if (label) animateCounter(label, 0, score, 1200);
+            }, i * 220);
+        });
+    }
+
+    function buildCard(match, rank) {
+        const scoreArcStart = 163;
+        const highlights = (match.highlights || [])
+            .map(h => `<span class="highlight-tag">${h}</span>`).join('');
+        const blurredName = '●●●●●●●●●●'.slice(0, 6 + Math.floor(Math.random() * 4));
+
+        return `
+        <div class="match-card" data-score="${match.matchScore}">
+            <div class="card-header">
+                <div class="card-category">
+                    <span class="card-emoji">${match.emoji}</span>
+                    <span class="card-category-name">${match.category}</span>
+                </div>
+                <div class="score-ring-wrap" title="${match.matchScore}% match">
+                    <svg viewBox="0 0 64 64" width="64" height="64">
+                        <circle class="score-bg"  cx="32" cy="32" r="26"/>
+                        <circle class="score-arc" cx="32" cy="32" r="26"
+                            style="stroke-dasharray:163;stroke-dashoffset:${scoreArcStart}"/>
+                    </svg>
+                    <div class="score-label"><span class="score-number">0</span>%<br>match</div>
+                </div>
+            </div>
+
+            <p class="card-teaser">${match.teaser}</p>
+
+            <div class="card-meta">
+                <div class="card-meta-row">
+                    <span>💷</span>
+                    <span><span class="meta-label">Investment:</span> ${match.investmentDisplay}</span>
+                </div>
+                <div class="card-meta-row">
+                    <span>📍</span>
+                    <span><span class="meta-label">Available in:</span> ${match.locationsDisplay}</span>
+                </div>
+            </div>
+
+            <div class="card-highlights">${highlights}</div>
+
+            <div class="card-lock-bar">
+                <div class="lock-left">
+                    <span class="lock-icon">🔒</span>
+                    <div class="lock-text">
+                        <strong>Match #${rank} — Identity Protected</strong>
+                        Full brand details revealed on your consultation call
+                    </div>
+                </div>
+                <span class="lock-blurred">${blurredName}</span>
+            </div>
+
+            <a href="contact.html?ref=match&rank=${rank}" class="card-cta-btn">
+                Book a call to unlock this match →
+            </a>
+        </div>`;
+    }
+
+    function animateCounter(el, from, to, duration) {
+        const start = performance.now();
+        function step(now) {
+            const progress = Math.min((now - start) / duration, 1);
+            el.textContent = Math.round(from + (to - from) * easeOut(progress));
+            if (progress < 1) requestAnimationFrame(step);
+        }
+        requestAnimationFrame(step);
+    }
+
+    function easeOut(t) { return 1 - Math.pow(1 - t, 3); }
+})();
+
+// ── CMS Content ───────────────────────────────────────────────────────────────
+
 // Load content from CMS
 async function loadCMSContent() {
     try {

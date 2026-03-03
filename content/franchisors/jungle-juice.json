@@ -1,0 +1,13 @@
+{
+  "category": "Drinks & Beverages",
+  "emoji": "🥤",
+  "teaser": "A bold tropical drinks brand riding the health and premium beverage trend across UK high streets and shopping centres.",
+  "investmentMin": 20000,
+  "investmentMax": 35000,
+  "investmentDisplay": "£20,000 – £35,000",
+  "locationsAvailable": ["london", "liverpool", "manchester", "brighton"],
+  "locationsDisplay": "London, Liverpool, Manchester & Brighton",
+  "sectors": ["food-beverage", "health-fitness"],
+  "timelineMonths": 2,
+  "highlights": ["Low overhead", "Health trend tailwind", "Flexible site formats"]
+}

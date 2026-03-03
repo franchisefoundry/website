@@ -1,0 +1,13 @@
+{
+  "category": "Mexican Street Food",
+  "emoji": "🌯",
+  "teaser": "A vibrant Mexican street food brand with a strong identity and growing presence across key UK locations.",
+  "investmentMin": 100000,
+  "investmentMax": 140000,
+  "investmentDisplay": "£100,000 – £140,000",
+  "locationsAvailable": ["harrogate", "london", "liverpool"],
+  "locationsDisplay": "Harrogate, London & Liverpool",
+  "sectors": ["food-beverage"],
+  "timelineMonths": 4,
+  "highlights": ["Established brand", "Full training provided", "Exclusive territories"]
+}

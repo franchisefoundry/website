@@ -1,0 +1,58 @@
+[
+  {
+    "id": "harrys-handies",
+    "category": "Quick Service Restaurant",
+    "emoji": "🍔",
+    "teaser": "A fast-growing handheld food concept with an affordable entry point and strong multi-site operator network across major UK cities.",
+    "investmentMin": 10000,
+    "investmentMax": 25000,
+    "investmentDisplay": "£10,000 – £25,000",
+    "locationsAvailable": ["london", "manchester", "leeds"],
+    "locationsDisplay": "London, Manchester & Leeds",
+    "sectors": ["food-beverage"],
+    "timelineMonths": 2,
+    "highlights": ["Low entry investment", "Multi-site friendly", "Rapid setup"]
+  },
+  {
+    "id": "bens-burritos",
+    "category": "Mexican Street Food",
+    "emoji": "🌯",
+    "teaser": "A vibrant Mexican street food brand with a strong identity and growing presence across key UK locations.",
+    "investmentMin": 100000,
+    "investmentMax": 140000,
+    "investmentDisplay": "£100,000 – £140,000",
+    "locationsAvailable": ["harrogate", "london", "liverpool"],
+    "locationsDisplay": "Harrogate, London & Liverpool",
+    "sectors": ["food-beverage"],
+    "timelineMonths": 4,
+    "highlights": ["Established brand", "Full training provided", "Exclusive territories"]
+  },
+  {
+    "id": "super-sushi",
+    "category": "Japanese Cuisine",
+    "emoji": "🍣",
+    "teaser": "A premium sushi concept bringing authentic Japanese dining to high-footfall UK locations, with proven systems and full operational support.",
+    "investmentMin": 75000,
+    "investmentMax": 110000,
+    "investmentDisplay": "£75,000 – £110,000",
+    "locationsAvailable": ["london", "liverpool", "manchester", "brighton"],
+    "locationsDisplay": "London, Liverpool, Manchester & Brighton",
+    "sectors": ["food-beverage"],
+    "timelineMonths": 3,
+    "highlights": ["Premium market positioning", "Growing UK demand", "Comprehensive support"]
+  },
+  {
+    "id": "jungle-juice",
+    "category": "Drinks & Beverages",
+    "emoji": "🥤",
+    "teaser": "A bold tropical drinks brand riding the health and premium beverage trend across UK high streets and shopping centres.",
+    "investmentMin": 20000,
+    "investmentMax": 35000,
+    "investmentDisplay": "£20,000 – £35,000",
+    "locationsAvailable": ["london", "liverpool", "manchester", "brighton"],
+    "locationsDisplay": "London, Liverpool, Manchester & Brighton",
+    "sectors": ["food-beverage", "health-fitness"],
+    "timelineMonths": 2,
+    "highlights": ["Low overhead", "Health trend tailwind", "Flexible site formats"]
+  }
+]
