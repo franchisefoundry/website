@@ -877,7 +877,50 @@
     </footer>
 
     <script>
-// ── Franchise Matching ────────────────────────────────────────────────────────
+// ── Franchise Matching (fully client-side) ───────────────────────────────────
+
+const BUDGET_MAX = {
+    'under-50k':   50000,
+    '50k-100k':    100000,
+    '100k-200k':   200000,
+    '200k-500k':   500000,
+    'over-500k':   5000000
+};
+
+function scoreMatch(f, prospect) {
+    let score = 0;
+
+    // Budget (35 pts) — hard filter first
+    const budgetMax = BUDGET_MAX[prospect.budget];
+    if (!budgetMax) return null;
+    if (f.investmentMin > budgetMax * 1.15) return null;
+    score += f.investmentMin <= budgetMax
+        ? (f.investmentMin / budgetMax >= 0.15 ? 35 : 22)
+        : 15;
+
+    // Location (30 pts)
+    const locText = (prospect.location || '').toLowerCase();
+    if (locText.trim()) {
+        score += (f.locationsAvailable || []).some(l => locText.includes(l)) ? 30 : 5;
+    } else {
+        score += 15;
+    }
+
+    // Sector (25 pts)
+    const industries = prospect.industry || [];
+    if (!industries.length || industries.includes('other')) {
+        score += 15;
+    } else {
+        score += (f.sectors || []).some(s => industries.includes(s)) ? 25 : 0;
+    }
+
+    // Timeline (10 pts)
+    const tlMap = { 'immediately': 2, '1-3-months': 3, '3-6-months': 6, '6-12-months': 99, '12-plus-months': 99 };
+    const tlMax = tlMap[prospect.timeline] ?? 99;
+    score += (f.timelineMonths || 3) <= tlMax ? 10 : 5;
+
+    return Math.min(Math.round(score), 99);
+}
 
 (function () {
     const form = document.getElementById('find-match-form');
@@ -905,7 +948,7 @@
         const loading = document.getElementById('match-loading');
         loading.classList.add('active');
 
-        // Also submit to Netlify Forms for lead capture (fire and forget)
+        // Capture lead in Netlify Forms (fire and forget)
         fetch('/', {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -916,22 +959,35 @@
             )).toString()
         }).catch(() => {});
 
-        // Small delay so loading state feels real
-        await new Promise(r => setTimeout(r, 1600));
-
         try {
-            const res  = await fetch('/.netlify/functions/match', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(prospect)
-            });
-            const data = await res.json();
+            // Fetch franchisor data + artificial delay in parallel
+            const [franchisors] = await Promise.all([
+                fetch('/content/franchisors.json').then(r => r.json()),
+                new Promise(r => setTimeout(r, 1600))
+            ]);
+
+            // Run matching
+            const matches = franchisors
+                .map(f => {
+                    const s = scoreMatch(f, prospect);
+                    if (s === null) return null;
+                    return { ...f, matchScore: s };
+                })
+                .filter(Boolean)
+                .sort((a, b) => b.matchScore - a.matchScore);
+
             loading.classList.remove('active');
-            renderResults(data.matches || [], prospect.name);
+            renderResults(matches, prospect.name);
+
         } catch (err) {
             loading.classList.remove('active');
-            // Fallback: redirect to thank-you
-            window.location.href = '/thank-you.html';
+            const grid = document.getElementById('match-cards-grid');
+            const section = document.getElementById('match-results');
+            document.getElementById('results-headline').textContent = 'Something went wrong';
+            document.getElementById('results-subline').textContent = 'Our team will be in touch shortly with your matches.';
+            if (grid) grid.innerHTML = '<div class="no-matches"><p>📞 We\'ll be in touch within 24 hours with personalised recommendations.</p></div>';
+            section.style.display = 'block';
+            requestAnimationFrame(() => section.classList.add('visible'));
         }
     });
 
