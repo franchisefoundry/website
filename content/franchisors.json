@@ -1,6 +1,7 @@
 [
   {
     "id": "harrys-handies",
+    "name": "Harry's Handies",
     "category": "Quick Service Restaurant",
     "emoji": "🍔",
     "teaser": "A fast-growing handheld food concept with an affordable entry point and strong multi-site operator network across major UK cities.",
@@ -15,6 +16,7 @@
   },
   {
     "id": "bens-burritos",
+    "name": "Ben's Burritos",
     "category": "Mexican Street Food",
     "emoji": "🌯",
     "teaser": "A vibrant Mexican street food brand with a strong identity and growing presence across key UK locations.",
@@ -29,6 +31,7 @@
   },
   {
     "id": "super-sushi",
+    "name": "Super Sushi",
     "category": "Japanese Cuisine",
     "emoji": "🍣",
     "teaser": "A premium sushi concept bringing authentic Japanese dining to high-footfall UK locations, with proven systems and full operational support.",
@@ -43,6 +46,7 @@
   },
   {
     "id": "jungle-juice",
+    "name": "Jungle Juice",
     "category": "Drinks & Beverages",
     "emoji": "🥤",
     "teaser": "A bold tropical drinks brand riding the health and premium beverage trend across UK high streets and shopping centres.",
