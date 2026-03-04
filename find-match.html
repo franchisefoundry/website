@@ -192,110 +192,312 @@
             line-height: 1.75;
         }
 
-        /* Form Section */
+        /* ── Multi-Step Form ─────────────────────────────────────────────── */
         .form-section {
-            padding: 100px 40px;
-            background: var(--off-white);
+            padding: 80px 40px 100px;
+            background: var(--green-deep);
+            position: relative;
+            overflow: hidden;
         }
 
-        .form-container {
-            max-width: 760px;
-            margin: 0 auto;
-            background: white;
-            padding: 48px;
-            border-radius: var(--radius-xl);
-            border: 1.5px solid var(--border);
-            box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+        .form-section::before {
+            content: '';
+            position: absolute;
+            bottom: -80px;
+            left: -80px;
+            width: 380px;
+            height: 380px;
+            background: radial-gradient(circle, rgba(95,114,95,0.22) 0%, transparent 70%);
+            pointer-events: none;
         }
 
-        .form-intro {
+        .form-section-header {
             text-align: center;
-            margin-bottom: 50px;
+            margin-bottom: 44px;
         }
 
-        .form-intro h2 {
-            font-size: 2.2rem;
-            color: var(--text-dark);
-            margin-bottom: 16px;
-            font-weight: 700;
+        .form-section-header h2 {
+            font-size: 2.4rem;
+            font-weight: 800;
+            color: white;
+            letter-spacing: -0.03em;
+            margin-bottom: 10px;
         }
 
-        .form-intro p {
-            font-size: 1.1rem;
-            color: var(--text-mid);
+        .form-section-header p {
+            font-size: 1rem;
+            color: rgba(255,255,255,0.6);
             font-weight: 300;
         }
 
-        .form-group {
-            margin-bottom: 32px;
+        .form-container {
+            max-width: 700px;
+            margin: 0 auto;
+            background: white;
+            border-radius: var(--radius-xl);
+            overflow: hidden;
+            box-shadow: 0 24px 64px rgba(0,0,0,0.2);
         }
 
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: var(--text-dark);
-            font-size: 0.85rem;
-        }
-
-        .form-group input,
-        .form-group select,
-        .form-group textarea {
-            width: 100%;
-            padding: 14px 16px;
-            border: 1.5px solid var(--border);
-            border-radius: var(--radius-sm);
-            font-size: 0.95rem;
-            font-family: 'Sora', sans-serif;
-            transition: border-color 0.2s;
-        }
-
-        .form-group input:focus,
-        .form-group select:focus,
-        .form-group textarea:focus {
-            outline: none;
-            border-color: var(--green);
-        }
-
-        .form-group textarea {
-            min-height: 120px;
-            resize: vertical;
-        }
-
-        .checkbox-group {
+        /* Progress Bar */
+        .form-progress {
             display: flex;
-            flex-direction: column;
-            gap: 12px;
+            align-items: center;
+            padding: 28px 40px 0;
         }
 
-        .checkbox-item {
+        .progress-step {
             display: flex;
             align-items: center;
             gap: 10px;
+            flex: 1;
         }
 
-        .checkbox-item input[type="checkbox"] {
-            width: auto;
-            margin: 0;
+        .progress-step:last-child { flex: 0; }
+
+        .progress-dot {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 2px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: var(--text-light);
+            flex-shrink: 0;
+            transition: all 0.3s;
         }
 
-        .submit-button {
+        .progress-step.active .progress-dot {
             background: var(--green-deep);
+            border-color: var(--green-deep);
             color: white;
-            padding: 18px;
+        }
+
+        .progress-step.done .progress-dot {
+            background: var(--gold);
+            border-color: var(--gold);
+            color: white;
+        }
+
+        .progress-line {
+            flex: 1;
+            height: 2px;
+            background: var(--border);
+            margin: 0 8px;
+            transition: background 0.3s;
+        }
+
+        .progress-line.done { background: var(--gold); }
+
+        .progress-label {
+            font-size: 0.72rem;
+            font-weight: 600;
+            color: var(--text-light);
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            white-space: nowrap;
+        }
+
+        .progress-step.active .progress-label { color: var(--green-deep); }
+
+        /* Form Steps */
+        .form-steps { padding: 32px 40px 40px; }
+
+        .form-step { display: none; }
+        .form-step.active { display: block; }
+
+        .step-heading {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 6px;
+            letter-spacing: -0.02em;
+        }
+
+        .step-subheading {
+            font-size: 0.92rem;
+            color: var(--text-mid);
+            font-weight: 300;
+            margin-bottom: 32px;
+        }
+
+        /* Tile Option Groups */
+        .tile-group-label {
+            font-size: 0.78rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--text-mid);
+            margin-bottom: 12px;
+            margin-top: 28px;
+        }
+
+        .tile-group-label:first-of-type { margin-top: 0; }
+
+        .tile-options {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+        }
+
+        .tile-option { position: relative; }
+
+        .tile-option input[type="radio"] {
+            position: absolute;
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .tile-option label {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 14px 8px;
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all 0.2s;
+            gap: 3px;
+            min-height: 68px;
+        }
+
+        .tile-option label:hover {
+            border-color: var(--green);
+            background: rgba(90,110,90,0.04);
+        }
+
+        .tile-option input:checked + label {
+            border-color: var(--gold);
+            background: rgba(200,146,74,0.07);
+            box-shadow: 0 0 0 3px rgba(200,146,74,0.12);
+        }
+
+        .tile-main {
+            font-size: 0.84rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            line-height: 1.2;
+        }
+
+        .tile-sub {
+            font-size: 0.7rem;
+            color: var(--text-light);
+            font-weight: 400;
+        }
+
+        .tile-option input:checked + label .tile-main { color: var(--gold); }
+
+        /* Bottom-border inputs */
+        .field-group { margin-bottom: 28px; }
+
+        .field-group label {
+            display: block;
+            font-size: 0.76rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.07em;
+            color: var(--text-mid);
+            margin-bottom: 8px;
+        }
+
+        .field-group input,
+        .field-group textarea {
+            width: 100%;
+            border: none;
+            border-bottom: 1.5px solid var(--border);
+            padding: 10px 0;
+            font-size: 1rem;
+            font-family: 'Sora', sans-serif;
+            color: var(--text-dark);
+            background: transparent;
+            transition: border-color 0.2s;
+            box-sizing: border-box;
+        }
+
+        .field-group input:focus,
+        .field-group textarea:focus {
+            outline: none;
+            border-bottom-color: var(--green-deep);
+        }
+
+        .field-group textarea { min-height: 100px; resize: vertical; }
+
+        .field-group input::placeholder,
+        .field-group textarea::placeholder {
+            color: rgba(0,0,0,0.22);
+            font-weight: 300;
+        }
+
+        /* Step navigation */
+        .step-nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 36px;
+        }
+
+        .step-nav-back {
+            background: none;
+            border: none;
+            font-family: 'Sora', sans-serif;
+            font-size: 0.88rem;
+            font-weight: 600;
+            color: var(--text-light);
+            cursor: pointer;
+            padding: 10px 0;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: color 0.2s;
+        }
+
+        .step-nav-back:hover { color: var(--text-dark); }
+
+        .step-nav-next,
+        .submit-button {
+            background: var(--gold);
+            color: white;
+            padding: 14px 32px;
             border: none;
             border-radius: var(--radius-sm);
             font-weight: 700;
-            font-size: 1.05rem;
+            font-size: 0.95rem;
             cursor: pointer;
-            width: 100%;
-            transition: all 0.2s;
             font-family: 'Sora', sans-serif;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
         }
 
+        .step-nav-next:hover,
         .submit-button:hover {
-            background: var(--green-dark);
+            background: #b8823a;
             transform: translateY(-1px);
+        }
+
+        .submit-button {
+            width: 100%;
+            justify-content: center;
+            padding: 16px;
+            font-size: 1rem;
+        }
+
+        .privacy-note {
+            margin-top: 14px;
+            font-size: 0.82rem;
+            color: var(--text-light);
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
         }
 
         .privacy-note {
@@ -490,22 +692,35 @@
 
         /* Responsive */
         @media (max-width: 768px) {
-            .form-container {
-                padding: 40px 30px;
+            .form-section { padding: 60px 20px 80px; }
+
+            .form-section-header h2 { font-size: 1.8rem; }
+
+            .form-progress { padding: 24px 24px 0; }
+
+            .form-steps { padding: 24px 24px 32px; }
+
+            .tile-options {
+                grid-template-columns: repeat(3, 1fr);
             }
 
-            .steps-timeline {
-                padding-left: 0;
+            .tile-options:not(.timeline-tiles) {
+                grid-template-columns: repeat(2, 1fr);
             }
+
+            .steps-timeline { padding-left: 0; }
 
             .timeline-step::before {
                 position: static;
                 margin-bottom: 20px;
             }
 
-            .page-hero h1 {
-                font-size: 2.5rem;
-            }
+            .page-hero h1 { font-size: 2.5rem; }
+        }
+
+        @media (max-width: 480px) {
+            .tile-options { grid-template-columns: repeat(2, 1fr); }
+            .progress-label { display: none; }
         }
     </style>
 
@@ -831,74 +1046,164 @@
 
     <!-- Form Section -->
     <section class="form-section">
+        <div class="form-section-header">
+            <h2>Get Your Free Franchise Matches</h2>
+            <p>Takes 2 minutes &nbsp;·&nbsp; No obligation &nbsp;·&nbsp; Completely free</p>
+        </div>
+
         <div class="form-container">
-            <div class="form-intro">
-                <h2>Book Your Free Consultation</h2>
-                <p>Complete this form and we'll be in touch within 24 hours to schedule your personalised consultation.</p>
+            <!-- Progress Indicator -->
+            <div class="form-progress">
+                <div class="progress-step active" id="prog-1">
+                    <div class="progress-dot">1</div>
+                    <span class="progress-label">Budget &amp; Timeline</span>
+                </div>
+                <div class="progress-line" id="prog-line-1"></div>
+                <div class="progress-step" id="prog-2">
+                    <div class="progress-dot">2</div>
+                    <span class="progress-label">Your Goals</span>
+                </div>
+                <div class="progress-line" id="prog-line-2"></div>
+                <div class="progress-step" id="prog-3">
+                    <div class="progress-dot">3</div>
+                    <span class="progress-label">Contact</span>
+                </div>
             </div>
 
             <form name="find-match" id="find-match-form" method="POST" data-netlify="true" netlify-honeypot="bot-field" action="/thank-you.html">
                 <input type="hidden" name="form-name" value="find-match">
                 <input type="hidden" name="matches" value="">
-                <p style="display:none;">
-                    <label>Don't fill this out: <input name="bot-field"></label>
-                </p>
-                <div class="form-group">
-                    <label for="name">Full Name *</label>
-                    <input type="text" id="name" name="name" required>
-                </div>
+                <p style="display:none;"><label>Don't fill this out: <input name="bot-field"></label></p>
 
-                <div class="form-group">
-                    <label for="email">Email Address *</label>
-                    <input type="email" id="email" name="email" required>
-                </div>
+                <div class="form-steps">
 
-                <div class="form-group">
-                    <label for="phone">Phone Number *</label>
-                    <input type="tel" id="phone" name="phone" required>
-                </div>
+                    <!-- Step 1: Budget + Timeline -->
+                    <div class="form-step active" id="step-1">
+                        <p class="step-heading">Let's find your match</p>
+                        <p class="step-subheading">Tell us about your investment and how quickly you want to move.</p>
 
-                <div class="form-group">
-                    <label for="location">Preferred Location(s)</label>
-                    <input type="text" id="location" name="location" placeholder="e.g., London, Manchester, Birmingham">
-                </div>
+                        <div class="tile-group-label">Investment Budget</div>
+                        <div class="tile-options">
+                            <div class="tile-option">
+                                <input type="radio" name="budget" id="b1" value="under-50k">
+                                <label for="b1"><span class="tile-main">Under £50k</span><span class="tile-sub">Low entry</span></label>
+                            </div>
+                            <div class="tile-option">
+                                <input type="radio" name="budget" id="b2" value="50k-100k">
+                                <label for="b2"><span class="tile-main">£50k – 100k</span><span class="tile-sub">Popular range</span></label>
+                            </div>
+                            <div class="tile-option">
+                                <input type="radio" name="budget" id="b3" value="100k-200k">
+                                <label for="b3"><span class="tile-main">£100k – 200k</span><span class="tile-sub">Most options</span></label>
+                            </div>
+                            <div class="tile-option">
+                                <input type="radio" name="budget" id="b4" value="200k-500k">
+                                <label for="b4"><span class="tile-main">£200k – 500k</span><span class="tile-sub">Premium brands</span></label>
+                            </div>
+                            <div class="tile-option">
+                                <input type="radio" name="budget" id="b5" value="over-500k">
+                                <label for="b5"><span class="tile-main">Over £500k</span><span class="tile-sub">Top-tier</span></label>
+                            </div>
+                        </div>
 
-                <div class="form-group">
-                    <label for="budget">Investment Budget</label>
-                    <select id="budget" name="budget">
-                        <option value="">Select your budget range</option>
-                        <option value="under-50k">Under £50,000</option>
-                        <option value="50k-100k">£50,000 - £100,000</option>
-                        <option value="100k-200k">£100,000 - £200,000</option>
-                        <option value="200k-500k">£200,000 - £500,000</option>
-                        <option value="over-500k">Over £500,000</option>
-                    </select>
-                </div>
+                        <div class="tile-group-label" style="margin-top:28px;">When do you want to start?</div>
+                        <div class="tile-options">
+                            <div class="tile-option">
+                                <input type="radio" name="timeline" id="t1" value="immediately">
+                                <label for="t1"><span class="tile-main">Now</span><span class="tile-sub">Ready to go</span></label>
+                            </div>
+                            <div class="tile-option">
+                                <input type="radio" name="timeline" id="t2" value="1-3-months">
+                                <label for="t2"><span class="tile-main">1 – 3 months</span><span class="tile-sub">Very soon</span></label>
+                            </div>
+                            <div class="tile-option">
+                                <input type="radio" name="timeline" id="t3" value="3-6-months">
+                                <label for="t3"><span class="tile-main">3 – 6 months</span><span class="tile-sub">Exploring</span></label>
+                            </div>
+                            <div class="tile-option">
+                                <input type="radio" name="timeline" id="t4" value="6-12-months">
+                                <label for="t4"><span class="tile-main">6 – 12 months</span><span class="tile-sub">Planning ahead</span></label>
+                            </div>
+                            <div class="tile-option">
+                                <input type="radio" name="timeline" id="t5" value="12-plus-months">
+                                <label for="t5"><span class="tile-main">12+ months</span><span class="tile-sub">Future goal</span></label>
+                            </div>
+                        </div>
 
-                <div class="form-group">
-                    <label for="timeline">When are you looking to start?</label>
-                    <select id="timeline" name="timeline">
-                        <option value="">Select timeframe</option>
-                        <option value="immediately">Immediately</option>
-                        <option value="1-3-months">1-3 months</option>
-                        <option value="3-6-months">3-6 months</option>
-                        <option value="6-12-months">6-12 months</option>
-                        <option value="12-plus-months">12+ months</option>
-                    </select>
-                </div>
+                        <div class="step-nav">
+                            <button type="button" class="step-nav-back" style="visibility:hidden;" aria-hidden="true"></button>
+                            <button type="button" class="step-nav-next" onclick="goToStep(2)">
+                                Continue
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                            </button>
+                        </div>
+                    </div>
 
-                <div class="form-group">
-                    <label for="message">Tell us more about what you're looking for</label>
-                    <textarea id="message" name="message" placeholder="What are your goals? What type of lifestyle are you seeking? Any specific requirements?"></textarea>
-                </div>
+                    <!-- Step 2: Location + Goals -->
+                    <div class="form-step" id="step-2">
+                        <p class="step-heading">Where and what?</p>
+                        <p class="step-subheading">Help us narrow down the best opportunities for you.</p>
 
-                <button type="submit" class="submit-button">Book My Free Consultation</button>
+                        <div class="field-group">
+                            <label for="location">Preferred Location(s)</label>
+                            <input type="text" id="location" name="location" placeholder="e.g. London, Manchester, Birmingham">
+                        </div>
 
-                <div class="privacy-note">
-                    <p><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="vertical-align:middle;margin-right:6px;"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>Your information is secure and will never be shared with third parties. We only use it to find you the best franchise matches.</p>
-                </div>
+                        <div class="field-group">
+                            <label for="message">What are you looking for?</label>
+                            <textarea id="message" name="message" placeholder="Your goals, lifestyle preferences, or any specific requirements — even rough ideas help."></textarea>
+                        </div>
+
+                        <div class="step-nav">
+                            <button type="button" class="step-nav-back" onclick="goToStep(1)">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                                Back
+                            </button>
+                            <button type="button" class="step-nav-next" onclick="goToStep(3)">
+                                Continue
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Step 3: Contact Details -->
+                    <div class="form-step" id="step-3">
+                        <p class="step-heading">Almost there</p>
+                        <p class="step-subheading">Where should we send your matches?</p>
+
+                        <div class="field-group">
+                            <label for="name">Full Name *</label>
+                            <input type="text" id="name" name="name" placeholder="Your full name" required>
+                        </div>
+
+                        <div class="field-group">
+                            <label for="email">Email Address *</label>
+                            <input type="email" id="email" name="email" placeholder="you@example.com" required>
+                        </div>
+
+                        <div class="field-group">
+                            <label for="phone">Phone Number *</label>
+                            <input type="tel" id="phone" name="phone" placeholder="+44 7700 000000" required>
+                        </div>
+
+                        <div class="step-nav" style="flex-direction: column; gap: 10px; align-items: stretch;">
+                            <button type="submit" class="submit-button">Get My Free Matches</button>
+                            <div class="privacy-note">
+                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                                Your details are secure and never shared with third parties.
+                            </div>
+                        </div>
+                        <div style="text-align:center; margin-top: 14px;">
+                            <button type="button" class="step-nav-back" onclick="goToStep(2)">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                                Back
+                            </button>
+                        </div>
+                    </div>
+
+                </div><!-- /.form-steps -->
             </form>
-        </div>
+        </div><!-- /.form-container -->
     </section>
 
     <!-- Loading State -->
