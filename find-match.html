@@ -267,9 +267,8 @@
             height: 50px;
             background: #5f725f;
             border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
+            text-align: center;
+            line-height: 42px;
             color: white;
             font-weight: 700;
             font-size: 1.3rem;
@@ -667,6 +666,7 @@
 
             <form name="find-match" id="find-match-form" method="POST" data-netlify="true" netlify-honeypot="bot-field" action="/thank-you.html">
                 <input type="hidden" name="form-name" value="find-match">
+                <input type="hidden" name="matches" value="">
                 <p style="display:none;">
                     <label>Don't fill this out: <input name="bot-field"></label>
                 </p>
@@ -700,36 +700,6 @@
                         <option value="200k-500k">£200,000 - £500,000</option>
                         <option value="over-500k">Over £500,000</option>
                     </select>
-                </div>
-
-                <div class="form-group">
-                    <label>Industry Interests (Select all that apply)</label>
-                    <div class="checkbox-group">
-                        <label class="checkbox-item">
-                            <input type="checkbox" name="industry" value="food-beverage">
-                            Food & Beverage
-                        </label>
-                        <label class="checkbox-item">
-                            <input type="checkbox" name="industry" value="health-fitness">
-                            Health & Fitness
-                        </label>
-                        <label class="checkbox-item">
-                            <input type="checkbox" name="industry" value="retail">
-                            Retail
-                        </label>
-                        <label class="checkbox-item">
-                            <input type="checkbox" name="industry" value="services">
-                            Home & Business Services
-                        </label>
-                        <label class="checkbox-item">
-                            <input type="checkbox" name="industry" value="education">
-                            Education & Childcare
-                        </label>
-                        <label class="checkbox-item">
-                            <input type="checkbox" name="industry" value="other">
-                            Other / Not Sure
-                        </label>
-                    </div>
                 </div>
 
                 <div class="form-group">
@@ -929,16 +899,39 @@ function scoreMatch(f, prospect) {
     form.addEventListener('submit', async function (e) {
         e.preventDefault();
 
+        // ── Mandatory field validation ────────────────────────────────────────
+        const requiredFields = [
+            { id: 'name',  label: 'Full Name' },
+            { id: 'email', label: 'Email Address' },
+            { id: 'phone', label: 'Phone Number' }
+        ];
+        let hasErrors = false;
+        requiredFields.forEach(({ id, label }) => {
+            const el = document.getElementById(id);
+            const existing = el.parentElement.querySelector('.field-error');
+            if (existing) existing.remove();
+            el.style.borderColor = '';
+            if (!el.value.trim()) {
+                el.style.borderColor = '#e53e3e';
+                const msg = document.createElement('p');
+                msg.className = 'field-error';
+                msg.style.cssText = 'color:#e53e3e;font-size:0.85rem;margin-top:4px;';
+                msg.textContent = label + ' is required.';
+                el.parentElement.appendChild(msg);
+                hasErrors = true;
+            }
+        });
+        if (hasErrors) return;
+
         // Collect form data
         const fd = new FormData(form);
-        const industries = fd.getAll('industry');
         const prospect = {
             name:     fd.get('name')     || '',
             email:    fd.get('email')    || '',
             phone:    fd.get('phone')    || '',
             location: fd.get('location') || '',
             budget:   fd.get('budget')   || '',
-            industry: industries,
+            industry: [],
             timeline: fd.get('timeline') || '',
             message:  fd.get('message')  || ''
         };
@@ -947,17 +940,6 @@ function scoreMatch(f, prospect) {
         form.closest('.form-container').style.display = 'none';
         const loading = document.getElementById('match-loading');
         loading.classList.add('active');
-
-        // Capture lead in Netlify Forms (fire and forget)
-        fetch('/', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: new URLSearchParams(Object.assign(
-                { 'form-name': 'find-match' },
-                prospect,
-                { industry: industries.join(', ') }
-            )).toString()
-        }).catch(() => {});
 
         try {
             // Fetch franchisor data + artificial delay in parallel
@@ -975,6 +957,25 @@ function scoreMatch(f, prospect) {
                 })
                 .filter(Boolean)
                 .sort((a, b) => b.matchScore - a.matchScore);
+
+            // Capture lead + match results in Netlify Forms
+            const matchSummary = matches.length === 0
+                ? 'No matches found'
+                : matches.map((m, i) =>
+                    `#${i + 1} ${m.category} — ${m.matchScore}% match (${m.investmentDisplay}, ${m.locationsDisplay})`
+                  ).join(' | ');
+
+            fetch('/', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: new URLSearchParams(Object.assign(
+                    { 'form-name': 'find-match' },
+                    prospect,
+                    {
+                        matches: matchSummary
+                    }
+                )).toString()
+            }).catch(() => {});
 
             loading.classList.remove('active');
             renderResults(matches, prospect.name);
@@ -1218,7 +1219,7 @@ async function loadCMSContent() {
             setText('.page-intro p', findmatch.intro);
             setText('.form-section h2', findmatch.formTitle);
             if (findmatch.formFields) {
-                ['name','email','phone','location','budget','industry','timeline','goals'].forEach(key => {
+                ['name','email','phone','location','budget','timeline','goals'].forEach(key => {
                     const label = document.querySelector('label[for="' + key + '"]');
                     const labelKey = key + 'Label';
                     if (label && findmatch.formFields[labelKey]) label.textContent = findmatch.formFields[labelKey];

@@ -1105,6 +1105,14 @@ async function loadCMSContent() {
                 });
             }
             
+            // Match Preview
+            if (homepage.matchPreview) {
+                setText('.match-preview-header h2', homepage.matchPreview.title);
+                setText('.match-preview-header p', homepage.matchPreview.description);
+                const unlockBtn = document.querySelector('.unlock-cta');
+                if (unlockBtn && homepage.matchPreview.buttonText) unlockBtn.textContent = homepage.matchPreview.buttonText;
+            }
+
             // Final CTA
             if (homepage.finalCTA) {
                 setText('.final-cta h2', homepage.finalCTA.title);
