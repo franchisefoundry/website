@@ -9,7 +9,28 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
     <style>
+        :root {
+            --green:#5f725f;
+            --green-deep:#3a4a3a;
+            --green-dark:#2a352a;
+            --green-light:#eef3ee;
+            --green-mid:#d4e0d4;
+            --gold:#c8924a;
+            --gold-light:#f0d4a8;
+            --off-white:#f7f8f5;
+            --text-dark:#161a16;
+            --text-mid:#4a5568;
+            --text-light:#7a8990;
+            --white:#ffffff;
+            --border:#e2e8e2;
+            --radius-sm:8px;
+            --radius-md:16px;
+            --radius-lg:24px;
+            --radius-xl:32px;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -17,15 +38,16 @@
         }
 
         body {
-            font-family: 'Sora', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-family: 'Sora', system-ui, sans-serif;
             line-height: 1.6;
-            color: #2d3748;
-            background: #ffffff;
+            color: var(--text-dark);
+            background: var(--white);
+            -webkit-font-smoothing: antialiased;
         }
 
         /* Navigation */
         .navbar {
-            background: #5f725f;
+            background: var(--green);
             padding: 20px 40px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
             position: sticky;
@@ -46,19 +68,14 @@
             display: block;
         }
 
-        .navbar img {
-            height: 50px;
-            display: block;
-        }
-
-        .nav-menu {
+        .nav-links {
             display: flex;
             gap: 35px;
             list-style: none;
             align-items: center;
         }
 
-        .nav-menu a {
+        .nav-links a {
             color: white;
             text-decoration: none;
             font-weight: 500;
@@ -66,63 +83,99 @@
             transition: opacity 0.2s;
         }
 
-        .nav-menu a:hover {
+        .nav-links a:hover {
             opacity: 0.8;
         }
 
-        .nav-menu a.active {
-        }
-
-        .nav-separator {
-            width: 1px;
-            height: 20px;
-            background: rgba(255, 255, 255, 0.3);
-            margin: 0 10px;
-        }
-
-        .for-brands-link {
-            color: #d4a574 !important;
+        .nav-links a.active {
             font-weight: 600;
-            font-weight: 600;
-            border-bottom: 2px solid white;
+            border-bottom: 2px solid var(--gold);
             padding-bottom: 4px;
         }
 
+        .nav-sep {
+            width: 1px;
+            height: 20px;
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .nav-brands {
+            color: var(--gold) !important;
+            font-weight: 600;
+        }
+
+        .nav-cta {
+            background: var(--gold);
+            color: var(--text-dark) !important;
+            padding: 10px 20px !important;
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+        }
+
+        .nav-cta:hover {
+            background: var(--gold-light) !important;
+            opacity: 1;
+        }
+
         /* Page Header */
-        .page-header {
-            background: linear-gradient(135deg, #5f725f 0%, #4a5a4a 100%);
+        .page-hero {
+            background: linear-gradient(135deg, var(--green) 0%, var(--green-deep) 100%);
             padding: 100px 40px 80px;
             text-align: center;
         }
 
-        .page-header h1 {
+        .page-hero-inner {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .page-eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--gold);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 20px;
+        }
+
+        .eyebrow-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--gold);
+            border-radius: 50%;
+        }
+
+        .page-hero h1 {
             font-size: 3.5rem;
             color: white;
             margin-bottom: 20px;
             font-weight: 700;
+            line-height: 1.2;
         }
 
-        .page-header p {
+        .page-hero p {
             font-size: 1.3rem;
             color: rgba(255,255,255,0.9);
-            max-width: 700px;
-            margin: 0 auto;
             font-weight: 300;
         }
 
         /* Form Section */
         .form-section {
             padding: 100px 40px;
-            background: #f8f9fa;
+            background: var(--off-white);
         }
 
         .form-container {
-            max-width: 800px;
+            max-width: 760px;
             margin: 0 auto;
             background: white;
-            padding: 60px;
-            border-radius: 16px;
-            box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+            padding: 48px;
+            border-radius: var(--radius-xl);
+            border: 1.5px solid var(--border);
+            box-shadow: 0 4px 24px rgba(0,0,0,0.06);
         }
 
         .form-intro {
@@ -132,14 +185,14 @@
 
         .form-intro h2 {
             font-size: 2.2rem;
-            color: #2d3748;
+            color: var(--text-dark);
             margin-bottom: 16px;
             font-weight: 700;
         }
 
         .form-intro p {
             font-size: 1.1rem;
-            color: #4a5568;
+            color: var(--text-mid);
             font-weight: 300;
         }
 
@@ -149,20 +202,20 @@
 
         .form-group label {
             display: block;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
             font-weight: 600;
-            color: #2d3748;
-            font-size: 1rem;
+            color: var(--text-dark);
+            font-size: 0.85rem;
         }
 
         .form-group input,
         .form-group select,
         .form-group textarea {
             width: 100%;
-            padding: 14px 18px;
-            border: 2px solid #e8e8e8;
-            border-radius: 8px;
-            font-size: 1rem;
+            padding: 14px 16px;
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius-sm);
+            font-size: 0.95rem;
             font-family: 'Sora', sans-serif;
             transition: border-color 0.2s;
         }
@@ -171,7 +224,7 @@
         .form-group select:focus,
         .form-group textarea:focus {
             outline: none;
-            border-color: #5f725f;
+            border-color: var(--green);
         }
 
         .form-group textarea {
@@ -197,38 +250,35 @@
         }
 
         .submit-button {
-            background: #5f725f;
+            background: var(--green-deep);
             color: white;
-            padding: 18px 48px;
+            padding: 18px;
             border: none;
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 1.1rem;
+            border-radius: var(--radius-sm);
+            font-weight: 700;
+            font-size: 1.05rem;
             cursor: pointer;
             width: 100%;
-            transition: all 0.3s;
+            transition: all 0.2s;
             font-family: 'Sora', sans-serif;
         }
 
         .submit-button:hover {
-            background: #4a5a4a;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+            background: var(--green-dark);
+            transform: translateY(-1px);
         }
 
         .privacy-note {
-            margin-top: 24px;
-            padding: 20px;
-            background: #f8f9fa;
-            border-radius: 8px;
+            margin-top: 16px;
             font-size: 0.9rem;
-            color: #4a5568;
+            color: var(--text-light);
             text-align: center;
         }
 
         /* Process Section */
         .process-section {
             padding: 100px 40px;
+            background: var(--white);
         }
 
         .content-container {
@@ -239,7 +289,7 @@
         .section-title {
             font-size: 2.8rem;
             text-align: center;
-            color: #2d3748;
+            color: var(--text-dark);
             margin-bottom: 60px;
             font-weight: 700;
         }
@@ -253,8 +303,8 @@
             position: relative;
             margin-bottom: 60px;
             padding: 30px;
-            background: #f8f9fa;
-            border-radius: 12px;
+            background: var(--off-white);
+            border-radius: var(--radius-md);
         }
 
         .timeline-step::before {
@@ -265,7 +315,7 @@
             transform: translateY(-50%);
             width: 50px;
             height: 50px;
-            background: #5f725f;
+            background: var(--green);
             border-radius: 50%;
             text-align: center;
             line-height: 42px;
@@ -282,14 +332,14 @@
 
         .timeline-step h3 {
             font-size: 1.6rem;
-            color: #2d3748;
+            color: var(--text-dark);
             margin-bottom: 12px;
             font-weight: 600;
         }
 
         .timeline-step p {
             font-size: 1.05rem;
-            color: #4a5568;
+            color: var(--text-mid);
             line-height: 1.8;
             font-weight: 300;
         }
@@ -297,7 +347,7 @@
         /* Privacy Section */
         .privacy-section {
             padding: 80px 40px;
-            background: #f8f9fa;
+            background: var(--off-white);
         }
 
         .privacy-content {
@@ -307,7 +357,7 @@
 
         .privacy-content h2 {
             font-size: 2.2rem;
-            color: #2d3748;
+            color: var(--text-dark);
             margin-bottom: 30px;
             text-align: center;
             font-weight: 700;
@@ -315,7 +365,7 @@
 
         .privacy-content p {
             font-size: 1.05rem;
-            color: #4a5568;
+            color: var(--text-mid);
             margin-bottom: 20px;
             line-height: 1.8;
             font-weight: 300;
@@ -324,13 +374,14 @@
         .data-list {
             background: white;
             padding: 30px;
-            border-radius: 12px;
+            border-radius: var(--radius-md);
             margin: 30px 0;
+            border: 1.5px solid var(--border);
         }
 
         .data-list h3 {
             font-size: 1.4rem;
-            color: #5f725f;
+            color: var(--green);
             margin-bottom: 20px;
             font-weight: 600;
         }
@@ -344,20 +395,20 @@
             padding: 10px 0;
             padding-left: 30px;
             position: relative;
-            color: #4a5568;
+            color: var(--text-mid);
         }
 
         .data-list li::before {
             content: "✓";
             position: absolute;
             left: 0;
-            color: #5f725f;
+            color: var(--green);
             font-weight: 700;
         }
 
         /* Footer */
         footer {
-            background: #5f725f;
+            background: var(--green);
             color: white;
             padding: 60px 40px 30px;
         }
@@ -422,28 +473,28 @@
                 margin-bottom: 20px;
             }
 
-            .page-header h1 {
+            .page-hero h1 {
                 font-size: 2.5rem;
             }
         }
     </style>
 
-    <!-- ── Match Results Styles ───────────────────────────────────────── -->
+    <!-- Match Results Styles -->
     <style>
     /* Loading overlay */
     .match-loading {
         display: none;
         text-align: center;
         padding: 60px 20px;
-        background: #fff;
-        border-radius: 16px;
+        background: var(--white);
+        border-radius: var(--radius-md);
         margin-top: 20px;
     }
     .match-loading.active { display: block; }
     .loading-dots { display: flex; justify-content: center; gap: 8px; margin: 20px 0; }
     .loading-dots span {
         width: 12px; height: 12px;
-        background: #e8630a;
+        background: var(--gold);
         border-radius: 50%;
         animation: bounce 1.2s infinite ease-in-out;
     }
@@ -453,14 +504,14 @@
         0%, 80%, 100% { transform: scale(0.6); opacity: 0.4; }
         40% { transform: scale(1); opacity: 1; }
     }
-    .loading-text { font-size: 1.2rem; color: #555; font-weight: 500; }
-    .loading-sub  { font-size: 0.9rem; color: #999; margin-top: 8px; }
+    .loading-text { font-size: 1.2rem; color: var(--text-dark); font-weight: 500; }
+    .loading-sub  { font-size: 0.9rem; color: var(--text-light); margin-top: 8px; }
 
     /* Results section */
     .match-results-section {
         display: none;
         padding: 60px 20px;
-        background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
+        background: linear-gradient(135deg, var(--off-white) 0%, var(--green-light) 100%);
         opacity: 0;
         transform: translateY(30px);
         transition: opacity 0.6s ease, transform 0.6s ease;
@@ -473,18 +524,18 @@
     .results-inner { max-width: 900px; margin: 0 auto; }
     .results-headline {
         text-align: center;
-        color: #fff;
+        color: var(--text-dark);
         font-size: 2rem;
         font-weight: 700;
         margin-bottom: 8px;
     }
     .results-subline {
         text-align: center;
-        color: #aaa;
+        color: var(--text-mid);
         font-size: 1rem;
         margin-bottom: 40px;
     }
-    .results-subline strong { color: #e8630a; }
+    .results-subline strong { color: var(--gold); }
 
     /* Match cards */
     .match-cards-grid {
@@ -494,10 +545,11 @@
         margin-bottom: 40px;
     }
     .match-card {
-        background: #fff;
-        border-radius: 16px;
+        background: var(--white);
+        border-radius: var(--radius-lg);
         padding: 28px;
-        box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+        border: 1.5px solid var(--border);
+        box-shadow: 0 4px 24px rgba(0,0,0,0.06);
         opacity: 0;
         transform: translateY(40px);
         transition: opacity 0.5s ease, transform 0.5s ease, box-shadow 0.3s ease;
@@ -505,7 +557,7 @@
         overflow: hidden;
     }
     .match-card.revealed { opacity: 1; transform: translateY(0); }
-    .match-card:hover { box-shadow: 0 12px 40px rgba(232,99,10,0.25); }
+    .match-card:hover { box-shadow: 0 12px 40px rgba(200,146,74,0.15); }
 
     /* Top bar: category + score */
     .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; }
@@ -520,19 +572,19 @@
         font-weight: 700;
         text-transform: uppercase;
         letter-spacing: 0.5px;
-        color: #e8630a;
+        color: var(--gold);
     }
 
     /* Match score ring */
     .score-ring-wrap { position: relative; width: 64px; height: 64px; flex-shrink: 0; }
     .score-ring-wrap svg { transform: rotate(-90deg); }
-    .score-bg { fill: none; stroke: #f0f0f0; stroke-width: 5; }
+    .score-bg { fill: none; stroke: var(--green-light); stroke-width: 5; }
     .score-arc {
         fill: none;
-        stroke: #e8630a;
+        stroke: var(--gold);
         stroke-width: 5;
         stroke-linecap: round;
-        stroke-dasharray: 163; /* 2π × 26 */
+        stroke-dasharray: 163;
         stroke-dashoffset: 163;
         transition: stroke-dashoffset 1.4s cubic-bezier(0.4, 0, 0.2, 1);
     }
@@ -542,25 +594,25 @@
         transform: translate(-50%, -50%);
         font-size: 0.78rem;
         font-weight: 800;
-        color: #222;
+        color: var(--text-dark);
         text-align: center;
         line-height: 1.1;
     }
 
     /* Card body */
-    .card-teaser { font-size: 0.95rem; color: #444; line-height: 1.55; margin-bottom: 16px; }
+    .card-teaser { font-size: 0.95rem; color: var(--text-mid); line-height: 1.55; margin-bottom: 16px; }
 
     .card-meta { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
-    .card-meta-row { display: flex; align-items: center; gap: 8px; font-size: 0.88rem; color: #555; }
+    .card-meta-row { display: flex; align-items: center; gap: 8px; font-size: 0.88rem; color: var(--text-mid); }
     .card-meta-row span:first-child { font-size: 1rem; }
-    .meta-label { font-weight: 600; color: #333; }
+    .meta-label { font-weight: 600; color: var(--text-dark); }
 
     /* Highlights */
     .card-highlights { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 20px; }
     .highlight-tag {
-        background: #fff4ed;
-        color: #c25208;
-        border: 1px solid #fdd5b5;
+        background: var(--gold-light);
+        color: var(--gold);
+        border: 1px solid var(--gold);
         border-radius: 20px;
         padding: 3px 10px;
         font-size: 0.78rem;
@@ -569,8 +621,8 @@
 
     /* Locked brand reveal */
     .card-lock-bar {
-        background: linear-gradient(135deg, #f8f8f8, #ececec);
-        border: 1.5px dashed #ccc;
+        background: linear-gradient(135deg, var(--off-white), var(--green-light));
+        border: 1.5px dashed var(--border);
         border-radius: 10px;
         padding: 14px 16px;
         display: flex;
@@ -581,8 +633,8 @@
     }
     .lock-left { display: flex; align-items: center; gap: 10px; }
     .lock-icon { font-size: 1.3rem; }
-    .lock-text { font-size: 0.85rem; color: #888; }
-    .lock-text strong { display: block; color: #333; font-size: 0.9rem; }
+    .lock-text { font-size: 0.85rem; color: var(--text-light); }
+    .lock-text strong { display: block; color: var(--text-dark); font-size: 0.9rem; }
     .lock-blurred {
         font-size: 1rem;
         font-weight: 800;
@@ -597,10 +649,10 @@
         display: block;
         width: 100%;
         padding: 13px;
-        background: #e8630a;
-        color: #fff;
+        background: var(--gold);
+        color: var(--text-dark);
         border: none;
-        border-radius: 10px;
+        border-radius: var(--radius-sm);
         font-size: 0.95rem;
         font-weight: 700;
         text-align: center;
@@ -608,22 +660,22 @@
         text-decoration: none;
         transition: background 0.2s, transform 0.15s;
     }
-    .card-cta-btn:hover { background: #c25208; transform: translateY(-1px); }
+    .card-cta-btn:hover { background: var(--gold-light); transform: translateY(-1px); }
 
     /* Results footer disclaimer */
     .results-disclaimer {
         text-align: center;
-        color: #888;
+        color: var(--text-light);
         font-size: 0.82rem;
         margin-top: 8px;
         padding: 0 20px;
     }
-    .results-disclaimer strong { color: #ccc; }
+    .results-disclaimer strong { color: var(--text-mid); }
 
     /* No matches */
     .no-matches {
         text-align: center;
-        color: #ccc;
+        color: var(--text-light);
         padding: 40px 20px;
     }
 
@@ -638,22 +690,24 @@
     <nav class="navbar">
         <div class="nav-container">
             <a href="index.html"><img src="/images/copy-of-franchise-foundry-logo-final-2.png" alt="Franchise Foundry" class="navbar-logo"></a>
-            <ul class="nav-menu">
+            <ul class="nav-links">
                 <li><a href="index.html">Home</a></li>
                 <li><a href="about.html">About Us</a></li>
                 <li><a href="find-match.html" class="active">Find Your Match</a></li>
-                
-                <li class="nav-separator"></li>
-                <li><a href="for-brands.html">For Franchise Brands</a></li>
-                
+                <li class="nav-sep"></li>
+                <li><a href="for-brands.html" class="nav-brands">For Franchise Brands</a></li>
+                <li><a href="find-match.html" class="nav-cta">Get Your Match</a></li>
             </ul>
         </div>
     </nav>
 
     <!-- Page Header -->
-    <section class="page-header">
-        <h1>Find Your Perfect Franchise Match</h1>
-        <p>Tell us about yourself, and we'll match you with franchise opportunities that align with your goals and budget.</p>
+    <section class="page-hero">
+        <div class="page-hero-inner">
+            <div class="page-eyebrow"><span class="eyebrow-dot"></span> Free Matching Service</div>
+            <h1>Find Your Perfect Franchise Match</h1>
+            <p>Tell us about yourself, and we'll match you with hospitality franchise opportunities that align with your goals and budget.</p>
+        </div>
     </section>
 
     <!-- Form Section -->
@@ -741,11 +795,11 @@
     <section class="match-results-section" id="match-results">
         <div class="results-inner">
             <h2 class="results-headline" id="results-headline">Your Franchise Matches</h2>
-            <p class="results-subline" id="results-subline">Based on your profile — brand names revealed during your free consultation</p>
+            <p class="results-subline" id="results-subline">Based on your profile: brand names revealed during your free consultation</p>
             <div class="match-cards-grid" id="match-cards-grid"></div>
             <p class="results-disclaimer">
                 <strong>Why are brand names hidden?</strong> We protect both you and our franchise partners.
-                Full details — including brand names, financials, and introductions — are shared exclusively during your free consultation call.
+                Full details, including brand names, financials, and introductions, are shared exclusively during your free consultation call.
             </p>
         </div>
     </section>
@@ -806,7 +860,7 @@
     </section>
 
     <!-- Footer -->
-        <footer>
+    <footer>
         <div class="footer-content">
             <div class="footer-section" id="footer-brand-section">
                 <h3 id="footer-brand-name">Franchise Foundry</h3>
@@ -836,13 +890,6 @@
         </div>
         <div class="footer-bottom">
             <p id="footer-copyright">&copy; 2026 Franchise Foundry. All rights reserved.</p>
-        </div>
-    </footer>
-            </div>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <p>&copy; 2026 Franchise Foundry. All rights reserved.</p>
         </div>
     </footer>
 
@@ -962,7 +1009,7 @@ function scoreMatch(f, prospect) {
             const matchSummary = matches.length === 0
                 ? 'No matches found'
                 : matches.map((m, i) =>
-                    `#${i + 1} ${m.category} — ${m.matchScore}% match (${m.investmentDisplay}, ${m.locationsDisplay})`
+                    `#${i + 1} ${m.category} - ${m.matchScore}% match (${m.investmentDisplay}, ${m.locationsDisplay})`
                   ).join(' | ');
 
             fetch('/', {
@@ -1008,7 +1055,7 @@ function scoreMatch(f, prospect) {
             hl.textContent = matches.length === 1
                 ? `We found 1 franchise match for you, ${firstName}!`
                 : `We found ${matches.length} franchise matches for you, ${firstName}!`;
-            sub.innerHTML  = `Ranked by compatibility — <strong>brand names revealed during your free consultation</strong>`;
+            sub.innerHTML  = `Ranked by compatibility: <strong>brand names revealed during your free consultation</strong>`;
             grid.innerHTML = matches.map((m, i) => buildCard(m, i + 1)).join('');
         }
 
@@ -1080,7 +1127,7 @@ function scoreMatch(f, prospect) {
                 <div class="lock-left">
                     <span class="lock-icon">🔒</span>
                     <div class="lock-text">
-                        <strong>Match #${rank} — Identity Protected</strong>
+                        <strong>Match #${rank}: Identity Protected</strong>
                         Full brand details revealed on your consultation call
                     </div>
                 </div>

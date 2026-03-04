@@ -9,7 +9,28 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
     <style>
+        :root {
+            --green: #5f725f;
+            --green-deep: #3a4a3a;
+            --green-dark: #2a352a;
+            --green-light: #eef3ee;
+            --green-mid: #d4e0d4;
+            --gold: #c8924a;
+            --gold-light: #f0d4a8;
+            --off-white: #f7f8f5;
+            --text-dark: #161a16;
+            --text-mid: #4a5568;
+            --text-light: #7a8990;
+            --white: #ffffff;
+            --border: #e2e8e2;
+            --radius-sm: 8px;
+            --radius-md: 16px;
+            --radius-lg: 24px;
+            --radius-xl: 32px;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -17,17 +38,20 @@
         }
 
         body {
-            font-family: 'Sora', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-family: 'Sora', system-ui, sans-serif;
             line-height: 1.6;
-            color: #2d3748;
-            background: #ffffff;
+            color: var(--text-dark);
+            background: var(--white);
+            -webkit-font-smoothing: antialiased;
         }
 
-        /* Navigation */
+        /* ────────────────────────────────────────────────────────────────────
+           NAVBAR
+           ──────────────────────────────────────────────────────────────────── */
         .navbar {
-            background: #5f725f;
+            background: var(--green);
             padding: 20px 40px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
             position: sticky;
             top: 0;
             z-index: 1000;
@@ -46,19 +70,14 @@
             display: block;
         }
 
-        .navbar img {
-            height: 50px;
-            display: block;
-        }
-
-        .nav-menu {
+        .nav-links {
             display: flex;
             gap: 35px;
             list-style: none;
             align-items: center;
         }
 
-        .nav-menu a {
+        .nav-links a {
             color: white;
             text-decoration: none;
             font-weight: 500;
@@ -66,302 +85,407 @@
             transition: opacity 0.2s;
         }
 
-        .nav-menu a:hover {
+        .nav-links a:hover {
             opacity: 0.8;
         }
 
-        .nav-menu a.active {
+        .nav-links a.active {
+            color: var(--gold-light);
+            font-weight: 600;
         }
 
-        .nav-separator {
+        .nav-sep {
             width: 1px;
-            height: 20px;
-            background: rgba(255, 255, 255, 0.3);
-            margin: 0 10px;
+            height: 24px;
+            background: rgba(255, 255, 255, 0.2);
         }
 
-        .for-brands-link {
-            color: #d4a574 !important;
-            font-weight: 600;
-            font-weight: 600;
-            border-bottom: 2px solid white;
-            padding-bottom: 4px;
+        .nav-cta {
+            background: var(--gold) !important;
+            color: var(--white) !important;
+            padding: 8px 20px;
+            border-radius: var(--radius-sm);
+            transition: background 0.2s;
         }
 
-        /* Page Header */
-        .page-header {
-            background: linear-gradient(135deg, #5f725f 0%, #4a5a4a 100%);
-            padding: 100px 40px 80px;
+        .nav-cta:hover {
+            background: #b8813a !important;
         }
 
-        .header-content {
-            max-width: 1200px;
-            margin: 0 auto;
+        @media (max-width: 768px) {
+            .nav-links {
+                gap: 15px;
+                font-size: 0.9rem;
+            }
+            .nav-sep {
+                display: none;
+            }
+        }
+
+        /* ────────────────────────────────────────────────────────────────────
+           PAGE HERO (Page Intro)
+           ──────────────────────────────────────────────────────────────────── */
+        .page-hero {
+            background: linear-gradient(135deg, var(--green) 0%, var(--green-deep) 100%);
+            color: white;
+            padding: 80px 40px;
             text-align: center;
         }
 
-        .page-header h1 {
-            font-size: 3.5rem;
-            color: white;
-            margin-bottom: 24px;
-            font-weight: 700;
+        .page-hero-inner {
+            max-width: 900px;
+            margin: 0 auto;
         }
 
-        .page-header p {
-            font-size: 1.3rem;
-            color: rgba(255,255,255,0.9);
-            max-width: 800px;
-            margin: 0 auto 40px;
-            font-weight: 300;
-        }
-
-        .cta-button {
-            background: white;
-            color: #5f725f;
-            padding: 18px 40px;
-            border-radius: 8px;
-            text-decoration: none;
+        .page-eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.85rem;
             font-weight: 600;
-            font-size: 1.1rem;
-            display: inline-block;
-            transition: all 0.3s;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--gold-light);
+            margin-bottom: 16px;
         }
 
-        .cta-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        .eyebrow-dot {
+            width: 6px;
+            height: 6px;
+            background: var(--gold-light);
+            border-radius: 50%;
         }
 
-        /* Content Sections */
+        .page-hero h1 {
+            font-size: 3.2rem;
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: 20px;
+        }
+
+        .page-hero p {
+            font-size: 1.2rem;
+            line-height: 1.8;
+            color: rgba(255, 255, 255, 0.85);
+            margin-bottom: 32px;
+        }
+
+        @media (max-width: 768px) {
+            .page-hero {
+                padding: 60px 30px;
+            }
+            .page-hero h1 {
+                font-size: 2rem;
+            }
+            .page-hero p {
+                font-size: 1rem;
+            }
+        }
+
+        /* ────────────────────────────────────────────────────────────────────
+           SECTIONS & CONTAINERS
+           ──────────────────────────────────────────────────────────────────── */
         .section {
-            padding: 100px 40px;
+            padding: 72px 40px;
         }
 
-        .content-container {
-            max-width: 1200px;
+        .section-container {
+            max-width: 1280px;
             margin: 0 auto;
         }
 
         .section-title {
-            font-size: 2.8rem;
-            text-align: center;
-            color: #2d3748;
-            margin-bottom: 24px;
+            font-size: 2.4rem;
             font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 16px;
+            text-align: center;
         }
 
         .section-subtitle {
-            font-size: 1.2rem;
+            font-size: 1.1rem;
+            color: var(--text-mid);
             text-align: center;
-            color: #4a5568;
-            max-width: 800px;
-            margin: 0 auto 60px;
-            font-weight: 300;
+            max-width: 700px;
+            margin: 0 auto 48px;
         }
 
-        /* Benefits Grid */
+        /* ────────────────────────────────────────────────────────────────────
+           BENEFITS GRID
+           ──────────────────────────────────────────────────────────────────── */
         .benefits-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 40px;
-            margin-top: 60px;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 32px;
+            margin-top: 48px;
         }
 
         .benefit-card {
-            background: #f8f9fa;
-            padding: 40px;
-            border-radius: 16px;
-            transition: all 0.3s;
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 32px;
+            transition: all 0.3s ease;
         }
 
         .benefit-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+            border-color: var(--gold);
+            box-shadow: 0 12px 32px rgba(200, 146, 74, 0.1);
+            transform: translateY(-4px);
         }
 
         .benefit-icon {
-            font-size: 3rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 56px;
+            height: 56px;
+            background: var(--green-light);
+            border-radius: var(--radius-md);
             margin-bottom: 20px;
-            display: block;
+            font-size: 24px;
         }
 
         .benefit-card h3 {
-            font-size: 1.6rem;
-            color: #2d3748;
-            margin-bottom: 16px;
+            font-size: 1.25rem;
             font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 12px;
         }
 
         .benefit-card p {
-            font-size: 1.05rem;
-            color: #4a5568;
-            line-height: 1.8;
-            font-weight: 300;
+            font-size: 0.95rem;
+            color: var(--text-mid);
+            line-height: 1.7;
         }
 
-        /* Process Section */
-        .process-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 40px;
-            margin-top: 60px;
+        @media (max-width: 1024px) {
+            .benefits-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
         }
 
-        .process-step {
+        @media (max-width: 640px) {
+            .benefits-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* ────────────────────────────────────────────────────────────────────
+           HOW IT WORKS / PARTNERSHIP STEPS
+           ──────────────────────────────────────────────────────────────────── */
+        .partnership-step {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 32px;
             text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .partnership-step:hover {
+            border-color: var(--gold);
+            box-shadow: 0 12px 32px rgba(200, 146, 74, 0.1);
         }
 
         .step-number {
-            background: #5f725f;
-            color: white;
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            display: flex;
+            display: inline-flex;
             align-items: center;
-            justify-content: space-between;
-            font-size: 1.8rem;
+            justify-content: center;
+            width: 48px;
+            height: 48px;
+            background: var(--green);
+            color: white;
+            border-radius: 50%;
             font-weight: 700;
-            margin: 0 auto 24px;
+            font-size: 1.3rem;
+            margin-bottom: 20px;
         }
 
-        .process-step h3 {
-            font-size: 1.4rem;
-            color: #2d3748;
-            margin-bottom: 12px;
+        .partnership-step h3 {
+            font-size: 1.25rem;
             font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 12px;
         }
 
-        .process-step p {
+        .partnership-step p {
+            font-size: 0.95rem;
+            color: var(--text-mid);
+            line-height: 1.7;
+        }
+
+        .how-partnership-works {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+            margin-top: 48px;
+        }
+
+        @media (max-width: 1024px) {
+            .how-partnership-works {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 640px) {
+            .how-partnership-works {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* ────────────────────────────────────────────────────────────────────
+           IDEAL PARTNER SECTION
+           ──────────────────────────────────────────────────────────────────── */
+        .ideal-partner {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .ideal-partner h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 24px;
+            text-align: center;
+        }
+
+        .ideal-partner > p {
             font-size: 1rem;
-            color: #4a5568;
+            color: var(--text-mid);
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .criteria-list {
+            list-style: none;
+        }
+
+        .criteria-list li {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            padding: 12px 0;
+            font-size: 1rem;
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+
+        .criteria-list li:before {
+            content: '';
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 24px;
+            background: var(--green-light);
+            border: 1.5px solid var(--green);
+            border-radius: 4px;
+            margin-top: 2px;
+            flex-shrink: 0;
+        }
+
+        .criteria-list li:before {
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%235f725f' stroke-width='3'%3E%3Cpolyline points='20 6 9 17 4 12'%3E%3C/polyline%3E%3C/svg%3E") center/14px no-repeat var(--green-light);
+        }
+
+        /* ────────────────────────────────────────────────────────────────────
+           CTA SECTION (Partnership CTA)
+           ──────────────────────────────────────────────────────────────────── */
+        .partnership-cta {
+            background: var(--green-dark);
+            color: white;
+            padding: 72px 40px;
+            text-align: center;
+            border-radius: 0;
+        }
+
+        .partnership-cta h2 {
+            font-size: 2.4rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+
+        .partnership-cta p {
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.85);
+            max-width: 600px;
+            margin: 0 auto 32px;
+            line-height: 1.8;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: var(--gold);
+            color: var(--white);
+            padding: 14px 36px;
+            border-radius: var(--radius-sm);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: background 0.2s;
+            border: none;
+            cursor: pointer;
+        }
+
+        .cta-button:hover {
+            background: #b8813a;
+        }
+
+        /* ────────────────────────────────────────────────────────────────────
+           FOOTER
+           ──────────────────────────────────────────────────────────────────── */
+        footer {
+            background: var(--green-dark);
+            color: white;
+            padding: 72px 40px 32px;
+        }
+
+        .footer-grid {
+            max-width: 1280px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1.5fr 1fr 1fr 1fr;
+            gap: 48px;
+            padding-bottom: 48px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            margin-bottom: 32px;
+        }
+
+        .footer-logo {
+            height: 34px;
+            margin-bottom: 16px;
+            display: block;
+        }
+
+        .footer-brand p {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.5);
             line-height: 1.7;
             font-weight: 300;
         }
 
-        /* Contact Form Section */
-        .form-section {
-            background: #f8f9fa;
-            padding: 100px 40px;
+        .footer-tagline {
+            margin-top: 16px !important;
         }
 
-        .form-container {
-            max-width: 700px;
-            margin: 0 auto;
-            background: white;
-            padding: 50px;
-            border-radius: 16px;
-            box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+        .footer-tagline em {
+            font-style: normal;
+            font-size: 0.78rem;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--gold-light);
         }
 
-        .form-header {
-            text-align: center;
-            margin-bottom: 40px;
-        }
-
-        .form-header h2 {
-            font-size: 2.2rem;
-            color: #2d3748;
-            margin-bottom: 12px;
+        .footer-col h4 {
+            font-size: 0.72rem;
             font-weight: 700;
-        }
-
-        .form-header p {
-            font-size: 1.05rem;
-            color: #4a5568;
-            font-weight: 300;
-        }
-
-        .form-group {
-            margin-bottom: 28px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: #2d3748;
-        }
-
-        .form-group input,
-        .form-group select,
-        .form-group textarea {
-            width: 100%;
-            padding: 14px 18px;
-            border: 2px solid #e8e8e8;
-            border-radius: 8px;
-            font-size: 1rem;
-            font-family: 'Sora', sans-serif;
-            transition: border-color 0.2s;
-        }
-
-        .form-group input:focus,
-        .form-group select:focus,
-        .form-group textarea:focus {
-            outline: none;
-            border-color: #5f725f;
-        }
-
-        .form-group textarea {
-            min-height: 120px;
-            resize: vertical;
-        }
-
-        .submit-button {
-            background: #5f725f;
-            color: white;
-            padding: 18px 48px;
-            border: none;
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 1.1rem;
-            cursor: pointer;
-            width: 100%;
-            transition: all 0.3s;
-            font-family: 'Sora', sans-serif;
-        }
-
-        .submit-button:hover {
-            background: #4a5a4a;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0,0,0,0.2);
-        }
-
-        /* Footer */
-        footer {
-            background: #5f725f;
-            color: white;
-            padding: 60px 40px 30px;
-        }
-
-        .footer-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 40px;
-            margin-bottom: 40px;
-        }
-
-        .footer-section h3 {
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.35);
             margin-bottom: 20px;
-            font-size: 1.3rem;
-            font-weight: 600;
-        }
-
-        .footer-section p,
-        .footer-section a {
-            color: rgba(255, 255, 255, 0.9);
-            text-decoration: none;
-            display: block;
-            margin-bottom: 10px;
-            font-weight: 300;
-        }
-
-        .footer-section a:hover {
-            color: white;
-            text-decoration: underline;
         }
 
         .footer-links {
@@ -372,159 +496,201 @@
             margin-bottom: 10px;
         }
 
-        .footer-bottom {
-            text-align: center;
-            padding-top: 30px;
-            border-top: 1px solid rgba(255, 255, 255, 0.2);
-            color: rgba(255, 255, 255, 0.8);
+        .footer-col a,
+        .footer-links a,
+        .footer-col p {
+            display: block;
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.6);
+            text-decoration: none;
+            margin-bottom: 10px;
             font-weight: 300;
+            transition: color 0.2s;
         }
 
-        /* Responsive */
-        @media (max-width: 768px) {
-            .page-header h1 {
-                font-size: 2.5rem;
-            }
-
-            .form-container {
-                padding: 40px 30px;
-            }
-        }
-
-        /* For Brands Page - Different Color Scheme */
-        body.for-brands-page {
-            background: #f8f9fa;
-        }
-
-        .for-brands-page .navbar {
-            background: #4a4a4a;
-        }
-
-        .for-brands-page .hero {
-            background: linear-gradient(135deg, #4a4a4a 0%, #3a3a3a 100%);
-        }
-
-        .for-brands-page .section {
-            background: white;
-        }
-
-        .for-brands-page .section:nth-child(even) {
-            background: #f8f9fa;
-        }
-
-        .for-brands-page .cta-button {
-            background: #d4a574;
+        .footer-col a:hover,
+        .footer-links a:hover {
             color: white;
         }
 
-        .for-brands-page .cta-button:hover {
-            background: #c49564;
+        .footer-bottom {
+            max-width: 1280px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
-        .for-brands-page .benefit-card {
-            border-left: 4px solid #d4a574;
+        .footer-bottom p {
+            font-size: 0.82rem;
+            color: rgba(255, 255, 255, 0.3);
+            font-weight: 300;
         }
 
-        .for-brands-page .stat-number {
-            color: #d4a574;
+        @media (max-width: 900px) {
+            .footer-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 32px;
+            }
         }
 
-        .for-brands-page .for-brands-link {
-            color: white !important;
-            border-bottom: 2px solid #d4a574;
+        @media (max-width: 600px) {
+            .footer-grid {
+                grid-template-columns: 1fr;
+            }
+            .footer-bottom {
+                flex-direction: column;
+                gap: 8px;
+                text-align: center;
+            }
+        }
+
+        /* ────────────────────────────────────────────────────────────────────
+           SECTION BACKGROUNDS
+           ──────────────────────────────────────────────────────────────────── */
+        .section:nth-child(odd) {
+            background: var(--white);
+        }
+
+        .section:nth-child(even) {
+            background: var(--off-white);
+        }
+
+        .section.dark-cta {
+            background: var(--green-dark);
+        }
+
+        @media (max-width: 768px) {
+            .section {
+                padding: 48px 30px;
+            }
+            .section-title {
+                font-size: 1.8rem;
+            }
+            .section-subtitle {
+                font-size: 1rem;
+            }
         }
     </style>
 </head>
-<body class="for-brands-page">
+<body>
     <!-- Navigation -->
     <nav class="navbar">
         <div class="nav-container">
             <a href="index.html"><img src="/images/copy-of-franchise-foundry-logo-final-2.png" alt="Franchise Foundry" class="navbar-logo"></a>
-            <ul class="nav-menu">
+            <ul class="nav-links">
                 <li><a href="index.html">Home</a></li>
                 <li><a href="about.html">About Us</a></li>
                 <li><a href="find-match.html">Find Your Match</a></li>
-                
-                <li class="nav-separator"></li>
-                <li><a href="for-brands.html" class="active">For Franchise Brands</a></li>
-                
+                <li><a href="contact.html">Contact</a></li>
+                <li class="nav-sep"></li>
+                <li><a href="for-brands.html" class="nav-brands active">For Franchise Brands</a></li>
+                <li><a href="find-match.html" class="nav-cta">Get Your Match</a></li>
             </ul>
         </div>
     </nav>
 
-    <!-- Page Header -->
-    <section class="page-header">
-        <div class="header-content">
-            <h1>Partner with Franchise Foundry</h1>
-            <p>We connect high-quality franchise brands with pre-vetted, investment-ready franchisee candidates who are genuinely prepared to succeed.</p>
-            <a href="#contact-form" class="cta-button">Discuss a Partnership</a>
+    <!-- Page Hero -->
+    <section class="page-hero page-intro">
+        <div class="page-hero-inner">
+            <div class="page-eyebrow"><span class="eyebrow-dot"></span> Franchise Brands</div>
+            <h1>Partner With the UK's Leading Franchise Matching Service</h1>
+            <p>Connect with pre-qualified, motivated franchisees who are ready to invest in the hospitality sector.</p>
         </div>
     </section>
 
-    <!-- Why Partner Section -->
+    <!-- Benefits Section -->
     <section class="section">
-        <div class="content-container">
+        <div class="section-container">
             <h2 class="section-title">Why Partner with Us?</h2>
             <p class="section-subtitle">We deliver quality franchisee candidates, not just volume. Our rigorous vetting process means you only meet people who are truly ready.</p>
-            
             <div class="benefits-grid">
                 <div class="benefit-card">
-                    <span class="benefit-icon">🎯</span>
+                    <div class="benefit-icon">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="12 3 20 7.5 20 16.5 12 21 4 16.5 4 7.5 12 3"></polyline>
+                        </svg>
+                    </div>
                     <h3>Pre-Qualified Candidates</h3>
-                    <p>Every candidate we introduce has been thoroughly assessed for fit, financial readiness, and genuine commitment-saving you time and reducing false starts.</p>
+                    <p>Every candidate we introduce has been thoroughly assessed for fit, financial readiness, and genuine commitment, saving you time and reducing false starts.</p>
                 </div>
                 <div class="benefit-card">
-                    <span class="benefit-icon">⚡</span>
+                    <div class="benefit-icon">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="12" y1="2" x2="12" y2="22"></line>
+                            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                        </svg>
+                    </div>
                     <h3>Faster Conversion</h3>
                     <p>Candidates are prepared, educated, and decision-ready before they meet you. This means shorter sales cycles and higher conversion rates.</p>
                 </div>
                 <div class="benefit-card">
-                    <span class="benefit-icon">🤝</span>
+                    <div class="benefit-icon">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="9" cy="7" r="4"></circle>
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                        </svg>
+                    </div>
                     <h3>Operator Experience</h3>
                     <p>We've built and scaled franchises ourselves. We understand what makes a successful franchisee and we know how to identify them.</p>
                 </div>
                 <div class="benefit-card">
-                    <span class="benefit-icon">📊</span>
+                    <div class="benefit-icon">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="12" y1="5" x2="12" y2="19"></line>
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                        </svg>
+                    </div>
                     <h3>Quality Over Quantity</h3>
                     <p>We focus on finding the right franchisees, not just any franchisees. Smaller pipeline, higher quality, better long-term outcomes.</p>
                 </div>
                 <div class="benefit-card">
-                    <span class="benefit-icon">💰</span>
+                    <div class="benefit-icon">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 2v20m10-10H2"></path>
+                        </svg>
+                    </div>
                     <h3>Success-Based Model</h3>
                     <p>We only succeed when you do. Our fee structure aligns our incentives with your growth goals.</p>
                 </div>
                 <div class="benefit-card">
-                    <span class="benefit-icon">🔍</span>
+                    <div class="benefit-icon">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <path d="m21 21-4.35-4.35"></path>
+                        </svg>
+                    </div>
                     <h3>Deep Candidate Vetting</h3>
-                    <p>We assess capability, commitment, financial resilience, and cultural fit before making introductions-reducing your risk of wrong-fit franchisees.</p>
+                    <p>We assess capability, commitment, financial resilience, and cultural fit before making introductions, reducing your risk of wrong-fit franchisees.</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- How It Works -->
-    <section class="section" style="background: #f8f9fa;">
-        <div class="content-container">
-            <h2 class="section-title">How Partnership Works</h2>
+    <!-- How It Works Section -->
+    <section class="section">
+        <div class="section-container">
+            <h2 class="section-title how-partnership-works-title">How Partnership Works</h2>
             <p class="section-subtitle">A straightforward process designed to deliver quality franchisee candidates to your network.</p>
-            
-            <div class="process-grid">
-                <div class="process-step">
+            <div class="how-partnership-works">
+                <div class="partnership-step">
                     <div class="step-number">1</div>
                     <h3>Discovery Call</h3>
                     <p>We'll discuss your ideal franchisee profile, growth targets, and current recruitment process.</p>
                 </div>
-                <div class="process-step">
+                <div class="partnership-step">
                     <div class="step-number">2</div>
                     <h3>Alignment</h3>
                     <p>We'll agree on terms, candidate criteria, and how we'll work together.</p>
                 </div>
-                <div class="process-step">
+                <div class="partnership-step">
                     <div class="step-number">3</div>
                     <h3>Candidate Sourcing</h3>
                     <p>We source, assess, and prepare candidates who match your specific requirements.</p>
                 </div>
-                <div class="process-step">
+                <div class="partnership-step">
                     <div class="step-number">4</div>
                     <h3>Introductions</h3>
                     <p>We introduce pre-qualified, investment-ready candidates directly to you.</p>
@@ -533,96 +699,42 @@
         </div>
     </section>
 
-    <!-- Who We Work With -->
+    <!-- Ideal Partner Section -->
     <section class="section">
-        <div class="content-container">
-            <h2 class="section-title">Who We Partner With</h2>
-            <p class="section-subtitle">We work with ambitious franchise brands across multiple sectors, with a particular focus on hospitality and services.</p>
-            
-            <div style="max-width: 800px; margin: 0 auto; background: #f8f9fa; padding: 50px; border-radius: 16px; text-align: center;">
-                <h3 style="font-size: 1.8rem; color: #2d3748; margin-bottom: 20px; font-weight: 600;">Ideal Partner Profile</h3>
-                <p style="font-size: 1.1rem; color: #4a5568; line-height: 1.8; font-weight: 300; text-align: left;">
-                    ✓ Established franchise brands with proven unit economics<br>
-                    ✓ Clear franchisee support systems and training programmes<br>
-                    ✓ Realistic growth targets and territory availability<br>
-                    ✓ Commitment to quality franchisee selection over speed<br>
-                    ✓ Transparent about investment requirements and expectations
-                </p>
+        <div class="section-container">
+            <div class="ideal-partner">
+                <h2>Who We Partner With</h2>
+                <p>We work with ambitious franchise brands across multiple sectors, with a particular focus on hospitality and services.</p>
+                <ul class="criteria-list">
+                    <li>Established franchise brands with proven unit economics</li>
+                    <li>Clear franchisee support systems and training programmes</li>
+                    <li>Realistic growth targets and territory availability</li>
+                    <li>Commitment to quality franchisee selection over speed</li>
+                    <li>Transparent about investment requirements and expectations</li>
+                </ul>
             </div>
         </div>
     </section>
 
-    <!-- Contact Form -->
-    <section class="form-section" id="contact-form">
-        <div class="form-container">
-            <div class="form-header">
-                <h2>Let's Discuss a Partnership</h2>
-                <p>Tell us about your brand and we'll be in touch to explore how we can work together.</p>
-            </div>
-
-            <form name="for-brands" method="POST" data-netlify="true" netlify-honeypot="bot-field" action="/thank-you.html">
-                <input type="hidden" name="form-name" value="for-brands">
-                <p style="display:none;">
-                    <label>Don't fill this out: <input name="bot-field"></label>
-                </p>
-                <div class="form-group">
-                    <label for="brand-name">Brand / Company Name *</label>
-                    <input type="text" id="brand-name" name="brand-name" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="contact-name">Your Name *</label>
-                    <input type="text" id="contact-name" name="contact-name" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="email">Email Address *</label>
-                    <input type="email" id="email" name="email" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="phone">Phone Number *</label>
-                    <input type="tel" id="phone" name="phone" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="industry">Industry Sector</label>
-                    <select id="industry" name="industry">
-                        <option value="">Select your sector</option>
-                        <option value="food-beverage">Food & Beverage</option>
-                        <option value="health-fitness">Health & Fitness</option>
-                        <option value="retail">Retail</option>
-                        <option value="services">Home & Business Services</option>
-                        <option value="education">Education & Childcare</option>
-                        <option value="other">Other</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label for="current-units">Current Number of Franchise Units</label>
-                    <input type="text" id="current-units" name="current-units" placeholder="e.g., 15 units">
-                </div>
-
-                <div class="form-group">
-                    <label for="message">Tell us about your franchise opportunity and growth plans</label>
-                    <textarea id="message" name="message" placeholder="What makes your franchise unique? What are your expansion goals?"></textarea>
-                </div>
-
-                <button type="submit" class="submit-button">Request Partnership Discussion</button>
-            </form>
+    <!-- CTA Section -->
+    <section class="section dark-cta partnership-cta">
+        <div class="section-container">
+            <h2>Let's Discuss a Partnership</h2>
+            <p>Tell us about your brand and we'll be in touch to explore how we can work together.</p>
+            <a href="contact.html" class="cta-button">Get in Touch</a>
         </div>
     </section>
 
     <!-- Footer -->
-        <footer>
-        <div class="footer-content">
-            <div class="footer-section" id="footer-brand-section">
-                <h3 id="footer-brand-name">Franchise Foundry</h3>
+    <footer>
+        <div class="footer-grid">
+            <div class="footer-brand">
+                <img src="/images/copy-of-franchise-foundry-logo-final-2.png" alt="Franchise Foundry" class="footer-logo">
                 <p id="footer-brand-desc">Helping aspiring franchisees find the perfect franchise opportunity since 2024.</p>
-                <p id="footer-brand-tagline" style="margin-top: 20px;"><em>Discover. Connect. Franchise.</em></p>
+                <p id="footer-brand-tagline" class="footer-tagline"><em>Discover. Connect. Franchise.</em></p>
             </div>
-            <div class="footer-section" id="footer-links-section">
-                <h3 id="footer-links-title">Quick Links</h3>
+            <div class="footer-col">
+                <h4 id="footer-links-title">Quick Links</h4>
                 <ul class="footer-links" id="footer-links-list">
                     <li><a href="index.html">Home</a></li>
                     <li><a href="about.html">About Us</a></li>
@@ -631,26 +743,25 @@
                     <li><a href="contact.html">Contact Us</a></li>
                 </ul>
             </div>
-            <div class="footer-section" id="footer-contact-section">
-                <h3 id="footer-contact-title">Contact</h3>
+            <div class="footer-col">
+                <h4>Company</h4>
+                <a href="about.html">About Us</a>
+                <a href="for-brands.html">For Franchise Brands</a>
+            </div>
+            <div class="footer-col" id="footer-contact-section">
+                <h4 id="footer-contact-title">Contact</h4>
                 <p id="footer-contact-email"><a href="mailto:connect@franchisefoundry.co.uk">connect@franchisefoundry.co.uk</a></p>
                 <p id="footer-contact-phone" style="display:none"></p>
                 <p id="footer-contact-address" style="display:none"></p>
             </div>
-            <div class="footer-section" id="footer-social-section" style="display:none">
-                <h3 id="footer-social-title">Follow Us</h3>
+            <div id="footer-social-section" style="display:none">
+                <h4 id="footer-social-title">Follow Us</h4>
                 <div id="footer-social-links"></div>
             </div>
         </div>
         <div class="footer-bottom">
             <p id="footer-copyright">&copy; 2026 Franchise Foundry. All rights reserved.</p>
-        </div>
-    </footer>
-            </div>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <p>&copy; 2026 Franchise Foundry. All rights reserved.</p>
+            <p>Built for hospitality franchise matching.</p>
         </div>
     </footer>
 
@@ -667,7 +778,7 @@ async function loadCMSContent() {
             fetch('/content/settings.json').then(r => r.json()).catch(() => null),
             fetch('/content/footer.json').then(r => r.json()).catch(() => null)
         ]);
-        
+
         // Determine which page we're on
         const path = window.location.pathname;
         const isHomepage = path === '/' || path.includes('index.html');
@@ -675,7 +786,7 @@ async function loadCMSContent() {
         const isContact = path.includes('contact.html');
         const isFindMatch = path.includes('find-match.html');
         const isForBrands = path.includes('for-brands.html');
-        
+
         // Load homepage content
         if (isHomepage && homepage) {
             // Hero section
@@ -684,7 +795,7 @@ async function loadCMSContent() {
                 setText('.hero-text .subtitle', homepage.hero.subtitle);
                 setText('.hero-text .description', homepage.hero.description);
             }
-            
+
             // Statistics
             if (homepage.stats) {
                 const stats = document.querySelectorAll('.stat-item');
@@ -701,7 +812,7 @@ async function loadCMSContent() {
                     setText(stats[2].querySelector('.stat-label'), homepage.stats.worthDesc);
                 }
             }
-            
+
             // Benefits
             if (homepage.benefits) {
                 const benefitCards = document.querySelectorAll('.benefit-card');
@@ -712,13 +823,13 @@ async function loadCMSContent() {
                     }
                 });
             }
-            
+
             // How It Works
             if (homepage.howItWorks) {
                 setText('.how-it-works .section-title', homepage.howItWorks.title);
                 setText('.how-it-works .section-subtitle', homepage.howItWorks.subtitle);
             }
-            
+
             // Steps
             if (homepage.steps) {
                 const stepCards = document.querySelectorAll('.step-card');
@@ -730,14 +841,14 @@ async function loadCMSContent() {
                     }
                 });
             }
-            
+
             // Final CTA
             if (homepage.finalCTA) {
                 setText('.final-cta h2', homepage.finalCTA.title);
                 setText('.final-cta > p', homepage.finalCTA.description);
                 setText('.page-header p', about.header.subtitle);
             }
-            
+
             if (about.story) {
                 const storySection = document.querySelector('.story-section');
                 if (storySection) {
@@ -748,7 +859,7 @@ async function loadCMSContent() {
                     if (paragraphs[2]) paragraphs[2].textContent = about.story.text3;
                 }
             }
-            
+
             if (about.experience) {
                 const expCards = document.querySelectorAll('.experience-card');
                 about.experience.forEach((exp, i) => {
@@ -758,7 +869,7 @@ async function loadCMSContent() {
                     }
                 });
             }
-            
+
             if (about.values) {
                 const valueCards = document.querySelectorAll('.value-card');
                 about.values.forEach((val, i) => {
@@ -769,25 +880,25 @@ async function loadCMSContent() {
                 });
             }
         }
-        
+
         // Load Contact page content
         if (isContact && contact) {
             setText('.contact-intro h1', contact.title);
             setText('.contact-intro p', contact.intro);
         }
-        
+
         // Load Find Match page content
         if (isFindMatch && findmatch) {
             setText('.page-intro h1', findmatch.title);
             setText('.page-intro p', findmatch.intro);
             setText('.form-section h2', findmatch.formTitle);
         }
-        
+
         // Load For Brands page content
         if (isForBrands && forbrands) {
             setText('.page-intro h1', forbrands.title);
             setText('.page-intro p', forbrands.intro);
-            
+
             // Benefits
             if (forbrands.benefits) {
                 const benefitCards = document.querySelectorAll('.benefit-card');
@@ -798,10 +909,10 @@ async function loadCMSContent() {
                     }
                 });
             }
-            
+
             // How It Works
             if (forbrands.howItWorks) {
-                setText('.how-partnership-works h2', forbrands.howItWorks.title);
+                setText('.how-partnership-works-title', forbrands.howItWorks.title);
                 const stepCards = document.querySelectorAll('.partnership-step');
                 if (forbrands.howItWorks.steps) {
                     forbrands.howItWorks.steps.forEach((step, i) => {
@@ -813,442 +924,7 @@ async function loadCMSContent() {
                     });
                 }
             }
-            
-            // Ideal Partner
-        const isFindMatch = path.includes('find-match.html');
-        const isForBrands = path.includes('for-brands.html');
-        
-        // Load homepage content
-        if (isHomepage && homepage) {
-            // Hero section
-            if (homepage.hero) {
-                setText('.hero-text h1', homepage.hero.title);
-                setText('.hero-text .subtitle', homepage.hero.subtitle);
-                setText('.hero-text .description', homepage.hero.description);
-            }
-            
-            // Statistics
-            if (homepage.stats) {
-                const stats = document.querySelectorAll('.stat-item');
-                if (stats[0]) {
-                    setText(stats[0].querySelector('.stat-number'), homepage.stats.years);
-                    setText(stats[0].querySelector('.stat-label'), homepage.stats.yearsDesc);
-                }
-                if (stats[1]) {
-                    setText(stats[1].querySelector('.stat-number'), homepage.stats.freeLabel);
-                    setText(stats[1].querySelector('.stat-label'), homepage.stats.freeDesc);
-                }
-                if (stats[2]) {
-                    setText(stats[2].querySelector('.stat-number'), homepage.stats.worth);
-                    setText(stats[2].querySelector('.stat-label'), homepage.stats.worthDesc);
-                }
-            }
-            
-            // Benefits
-            if (homepage.benefits) {
-                const benefitCards = document.querySelectorAll('.benefit-card');
-                homepage.benefits.forEach((benefit, i) => {
-                    if (benefitCards[i]) {
-                        setText(benefitCards[i].querySelector('h3'), benefit.title);
-                        setText(benefitCards[i].querySelector('p'), benefit.description);
-                    }
-                });
-            }
-            
-            // How It Works
-            if (homepage.howItWorks) {
-                setText('.how-it-works .section-title', homepage.howItWorks.title);
-                setText('.how-it-works .section-subtitle', homepage.howItWorks.subtitle);
-            }
-            
-            // Steps
-            if (homepage.steps) {
-                const stepCards = document.querySelectorAll('.step-card');
-                homepage.steps.forEach((step, i) => {
-                    if (stepCards[i]) {
-                        setText(stepCards[i].querySelector('.step-number'), step.number);
-                        setText(stepCards[i].querySelector('h3'), step.title);
-                        setText(stepCards[i].querySelector('p'), step.description);
-                    }
-                });
-            }
-            
-            // Final CTA
-            if (homepage.finalCTA) {
-                setText('.final-cta h2', homepage.finalCTA.title);
-                setText('.final-cta > p', homepage.finalCTA.description);
-            }
-        }
-        
-        // Load About page content
-        if (isAbout && about) {
-            if (about.header) {
-                setText('.page-header h1', about.header.title);
-                setText('.page-header p', about.header.subtitle);
-            }
-            
-            if (about.story) {
-                const storySection = document.querySelector('.story-section');
-                if (storySection) {
-                    setText(storySection.querySelector('h2'), about.story.title);
-                    const paragraphs = storySection.querySelectorAll('p');
-                    if (paragraphs[0]) paragraphs[0].textContent = about.story.text1;
-                    if (paragraphs[1]) paragraphs[1].textContent = about.story.text2;
-                    if (paragraphs[2]) paragraphs[2].textContent = about.story.text3;
-                }
-            }
-            
-            if (about.experience) {
-                const expCards = document.querySelectorAll('.experience-card');
-                about.experience.forEach((exp, i) => {
-                    if (expCards[i]) {
-                        setText(expCards[i].querySelector('h3'), exp.title);
-                        setText(expCards[i].querySelector('p'), exp.description);
-                    }
-                });
-            }
-            
-            if (about.values) {
-                const valueCards = document.querySelectorAll('.value-card');
-                about.values.forEach((val, i) => {
-                    if (valueCards[i]) {
-                        setText(valueCards[i].querySelector('h3'), val.title);
-                        setText(valueCards[i].querySelector('p'), val.description);
-                    }
-                });
-            }
-        }
-        
-        // Load Contact page content
-        if (isContact && contact) {
-            setText('.contact-intro h1', contact.title);
-            setText('.contact-intro p', contact.intro);
-            
-            // Contact methods
-            if (contact.methods) {
-                setText('.contact-methods .email-label', contact.methods.emailLabel);
-                setText('.contact-methods .avail-label', contact.methods.availLabel);
-                setText('.contact-methods .avail-text', contact.methods.availText);
-            }
-            
-            // Form fields
-            if (contact.form) {
-                setText('.contact-form h2', contact.form.title);
-                const labels = {
-                    'name': contact.form.nameLabel,
-                    'email': contact.form.emailLabel,
-                    'phone': contact.form.phoneLabel,
-                    'subject': contact.form.subjectLabel,
-                    'message': contact.form.messageLabel
-                };
-                Object.keys(labels).forEach(key => {
-                    const label = document.querySelector(`label[for="${key}"]`);
-                    if (label && labels[key]) label.textContent = labels[key];
-                });
-                const submitBtn = document.querySelector('.contact-form button[type="submit"]');
-                if (submitBtn && contact.form.submitButton) {
-                    submitBtn.textContent = contact.form.submitButton;
-                }
-            }
-        }
-        
-        // Load Find Match page content
-        if (isFindMatch && findmatch) {
-            setText('.page-intro h1', findmatch.title);
-            setText('.page-intro p', findmatch.intro);
-            setText('.form-section h2', findmatch.formTitle);
-            
-            // Form fields
-            if (findmatch.formFields) {
-                const fieldMap = {
-                    'name': 'nameLabel',
-                    'email': 'emailLabel',
-                    'phone': 'phoneLabel',
-                    'location': 'locationLabel',
-                    'budget': 'budgetLabel',
-                    'industry': 'industryLabel',
-                    'timeline': 'timelineLabel',
-                    'goals': 'goalsLabel'
-                };
-                Object.keys(fieldMap).forEach(key => {
-                    const label = document.querySelector(`label[for="${key}"]`);
-                    if (label && findmatch.formFields[fieldMap[key]]) {
-                        label.textContent = findmatch.formFields[fieldMap[key]];
-                    }
-                });
-                const submitBtn = document.querySelector('.consultation-form button[type="submit"]');
-                if (submitBtn && findmatch.formFields.submitButton) {
-                    submitBtn.textContent = findmatch.formFields.submitButton;
-                }
-            }
-            
-            // Next steps
-            if (findmatch.nextSteps) {
-                setText('.next-steps h2', findmatch.nextSteps.title);
-                if (findmatch.nextSteps.steps) {
-                    const stepItems = document.querySelectorAll('.timeline-step');
-                    findmatch.nextSteps.steps.forEach((step, i) => {
-                        if (stepItems[i]) {
-                            setText(stepItems[i].querySelector('h3'), step.title);
-                            setText(stepItems[i].querySelector('p'), step.description);
-                        }
-                    });
-                }
-            }
-            
-            // Privacy
-            if (findmatch.privacy) {
-                setText('.privacy-section h3', findmatch.privacy.title);
-                setText('.privacy-section p', findmatch.privacy.text);
-            }
-        }
-        
-        // Load For Brands page content
-        if (isForBrands && forbrands) {
-            setText('.page-intro h1', forbrands.title);
-            setText('.page-intro p', forbrands.intro);
-            
-            // Benefits
-            if (forbrands.benefits) {
-                const benefitCards = document.querySelectorAll('.benefit-card');
-                forbrands.benefits.forEach((benefit, i) => {
-                    if (benefitCards[i]) {
-                        setText(benefitCards[i].querySelector('h3'), benefit.title);
-                        setText(benefitCards[i].querySelector('p'), benefit.description);
-                    }
-                });
-            }
-            
-            // How It Works
-            if (forbrands.howItWorks) {
-                setText('.how-partnership-works h2', forbrands.howItWorks.title);
-                const stepCards = document.querySelectorAll('.partnership-step');
-                if (forbrands.howItWorks.steps) {
-                    forbrands.howItWorks.steps.forEach((step, i) => {
-                        if (stepCards[i]) {
-                            setText(stepCards[i].querySelector('.step-number'), step.number);
-                            setText(stepCards[i].querySelector('h3'), step.title);
-                            setText(stepCards[i].querySelector('p'), step.description);
-                        }
-                    });
-                }
-            }
-            
-            // Ideal Partner
-            // Hero section
-            if (homepage.hero) {
-                setText('.hero-text h1', homepage.hero.title);
-                setText('.hero-text .subtitle', homepage.hero.subtitle);
-                setText('.hero-text .description', homepage.hero.description);
-            }
-            
-            // Statistics
-            if (homepage.stats) {
-                const stats = document.querySelectorAll('.stat-item');
-                if (stats[0]) {
-                    setText(stats[0].querySelector('.stat-number'), homepage.stats.years);
-                    setText(stats[0].querySelector('.stat-label'), homepage.stats.yearsDesc);
-                }
-                if (stats[1]) {
-                    setText(stats[1].querySelector('.stat-number'), homepage.stats.freeLabel);
-                    setText(stats[1].querySelector('.stat-label'), homepage.stats.freeDesc);
-                }
-                if (stats[2]) {
-                    setText(stats[2].querySelector('.stat-number'), homepage.stats.worth);
-                    setText(stats[2].querySelector('.stat-label'), homepage.stats.worthDesc);
-                }
-            }
-            
-            // Benefits
-            if (homepage.benefits) {
-                const benefitCards = document.querySelectorAll('.benefit-card');
-                homepage.benefits.forEach((benefit, i) => {
-                    if (benefitCards[i]) {
-                        setText(benefitCards[i].querySelector('h3'), benefit.title);
-                        setText(benefitCards[i].querySelector('p'), benefit.description);
-                    }
-                });
-            }
-            
-            // How It Works
-            if (homepage.howItWorks) {
-                setText('.how-it-works .section-title', homepage.howItWorks.title);
-                setText('.how-it-works .section-subtitle', homepage.howItWorks.subtitle);
-            }
-            
-            // Steps
-            if (homepage.steps) {
-                const stepCards = document.querySelectorAll('.step-card');
-                homepage.steps.forEach((step, i) => {
-                    if (stepCards[i]) {
-                        setText(stepCards[i].querySelector('.step-number'), step.number);
-                        setText(stepCards[i].querySelector('h3'), step.title);
-                        setText(stepCards[i].querySelector('p'), step.description);
-                    }
-                });
-            }
-            
-            // Final CTA
-            if (homepage.finalCTA) {
-                setText('.final-cta h2', homepage.finalCTA.title);
-                setText('.final-cta > p', homepage.finalCTA.description);
-            }
-        }
-        
-        // Load About page content
-        if (isAbout && about) {
-            if (about.header) {
-                setText('.page-header h1', about.header.title);
-                setText('.page-header p', about.header.subtitle);
-            }
-            
-            if (about.story) {
-                const storySection = document.querySelector('.story-section');
-                if (storySection) {
-                    setText(storySection.querySelector('h2'), about.story.title);
-                    const paragraphs = storySection.querySelectorAll('p');
-                    if (paragraphs[0]) paragraphs[0].textContent = about.story.text1;
-                    if (paragraphs[1]) paragraphs[1].textContent = about.story.text2;
-                    if (paragraphs[2]) paragraphs[2].textContent = about.story.text3;
-                }
-            }
-            
-            if (about.experience) {
-                const expCards = document.querySelectorAll('.experience-card');
-                about.experience.forEach((exp, i) => {
-                    if (expCards[i]) {
-                        setText(expCards[i].querySelector('h3'), exp.title);
-                        setText(expCards[i].querySelector('p'), exp.description);
-                    }
-                });
-            }
-            
-            if (about.values) {
-                const valueCards = document.querySelectorAll('.value-card');
-                about.values.forEach((val, i) => {
-                    if (valueCards[i]) {
-                        setText(valueCards[i].querySelector('h3'), val.title);
-                        setText(valueCards[i].querySelector('p'), val.description);
-                    }
-                });
-            }
-        }
-        
-        // Load Contact page content
-        if (isContact && contact) {
-            setText('.contact-intro h1', contact.title);
-            setText('.contact-intro p', contact.intro);
-            
-            // Contact methods
-            if (contact.methods) {
-                setText('.contact-methods .email-label', contact.methods.emailLabel);
-                setText('.contact-methods .avail-label', contact.methods.availLabel);
-                setText('.contact-methods .avail-text', contact.methods.availText);
-            }
-            
-            // Form fields
-            if (contact.form) {
-                setText('.contact-form h2', contact.form.title);
-                const labels = {
-                    'name': contact.form.nameLabel,
-                    'email': contact.form.emailLabel,
-                    'phone': contact.form.phoneLabel,
-                    'subject': contact.form.subjectLabel,
-                    'message': contact.form.messageLabel
-                };
-                Object.keys(labels).forEach(key => {
-                    const label = document.querySelector(`label[for="${key}"]`);
-                    if (label && labels[key]) label.textContent = labels[key];
-                });
-                const submitBtn = document.querySelector('.contact-form button[type="submit"]');
-                if (submitBtn && contact.form.submitButton) {
-                    submitBtn.textContent = contact.form.submitButton;
-                }
-            }
-        }
-        
-        // Load Find Match page content
-        if (isFindMatch && findmatch) {
-            setText('.page-intro h1', findmatch.title);
-            setText('.page-intro p', findmatch.intro);
-            setText('.form-section h2', findmatch.formTitle);
-            
-            // Form fields
-            if (findmatch.formFields) {
-                const fieldMap = {
-                    'name': 'nameLabel',
-                    'email': 'emailLabel',
-                    'phone': 'phoneLabel',
-                    'location': 'locationLabel',
-                    'budget': 'budgetLabel',
-                    'industry': 'industryLabel',
-                    'timeline': 'timelineLabel',
-                    'goals': 'goalsLabel'
-                };
-                Object.keys(fieldMap).forEach(key => {
-                    const label = document.querySelector(`label[for="${key}"]`);
-                    if (label && findmatch.formFields[fieldMap[key]]) {
-                        label.textContent = findmatch.formFields[fieldMap[key]];
-                    }
-                });
-                const submitBtn = document.querySelector('.consultation-form button[type="submit"]');
-                if (submitBtn && findmatch.formFields.submitButton) {
-                    submitBtn.textContent = findmatch.formFields.submitButton;
-                }
-            }
-            
-            // Next steps
-            if (findmatch.nextSteps) {
-                setText('.next-steps h2', findmatch.nextSteps.title);
-                if (findmatch.nextSteps.steps) {
-                    const stepItems = document.querySelectorAll('.timeline-step');
-                    findmatch.nextSteps.steps.forEach((step, i) => {
-                        if (stepItems[i]) {
-                            setText(stepItems[i].querySelector('h3'), step.title);
-                            setText(stepItems[i].querySelector('p'), step.description);
-                        }
-                    });
-                }
-            }
-            
-            // Privacy
-            if (findmatch.privacy) {
-                setText('.privacy-section h3', findmatch.privacy.title);
-                setText('.privacy-section p', findmatch.privacy.text);
-            }
-        }
-        
-        // Load For Brands page content
-        if (isForBrands && forbrands) {
-            setText('.page-intro h1', forbrands.title);
-            setText('.page-intro p', forbrands.intro);
-            
-            // Benefits
-            if (forbrands.benefits) {
-                const benefitCards = document.querySelectorAll('.benefit-card');
-                forbrands.benefits.forEach((benefit, i) => {
-                    if (benefitCards[i]) {
-                        setText(benefitCards[i].querySelector('h3'), benefit.title);
-                        setText(benefitCards[i].querySelector('p'), benefit.description);
-                    }
-                });
-            }
-            
-            // How It Works
-            if (forbrands.howItWorks) {
-                setText('.how-partnership-works h2', forbrands.howItWorks.title);
-                const stepCards = document.querySelectorAll('.partnership-step');
-                if (forbrands.howItWorks.steps) {
-                    forbrands.howItWorks.steps.forEach((step, i) => {
-                        if (stepCards[i]) {
-                            setText(stepCards[i].querySelector('.step-number'), step.number);
-                            setText(stepCards[i].querySelector('h3'), step.title);
-                            setText(stepCards[i].querySelector('p'), step.description);
-                        }
-                    });
-                }
-            }
-            
+
             // Ideal Partner
             if (forbrands.idealPartner) {
                 setText('.ideal-partner h2', forbrands.idealPartner.title);
@@ -1262,7 +938,7 @@ async function loadCMSContent() {
                     });
                 }
             }
-            
+
             // CTA
             if (forbrands.cta) {
                 setText('.partnership-cta h2', forbrands.cta.title);
@@ -1273,7 +949,7 @@ async function loadCMSContent() {
                 }
             }
         }
-        
+
         // Load settings (applies to all pages)
         if (settings) {
             // Logo - update both hero and navbar
@@ -1284,12 +960,12 @@ async function loadCMSContent() {
                         img.src = settings.logo;
                     }
                 });
-                
+
                 // Navbar logo
                 const navbarLogo = document.querySelector('.navbar-logo');
                 if (navbarLogo) navbarLogo.src = settings.logo;
             }
-            
+
             // Email
             if (settings.email) {
                 document.querySelectorAll('a[href^="mailto"]').forEach(a => {
@@ -1299,7 +975,7 @@ async function loadCMSContent() {
                     }
                 });
             }
-            
+
             // Partner logos
             if (settings.partners && settings.partners.length > 0) {
                 const partnerContainer = document.querySelector('.partners-track');
@@ -1320,7 +996,7 @@ async function loadCMSContent() {
                 }
             }
         }
-        
+
 
         // ── Footer rendering (all pages) ──────────────────────────────────────
         if (footer) {
