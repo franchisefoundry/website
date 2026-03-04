@@ -1,0 +1,19 @@
+{
+  "locationsDisplay": "London",
+  "emoji": "🥙",
+  "locationsAvailable": [
+    "London",
+    "Manchester",
+    "Leeds",
+    "Paris"
+  ],
+  "sectors": [
+    "food-beverage"
+  ],
+  "investmentDisplay": "£250,000 - £500,000",
+  "teaser": "Test Test",
+  "investmentMax": 50000,
+  "timelineMonths": 6,
+  "category": "Doner Kebab",
+  "investmentMin": 250000
+}
