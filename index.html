@@ -50,6 +50,8 @@
             top: 0;
             z-index: 100;
             border-bottom: 1px solid rgba(255,255,255,0.08);
+            -webkit-backdrop-filter: blur(12px);
+            backdrop-filter: blur(12px);
         }
 
         .nav-container {
@@ -997,56 +999,107 @@
             cursor: pointer;
             padding: 8px;
             flex-shrink: 0;
+            position: relative;
+            z-index: 201;
         }
         .nav-hamburger span {
             display: block;
             width: 22px;
             height: 2px;
-            background: rgba(255,255,255,0.85);
+            background: rgba(255,255,255,0.9);
             border-radius: 2px;
-            transition: transform 0.25s, opacity 0.25s;
+            transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s;
+            transform-origin: center;
         }
         .nav-hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
         .nav-hamburger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
         .nav-hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
 
+        /* Full-screen mobile menu overlay */
         .nav-mobile-menu {
-            display: none;
             position: fixed;
             top: 72px;
             left: 0;
             right: 0;
-            background: var(--green-deep);
-            border-top: 1px solid rgba(255,255,255,0.08);
+            bottom: 0;
+            background: var(--green-dark, #2a352a);
             z-index: 99;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+            display: flex;
+            flex-direction: column;
+            padding: 32px 28px 48px;
+            visibility: hidden;
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: opacity 0.26s ease, transform 0.26s ease, visibility 0s linear 0.26s;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
         }
-        .nav-mobile-menu.open { display: block; }
+        .nav-mobile-menu.open {
+            visibility: visible;
+            opacity: 1;
+            transform: translateY(0);
+            transition: opacity 0.26s ease, transform 0.26s ease, visibility 0s;
+        }
         .nav-mobile-links {
             list-style: none;
-            padding: 8px 0 16px;
+            padding: 0;
             margin: 0;
+            flex: 1;
         }
         .nav-mobile-links li { margin: 0; }
         .nav-mobile-links a {
             display: block;
-            padding: 14px 28px;
-            color: rgba(255,255,255,0.78);
+            padding: 18px 0;
+            color: rgba(255,255,255,0.55);
             text-decoration: none;
-            font-size: 0.95rem;
-            font-weight: 500;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
-            transition: color 0.2s, background 0.2s;
+            font-size: 1.6rem;
+            font-weight: 700;
+            letter-spacing: -0.03em;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            transition: color 0.18s;
+            font-family: 'Sora', system-ui, sans-serif;
         }
-        .nav-mobile-links a:hover { color: white; background: rgba(255,255,255,0.04); }
-        .nav-mobile-links a.active { color: white; font-weight: 600; }
-        .nav-mobile-links .nav-mobile-cta {
-            color: var(--gold-light) !important;
-            font-weight: 700 !important;
+        .nav-mobile-links a:hover { color: rgba(255,255,255,0.85); }
+        .nav-mobile-links a.active { color: white; }
+        .nav-mobile-links .nav-mobile-cta { color: var(--gold-light, #f0d4a8); }
+        .nav-mobile-links .nav-mobile-brands { color: rgba(240,212,168,0.65); }
+        .nav-mobile-cta-wrap {
+            margin-top: 32px;
+            padding-top: 28px;
+            border-top: 1px solid rgba(255,255,255,0.08);
         }
-        .nav-mobile-links .nav-mobile-brands { color: var(--gold-light); }
+        .nav-mobile-cta-btn {
+            display: block;
+            padding: 17px 20px;
+            background: var(--gold, #c8924a);
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.05rem;
+            border-radius: 12px;
+            letter-spacing: -0.01em;
+            font-family: 'Sora', system-ui, sans-serif;
+            transition: background 0.2s, transform 0.15s;
+        }
+        .nav-mobile-cta-btn:hover { background: #b07830; transform: translateY(-1px); }
         @media (max-width: 900px) {
             .nav-hamburger { display: flex; }
+        }
+        /* ── Mobile fine-tuning ─────────────────────────────────────── */
+        @media (max-width: 767px) {
+            body { overflow-x: hidden; }
+            .navbar { padding: 0 20px; }
+        }
+        @media (max-width: 480px) {
+            .hero { padding: 52px 20px 60px; }
+            .hero-headline { font-size: 2.1rem; letter-spacing: -0.04em; }
+            .hero-subtext { font-size: 0.95rem; }
+            .section { padding: 60px 20px; }
+            .section-title { font-size: 1.9rem; }
+            .final-cta { padding: 60px 20px; }
+            .final-cta-inner h2 { font-size: 2rem; }
+            .benefit-card, .step-card { padding: 24px 20px; }
         }
     </style>
 </head>
@@ -1073,14 +1126,17 @@
         </div>
     </nav>
 
+
     <div class="nav-mobile-menu" id="nav-mobile-menu">
         <ul class="nav-mobile-links">
         <li><a href="index.html" class="active">Home</a></li>
         <li><a href="about.html">About Us</a></li>
-        <li><a href="find-match.html" class="nav-mobile-cta">Get Your Match</a></li>
         <li><a href="for-brands.html" class="nav-mobile-brands">For Franchise Brands</a></li>
         <li><a href="contact.html">Contact</a></li>
         </ul>
+        <div class="nav-mobile-cta-wrap">
+            <a href="find-match.html" class="nav-mobile-cta-btn">Get Your Free Match →</a>
+        </div>
     </div>
 
     <!-- Hero -->
@@ -1622,24 +1678,34 @@
         var btn  = document.getElementById('nav-hamburger');
         var menu = document.getElementById('nav-mobile-menu');
         if (!btn || !menu) return;
+
+        function openMenu() {
+            menu.classList.add('open');
+            btn.classList.add('open');
+            btn.setAttribute('aria-expanded', 'true');
+            document.body.style.overflow = 'hidden';
+        }
+        function closeMenu() {
+            menu.classList.remove('open');
+            btn.classList.remove('open');
+            btn.setAttribute('aria-expanded', 'false');
+            document.body.style.overflow = '';
+        }
+
         btn.addEventListener('click', function() {
-            var open = menu.classList.toggle('open');
-            btn.classList.toggle('open', open);
-            btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+            menu.classList.contains('open') ? closeMenu() : openMenu();
         });
         menu.querySelectorAll('a').forEach(function(a) {
-            a.addEventListener('click', function() {
-                menu.classList.remove('open');
-                btn.classList.remove('open');
-                btn.setAttribute('aria-expanded', 'false');
-            });
+            a.addEventListener('click', closeMenu);
         });
         document.addEventListener('click', function(e) {
-            if (!menu.contains(e.target) && !btn.contains(e.target)) {
-                menu.classList.remove('open');
-                btn.classList.remove('open');
-                btn.setAttribute('aria-expanded', 'false');
+            if (menu.classList.contains('open') && !menu.contains(e.target) && !btn.contains(e.target)) {
+                closeMenu();
             }
+        });
+        // Close on resize above 900px
+        window.addEventListener('resize', function() {
+            if (window.innerWidth > 900) closeMenu();
         });
     })();
     </script>
