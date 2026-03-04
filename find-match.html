@@ -1363,6 +1363,50 @@ function scoreMatch(f, prospect) {
     return Math.min(Math.round(score), 99);
 }
 
+// ── Multi-step form navigation ────────────────────────────────────────────
+function goToStep(n) {
+    // Validate step 1 before advancing
+    if (n === 2) {
+        const budget   = document.querySelector('input[name="budget"]:checked');
+        const timeline = document.querySelector('input[name="timeline"]:checked');
+        if (!budget)   { highlightTileGroup('budget');   return; }
+        if (!timeline) { highlightTileGroup('timeline'); return; }
+    }
+
+    // Show/hide steps
+    document.querySelectorAll('.form-step').forEach(function(el, i) {
+        el.classList.toggle('active', i + 1 === n);
+    });
+
+    // Update progress dots
+    for (var i = 1; i <= 3; i++) {
+        var stepEl = document.getElementById('prog-' + i);
+        if (!stepEl) continue;
+        stepEl.classList.toggle('active', i === n);
+        stepEl.classList.toggle('done',   i < n);
+    }
+
+    // Update progress lines
+    for (var j = 1; j <= 2; j++) {
+        var lineEl = document.getElementById('prog-line-' + j);
+        if (!lineEl) continue;
+        lineEl.classList.toggle('done', j < n);
+    }
+
+    // Scroll to top of form section smoothly
+    var section = document.querySelector('.form-section');
+    if (section) section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function highlightTileGroup(name) {
+    var labels = document.querySelectorAll('.tile-option input[name="' + name + '"] + label');
+    labels.forEach(function(lbl) { lbl.style.borderColor = '#e53e3e'; });
+    setTimeout(function() {
+        labels.forEach(function(lbl) { lbl.style.borderColor = ''; });
+    }, 1500);
+}
+// ─────────────────────────────────────────────────────────────────────────────
+
 (function () {
     const form = document.getElementById('find-match-form');
     if (!form) return;
