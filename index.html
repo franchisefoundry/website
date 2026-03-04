@@ -1089,17 +1089,6 @@
         /* ── Mobile fine-tuning ─────────────────────────────────────── */
         @media (max-width: 767px) {
             body { overflow-x: hidden; }
-            .navbar { padding: 0 20px; }
-        }
-        @media (max-width: 480px) {
-            .hero { padding: 52px 20px 60px; }
-            .hero-headline { font-size: 2.1rem; letter-spacing: -0.04em; }
-            .hero-subtext { font-size: 0.95rem; }
-            .section { padding: 60px 20px; }
-            .section-title { font-size: 1.9rem; }
-            .final-cta { padding: 60px 20px; }
-            .final-cta-inner h2 { font-size: 2rem; }
-            .benefit-card, .step-card { padding: 24px 20px; }
         }
     </style>
 </head>
@@ -1679,22 +1668,18 @@
         var menu = document.getElementById('nav-mobile-menu');
         if (!btn || !menu) return;
 
-        function openMenu() {
-            menu.classList.add('open');
-            btn.classList.add('open');
-            btn.setAttribute('aria-expanded', 'true');
-            document.body.style.overflow = 'hidden';
-        }
         function closeMenu() {
             menu.classList.remove('open');
             btn.classList.remove('open');
             btn.setAttribute('aria-expanded', 'false');
-            document.body.style.overflow = '';
+        }
+        function toggleMenu() {
+            var open = menu.classList.toggle('open');
+            btn.classList.toggle('open', open);
+            btn.setAttribute('aria-expanded', open ? 'true' : 'false');
         }
 
-        btn.addEventListener('click', function() {
-            menu.classList.contains('open') ? closeMenu() : openMenu();
-        });
+        btn.addEventListener('click', toggleMenu);
         menu.querySelectorAll('a').forEach(function(a) {
             a.addEventListener('click', closeMenu);
         });
@@ -1703,7 +1688,6 @@
                 closeMenu();
             }
         });
-        // Close on resize above 900px
         window.addEventListener('resize', function() {
             if (window.innerWidth > 900) closeMenu();
         });

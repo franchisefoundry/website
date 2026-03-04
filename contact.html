@@ -657,13 +657,6 @@
         /* ── Mobile fine-tuning ─────────────────────────────────────── */
         @media (max-width: 767px) {
             body { overflow-x: hidden; }
-            .navbar { padding: 0 20px; }
-        }
-        @media (max-width: 480px) {
-            .page-header { padding: 56px 20px 48px; }
-            .page-header h1 { font-size: 2.1rem; }
-            .contact-section { padding: 60px 20px; }
-            .contact-form-section { padding: 0 20px 60px; }
         }
     </style>
 </head>
@@ -977,22 +970,18 @@
         var menu = document.getElementById('nav-mobile-menu');
         if (!btn || !menu) return;
 
-        function openMenu() {
-            menu.classList.add('open');
-            btn.classList.add('open');
-            btn.setAttribute('aria-expanded', 'true');
-            document.body.style.overflow = 'hidden';
-        }
         function closeMenu() {
             menu.classList.remove('open');
             btn.classList.remove('open');
             btn.setAttribute('aria-expanded', 'false');
-            document.body.style.overflow = '';
+        }
+        function toggleMenu() {
+            var open = menu.classList.toggle('open');
+            btn.classList.toggle('open', open);
+            btn.setAttribute('aria-expanded', open ? 'true' : 'false');
         }
 
-        btn.addEventListener('click', function() {
-            menu.classList.contains('open') ? closeMenu() : openMenu();
-        });
+        btn.addEventListener('click', toggleMenu);
         menu.querySelectorAll('a').forEach(function(a) {
             a.addEventListener('click', closeMenu);
         });
@@ -1001,7 +990,6 @@
                 closeMenu();
             }
         });
-        // Close on resize above 900px
         window.addEventListener('resize', function() {
             if (window.innerWidth > 900) closeMenu();
         });
