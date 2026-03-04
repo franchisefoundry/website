@@ -776,7 +776,7 @@
                 <button type="submit" class="submit-button">Book My Free Consultation</button>
 
                 <div class="privacy-note">
-                    <p>🔒 Your information is secure and will never be shared with third parties. We only use it to find you the best franchise matches.</p>
+                    <p><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="vertical-align:middle;margin-right:6px;"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>Your information is secure and will never be shared with third parties. We only use it to find you the best franchise matches.</p>
                 </div>
             </form>
         </div>
@@ -1033,7 +1033,7 @@ function scoreMatch(f, prospect) {
             const section = document.getElementById('match-results');
             document.getElementById('results-headline').textContent = 'Something went wrong';
             document.getElementById('results-subline').textContent = 'Our team will be in touch shortly with your matches.';
-            if (grid) grid.innerHTML = '<div class="no-matches"><p>📞 We\'ll be in touch within 24 hours with personalised recommendations.</p></div>';
+            if (grid) grid.innerHTML = '<div class="no-matches"><p>We\'ll be in touch within 24 hours with personalised recommendations.</p></div>';
             section.style.display = 'block';
             requestAnimationFrame(() => section.classList.add('visible'));
         }
@@ -1050,7 +1050,7 @@ function scoreMatch(f, prospect) {
         if (matches.length === 0) {
             hl.textContent = 'No exact matches found';
             sub.innerHTML  = 'Our team will personally reach out to find the right fit for you.';
-            grid.innerHTML = '<div class="no-matches"><p>📞 We\'ll be in touch within 24 hours with personalised recommendations.</p></div>';
+            grid.innerHTML = '<div class="no-matches"><p>We\'ll be in touch within 24 hours with personalised recommendations.</p></div>';
         } else {
             hl.textContent = matches.length === 1
                 ? `We found 1 franchise match for you, ${firstName}!`
@@ -1095,7 +1095,6 @@ function scoreMatch(f, prospect) {
         <div class="match-card" data-score="${match.matchScore}">
             <div class="card-header">
                 <div class="card-category">
-                    <span class="card-emoji">${match.emoji}</span>
                     <span class="card-category-name">${match.category}</span>
                 </div>
                 <div class="score-ring-wrap" title="${match.matchScore}% match">
@@ -1112,11 +1111,11 @@ function scoreMatch(f, prospect) {
 
             <div class="card-meta">
                 <div class="card-meta-row">
-                    <span>💷</span>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
                     <span><span class="meta-label">Investment:</span> ${match.investmentDisplay}</span>
                 </div>
                 <div class="card-meta-row">
-                    <span>📍</span>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
                     <span><span class="meta-label">Available in:</span> ${match.locationsDisplay}</span>
                 </div>
             </div>
@@ -1125,7 +1124,7 @@ function scoreMatch(f, prospect) {
 
             <div class="card-lock-bar">
                 <div class="lock-left">
-                    <span class="lock-icon">🔒</span>
+                    <span class="lock-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span>
                     <div class="lock-text">
                         <strong>Match #${rank}: Identity Protected</strong>
                         Full brand details revealed on your consultation call
