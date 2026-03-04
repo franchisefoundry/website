@@ -6,44 +6,125 @@ media_folder: "images"
 public_folder: "/images"
 
 collections:
+
+  # ── Franchise Partners ────────────────────────────────────────────────────
+  # All partners are stored in a single file so the matching algorithm and
+  # the CMS always stay in sync.
   - name: "franchisors"
     label: "Franchise Partners"
-    label_singular: "Franchise Partner"
-    folder: "content/franchisors"
-    create: true
-    slug: "{{slug}}"
-    extension: "json"
-    format: "json"
-    fields:
-      - { label: "Brand Category", name: "category", widget: "string", hint: "e.g. Quick Service Restaurant, Coffee Shop, Pizza" }
-      - { label: "Emoji Icon", name: "emoji", widget: "string", hint: "Single emoji to represent the category, e.g. 🍔 🍕 ☕" }
-      - { label: "Teaser Description", name: "teaser", widget: "text", hint: "Shown to prospects. No brand name — describe the concept only." }
-      - { label: "Minimum Investment (£)", name: "investmentMin", widget: "number", value_type: "int" }
-      - { label: "Maximum Investment (£)", name: "investmentMax", widget: "number", value_type: "int" }
-      - { label: "Investment Display Text", name: "investmentDisplay", widget: "string", hint: "e.g. £10,000 – £25,000" }
-      - { label: "Available Locations (lowercase, comma separated)", name: "locationsAvailable", widget: "list", hint: "e.g. london, manchester, leeds" }
-      - { label: "Locations Display Text", name: "locationsDisplay", widget: "string", hint: "e.g. London, Manchester & Leeds" }
-      - label: "Sector Tags"
-        name: "sectors"
-        widget: "select"
-        multiple: true
-        options:
-          - { label: "Food & Beverage", value: "food-beverage" }
-          - { label: "Health & Fitness", value: "health-fitness" }
-          - { label: "Retail", value: "retail" }
-          - { label: "Home & Business Services", value: "services" }
-          - { label: "Education & Childcare", value: "education" }
-          - { label: "Other", value: "other" }
-      - { label: "Typical Setup Timeline (months)", name: "timelineMonths", widget: "number", value_type: "int" }
-      - label: "Highlights (up to 3)"
-        name: "highlights"
-        widget: "list"
-        max: 3
-        hint: "Short selling points shown on match cards, e.g. Low entry investment"
+    files:
+      - label: "All Franchise Partners"
+        name: "franchisors"
+        file: "content/franchisors.json"
+        fields:
+          - label: "Partners"
+            name: "partners"
+            widget: "list"
+            label_singular: "Franchise Partner"
+            summary: "{{fields.name}} — {{fields.category}}"
+            fields:
+              - label: "Brand Name"
+                name: "name"
+                widget: "string"
+                hint: "The real brand name — shown only in your match reports, never to prospects."
+              - label: "ID / Slug"
+                name: "id"
+                widget: "string"
+                hint: "Lowercase, hyphens only, e.g. harrys-handies. Set once and do not change."
+              - label: "Brand Category"
+                name: "category"
+                widget: "string"
+                hint: "e.g. Quick Service Restaurant, Coffee Shop, Pizza"
+              - label: "Teaser Description"
+                name: "teaser"
+                widget: "text"
+                hint: "Shown to prospects. Describe the concept only — do not include the brand name."
+              - label: "Minimum Investment (£)"
+                name: "investmentMin"
+                widget: "number"
+                value_type: "int"
+              - label: "Maximum Investment (£)"
+                name: "investmentMax"
+                widget: "number"
+                value_type: "int"
+              - label: "Investment Display Text"
+                name: "investmentDisplay"
+                widget: "string"
+                hint: "e.g. £50,000 – £100,000"
+              - label: "Available Locations"
+                name: "locationsAvailable"
+                widget: "list"
+                hint: "Lowercase city names, one per entry, e.g. london, manchester, leeds"
+              - label: "Locations Display Text"
+                name: "locationsDisplay"
+                widget: "string"
+                hint: "e.g. London, Manchester & Leeds"
+              - label: "Sector Tags"
+                name: "sectors"
+                widget: "select"
+                multiple: true
+                options:
+                  - { label: "Food & Beverage", value: "food-beverage" }
+                  - { label: "Health & Fitness", value: "health-fitness" }
+                  - { label: "Retail", value: "retail" }
+                  - { label: "Home & Business Services", value: "services" }
+                  - { label: "Education & Childcare", value: "education" }
+                  - { label: "Other", value: "other" }
+              - label: "Typical Setup Timeline (months)"
+                name: "timelineMonths"
+                widget: "number"
+                value_type: "int"
+                hint: "How many months from signing to opening, typically"
+              - label: "Highlights (up to 3)"
+                name: "highlights"
+                widget: "list"
+                max: 3
+                hint: "Short selling points shown on match cards, e.g. Low entry investment"
 
+              # ── Matching signals ────────────────────────────────────────────
+              - label: "Operator Model"
+                name: "operatorModel"
+                widget: "select"
+                hint: "How does the franchisee typically run this brand?"
+                options:
+                  - { label: "Owner-Operator (hands-on)", value: "owner-operator" }
+                  - { label: "Hire a Manager (semi-passive)", value: "hire-manager" }
+                  - { label: "Either model works", value: "either" }
+              - label: "Site Format(s)"
+                name: "format"
+                widget: "select"
+                multiple: true
+                hint: "Select all formats this brand supports"
+                options:
+                  - { label: "Dine-in Restaurant", value: "dine-in" }
+                  - { label: "Takeaway / Counter", value: "takeaway" }
+                  - { label: "Kiosk / Bar", value: "kiosk" }
+                  - { label: "Flexible (any format)", value: "flexible" }
+              - label: "Experience Required"
+                name: "experienceRequired"
+                widget: "select"
+                hint: "Minimum background this franchise suits best"
+                options:
+                  - { label: "None — welcomes first-timers", value: "none" }
+                  - { label: "Some management experience", value: "management" }
+                  - { label: "F&B / hospitality background", value: "food-beverage" }
+              - label: "Multi-Site Ready?"
+                name: "multiSiteReady"
+                widget: "boolean"
+                default: false
+                hint: "Does this brand actively support franchisees opening multiple sites?"
+              - label: "Full-Time Required?"
+                name: "fullTimeRequired"
+                widget: "boolean"
+                default: true
+                hint: "Does running this franchise require a full-time commitment?"
+
+  # ── Pages ─────────────────────────────────────────────────────────────────
   - name: "pages"
     label: "Pages"
     files:
+
+      # Homepage
       - label: "Homepage"
         name: "homepage"
         file: "content/homepage.json"
@@ -52,70 +133,60 @@ collections:
             name: "hero"
             widget: "object"
             fields:
-              - { label: "Title", name: "title", widget: "string" }
-              - { label: "Subtitle", name: "subtitle", widget: "text" }
-              - { label: "Description", name: "description", widget: "text" }
-              - { label: "Primary Button Text", name: "primaryButton", widget: "string" }
-              - { label: "Secondary Button Text", name: "secondaryButton", widget: "string" }
-          
-          - label: "Statistics"
+              - { label: "Main Headline", name: "title", widget: "string", hint: "e.g. Your perfect franchise. Found for free." }
+              - { label: "Sub-headline", name: "subtitle", widget: "text", hint: "One sentence below the headline" }
+
+          - label: "Stats Bar"
             name: "stats"
             widget: "object"
             fields:
-              - { label: "Years Experience", name: "years", widget: "string" }
-              - { label: "Years Description", name: "yearsDesc", widget: "string" }
-              - { label: "Free Consultation Label", name: "freeLabel", widget: "string" }
-              - { label: "Free Consultation Description", name: "freeDesc", widget: "string" }
-              - { label: "Sector Worth", name: "worth", widget: "string" }
-              - { label: "Sector Worth Description", name: "worthDesc", widget: "string" }
-          
+              - { label: "Stat 1 — Number", name: "years", widget: "string", hint: "e.g. 15+" }
+              - { label: "Stat 1 — Label", name: "yearsDesc", widget: "string" }
+              - { label: "Stat 2 — Number", name: "freeLabel", widget: "string", hint: "e.g. 100%" }
+              - { label: "Stat 2 — Label", name: "freeDesc", widget: "string" }
+              - { label: "Stat 3 — Number", name: "worth", widget: "string" }
+              - { label: "Stat 3 — Label", name: "worthDesc", widget: "string" }
+
+          - label: "Why Choose Us — Benefit Cards"
+            name: "benefits"
+            widget: "list"
+            hint: "The four cards in the 'Why Franchise Foundry?' section"
+            fields:
+              - { label: "Title", name: "title", widget: "string" }
+              - { label: "Description", name: "description", widget: "text" }
+
           - label: "Match Preview Section"
             name: "matchPreview"
             widget: "object"
             fields:
               - { label: "Section Title", name: "title", widget: "string" }
               - { label: "Section Description", name: "description", widget: "text" }
-              - { label: "Unlock Button Text", name: "buttonText", widget: "string" }
-          
-          - label: "Why Choose Us"
-            name: "whyChoose"
-            widget: "object"
-            fields:
-              - { label: "Main Title", name: "title", widget: "string" }
-              - { label: "Main Text Paragraph 1", name: "text1", widget: "text" }
-              - { label: "Main Text Paragraph 2", name: "text2", widget: "text" }
-          
-          - label: "Benefits"
-            name: "benefits"
-            widget: "list"
-            fields:
-              - { label: "Icon", name: "icon", widget: "string" }
-              - { label: "Title", name: "title", widget: "string" }
-              - { label: "Description", name: "description", widget: "text" }
-          
-          - label: "How It Works Section"
+              - { label: "Button Text", name: "buttonText", widget: "string" }
+
+          - label: "How It Works"
             name: "howItWorks"
             widget: "object"
             fields:
-              - { label: "Title", name: "title", widget: "string" }
-              - { label: "Subtitle", name: "subtitle", widget: "text" }
-          
-          - label: "Steps"
+              - { label: "Section Title", name: "title", widget: "string" }
+              - { label: "Section Subtitle", name: "subtitle", widget: "text" }
+
+          - label: "How It Works — Steps"
             name: "steps"
             widget: "list"
+            hint: "The four numbered steps"
             fields:
-              - { label: "Number", name: "number", widget: "string" }
-              - { label: "Title", name: "title", widget: "string" }
-              - { label: "Description", name: "description", widget: "text" }
-          
-          - label: "Final CTA"
+              - { label: "Step Title", name: "title", widget: "string" }
+              - { label: "Step Description", name: "description", widget: "text" }
+
+          - label: "Final Call to Action"
             name: "finalCTA"
             widget: "object"
             fields:
-              - { label: "Title", name: "title", widget: "string" }
+              - { label: "Heading", name: "title", widget: "string" }
               - { label: "Description", name: "description", widget: "text" }
               - { label: "Button Text", name: "buttonText", widget: "string" }
-      
+
+      # About Us
       - label: "About Us"
         name: "about"
         file: "content/about.json"
@@ -126,7 +197,7 @@ collections:
             fields:
               - { label: "Title", name: "title", widget: "string" }
               - { label: "Subtitle", name: "subtitle", widget: "text" }
-          
+
           - label: "Our Story"
             name: "story"
             widget: "object"
@@ -135,31 +206,31 @@ collections:
               - { label: "Paragraph 1", name: "text1", widget: "text" }
               - { label: "Paragraph 2", name: "text2", widget: "text" }
               - { label: "Paragraph 3", name: "text3", widget: "text" }
-          
+
           - label: "Experience Cards"
             name: "experience"
             widget: "list"
             fields:
               - { label: "Title", name: "title", widget: "string" }
               - { label: "Description", name: "description", widget: "text" }
-          
+
           - label: "Why We Do This"
             name: "why"
             widget: "object"
             fields:
-              - { label: "Quote", name: "quote", widget: "text" }
-              - { label: "Text Paragraph 1", name: "text1", widget: "text" }
-              - { label: "Text Paragraph 2", name: "text2", widget: "text" }
-              - { label: "Text Paragraph 3", name: "text3", widget: "text" }
-          
+              - { label: "Pull Quote", name: "quote", widget: "text" }
+              - { label: "Paragraph 1", name: "text1", widget: "text" }
+              - { label: "Paragraph 2", name: "text2", widget: "text" }
+              - { label: "Paragraph 3", name: "text3", widget: "text" }
+
           - label: "Values"
             name: "values"
             widget: "list"
             fields:
-              - { label: "Icon", name: "icon", widget: "string" }
               - { label: "Title", name: "title", widget: "string" }
               - { label: "Description", name: "description", widget: "text" }
-      
+
+      # Contact Page
       - label: "Contact Page"
         name: "contact"
         file: "content/contact.json"
@@ -173,39 +244,21 @@ collections:
               - { label: "Email Label", name: "emailLabel", widget: "string" }
               - { label: "Availability Label", name: "availLabel", widget: "string" }
               - { label: "Availability Text", name: "availText", widget: "string" }
-          - label: "Form Section"
+          - label: "Contact Form"
             name: "form"
             widget: "object"
             fields:
               - { label: "Form Title", name: "title", widget: "string" }
-              - { label: "Name Field Label", name: "nameLabel", widget: "string" }
-              - { label: "Email Field Label", name: "emailLabel", widget: "string" }
-              - { label: "Phone Field Label", name: "phoneLabel", widget: "string" }
-              - { label: "Subject Field Label", name: "subjectLabel", widget: "string" }
-              - { label: "Message Field Label", name: "messageLabel", widget: "string" }
               - { label: "Submit Button Text", name: "submitButton", widget: "string" }
-      
-      - label: "Find Your Match Page"
+
+      # Get Your Match Page
+      - label: "Get Your Match Page"
         name: "findmatch"
         file: "content/findmatch.json"
         fields:
-          - { label: "Page Title", name: "title", widget: "string" }
-          - { label: "Introduction", name: "intro", widget: "text" }
-          - { label: "Form Title", name: "formTitle", widget: "string" }
-          - label: "Form Fields"
-            name: "formFields"
-            widget: "object"
-            fields:
-              - { label: "Name Field", name: "nameLabel", widget: "string" }
-              - { label: "Email Field", name: "emailLabel", widget: "string" }
-              - { label: "Phone Field", name: "phoneLabel", widget: "string" }
-              - { label: "Location Field", name: "locationLabel", widget: "string" }
-              - { label: "Budget Field", name: "budgetLabel", widget: "string" }
-              - { label: "Industry Field", name: "industryLabel", widget: "string" }
-              - { label: "Timeline Field", name: "timelineLabel", widget: "string" }
-              - { label: "Goals Field", name: "goalsLabel", widget: "string" }
-              - { label: "Submit Button", name: "submitButton", widget: "string" }
-          - label: "What Happens Next"
+          - { label: "Page Title", name: "title", widget: "string", hint: "Shown in the hero banner" }
+          - { label: "Page Introduction", name: "intro", widget: "text", hint: "Subtitle text in the hero banner" }
+          - label: "What Happens Next — Section"
             name: "nextSteps"
             widget: "object"
             fields:
@@ -216,14 +269,9 @@ collections:
                 fields:
                   - { label: "Step Title", name: "title", widget: "string" }
                   - { label: "Description", name: "description", widget: "text" }
-          - label: "Privacy Section"
-            name: "privacy"
-            widget: "object"
-            fields:
-              - { label: "Title", name: "title", widget: "string" }
-              - { label: "Text", name: "text", widget: "text" }
-      
-      - label: "For Brands Page"
+
+      # For Franchise Brands
+      - label: "For Franchise Brands"
         name: "forbrands"
         file: "content/forbrands.json"
         fields:
@@ -265,41 +313,29 @@ collections:
               - { label: "Title", name: "title", widget: "string" }
               - { label: "Description", name: "description", widget: "text" }
               - { label: "Button Text", name: "buttonText", widget: "string" }
-      
+
+      # Footer
       - label: "Footer"
         name: "footer"
         file: "content/footer.json"
         fields:
-          - { label: "Brand Name", name: "brandName", widget: "string" }
           - { label: "Brand Description", name: "brandDescription", widget: "text" }
           - { label: "Brand Tagline", name: "brandTagline", widget: "string" }
-
           - { label: "Quick Links Title", name: "quickLinksTitle", widget: "string" }
-
-          - label: "Navigation Links"
+          - label: "Quick Links"
             name: "links"
             widget: "list"
             fields:
               - { label: "Label", name: "label", widget: "string" }
               - { label: "URL", name: "url", widget: "string" }
-
           - { label: "Contact Section Title", name: "contactTitle", widget: "string" }
           - { label: "Email Address", name: "email", widget: "string" }
           - { label: "Phone Number", name: "phone", widget: "string", required: false, hint: "Leave blank to hide" }
           - { label: "Address", name: "address", widget: "string", required: false, hint: "Leave blank to hide" }
-
-          - { label: "Social Media Title", name: "socialTitle", widget: "string", required: false }
-          - label: "Social Links"
-            name: "socialLinks"
-            widget: "list"
-            required: false
-            fields:
-              - { label: "Platform Name", name: "platform", widget: "string" }
-              - { label: "URL", name: "url", widget: "string" }
-
           - { label: "Copyright Text", name: "copyrightText", widget: "string" }
 
-      - label: "Settings"
+      # Site Settings
+      - label: "Site Settings"
         name: "settings"
         file: "content/settings.json"
         fields:
@@ -308,7 +344,7 @@ collections:
           - { label: "Tagline", name: "tagline", widget: "string" }
           - { label: "Logo", name: "logo", widget: "image" }
           - { label: "Favicon", name: "favicon", widget: "image" }
-          - label: "Partner Logos"
+          - label: "Partner Logos (scrolling banner)"
             name: "partners"
             widget: "list"
             fields:

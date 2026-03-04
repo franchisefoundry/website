@@ -399,6 +399,11 @@
 
         .tile-option input:checked + label .tile-main { color: var(--gold); }
 
+        /* Tile grid variants */
+        .tile-options-2 { grid-template-columns: repeat(2, 1fr); }
+        .tile-options-3 { grid-template-columns: repeat(3, 1fr); }
+        .tile-options-4 { grid-template-columns: repeat(4, 1fr); }
+
         /* Bottom-border inputs */
         .field-group { margin-bottom: 28px; }
 
@@ -734,11 +739,12 @@
 
             .form-steps { padding: 24px 24px 32px; }
 
-            .tile-options {
-                grid-template-columns: repeat(3, 1fr);
+            .tile-options,
+            .tile-options-3,
+            .tile-options-4 {
+                grid-template-columns: repeat(2, 1fr);
             }
-
-            .tile-options:not(.timeline-tiles) {
+            .tile-options-2 {
                 grid-template-columns: repeat(2, 1fr);
             }
 
@@ -753,8 +759,82 @@
         }
 
         @media (max-width: 480px) {
-            .tile-options { grid-template-columns: repeat(2, 1fr); }
+            .tile-options,
+            .tile-options-2,
+            .tile-options-3,
+            .tile-options-4 { grid-template-columns: repeat(2, 1fr); }
             .progress-label { display: none; }
+            .progress-dot { width: 26px; height: 26px; font-size: 0.7rem; }
+            .form-progress { padding: 20px 16px 0; }
+            .progress-line { margin: 0 3px; }
+            .page-hero { padding: 56px 20px 48px; }
+            .page-hero h1 { font-size: 2rem; }
+            .form-section { padding: 48px 16px 64px; }
+            .form-steps { padding: 20px 20px 28px; }
+        }
+
+        /* ── Mobile Navigation ─────────────────────────────────────── */
+        .nav-hamburger {
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            gap: 5px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 8px;
+            flex-shrink: 0;
+        }
+        .nav-hamburger span {
+            display: block;
+            width: 22px;
+            height: 2px;
+            background: rgba(255,255,255,0.85);
+            border-radius: 2px;
+            transition: transform 0.25s, opacity 0.25s;
+        }
+        .nav-hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+        .nav-hamburger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+        .nav-hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+        .nav-mobile-menu {
+            display: none;
+            position: fixed;
+            top: 72px;
+            left: 0;
+            right: 0;
+            background: var(--green-deep);
+            border-top: 1px solid rgba(255,255,255,0.08);
+            z-index: 99;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+        }
+        .nav-mobile-menu.open { display: block; }
+        .nav-mobile-links {
+            list-style: none;
+            padding: 8px 0 16px;
+            margin: 0;
+        }
+        .nav-mobile-links li { margin: 0; }
+        .nav-mobile-links a {
+            display: block;
+            padding: 14px 28px;
+            color: rgba(255,255,255,0.78);
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 500;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            transition: color 0.2s, background 0.2s;
+        }
+        .nav-mobile-links a:hover { color: white; background: rgba(255,255,255,0.04); }
+        .nav-mobile-links a.active { color: white; font-weight: 600; }
+        .nav-mobile-links .nav-mobile-cta {
+            color: var(--gold-light) !important;
+            font-weight: 700 !important;
+        }
+        .nav-mobile-links .nav-mobile-brands { color: var(--gold-light); }
+        @media (max-width: 900px) {
+            .nav-links { display: none; }
+            .nav-hamburger { display: flex; }
         }
     </style>
 
@@ -1067,8 +1147,21 @@
                 <li class="nav-sep-sm"></li>
                 <li><a href="contact.html">Contact</a></li>
             </ul>
+            <button class="nav-hamburger" id="nav-hamburger" aria-label="Open menu" aria-expanded="false">
+                <span></span><span></span><span></span>
+            </button>
         </div>
     </nav>
+
+    <div class="nav-mobile-menu" id="nav-mobile-menu">
+        <ul class="nav-mobile-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="about.html">About Us</a></li>
+        <li><a href="find-match.html" class="active nav-mobile-cta">Get Your Match</a></li>
+        <li><a href="for-brands.html" class="nav-mobile-brands">For Franchise Brands</a></li>
+        <li><a href="contact.html">Contact</a></li>
+        </ul>
+    </div>
 
     <!-- Page Header -->
     <section class="page-hero">
@@ -1091,16 +1184,21 @@
             <div class="form-progress">
                 <div class="progress-step active" id="prog-1">
                     <div class="progress-dot">1</div>
-                    <span class="progress-label">Budget &amp; Timeline</span>
+                    <span class="progress-label">Investment</span>
                 </div>
                 <div class="progress-line" id="prog-line-1"></div>
                 <div class="progress-step" id="prog-2">
                     <div class="progress-dot">2</div>
-                    <span class="progress-label">Your Goals</span>
+                    <span class="progress-label">Your Vision</span>
                 </div>
                 <div class="progress-line" id="prog-line-2"></div>
                 <div class="progress-step" id="prog-3">
                     <div class="progress-dot">3</div>
+                    <span class="progress-label">About You</span>
+                </div>
+                <div class="progress-line" id="prog-line-3"></div>
+                <div class="progress-step" id="prog-4">
+                    <div class="progress-dot">4</div>
                     <span class="progress-label">Contact</span>
                 </div>
             </div>
@@ -1174,19 +1272,61 @@
                         </div>
                     </div>
 
-                    <!-- Step 2: Location + Goals -->
+                    <!-- Step 2: Your Vision -->
                     <div class="form-step" id="step-2">
-                        <p class="step-heading">Where and what?</p>
-                        <p class="step-subheading">Help us narrow down the best opportunities for you.</p>
+                        <p class="step-heading">Your Vision</p>
+                        <p class="step-subheading">Help us understand the kind of franchise that fits your lifestyle.</p>
 
-                        <div class="field-group">
-                            <label for="location">Preferred Location(s)</label>
-                            <input type="text" id="location" name="location" placeholder="e.g. London, Manchester, Birmingham">
+                        <div class="tile-group-label">How do you plan to run it?</div>
+                        <div class="tile-options tile-options-3">
+                            <div class="tile-option">
+                                <input type="radio" name="operator" id="op1" value="owner-operator">
+                                <label for="op1"><span class="tile-main">Hands-on</span><span class="tile-sub">I'll run it myself</span></label>
+                            </div>
+                            <div class="tile-option">
+                                <input type="radio" name="operator" id="op2" value="hire-manager">
+                                <label for="op2"><span class="tile-main">Hire a manager</span><span class="tile-sub">Semi-passive</span></label>
+                            </div>
+                            <div class="tile-option">
+                                <input type="radio" name="operator" id="op3" value="either">
+                                <label for="op3"><span class="tile-main">Open to either</span><span class="tile-sub">Flexible</span></label>
+                            </div>
                         </div>
 
-                        <div class="field-group">
-                            <label for="message">What are you looking for?</label>
-                            <textarea id="message" name="message" placeholder="Your goals, lifestyle preferences, or any specific requirements — even rough ideas help."></textarea>
+                        <div class="tile-group-label">What format interests you?</div>
+                        <div class="tile-options tile-options-4">
+                            <div class="tile-option">
+                                <input type="radio" name="format" id="f1" value="dine-in">
+                                <label for="f1"><span class="tile-main">Dine-in</span><span class="tile-sub">Restaurant</span></label>
+                            </div>
+                            <div class="tile-option">
+                                <input type="radio" name="format" id="f2" value="takeaway">
+                                <label for="f2"><span class="tile-main">Takeaway</span><span class="tile-sub">Counter / delivery</span></label>
+                            </div>
+                            <div class="tile-option">
+                                <input type="radio" name="format" id="f3" value="kiosk">
+                                <label for="f3"><span class="tile-main">Kiosk / bar</span><span class="tile-sub">Small footprint</span></label>
+                            </div>
+                            <div class="tile-option">
+                                <input type="radio" name="format" id="f4" value="flexible">
+                                <label for="f4"><span class="tile-main">Flexible</span><span class="tile-sub">Any format</span></label>
+                            </div>
+                        </div>
+
+                        <div class="tile-group-label">How many sites are you thinking?</div>
+                        <div class="tile-options tile-options-3">
+                            <div class="tile-option">
+                                <input type="radio" name="multisite" id="ms1" value="single">
+                                <label for="ms1"><span class="tile-main">Just one</span><span class="tile-sub">Single site</span></label>
+                            </div>
+                            <div class="tile-option">
+                                <input type="radio" name="multisite" id="ms2" value="multi-small">
+                                <label for="ms2"><span class="tile-main">2 – 3 sites</span><span class="tile-sub">Grow steadily</span></label>
+                            </div>
+                            <div class="tile-option">
+                                <input type="radio" name="multisite" id="ms3" value="multi-large">
+                                <label for="ms3"><span class="tile-main">4+ sites</span><span class="tile-sub">Ambitious growth</span></label>
+                            </div>
                         </div>
 
                         <div class="step-nav">
@@ -1201,8 +1341,67 @@
                         </div>
                     </div>
 
-                    <!-- Step 3: Contact Details -->
+                    <!-- Step 3: About You -->
                     <div class="form-step" id="step-3">
+                        <p class="step-heading">About You</p>
+                        <p class="step-subheading">A few final details to fine-tune your matches.</p>
+
+                        <div class="tile-group-label">Your business background</div>
+                        <div class="tile-options tile-options-4">
+                            <div class="tile-option">
+                                <input type="radio" name="experience" id="ex1" value="first-business">
+                                <label for="ex1"><span class="tile-main">First venture</span><span class="tile-sub">New to business</span></label>
+                            </div>
+                            <div class="tile-option">
+                                <input type="radio" name="experience" id="ex2" value="management">
+                                <label for="ex2"><span class="tile-main">Management</span><span class="tile-sub">Led teams before</span></label>
+                            </div>
+                            <div class="tile-option">
+                                <input type="radio" name="experience" id="ex3" value="food-beverage">
+                                <label for="ex3"><span class="tile-main">F&amp;B industry</span><span class="tile-sub">Hospitality background</span></label>
+                            </div>
+                            <div class="tile-option">
+                                <input type="radio" name="experience" id="ex4" value="other-industry">
+                                <label for="ex4"><span class="tile-main">Other industry</span><span class="tile-sub">Different sector</span></label>
+                            </div>
+                        </div>
+
+                        <div class="tile-group-label">Commitment level</div>
+                        <div class="tile-options tile-options-2">
+                            <div class="tile-option">
+                                <input type="radio" name="fulltime" id="ft1" value="full-time">
+                                <label for="ft1"><span class="tile-main">Full-time</span><span class="tile-sub">All in</span></label>
+                            </div>
+                            <div class="tile-option">
+                                <input type="radio" name="fulltime" id="ft2" value="part-time">
+                                <label for="ft2"><span class="tile-main">Part-time OK</span><span class="tile-sub">Alongside other work</span></label>
+                            </div>
+                        </div>
+
+                        <div class="field-group" style="margin-top: 28px;">
+                            <label for="location">Preferred Location(s)</label>
+                            <input type="text" id="location" name="location" placeholder="e.g. London, Manchester, Birmingham">
+                        </div>
+
+                        <div class="field-group">
+                            <label for="message">Anything else we should know?</label>
+                            <textarea id="message" name="message" placeholder="Goals, lifestyle preferences, or specific requirements — even rough ideas help."></textarea>
+                        </div>
+
+                        <div class="step-nav">
+                            <button type="button" class="step-nav-back" onclick="goToStep(2)">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                                Back
+                            </button>
+                            <button type="button" class="step-nav-next" onclick="goToStep(4)">
+                                Continue
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Step 4: Contact Details -->
+                    <div class="form-step" id="step-4">
                         <p class="step-heading">Almost there</p>
                         <p class="step-subheading">Where should we send your matches?</p>
 
@@ -1229,7 +1428,7 @@
                             </div>
                         </div>
                         <div style="text-align:center; margin-top: 14px;">
-                            <button type="button" class="step-nav-back" onclick="goToStep(2)">
+                            <button type="button" class="step-nav-back" onclick="goToStep(3)">
                                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
                                 Back
                             </button>
@@ -1373,34 +1572,82 @@ const BUDGET_MAX = {
 function scoreMatch(f, prospect) {
     let score = 0;
 
-    // Budget (35 pts) — hard filter first
+    // Budget (25 pts) — hard filter first
     const budgetMax = BUDGET_MAX[prospect.budget];
     if (!budgetMax) return null;
     if (f.investmentMin > budgetMax * 1.15) return null;
     score += f.investmentMin <= budgetMax
-        ? (f.investmentMin / budgetMax >= 0.15 ? 35 : 22)
-        : 15;
+        ? (f.investmentMin / budgetMax >= 0.15 ? 25 : 16)
+        : 10;
 
-    // Location (30 pts)
+    // Location (20 pts)
     const locText = (prospect.location || '').toLowerCase();
     if (locText.trim()) {
-        score += (f.locationsAvailable || []).some(l => locText.includes(l)) ? 30 : 5;
+        score += (f.locationsAvailable || []).some(l => locText.includes(l)) ? 20 : 4;
     } else {
-        score += 15;
+        score += 10;
     }
 
-    // Sector (25 pts)
-    const industries = prospect.industry || [];
-    if (!industries.length || industries.includes('other')) {
-        score += 15;
+    // Operator model (20 pts)
+    const op = prospect.operator || '';
+    if (!op || op === 'either') {
+        score += 10; // neutral — open to anything
     } else {
-        score += (f.sectors || []).some(s => industries.includes(s)) ? 25 : 0;
+        score += (f.operatorModel === op || f.operatorModel === 'either') ? 20 : 5;
     }
 
-    // Timeline (10 pts)
+    // Format preference (15 pts)
+    const fmt = prospect.format || '';
+    if (!fmt || fmt === 'flexible') {
+        score += 8; // neutral
+    } else {
+        const fFormats = f.format || [];
+        score += (fFormats.includes(fmt) || fFormats.includes('flexible')) ? 15 : 3;
+    }
+
+    // Experience (10 pts)
+    const exp = prospect.experience || '';
+    if (!exp) {
+        score += 5;
+    } else {
+        const req = f.experienceRequired || 'none';
+        if (req === 'none') {
+            score += 10; // brand welcomes all backgrounds
+        } else if (req === 'management' && exp !== 'first-business') {
+            score += 10; // has some management or industry background
+        } else if (req === 'food-beverage' && exp === 'food-beverage') {
+            score += 10; // exact match
+        } else if (exp === 'first-business' && req !== 'none') {
+            score += 4; // beginner applying to experienced-required brand
+        } else {
+            score += 7; // partial match
+        }
+    }
+
+    // Timeline (5 pts)
     const tlMap = { 'immediately': 2, '1-3-months': 3, '3-6-months': 6, '6-12-months': 99, '12-plus-months': 99 };
     const tlMax = tlMap[prospect.timeline] ?? 99;
-    score += (f.timelineMonths || 3) <= tlMax ? 10 : 5;
+    score += (f.timelineMonths || 3) <= tlMax ? 5 : 2;
+
+    // Multi-site ambition (3 pts)
+    const ms = prospect.multisite || '';
+    if (!ms) {
+        score += 1;
+    } else if (ms === 'single') {
+        score += f.multiSiteReady ? 1 : 3; // prefer single-site brand for single-site prospect
+    } else {
+        score += f.multiSiteReady ? 3 : 1; // prefer scalable brand for growth-minded prospect
+    }
+
+    // Full-time commitment (2 pts)
+    const ft = prospect.fulltime || '';
+    if (!ft) {
+        score += 1;
+    } else if (ft === 'full-time') {
+        score += 2; // full-time commitment works for any franchise
+    } else {
+        score += f.fullTimeRequired ? 0 : 2; // part-time prospect penalised against full-time-required brand
+    }
 
     return Math.min(Math.round(score), 99);
 }
@@ -1415,13 +1662,21 @@ function goToStep(n) {
         if (!timeline) { highlightTileGroup('timeline'); return; }
     }
 
+    // Validate step 2 before advancing
+    if (n === 3) {
+        const operator = document.querySelector('input[name="operator"]:checked');
+        const format   = document.querySelector('input[name="format"]:checked');
+        if (!operator) { highlightTileGroup('operator'); return; }
+        if (!format)   { highlightTileGroup('format');   return; }
+    }
+
     // Show/hide steps
     document.querySelectorAll('.form-step').forEach(function(el, i) {
         el.classList.toggle('active', i + 1 === n);
     });
 
     // Update progress dots
-    for (var i = 1; i <= 3; i++) {
+    for (var i = 1; i <= 4; i++) {
         var stepEl = document.getElementById('prog-' + i);
         if (!stepEl) continue;
         stepEl.classList.toggle('active', i === n);
@@ -1429,7 +1684,7 @@ function goToStep(n) {
     }
 
     // Update progress lines
-    for (var j = 1; j <= 2; j++) {
+    for (var j = 1; j <= 3; j++) {
         var lineEl = document.getElementById('prog-line-' + j);
         if (!lineEl) continue;
         lineEl.classList.toggle('done', j < n);
@@ -1483,14 +1738,18 @@ function highlightTileGroup(name) {
         // Collect form data
         const fd = new FormData(form);
         const prospect = {
-            name:     fd.get('name')     || '',
-            email:    fd.get('email')    || '',
-            phone:    fd.get('phone')    || '',
-            location: fd.get('location') || '',
-            budget:   fd.get('budget')   || '',
-            industry: [],
-            timeline: fd.get('timeline') || '',
-            message:  fd.get('message')  || ''
+            name:       fd.get('name')       || '',
+            email:      fd.get('email')      || '',
+            phone:      fd.get('phone')      || '',
+            location:   fd.get('location')   || '',
+            budget:     fd.get('budget')     || '',
+            timeline:   fd.get('timeline')   || '',
+            operator:   fd.get('operator')   || '',
+            format:     fd.get('format')     || '',
+            multisite:  fd.get('multisite')  || '',
+            experience: fd.get('experience') || '',
+            fulltime:   fd.get('fulltime')   || '',
+            message:    fd.get('message')    || ''
         };
 
         // Show loading, hide form
@@ -1501,7 +1760,7 @@ function highlightTileGroup(name) {
         try {
             // Fetch franchisor data + artificial delay in parallel
             const [franchisors] = await Promise.all([
-                fetch('/content/franchisors.json').then(r => r.json()),
+                fetch('/content/franchisors.json').then(r => r.json()).then(d => Array.isArray(d) ? d : (d.partners || [])),
                 new Promise(r => setTimeout(r, 1600))
             ]);
 
@@ -1904,5 +2163,34 @@ function setText(el, text) {
 
 document.addEventListener('DOMContentLoaded', loadCMSContent);
     </script>
+
+    <script>
+    // ── Mobile nav hamburger ─────────────────────────────────────────────────
+    (function() {
+        var btn  = document.getElementById('nav-hamburger');
+        var menu = document.getElementById('nav-mobile-menu');
+        if (!btn || !menu) return;
+        btn.addEventListener('click', function() {
+            var open = menu.classList.toggle('open');
+            btn.classList.toggle('open', open);
+            btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+        });
+        menu.querySelectorAll('a').forEach(function(a) {
+            a.addEventListener('click', function() {
+                menu.classList.remove('open');
+                btn.classList.remove('open');
+                btn.setAttribute('aria-expanded', 'false');
+            });
+        });
+        document.addEventListener('click', function(e) {
+            if (!menu.contains(e.target) && !btn.contains(e.target)) {
+                menu.classList.remove('open');
+                btn.classList.remove('open');
+                btn.setAttribute('aria-expanded', 'false');
+            }
+        });
+    })();
+    </script>
+
 </body>
 </html>
