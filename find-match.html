@@ -872,6 +872,7 @@
         .nav-mobile-cta-btn:hover { background: #b07830; transform: translateY(-1px); }
         @media (max-width: 900px) {
             .nav-hamburger { display: flex; }
+            .nav-links { display: none; }
         }
         /* ── Mobile fine-tuning ─────────────────────────────────────── */
         @media (max-width: 767px) {
@@ -990,6 +991,32 @@
             .results-subline  { font-size: 0.88rem; margin-bottom: 32px; }
             .match-cards-grid { grid-template-columns: 1fr; gap: 16px; }
             .match-card { padding: 24px 20px; }
+            .card-lock-bar { flex-wrap: wrap; gap: 8px; }
+
+            /* ── Process section ──────────────────────────────────── */
+            .process-section    { padding: 56px 24px; }
+            .section-title      { font-size: 1.9rem; margin-bottom: 36px; letter-spacing: -0.02em; }
+            .steps-timeline     { padding-left: 0; }
+            .timeline-step      { padding: 20px 20px 20px 52px; margin-bottom: 20px; }
+            .timeline-step::before {
+                position: absolute;
+                left: 14px;
+                top: 22px;
+                transform: none;
+                width: 28px; height: 28px;
+                font-size: 0.85rem;
+                line-height: 20px;
+            }
+            .timeline-step h3   { font-size: 1.1rem; margin-bottom: 8px; }
+            .timeline-step p    { font-size: 0.9rem; line-height: 1.6; }
+
+            /* ── Privacy section ──────────────────────────────────── */
+            .privacy-section    { padding: 56px 24px; }
+            .privacy-content h2 { font-size: 1.65rem; letter-spacing: -0.02em; margin-bottom: 20px; }
+            .privacy-content p  { font-size: 0.92rem; line-height: 1.65; }
+            .data-list          { padding: 20px; margin: 20px 0; }
+            .data-list h3       { font-size: 1.1rem; margin-bottom: 14px; }
+            .data-list li       { font-size: 0.9rem; padding: 8px 0 8px 26px; }
         }
     </style>
 
