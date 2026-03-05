@@ -875,7 +875,7 @@
         }
         /* ── Mobile fine-tuning ─────────────────────────────────────── */
         @media (max-width: 767px) {
-            body { overflow-x: hidden; }
+            html, body { overflow-x: hidden; }
             .navbar { padding: 0 20px; }
         }
         @media (max-width: 600px) {
@@ -896,7 +896,7 @@
            MOBILE REDESIGN — injected, overrides earlier rules
            ════════════════════════════════════════════════════════════ */
         @media (max-width: 767px) {
-            body { overflow-x: hidden; -webkit-text-size-adjust: 100%; }
+            html, body { overflow-x: hidden; } body { -webkit-text-size-adjust: 100%; }
             .navbar {
                 padding: 0 20px;
                 /* Remove blur on mobile — solid bg means it's not needed,
@@ -908,9 +908,6 @@
             /* ── Page hero ────────────────────────────────────────── */
             .page-hero {
                 padding: 52px 24px 44px;
-                /* Own compositing layer prevents sticky-navbar blur artefacts */
-                transform: translateZ(0);
-                -webkit-transform: translateZ(0);
             }
             .page-hero h1 {
                 font-size: 2.1rem;

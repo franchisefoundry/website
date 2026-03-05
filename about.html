@@ -747,7 +747,7 @@
         }
         /* ── Mobile fine-tuning ─────────────────────────────────────── */
         @media (max-width: 767px) {
-            body { overflow-x: hidden; }
+            html, body { overflow-x: hidden; }
         }
     /* ════ MOBILE REDESIGN v3 ════ */
 
@@ -755,7 +755,7 @@
            MOBILE REDESIGN — injected, overrides earlier rules
            ════════════════════════════════════════════════════════════ */
         @media (max-width: 767px) {
-            body { overflow-x: hidden; -webkit-text-size-adjust: 100%; }
+            html, body { overflow-x: hidden; } body { -webkit-text-size-adjust: 100%; }
             .navbar { padding: 0 20px; }
 
             /* ── Page hero (all pages) ────────────────────────────── */
