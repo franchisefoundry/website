@@ -897,10 +897,21 @@
            ════════════════════════════════════════════════════════════ */
         @media (max-width: 767px) {
             body { overflow-x: hidden; -webkit-text-size-adjust: 100%; }
-            .navbar { padding: 0 20px; }
+            .navbar {
+                padding: 0 20px;
+                /* Remove blur on mobile — solid bg means it's not needed,
+                   and it causes compositing glitches with overflow:hidden sections below */
+                -webkit-backdrop-filter: none !important;
+                backdrop-filter: none !important;
+            }
 
-            /* ── Page hero (all pages) ────────────────────────────── */
-            .page-hero { padding: 52px 24px 44px; }
+            /* ── Page hero ────────────────────────────────────────── */
+            .page-hero {
+                padding: 52px 24px 44px;
+                /* Own compositing layer prevents sticky-navbar blur artefacts */
+                transform: translateZ(0);
+                -webkit-transform: translateZ(0);
+            }
             .page-hero h1 {
                 font-size: 2.1rem;
                 letter-spacing: -0.03em;

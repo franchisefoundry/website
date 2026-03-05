@@ -1115,39 +1115,60 @@
         @media (max-width: 767px) {
 
             /* ── Hero ─────────────────────────────────────────────── */
-            .hero { padding: 56px 24px 64px; }
-            .hero-headline {
-                font-size: 2.2rem;
-                letter-spacing: -0.04em;
-                line-height: 1.1;
+            .hero { padding: 52px 24px 56px; }
+            /* Collapse to flex so child widths are properly constrained */
+            .hero-inner {
+                display: flex !important;
+                flex-direction: column;
+                gap: 32px;
+                min-width: 0;
             }
-            .hero-subtext   { font-size: 0.95rem; line-height: 1.65; }
-            .hero-eyebrow   { font-size: 0.7rem; margin-bottom: 20px; }
-            .hero-ctas      { flex-direction: column; gap: 12px; }
+            .hero-left { min-width: 0; width: 100%; overflow: hidden; }
+            /* Hide the desktop stats card — adds bulk on mobile */
+            .hero-card { display: none !important; }
+            /* Eyebrow badge: allow wrap so long text doesn't overflow */
+            .hero-eyebrow {
+                font-size: 0.65rem;
+                margin-bottom: 16px;
+                max-width: 100%;
+                white-space: normal;
+                flex-wrap: wrap;
+            }
+            .hero-headline {
+                font-size: 2.6rem;
+                letter-spacing: -0.04em;
+                line-height: 1.08;
+            }
+            .hero-subtext {
+                font-size: 0.93rem;
+                line-height: 1.65;
+                margin-bottom: 28px;
+            }
+            .hero-ctas { flex-direction: column; gap: 12px; }
             .btn-primary, .btn-ghost {
                 width: 100%;
                 text-align: center;
                 justify-content: center;
-                padding: 15px 24px;
+                padding: 16px 24px;
                 font-size: 0.95rem;
             }
 
             /* ── Sections ─────────────────────────────────────────── */
-            .section        { padding: 64px 24px; }
-            .section-title  { font-size: 2rem; letter-spacing: -0.03em; }
-            .section-subtitle { font-size: 0.95rem; }
+            .section        { padding: 60px 24px; }
+            .section-title  { font-size: 1.85rem; letter-spacing: -0.03em; line-height: 1.15; }
+            .section-subtitle { font-size: 0.93rem; line-height: 1.6; }
 
             /* ── Stat / benefit / step cards ─────────────────────── */
             .benefit-card   { padding: 24px 20px; }
             .step-card      { padding: 24px 20px; }
 
             /* ── Final CTA ────────────────────────────────────────── */
-            .final-cta      { padding: 64px 24px; }
+            .final-cta      { padding: 60px 24px; }
             .final-cta-inner h2 {
-                font-size: 2rem;
+                font-size: 1.9rem;
                 letter-spacing: -0.03em;
             }
-            .final-cta > p  { font-size: 0.95rem; }
+            .final-cta > p  { font-size: 0.93rem; }
 
             /* ── Footer ──────────────────────────────────────────── */
             .footer-grid    { grid-template-columns: 1fr; gap: 32px; }
