@@ -1090,6 +1090,68 @@
         @media (max-width: 767px) {
             body { overflow-x: hidden; }
         }
+    /* ════ MOBILE REDESIGN v3 ════ */
+
+        /* ════════════════════════════════════════════════════════════
+           MOBILE REDESIGN — injected, overrides earlier rules
+           ════════════════════════════════════════════════════════════ */
+        @media (max-width: 767px) {
+            body { overflow-x: hidden; -webkit-text-size-adjust: 100%; }
+            .navbar { padding: 0 20px; }
+
+            /* ── Page hero (all pages) ────────────────────────────── */
+            .page-hero { padding: 52px 24px 44px; }
+            .page-hero h1 {
+                font-size: 2.1rem;
+                letter-spacing: -0.03em;
+                line-height: 1.15;
+            }
+            .page-hero p { font-size: 0.95rem; line-height: 1.65; }
+            .page-eyebrow { font-size: 0.7rem; margin-bottom: 20px; padding: 6px 14px; }
+
+            /* ── Footer ──────────────────────────────────────────── */
+            footer { padding: 48px 24px 28px; }
+        }
+        @media (max-width: 767px) {
+
+            /* ── Hero ─────────────────────────────────────────────── */
+            .hero { padding: 56px 24px 64px; }
+            .hero-headline {
+                font-size: 2.2rem;
+                letter-spacing: -0.04em;
+                line-height: 1.1;
+            }
+            .hero-subtext   { font-size: 0.95rem; line-height: 1.65; }
+            .hero-eyebrow   { font-size: 0.7rem; margin-bottom: 20px; }
+            .hero-ctas      { flex-direction: column; gap: 12px; }
+            .btn-primary, .btn-ghost {
+                width: 100%;
+                text-align: center;
+                justify-content: center;
+                padding: 15px 24px;
+                font-size: 0.95rem;
+            }
+
+            /* ── Sections ─────────────────────────────────────────── */
+            .section        { padding: 64px 24px; }
+            .section-title  { font-size: 2rem; letter-spacing: -0.03em; }
+            .section-subtitle { font-size: 0.95rem; }
+
+            /* ── Stat / benefit / step cards ─────────────────────── */
+            .benefit-card   { padding: 24px 20px; }
+            .step-card      { padding: 24px 20px; }
+
+            /* ── Final CTA ────────────────────────────────────────── */
+            .final-cta      { padding: 64px 24px; }
+            .final-cta-inner h2 {
+                font-size: 2rem;
+                letter-spacing: -0.03em;
+            }
+            .final-cta > p  { font-size: 0.95rem; }
+
+            /* ── Footer ──────────────────────────────────────────── */
+            .footer-grid    { grid-template-columns: 1fr; gap: 32px; }
+        }
     </style>
 </head>
 <body>

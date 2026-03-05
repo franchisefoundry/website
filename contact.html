@@ -658,6 +658,54 @@
         @media (max-width: 767px) {
             body { overflow-x: hidden; }
         }
+    /* ════ MOBILE REDESIGN v3 ════ */
+
+        /* ════════════════════════════════════════════════════════════
+           MOBILE REDESIGN — injected, overrides earlier rules
+           ════════════════════════════════════════════════════════════ */
+        @media (max-width: 767px) {
+            body { overflow-x: hidden; -webkit-text-size-adjust: 100%; }
+            .navbar { padding: 0 20px; }
+
+            /* ── Page hero (all pages) ────────────────────────────── */
+            .page-hero { padding: 52px 24px 44px; }
+            .page-hero h1 {
+                font-size: 2.1rem;
+                letter-spacing: -0.03em;
+                line-height: 1.15;
+            }
+            .page-hero p { font-size: 0.95rem; line-height: 1.65; }
+            .page-eyebrow { font-size: 0.7rem; margin-bottom: 20px; padding: 6px 14px; }
+
+            /* ── Footer ──────────────────────────────────────────── */
+            footer { padding: 48px 24px 28px; }
+        }
+        @media (max-width: 767px) {
+
+            /* ── Layout ───────────────────────────────────────────── */
+            .contact-layout { grid-template-columns: 1fr; gap: 40px; }
+            .section        { padding: 64px 24px; }
+
+            /* ── Contact form ─────────────────────────────────────── */
+            .contact-form   { padding: 32px 24px; }
+            .contact-form h2 {
+                font-size: 1.6rem;
+                letter-spacing: -0.025em;
+            }
+            /* iOS zoom fix on all inputs */
+            input[type="text"],
+            input[type="email"],
+            input[type="tel"],
+            textarea,
+            select { font-size: 16px !important; }
+
+            /* ── Submit button ────────────────────────────────────── */
+            button[type="submit"] {
+                width: 100%;
+                padding: 16px;
+                font-size: 1rem;
+            }
+        }
     </style>
 </head>
 <body>

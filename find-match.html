@@ -890,6 +890,99 @@
             .tile-sub { font-size: 0.64rem; }
             .field-group { margin-bottom: 20px; }
         }
+    /* ════ MOBILE REDESIGN v3 ════ */
+
+        /* ════════════════════════════════════════════════════════════
+           MOBILE REDESIGN — injected, overrides earlier rules
+           ════════════════════════════════════════════════════════════ */
+        @media (max-width: 767px) {
+            body { overflow-x: hidden; -webkit-text-size-adjust: 100%; }
+            .navbar { padding: 0 20px; }
+
+            /* ── Page hero (all pages) ────────────────────────────── */
+            .page-hero { padding: 52px 24px 44px; }
+            .page-hero h1 {
+                font-size: 2.1rem;
+                letter-spacing: -0.03em;
+                line-height: 1.15;
+            }
+            .page-hero p { font-size: 0.95rem; line-height: 1.65; }
+            .page-eyebrow { font-size: 0.7rem; margin-bottom: 20px; padding: 6px 14px; }
+
+            /* ── Footer ──────────────────────────────────────────── */
+            footer { padding: 48px 24px 28px; }
+        }
+        @media (max-width: 767px) {
+
+            /* ── Form section wrapper ─────────────────────────────── */
+            .form-section { padding: 44px 20px 72px; }
+            .form-section-header { margin-bottom: 28px; text-align: center; }
+            .form-section-header h2 {
+                font-size: 1.65rem;
+                letter-spacing: -0.025em;
+                line-height: 1.2;
+            }
+            .form-section-header p { font-size: 0.875rem; }
+
+            /* ── White form card ──────────────────────────────────── */
+            .form-progress { padding: 28px 24px 0; gap: 4px; }
+            .progress-dot  { width: 30px; height: 30px; font-size: 0.72rem; }
+            .progress-label { display: none; }
+            .progress-line  { margin: 0 6px; }
+            .form-steps { padding: 28px 24px 32px; }
+
+            /* ── Step text ────────────────────────────────────────── */
+            .step-heading   { font-size: 1.25rem; letter-spacing: -0.02em; }
+            .step-subheading {
+                font-size: 0.85rem;
+                line-height: 1.55;
+                margin-bottom: 24px;
+            }
+            .tile-group-label {
+                font-size: 0.67rem;
+                letter-spacing: 0.09em;
+                margin-top: 22px;
+                margin-bottom: 10px;
+            }
+            .tile-group-label:first-of-type { margin-top: 0; }
+
+            /* ── Tile grids ───────────────────────────────────────── */
+            /* 5-item grids (budget, timeline): 3 cols = 2 tidy rows  */
+            .tile-options   { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+            /* 2-item (commitment): stays 2 cols                      */
+            .tile-options-2 { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+            /* 3-item (operator, multisite): stays 3 cols             */
+            .tile-options-3 { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+            /* 4-item (format, experience): 2 cols                    */
+            .tile-options-4 { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+
+            /* ── Tile card feel ───────────────────────────────────── */
+            .tile-option label {
+                padding: 14px 8px;
+                min-height: 66px;
+                border-radius: 12px;
+                gap: 4px;
+            }
+            .tile-main { font-size: 0.8rem; }
+            .tile-sub  { font-size: 0.64rem; }
+
+            /* ── Text inputs — 16px stops iOS zoom ───────────────── */
+            .field-group { margin-bottom: 22px; }
+            .field-group input,
+            .field-group textarea { font-size: 16px; padding: 12px 0; }
+
+            /* ── Step nav buttons ─────────────────────────────────── */
+            .step-nav { margin-top: 28px; }
+            .step-nav-next { padding: 14px 28px; font-size: 0.9rem; }
+            .submit-button { padding: 17px; font-size: 0.98rem; }
+
+            /* ── Results section ──────────────────────────────────── */
+            .match-results-section { padding: 56px 20px 72px; }
+            .results-headline { font-size: 1.85rem; letter-spacing: -0.025em; }
+            .results-subline  { font-size: 0.88rem; margin-bottom: 32px; }
+            .match-cards-grid { grid-template-columns: 1fr; gap: 16px; }
+            .match-card { padding: 24px 20px; }
+        }
     </style>
 
     <!-- Match Results Styles -->
