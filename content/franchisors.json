@@ -131,32 +131,32 @@
       "investmentMin": 20000
     },
     {
-      "multiSiteReady": false,
-      "locationsDisplay": "London",
-      "operatorModel": "owner-operator",
+      "multiSiteReady": true,
+      "locationsDisplay": "International",
+      "operatorModel": "hire-manager",
       "experienceRequired": "none",
-      "locationsAvailable": [
-        "london",
-        "manchester",
-        "liverpool",
-        "paris"
-      ],
-      "name": "ZenDöner",
+      "locationsAvailable": [],
+      "name": "Zendöner",
       "sectors": [
         "food-beverage"
       ],
-      "investmentDisplay": "£100,000 - £500,000",
-      "teaser": "Test",
-      "investmentMax": 500000,
-      "timelineMonths": 6,
+      "investmentDisplay": "€250,000 – €300,000",
+      "teaser": "A technology-driven fast casual döner brand using automated kitchen systems to deliver consistent premium quality at scale — no food experience required.",
+      "investmentMax": 300000,
+      "timelineMonths": 3,
       "format": [
-        "takeaway",
-        "dine-in"
+        "dine-in",
+        "takeaway"
       ],
       "id": "zen-doner",
-      "fullTimeRequired": true,
-      "category": "Doner",
-      "investmentMin": 100000
+      "fullTimeRequired": false,
+      "category": "Fast Casual Döner",
+      "highlights": [
+        "Automated kitchen tech — consistent premium product, no food experience needed",
+        "Semi-absentee model: runs with an approved GM, not hands-on",
+        "18-month break-even target | €40,000 franchise fee"
+      ],
+      "investmentMin": 250000
     }
   ]
 }
