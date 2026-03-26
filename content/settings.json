@@ -28,6 +28,14 @@
     {
       "logo": "/images/sides.webp",
       "name": "Sides"
+    },
+    {
+      "logo": "/images/images-1-.png",
+      "name": "Chapati Man"
+    },
+    {
+      "logo": "/images/zambrero_logo.svg.png",
+      "name": "Zambrero"
     }
   ]
 }
