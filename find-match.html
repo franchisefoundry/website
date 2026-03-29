@@ -1111,7 +1111,7 @@
         height: 4px;
         background: linear-gradient(90deg, var(--green), var(--gold));
         border-radius: 0 2px 2px 0;
-        animation: ffProgress 7s ease-out forwards;
+        animation: ffProgress 5s ease-out forwards;
     }
     @keyframes ffProgress {
         from { width: 0%;   }
@@ -2034,7 +2034,7 @@ function highlightTileGroup(name) {
             // Fetch franchisor data + artificial delay in parallel
             const [franchisors] = await Promise.all([
                 fetch('/content/franchisors.json').then(r => r.json()).then(d => Array.isArray(d) ? d : (d.partners || [])),
-                new Promise(r => setTimeout(r, 7000))
+                new Promise(r => setTimeout(r, 5000))
             ]);
 
             // Run matching
