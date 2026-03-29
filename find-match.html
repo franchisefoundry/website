@@ -2096,11 +2096,12 @@ function highlightTileGroup(name) {
             sub.innerHTML  = 'Our team will personally reach out to find the right fit for you.';
             grid.innerHTML = '<div class="no-matches"><p>We\'ll be in touch within 24 hours with personalised recommendations.</p></div>';
         } else {
-            hl.textContent = matches.length === 1
-                ? `We found 1 franchise match for you, ${firstName}!`
-                : `We found ${matches.length} franchise matches for you, ${firstName}!`;
+            const top = matches.slice(0, 3);
+            hl.textContent = top.length === 1
+                ? `We found your top franchise match, ${firstName}!`
+                : `We found your top ${top.length} franchise matches, ${firstName}!`;
             sub.innerHTML  = `Ranked by compatibility: <strong>brand names revealed during your free consultation</strong>`;
-            grid.innerHTML = matches.map((m, i) => buildCard(m, i + 1)).join('');
+            grid.innerHTML = top.map((m, i) => buildCard(m, i + 1)).join('');
         }
 
         // Show results section
