@@ -1118,6 +1118,93 @@
         to   { width: 100%; }
     }
 
+    /* ── Enquiry section (below match cards) ───────────────────── */
+    .enquiry-section {
+        margin-top: 56px;
+        padding-top: 52px;
+        border-top: 1px solid rgba(255,255,255,0.1);
+    }
+    .enquiry-inner {
+        max-width: 520px;
+        margin: 0 auto;
+        text-align: center;
+    }
+    .enquiry-title {
+        font-size: 1.75rem;
+        font-weight: 700;
+        color: var(--white);
+        margin-bottom: 12px;
+        letter-spacing: -0.02em;
+    }
+    .enquiry-sub {
+        font-size: 0.95rem;
+        color: rgba(255,255,255,0.65);
+        margin-bottom: 36px;
+        line-height: 1.7;
+    }
+    .enquiry-fields {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        margin-bottom: 20px;
+        text-align: left;
+    }
+    .enquiry-section .field-group label {
+        color: rgba(255,255,255,0.8);
+        font-size: 0.85rem;
+        font-weight: 600;
+    }
+    .enquiry-section .field-group input {
+        background: rgba(255,255,255,0.08);
+        border: 1px solid rgba(255,255,255,0.18);
+        color: var(--white);
+        border-radius: var(--radius-sm);
+        padding: 14px 16px;
+        font-family: 'Sora', sans-serif;
+        font-size: 0.95rem;
+        width: 100%;
+        transition: border-color 0.2s, background 0.2s;
+    }
+    .enquiry-section .field-group input::placeholder { color: rgba(255,255,255,0.3); }
+    .enquiry-section .field-group input:focus {
+        border-color: var(--gold);
+        background: rgba(255,255,255,0.12);
+        outline: none;
+    }
+    .enquiry-submit-btn {
+        width: 100%;
+        padding: 18px 32px;
+        background: var(--gold);
+        color: var(--white);
+        border: none;
+        border-radius: var(--radius-md);
+        font-family: 'Sora', sans-serif;
+        font-size: 1.05rem;
+        font-weight: 600;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        transition: background 0.2s, transform 0.15s;
+        margin-bottom: 4px;
+    }
+    .enquiry-submit-btn:hover  { background: #b07830; transform: translateY(-1px); }
+    .enquiry-submit-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+    .enq-privacy { color: rgba(255,255,255,0.4); margin-top: 14px; font-size: 0.8rem; }
+    /* Success state */
+    .enquiry-success { text-align: center; padding: 40px 20px; }
+    .enquiry-success-icon {
+        width: 64px; height: 64px;
+        background: var(--gold);
+        border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 1.5rem; color: white;
+        margin: 0 auto 20px;
+    }
+    .enquiry-success h3 { color: var(--white); font-size: 1.5rem; margin-bottom: 12px; font-weight: 700; }
+    .enquiry-success p  { color: rgba(255,255,255,0.65); font-size: 0.95rem; line-height: 1.6; }
+
     /* Results section */
     /* ── Match Results Section ─────────────────────────────────── */
     .match-results-section {
@@ -1451,17 +1538,9 @@
                     <div class="progress-dot">3</div>
                     <span class="progress-label">About You</span>
                 </div>
-                <div class="progress-line" id="prog-line-3"></div>
-                <div class="progress-step" id="prog-4">
-                    <div class="progress-dot">4</div>
-                    <span class="progress-label">Contact</span>
-                </div>
             </div>
 
-            <form name="find-match" id="find-match-form" method="POST" data-netlify="true" netlify-honeypot="bot-field" action="/thank-you.html">
-                <input type="hidden" name="form-name" value="find-match">
-                <input type="hidden" name="matches" value="">
-                <p style="display:none;"><label>Don't fill this out: <input name="bot-field"></label></p>
+            <form id="find-match-form">
 
                 <div class="form-steps">
 
@@ -1648,47 +1727,13 @@
                                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
                                 Back
                             </button>
-                            <button type="button" class="step-nav-next" onclick="goToStep(4)">
-                                Continue
+                            <button type="button" class="submit-button" onclick="runMatching()">
+                                Find My Matches
                                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
                             </button>
                         </div>
                     </div>
 
-                    <!-- Step 4: Contact Details -->
-                    <div class="form-step" id="step-4">
-                        <p class="step-heading">Almost there</p>
-                        <p class="step-subheading">Where should we send your matches?</p>
-
-                        <div class="field-group">
-                            <label for="name">Full Name *</label>
-                            <input type="text" id="name" name="name" placeholder="Your full name" required>
-                        </div>
-
-                        <div class="field-group">
-                            <label for="email">Email Address *</label>
-                            <input type="email" id="email" name="email" placeholder="you@example.com" required>
-                        </div>
-
-                        <div class="field-group">
-                            <label for="phone">Phone Number *</label>
-                            <input type="tel" id="phone" name="phone" placeholder="+44 7700 000000" required>
-                        </div>
-
-                        <div class="step-nav" style="flex-direction: column; gap: 10px; align-items: stretch;">
-                            <button type="submit" class="submit-button">Get My Free Matches</button>
-                            <div class="privacy-note">
-                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-                                Your details are secure and never shared with third parties.
-                            </div>
-                        </div>
-                        <div style="text-align:center; margin-top: 14px;">
-                            <button type="button" class="step-nav-back" onclick="goToStep(3)">
-                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-                                Back
-                            </button>
-                        </div>
-                    </div>
 
                 </div><!-- /.form-steps -->
             </form>
@@ -1729,6 +1774,52 @@
                 <strong>Why are brand names hidden?</strong> We protect both you and our franchise partners.
                 Full details, including brand names, financials, and introductions, are shared exclusively during your free consultation call.
             </p>
+
+            <!-- Enquiry form — shown after results, captures lead -->
+            <div class="enquiry-section" id="enquiry-section" style="display:none;">
+                <div class="enquiry-inner">
+                    <h3 class="enquiry-title">Unlock your full match details</h3>
+                    <p class="enquiry-sub">Enter your details and our team will be in touch within 24 hours with your full franchise breakdown — brand names, financials, and a free consultation.</p>
+
+                    <form id="enquiry-form" name="franchise-enquiry" data-netlify="true" netlify-honeypot="bot-field" method="POST">
+                        <input type="hidden" name="form-name" value="franchise-enquiry">
+                        <input type="hidden" name="matches" id="enquiry-matches" value="">
+                        <p style="display:none"><label>Don't fill this out: <input name="bot-field"></label></p>
+
+                        <div class="enquiry-fields">
+                            <div class="field-group">
+                                <label for="enq-name">Full Name *</label>
+                                <input type="text" id="enq-name" name="name" placeholder="Your full name" autocomplete="name">
+                            </div>
+                            <div class="field-group">
+                                <label for="enq-email">Email Address *</label>
+                                <input type="email" id="enq-email" name="email" placeholder="you@example.com" autocomplete="email">
+                            </div>
+                            <div class="field-group">
+                                <label for="enq-phone">Mobile Number *</label>
+                                <input type="tel" id="enq-phone" name="phone" placeholder="+44 7700 000000" autocomplete="tel">
+                            </div>
+                        </div>
+
+                        <button type="submit" class="enquiry-submit-btn" id="enquiry-submit-btn">
+                            Unlock My Matches
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                        </button>
+                        <p class="privacy-note enq-privacy">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                            Your details are secure and never shared with third parties.
+                        </p>
+                    </form>
+
+                    <!-- Success state -->
+                    <div class="enquiry-success" id="enquiry-success" style="display:none;">
+                        <div class="enquiry-success-icon">✓</div>
+                        <h3>You're all set!</h3>
+                        <p>Our team will be in touch within 24 hours with your full franchise matches and to arrange your free consultation.</p>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </section>
 
@@ -1978,39 +2069,13 @@ function highlightTileGroup(name) {
     const form = document.getElementById('find-match-form');
     if (!form) return;
 
-    form.addEventListener('submit', async function (e) {
-        e.preventDefault();
+    // Stores the top-3 match summary so the enquiry form can include it
+    let _matchSummary = '';
 
-        // ── Mandatory field validation ────────────────────────────────────────
-        const requiredFields = [
-            { id: 'name',  label: 'Full Name' },
-            { id: 'email', label: 'Email Address' },
-            { id: 'phone', label: 'Phone Number' }
-        ];
-        let hasErrors = false;
-        requiredFields.forEach(({ id, label }) => {
-            const el = document.getElementById(id);
-            const existing = el.parentElement.querySelector('.field-error');
-            if (existing) existing.remove();
-            el.style.borderColor = '';
-            if (!el.value.trim()) {
-                el.style.borderColor = '#e53e3e';
-                const msg = document.createElement('p');
-                msg.className = 'field-error';
-                msg.style.cssText = 'color:#e53e3e;font-size:0.85rem;margin-top:4px;';
-                msg.textContent = label + ' is required.';
-                el.parentElement.appendChild(msg);
-                hasErrors = true;
-            }
-        });
-        if (hasErrors) return;
-
-        // Collect form data
+    // Called by the "Find My Matches" button on step 3
+    window.runMatching = async function () {
         const fd = new FormData(form);
         const prospect = {
-            name:       fd.get('name')       || '',
-            email:      fd.get('email')      || '',
-            phone:      fd.get('phone')      || '',
             location:   fd.get('location')   || '',
             budget:     fd.get('budget')     || '',
             timeline:   fd.get('timeline')   || '',
@@ -2022,22 +2087,19 @@ function highlightTileGroup(name) {
             message:    fd.get('message')    || ''
         };
 
-        // Show loading, hide form
+        // Hide form, show loading overlay
         form.closest('.form-container').style.display = 'none';
         const loading = document.getElementById('match-loading');
-        // Reset progress bar animation so it starts fresh every time
         const oldBar = loading.querySelector('.ff-ov-progress');
         if (oldBar) { const nb = oldBar.cloneNode(true); oldBar.parentNode.replaceChild(nb, oldBar); }
         loading.classList.add('active');
 
         try {
-            // Fetch franchisor data + artificial delay in parallel
             const [franchisors] = await Promise.all([
                 fetch('/content/franchisors.json').then(r => r.json()).then(d => Array.isArray(d) ? d : (d.partners || [])),
                 new Promise(r => setTimeout(r, 5000))
             ]);
 
-            // Run matching
             const matches = franchisors
                 .map(f => {
                     const s = scoreMatch(f, prospect);
@@ -2047,26 +2109,14 @@ function highlightTileGroup(name) {
                 .filter(Boolean)
                 .sort((a, b) => b.matchScore - a.matchScore);
 
-            // Capture lead + match results in Netlify Forms (includes brand names — visible to admin only, not shown to user)
-            const matchSummary = matches.length === 0
+            // Store top-3 summary — included in the enquiry form submission to Harry
+            _matchSummary = matches.length === 0
                 ? 'No matches found'
-                : matches.map((m, i) =>
+                : matches.slice(0, 3).map((m, i) =>
                     `#${i + 1} ${m.name || m.id} (${m.category}) - ${m.matchScore}% match | ${m.investmentDisplay} | ${m.locationsDisplay}`
                   ).join('\n');
 
-            fetch('/', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: new URLSearchParams(Object.assign(
-                    { 'form-name': 'find-match' },
-                    prospect,
-                    {
-                        matches: matchSummary
-                    }
-                )).toString()
-            }).catch(() => {});
-
-            renderResults(matches, prospect.name);
+            renderResults(matches);
             loading.classList.add('ff-hiding');
             setTimeout(() => loading.classList.remove('active', 'ff-hiding'), 400);
 
@@ -2081,26 +2131,77 @@ function highlightTileGroup(name) {
             section.style.display = 'block';
             requestAnimationFrame(() => section.classList.add('visible'));
         }
-    });
+    };
 
-    function renderResults(matches, name) {
+    // ── Enquiry form — captures name, email, mobile + sends match summary to Harry ──
+    const enquiryForm = document.getElementById('enquiry-form');
+    if (enquiryForm) {
+        enquiryForm.addEventListener('submit', async function (e) {
+            e.preventDefault();
+            const btn   = document.getElementById('enquiry-submit-btn');
+            const name  = document.getElementById('enq-name').value.trim();
+            const email = document.getElementById('enq-email').value.trim();
+            const phone = document.getElementById('enq-phone').value.trim();
+
+            if (!name || !email || !phone) {
+                ['enq-name','enq-email','enq-phone'].forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el && !el.value.trim()) el.style.borderColor = '#e53e3e';
+                });
+                return;
+            }
+
+            btn.disabled = true;
+            btn.textContent = 'Sending…';
+
+            // Attach match summary to hidden field
+            document.getElementById('enquiry-matches').value = _matchSummary;
+
+            try {
+                await fetch('/', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: new URLSearchParams({
+                        'form-name': 'franchise-enquiry',
+                        name,
+                        email,
+                        phone,
+                        matches: _matchSummary
+                    }).toString()
+                });
+
+                // Show success, hide form
+                enquiryForm.style.display = 'none';
+                document.getElementById('enquiry-success').style.display = 'block';
+
+                // Personalise the results headline with their first name
+                const hl = document.getElementById('results-headline');
+                const firstName = name.split(' ')[0];
+                if (hl && firstName) hl.textContent = `Your top franchise matches, ${firstName}!`;
+
+            } catch (err) {
+                btn.disabled = false;
+                btn.textContent = 'Unlock My Matches';
+            }
+        });
+    }
+
+    function renderResults(matches) {
         const section = document.getElementById('match-results');
         const grid    = document.getElementById('match-cards-grid');
         const hl      = document.getElementById('results-headline');
         const sub     = document.getElementById('results-subline');
 
-        const firstName = (name || '').split(' ')[0] || 'you';
-
         if (matches.length === 0) {
             hl.textContent = 'No exact matches found';
-            sub.innerHTML  = 'Our team will personally reach out to find the right fit for you.';
+            sub.innerHTML  = 'Enter your details below and our team will personally find the right fit for you.';
             grid.innerHTML = '<div class="no-matches"><p>We\'ll be in touch within 24 hours with personalised recommendations.</p></div>';
         } else {
             const top = matches.slice(0, 3);
             hl.textContent = top.length === 1
-                ? `We found your top franchise match, ${firstName}!`
-                : `We found your top ${top.length} franchise matches, ${firstName}!`;
-            sub.innerHTML  = `Ranked by compatibility: <strong>brand names revealed during your free consultation</strong>`;
+                ? `We found your top franchise match!`
+                : `We found your top ${top.length} franchise matches!`;
+            sub.innerHTML  = `Ranked by compatibility — <strong>enter your details below to unlock brand names and full details</strong>`;
             grid.innerHTML = top.map((m, i) => buildCard(m, i + 1)).join('');
         }
 
@@ -2129,6 +2230,16 @@ function highlightTileGroup(name) {
                 if (label) animateCounter(label, 0, score, 1200);
             }, i * 220);
         });
+
+        // Reveal the enquiry form after the last card animates in
+        const lastCardDelay = Math.max(cards.length - 1, 0) * 220 + 600;
+        setTimeout(() => {
+            const enquiry = document.getElementById('enquiry-section');
+            if (enquiry) {
+                enquiry.style.display = 'block';
+                enquiry.style.animation = 'ffFadeIn 0.5s ease forwards';
+            }
+        }, lastCardDelay);
     }
 
     function buildCard(match, rank) {
