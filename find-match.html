@@ -2373,10 +2373,15 @@ async function loadCMSContent() {
         if (settings) {
             if (settings.logo) {
                 document.querySelectorAll('img[alt="Franchise Foundry"]').forEach(img => {
-                    if (!img.closest('.partner-logo') && !img.src.includes('partner')) img.src = settings.logo;
+                    if (!img.closest('.partner-logo') && !img.src.includes('partner') && !img.classList.contains('ff-ov-logo')) img.src = settings.logo;
                 });
                 const navbarLogo = document.querySelector('.navbar-logo');
                 if (navbarLogo) navbarLogo.src = settings.logo;
+            }
+            // Loading overlay logo — controlled separately so it can stay as icon-only
+            if (settings.loadingLogo) {
+                const loadingLogoEl = document.querySelector('.ff-ov-logo');
+                if (loadingLogoEl) loadingLogoEl.src = settings.loadingLogo;
             }
             if (settings.email) {
                 document.querySelectorAll('a[href^="mailto"]').forEach(a => {
