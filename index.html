@@ -950,6 +950,29 @@
             font-weight: 300;
         }
 
+        /* Why Section - text layout */
+        .why-content { max-width: 820px; margin: 0 auto; }
+        .why-content .section-title { margin-bottom: 32px; }
+        .why-intro { margin-bottom: 24px; }
+        .why-pullquote {
+            border-left: 4px solid var(--gold);
+            background: var(--green-light);
+            padding: 28px 32px;
+            border-radius: 0 var(--radius-md) var(--radius-md) 0;
+            margin: 40px 0;
+            font-size: 1.1rem;
+            font-style: normal;
+            color: var(--text-dark);
+            font-weight: 500;
+            line-height: 1.7;
+        }
+        .why-closing {
+            font-size: 1.05rem;
+            color: var(--text-mid);
+            font-weight: 400;
+            line-height: 1.75;
+        }
+
         /* Scroll Reveal */
         .reveal {
             opacity: 0;
@@ -1193,7 +1216,7 @@
             <ul class="nav-links">
                 <li><a href="index.html">Home</a></li>
                 <li><a href="about.html">About Us</a></li>
-                <li><a href="find-match.html" class="nav-cta">Get Your Match</a></li>
+                <li><a href="find-match.html" class="nav-cta">Find Your Match</a></li>
                 <li class="nav-sep"></li>
                 <li><a href="for-brands.html" class="nav-brands">For Franchise Brands</a></li>
                 <li class="nav-sep-sm"></li>
@@ -1214,7 +1237,7 @@
         <li><a href="contact.html">Contact</a></li>
         </ul>
         <div class="nav-mobile-cta-wrap">
-            <a href="find-match.html" class="nav-mobile-cta-btn">Get Your Free Match →</a>
+            <a href="find-match.html" class="nav-mobile-cta-btn">Find Your Match →</a>
         </div>
     </div>
 
@@ -1224,15 +1247,14 @@
             <div class="hero-left">
                 <div class="hero-eyebrow"><span></span> Hospitality Franchise Matching Specialists</div>
                 <h1 class="hero-headline">
-                    Your perfect franchise.<br>
-                    <em>Found for free.</em>
+                    Franchise recruitment is broken. We built something better.
                 </h1>
                 <p class="hero-subtext">
-                    We match aspiring franchise owners with hospitality opportunities that genuinely fit: your budget, your location, your lifestyle. Starting with the UK's best food and beverage brands, growing from there.
+                    Traditional brokers and portals were built to shift volume, not find the right fit. We're hospitality operators who've built, scaled and recruited for real brands - that inside knowledge is now entirely in your corner, and it won't cost you a penny.
                 </p>
                 <div class="hero-ctas">
-                    <a href="find-match.html" class="btn-primary">Get Your Free Match</a>
-                    <a href="about.html" class="btn-ghost">How it works</a>
+                    <a href="/find-match" class="btn-primary">Find Your Match</a>
+                    <a href="#process" class="btn-ghost">See how it works</a>
                 </div>
             </div>
 
@@ -1249,8 +1271,8 @@
                             </svg>
                         </div>
                         <div>
-                            <div class="stat-number">30+</div>
-                            <div class="stat-desc">Years of combined hospitality &amp; franchising experience</div>
+                            <div class="stat-number">15+</div>
+                            <div class="stat-desc">Years inside hospitality, building, operating and scaling real brands</div>
                         </div>
                     </div>
                     <div class="stat-item">
@@ -1261,8 +1283,8 @@
                             </svg>
                         </div>
                         <div>
-                            <div class="stat-number">100%</div>
-                            <div class="stat-desc">Free consultation, no hidden fees, ever</div>
+                            <div class="stat-number">Free</div>
+                            <div class="stat-desc">Always. No hidden fees, no commission from your side, ever</div>
                         </div>
                     </div>
                     <div class="stat-item">
@@ -1274,8 +1296,8 @@
                             </svg>
                         </div>
                         <div>
-                            <div class="stat-number">Only</div>
-                            <div class="stat-desc">Franchisee-first matching agency in the UK</div>
+                            <div class="stat-number">Both sides</div>
+                            <div class="stat-desc">We've sat at the franchisor's recruitment table. Now we sit at yours</div>
                         </div>
                     </div>
                 </div>
@@ -1331,75 +1353,21 @@
     <!-- Why Choose -->
     <section class="section why-section">
         <div class="section-inner">
-            <div class="why-layout">
-                <div class="why-left reveal">
-                    <div class="section-label">Why Choose Us</div>
-                    <h2 class="section-title">Find the right fit,<br>not just any fit.</h2>
-                    <p class="why-intro">
-                        With 30+ years in hospitality and franchising, we know what a great match actually looks like. We take the time to understand your goals before we make any introduction, so every opportunity we present is one we'd genuinely back.
-                    </p>
-                    <a href="about.html" class="btn-outline">
-                        Learn about our process
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-                    </a>
-                </div>
-
-                <div class="why-right">
-                    <div class="benefit-card reveal reveal-delay-1">
-                        <div class="benefit-icon">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="#5f725f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                                <polyline points="22 4 12 14.01 9 11.01"></polyline>
-                            </svg>
-                        </div>
-                        <div class="benefit-body">
-                            <h4>Genuinely Free</h4>
-                            <p>Your consultation, your matching, your guidance. All completely free. Always.</p>
-                        </div>
-                    </div>
-                    <div class="benefit-card reveal reveal-delay-2">
-                        <div class="benefit-icon">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="#5f725f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <circle cx="12" cy="12" r="10"></circle>
-                                <circle cx="12" cy="12" r="6"></circle>
-                                <circle cx="12" cy="12" r="2"></circle>
-                            </svg>
-                        </div>
-                        <div class="benefit-body">
-                            <h4>Precision Matching</h4>
-                            <p>Our algorithm considers your budget, location, timeline and lifestyle to surface only the most relevant opportunities.</p>
-                        </div>
-                    </div>
-                    <div class="benefit-card reveal reveal-delay-3">
-                        <div class="benefit-icon">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="#5f725f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                                <circle cx="9" cy="7" r="4"></circle>
-                                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-                                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-                            </svg>
-                        </div>
-                        <div class="benefit-body">
-                            <h4>Expert Guidance</h4>
-                            <p>30+ years of hands-on experience in hospitality and franchising. We know the sector from the inside.</p>
-                        </div>
-                    </div>
-                    <div class="benefit-card reveal reveal-delay-4">
-                        <div class="benefit-icon">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="#5f725f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <polyline points="20 12 20 22 4 22 4 12"></polyline>
-                                <rect x="2" y="7" width="20" height="5"></rect>
-                                <line x1="12" y1="22" x2="12" y2="7"></line>
-                                <path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"></path>
-                                <path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"></path>
-                            </svg>
-                        </div>
-                        <div class="benefit-body">
-                            <h4>No Obligation</h4>
-                            <p>Explore your options at your own pace. We're here to inform, not pressure.</p>
-                        </div>
-                    </div>
-                </div>
+            <div class="why-content reveal">
+                <div class="section-label">Why Choose Us</div>
+                <h2 class="section-title">We know what franchisors are actually looking for. That's your advantage.</h2>
+                <p class="why-intro">
+                    Traditional franchise brokers get paid when you sign. Portals get paid when you click. Neither has a real incentive to find you the right brand. We're the only franchisee-first matching service in the UK, built by people who've sat on the other side of the recruitment table and recruited franchisees for serious hospitality brands.
+                </p>
+                <p class="why-intro">
+                    That means we know the non-negotiables, the red flags, and where franchisors have room to move. We share all of it with you, before you ever sit down with a brand.
+                </p>
+                <blockquote class="why-pullquote">
+                    Not every franchise is the right franchise. And not every piece of advice you'll get in this process has your best interests at heart. Ours does.
+                </blockquote>
+                <p class="why-closing">
+                    We only partner with brands we'd back ourselves. So when we make a match, it means something.
+                </p>
             </div>
         </div>
     </section>
@@ -1409,8 +1377,9 @@
         <div class="section-inner">
             <div class="match-header reveal">
                 <div class="section-label">See Your Matches</div>
-                <h2>Your personalised franchise shortlist, waiting.</h2>
-                <p>Tell us your goals and we'll surface the opportunities that actually fit, ranked by match score and locked until you book your free consultation.</p>
+                <h2>Your matches are ready. Book a free call to see the full picture.</h2>
+                <p>We score every brand in our network against your profile: budget, location, lifestyle and ambition. The ones at the top aren't just affordable. They're genuinely right for you.</p>
+                <a href="find-match.html" class="btn-primary" style="display:inline-block; margin-top: 28px; background: var(--gold); color: white;">Unlock Your Matches for Free</a>
             </div>
 
             <div class="match-ui reveal">
@@ -1421,7 +1390,7 @@
                     <div class="ui-url-bar">franchisefoundry.co.uk/find-match</div>
                 </div>
                 <div class="match-ui-body">
-                    <p class="match-ui-title">Your Top Matches. Book a consultation to reveal full details.</p>
+                    <p class="match-ui-title">Your Top Matches. Book a free call to unlock full details.</p>
                     <div class="match-cards-row">
                         <div class="match-card">
                             <div class="match-score-badge">94% Match</div>
@@ -1471,7 +1440,7 @@
                     </div>
                     <div class="match-ui-cta">
                         <a href="find-match.html">
-                            Book Free Consultation to Unlock
+                            Unlock Your Matches for Free
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
                         </a>
                     </div>
@@ -1481,32 +1450,33 @@
     </section>
 
     <!-- How It Works -->
-    <section class="section how-section">
+    <section class="section how-section" id="process">
         <div class="section-inner">
-            <div style="text-align:center; max-width:600px; margin:0 auto;" class="reveal">
+            <div style="text-align:center; max-width:680px; margin:0 auto;" class="reveal">
                 <div class="section-label">The Process</div>
                 <h2 class="section-title">From curiosity to clarity in four steps.</h2>
+                <p class="section-subtitle" style="color: var(--text-mid); font-size: 1.05rem; font-weight: 300; line-height: 1.75; margin-top: 16px;">From first conversation to signing day - here's what working with us actually looks like.</p>
             </div>
             <div class="steps-layout">
                 <div class="step-item reveal reveal-delay-1">
                     <div class="step-num">1</div>
-                    <h3 class="step-title">Share Your Goals</h3>
-                    <p class="step-desc">Tell us your budget, location, and what kind of business you're looking to build. Takes about two minutes.</p>
+                    <h3 class="step-title">Tell us what you're really looking for</h3>
+                    <p class="step-desc">Not just budget and postcode. We want to understand how you want to spend your days, what success looks like in year three, and what you're not willing to compromise on. Takes about two minutes.</p>
                 </div>
                 <div class="step-item reveal reveal-delay-2">
                     <div class="step-num">2</div>
-                    <h3 class="step-title">Get Matched</h3>
-                    <p class="step-desc">Our algorithm instantly scores every franchise in our network against your profile and surfaces the best fits.</p>
+                    <h3 class="step-title">We find your matches, from brands worth joining</h3>
+                    <p class="step-desc">Our network is curated, not a directory. Every brand we work with has been assessed by us first. We score them against your profile and surface the ones that are genuinely right, not just available.</p>
                 </div>
                 <div class="step-item reveal reveal-delay-3">
                     <div class="step-num">3</div>
-                    <h3 class="step-title">Free Consultation</h3>
-                    <p class="step-desc">A 45-minute call with our expert advisors. We walk you through your matches, answer every question, no pressure.</p>
+                    <h3 class="step-title">We prep you. Properly.</h3>
+                    <p class="step-desc">Before any introduction, we walk you through the unit economics, pressure-test your thinking, and make sure you go in with your eyes fully open. No surprises. No rose-tinted pitch decks.</p>
                 </div>
                 <div class="step-item reveal reveal-delay-4">
                     <div class="step-num">4</div>
-                    <h3 class="step-title">Make Your Move</h3>
-                    <p class="step-desc">We connect you directly with the right brands and support you right through to signing day.</p>
+                    <h3 class="step-title">We're with you through to signing</h3>
+                    <p class="step-desc">What to ask. What to push back on. What the franchisor is really looking for. We stay in your corner from first call to franchise award and beyond.</p>
                 </div>
             </div>
         </div>
@@ -1516,10 +1486,10 @@
     <section class="final-cta">
         <div class="final-cta-inner reveal">
             <h2>Ready to find your match?</h2>
-            <p>Book your free, no-obligation consultation today. It takes two minutes and costs nothing.</p>
+            <p>It takes about two minutes and costs nothing. Tell us what you're looking for and we'll do the rest.</p>
             <div class="final-cta-btns">
-                <a href="find-match.html" class="btn-primary">Get Started. It's Free.</a>
-                <a href="contact.html" class="btn-ghost">Talk to the team</a>
+                <a href="find-match.html" class="btn-primary">Get Started - It's Free</a>
+                <a href="contact.html" class="btn-ghost">Talk to the team first</a>
             </div>
         </div>
     </section>
@@ -1530,7 +1500,7 @@
             <div class="footer-brand">
                 <img src="/images/copy-of-franchise-foundry-logo-final-2.png" alt="Franchise Foundry" class="footer-logo">
                 <span id="footer-brand-name" style="display:none"></span>
-                <p id="footer-brand-desc">Helping aspiring franchisees find the perfect franchise opportunity since 2024.</p>
+                <p id="footer-brand-desc">Built by hospitality operators. For people who want to get franchising right.</p>
                 <p id="footer-brand-tagline" class="footer-tagline"><em id="footer-tagline-text">Discover. Connect. Franchise.</em></p>
             </div>
             <div class="footer-col">
