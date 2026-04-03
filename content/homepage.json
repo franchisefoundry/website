@@ -1,28 +1,28 @@
 {
   "hero": {
-    "title": "TEST TEST TEST",
-    "subtitle": "We match you with franchise opportunities that truly fit your goals, budget, and lifestyle.",
-    "description": "With over 15 years of hands-on experience building and scaling franchises across the UK, we know what makes a successful franchisee. We're here to guide you every step of the way - completely free.",
-    "primaryButton": "Get Your Free Match",
-    "secondaryButton": "Learn About Our Process"
+    "title": "Franchise recruitment is broken. We built something better.",
+    "subtitle": "Traditional brokers and portals were built to shift volume, not find the right fit. We're hospitality operators who've built, scaled and recruited for real brands - that inside knowledge is now entirely in your corner, and it won't cost you a penny.",
+    "description": "Traditional brokers and portals were built to shift volume, not find the right fit. We're hospitality operators who've built, scaled and recruited for real brands - that inside knowledge is now entirely in your corner, and it won't cost you a penny.",
+    "primaryButton": "Find Your Match",
+    "secondaryButton": "See how it works"
   },
   "stats": {
     "years": "15+",
-    "yearsDesc": "Years of combined hospitality & franchising experience",
-    "freeLabel": "100%",
-    "freeDesc": "Free consultation - no hidden fees, ever",
-    "worth": "Independant & Impartial ",
-    "worthDesc": "Franchise advice you can trust"
+    "yearsDesc": "Years inside hospitality, building, operating and scaling real brands",
+    "freeLabel": "Free",
+    "freeDesc": "Always. No hidden fees, no commission from your side, ever",
+    "worth": "Both sides",
+    "worthDesc": "We've sat at the franchisor's recruitment table. Now we sit at yours"
   },
   "matchPreview": {
-    "title": "Find the right match for you in seconds",
-    "description": "We'll show you a curated selection of franchise opportunities that align with your investment budget, location preferences, and business goals.",
-    "buttonText": "Book Your Free Consultation to Unlock Matches"
+    "title": "Your matches are ready. Book a free call to see the full picture.",
+    "description": "We score every brand in our network against your profile: budget, location, lifestyle and ambition. The ones at the top aren't just affordable. They're genuinely right for you.",
+    "buttonText": "Unlock Your Matches for Free"
   },
   "whyChoose": {
-    "title": "We've Been Where You Are",
-    "text1": "We're not brokers or salespeople. We're franchise operators who've built, scaled, and run successful franchise businesses ourselves—including a 17-site burger chain, an international Pilates franchise, and a multi-unit Asian food brand.",
-    "text2": "We've experienced the highs and lows firsthand, and we know that choosing the right franchise is one of the most important decisions you'll make. That's why we're committed to helping you find the right fit, not just any franchise."
+    "title": "We know what franchisors are actually looking for. That's your advantage.",
+    "text1": "Traditional franchise brokers get paid when you sign. Portals get paid when you click. Neither has a real incentive to find you the right brand. We're the only franchisee-first matching service in the UK, built by people who've sat on the other side of the recruitment table and recruited franchisees for serious hospitality brands.",
+    "text2": "That means we know the non-negotiables, the red flags, and where franchisors have room to move. We share all of it with you, before you ever sit down with a brand."
   },
   "benefits": [
     {
@@ -38,38 +38,38 @@
     {
       "icon": "👥",
       "title": "Experienced Advisors",
-      "description": "With over 30 years in hospitality and franchising between us, we've seen it all—and we're here to share that knowledge with you."
+      "description": "With over 30 years in hospitality and franchising between us, we've seen it all and we're here to share that knowledge with you."
     }
   ],
   "howItWorks": {
     "title": "How It Works",
-    "subtitle": "A simple, transparent process designed to find you the right franchise, not just any franchise."
+    "subtitle": "From first conversation to signing day - here's what working with us actually looks like."
   },
   "steps": [
     {
       "number": "1",
-      "title": "Share Your Goals",
-      "description": "Tell us about your investment budget, industry interests, location preferences, and what you're looking for in a business."
+      "title": "Tell us what you're really looking for",
+      "description": "Not just budget and postcode. We want to understand how you want to spend your days, what success looks like in year three, and what you're not willing to compromise on. Takes about two minutes."
     },
     {
       "number": "2",
-      "title": "Get Personalised Matches",
-      "description": "We'll analyse your profile and match you with franchise opportunities that align with your criteria and goals."
+      "title": "We find your matches, from brands worth joining",
+      "description": "Our network is curated, not a directory. Every brand we work with has been assessed by us first. We score them against your profile and surface the ones that are genuinely right, not just available."
     },
     {
       "number": "3",
-      "title": "Free Consultation",
-      "description": "Book a free consultation with our experienced advisors to review your matches and get expert guidance."
+      "title": "We prep you. Properly.",
+      "description": "Before any introduction, we walk you through the unit economics, pressure-test your thinking, and make sure you go in with your eyes fully open. No surprises. No rose-tinted pitch decks."
     },
     {
       "number": "4",
-      "title": "Make Your Decision",
-      "description": "We'll connect you with the right franchise brands and support you throughout the decision process."
+      "title": "We're with you through to signing",
+      "description": "What to ask. What to push back on. What the franchisor is really looking for. We stay in your corner from first call to franchise award and beyond."
     }
   ],
   "finalCTA": {
-    "title": "Ready to Find Your Perfect Franchise?",
-    "description": "Book your free, no-obligation consultation with our franchise experts today.",
-    "buttonText": "Get Started Now"
+    "title": "Ready to find your match?",
+    "description": "It takes about two minutes and costs nothing. Tell us what you're looking for and we'll do the rest.",
+    "buttonText": "Get Started - It's Free"
   }
 }
