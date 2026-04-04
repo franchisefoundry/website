@@ -1,64 +1,52 @@
 {
   "header": {
-    "title": "About Franchise Foundry",
-    "subtitle": "We've Been Where You Are"
+    "title": "Who We Are",
+    "subtitle": "We know hospitality from the inside. Now we're in your corner."
   },
   "story": {
-    "title": "We're Not Brokers. We're Operators.",
-    "text1": "We're not salespeople or consultants who've just read about franchising-we've built, scaled, and run successful franchise businesses ourselves-including a 17-site burger chain, an international Pilates franchise, and a multi-unit Asian food brand.",
-    "text2": "We've experienced the highs and lows firsthand, and we know that choosing the right franchise is one of the most important decisions you'll make. That's why we're committed to helping you find the right fit, not just any franchise.",
-    "text3": "Our approach is simple: we take the time to understand your goals, budget, and lifestyle, then match you with franchise opportunities that truly align with your vision."
+    "title": "Founded by operators. Built for franchisees.",
+    "intro": "Most of the people helping you find a franchise have never worked in one. They're brokers and portal managers whose job is to fill pipelines. We came up through hospitality - across operations, scaling and brand development - and we've spent the last few years working directly with franchise brands on finding and recruiting the right people.",
+    "content": "That gives us something most advisors don't have: we know what franchisors actually look for, what makes a site work, and where the gaps are between what's promised and what's real. We built Franchise Foundry to put that knowledge on the franchisee's side of the table - for the first time, for free.",
+    "closing": "We still work in hospitality. This isn't a pivot. It's a parallel - and it's what keeps the advice current."
   },
-  "experience": [
+  "experiences": [
     {
       "title": "17-Site Burger Chain",
-      "description": "Grew from single location to 17 sites across the UK"
+      "description": "Launched, operated and grew a multi-site burger brand across the UK - from first site to scaled operation."
     },
     {
-      "title": "International Pilates Franchise",
-      "description": "Scaled operations across multiple countries"
+      "title": "International Franchise Concept",
+      "description": "Worked across franchise development and recruitment for an international concept, understanding the full cycle from both sides."
     },
     {
       "title": "Multi-Unit Asian Food Brand",
-      "description": "Built and managed successful restaurant portfolio"
+      "description": "Built and managed a multi-site hospitality portfolio - operations, standards, teams and what actually drives unit success."
     }
   ],
   "why": {
-    "quote": "We know what it takes to succeed because we've done it ourselves.",
-    "text1": "Having been franchise operators ourselves, we understand the challenges, the opportunities, and the critical decisions that can make or break your success.",
-    "text2": "We're here to share that knowledge with you-completely free.",
-    "text3": "Our success comes from your success, which is why we only work with franchisees and franchisors we believe in."
+    "title": "Traditional brokers work for the brand. We work for you.",
+    "text1": "Franchise brokers get paid by franchisors to find franchisees - and so do we. That's how the model works, and it means you never pay us a thing. But there's a meaningful difference in what happens before you ever sit down with a brand.",
+    "quote": "Our reputation depends on getting it right - not just getting it done. If we put you in front of the wrong brand, we've failed at the only thing that matters.",
+    "text2": "Most brokers are incentivised to move volume. Get the pipeline moving, get signings across the line. Whether it was the right fit three years later isn't part of their transaction. We're selective about the brands we work with, we prep you properly before any introduction, and we turn down opportunities we don't believe in. We walk you through the unit economics before you meet anyone, tell you what to push back on, and share what the picture really looks like from inside the operation. None of that costs you a thing."
   },
   "values": [
     {
-      "icon": "✓",
-      "title": "Transparency",
-      "description": "No hidden fees, no pressure. Just honest, expert guidance."
+      "title": "Franchisee-first, always",
+      "description": "Every decision we make starts with what's right for the franchisee. We turn down brands we don't believe in. We won't match you with something we wouldn't back ourselves."
     },
     {
-      "icon": "✓",
-      "title": "Experience",
-      "description": "Over 15 years of hands-on franchise operations experience."
+      "title": "Inside knowledge, openly shared",
+      "description": "We've sat at the franchisor's recruitment table. We know what they're looking for, where they flex, and where they won't. We give you all of it before you walk in."
     },
     {
-      "icon": "✓",
-      "title": "Quality First",
-      "description": "We prioritise fit over volume. We'd rather find you the right franchise than any franchise."
-    },
-    {
-      "icon": "✓",
-      "title": "Personalised Matching",
-      "description": "We assess your goals, budget, and lifestyle to find franchises that truly fit."
-    },
-    {
-      "icon": "✓",
-      "title": "Ongoing Support",
-      "description": "We're here for you even after you've signed-not just until."
-    },
-    {
-      "icon": "✓",
-      "title": "UK Focused",
-      "description": "Deep understanding of the UK franchise market and opportunities."
+      "title": "Free. No small print.",
+      "description": "Our service to franchisees is free. Always. No consultation fees, no introduction fees, no commission from your side. We get paid by franchisors when we find them the right person - which means our interests align with yours."
     }
-  ]
+  ],
+  "team": {
+    "title": "Two operators. One focus.",
+    "text1": "Ben and Harry built their careers inside hospitality franchise operations - not advising from the outside, but doing the work of growing real brands. Between them, they've recruited franchisees, set brand standards, and navigated the full cycle from site selection to franchise award across hospitality concepts at scale.",
+    "text2": "Franchise Foundry isn't a second career. Both still work in hospitality. That's not incidental - it's what keeps the advice current, the brand relationships real, and the insider knowledge genuinely inside.",
+    "text3": "When you work with Franchise Foundry, you're not going through a sales desk or being handed to a junior consultant. You're getting direct access to people who've been on both sides of every conversation you're about to have - and who have no interest in pushing you towards the wrong brand."
+  }
 }
