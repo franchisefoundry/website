@@ -737,7 +737,246 @@
         }
     /* ════ MOBILE REDESIGN v3 ════ */
 
-        /* ════════════════════════════════════════════════════════════
+        /* ────────────────────────────────────────────────────────────────────
+       BRAND INTAKE FORM
+       ──────────────────────────────────────────────────────────────────── */
+    .brand-form-section {
+        padding: 80px 40px 100px;
+        background: var(--green-deep);
+        position: relative;
+        overflow: hidden;
+    }
+    .brand-form-section::before {
+        content: '';
+        position: absolute;
+        bottom: -80px; left: -80px;
+        width: 380px; height: 380px;
+        background: radial-gradient(circle, rgba(95,114,95,0.22) 0%, transparent 70%);
+        pointer-events: none;
+    }
+    .brand-form-header {
+        text-align: center;
+        margin-bottom: 44px;
+    }
+    .brand-form-header h2 {
+        font-size: 2.4rem;
+        font-weight: 800;
+        color: white;
+        letter-spacing: -0.03em;
+        margin-bottom: 10px;
+    }
+    .brand-form-header p {
+        font-size: 1rem;
+        color: rgba(255,255,255,0.6);
+        font-weight: 300;
+    }
+    .brand-form-container {
+        max-width: 700px;
+        margin: 0 auto;
+        background: white;
+        border-radius: var(--radius-xl);
+        overflow: hidden;
+        box-shadow: 0 24px 64px rgba(0,0,0,0.2);
+    }
+    .bf-progress {
+        display: flex;
+        align-items: center;
+        padding: 28px 40px 0;
+    }
+    .bf-prog-step {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex: 1;
+    }
+    .bf-prog-step:last-child { flex: 0; }
+    .bf-prog-dot {
+        width: 32px; height: 32px;
+        border-radius: 50%;
+        border: 2px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.78rem;
+        font-weight: 700;
+        color: var(--text-light);
+        flex-shrink: 0;
+        transition: all 0.3s;
+    }
+    .bf-prog-step.active .bf-prog-dot { background: var(--green-deep); border-color: var(--green-deep); color: white; }
+    .bf-prog-step.done .bf-prog-dot { background: var(--gold); border-color: var(--gold); color: white; }
+    .bf-prog-label {
+        font-size: 0.72rem;
+        font-weight: 600;
+        color: var(--text-light);
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        white-space: nowrap;
+    }
+    .bf-prog-step.active .bf-prog-label { color: var(--green-deep); }
+    .bf-prog-line {
+        flex: 1;
+        height: 2px;
+        background: var(--border);
+        margin: 0 8px;
+        transition: background 0.3s;
+    }
+    .bf-prog-line.done { background: var(--gold); }
+    .bf-steps { padding: 32px 40px 40px; }
+    .bf-step { display: none; }
+    .bf-step.active { display: block; }
+    .bf-step-heading {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--text-dark);
+        margin-bottom: 6px;
+        letter-spacing: -0.02em;
+    }
+    .bf-step-sub {
+        font-size: 0.92rem;
+        color: var(--text-mid);
+        font-weight: 300;
+        margin-bottom: 32px;
+    }
+    .bf-tile-label {
+        font-size: 0.78rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--text-mid);
+        margin-bottom: 12px;
+        margin-top: 28px;
+    }
+    .bf-tile-label:first-of-type { margin-top: 0; }
+    .bf-tiles {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+    }
+    .bf-tiles-2 { grid-template-columns: repeat(2, 1fr); }
+    .bf-tiles-4 { grid-template-columns: repeat(4, 1fr); }
+    .bf-tiles-5 { grid-template-columns: repeat(5, 1fr); }
+    .bf-tile { position: relative; }
+    .bf-tile input[type="radio"] { position: absolute; opacity: 0; width: 0; height: 0; }
+    .bf-tile label {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 14px 8px;
+        border: 1.5px solid var(--border);
+        border-radius: var(--radius-md);
+        cursor: pointer;
+        transition: all 0.2s;
+        gap: 3px;
+        min-height: 68px;
+    }
+    .bf-tile label:hover { border-color: var(--green); background: rgba(90,110,90,0.04); }
+    .bf-tile input:checked + label {
+        border-color: var(--gold);
+        background: rgba(200,146,74,0.07);
+        box-shadow: 0 0 0 3px rgba(200,146,74,0.12);
+    }
+    .bf-tile-main { font-size: 0.84rem; font-weight: 700; color: var(--text-dark); line-height: 1.2; }
+    .bf-tile-sub  { font-size: 0.7rem; color: var(--text-light); font-weight: 400; }
+    .bf-tile input:checked + label .bf-tile-main { color: var(--gold); }
+    .bf-field { margin-bottom: 28px; }
+    .bf-field label {
+        display: block;
+        font-size: 0.76rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.07em;
+        color: var(--text-mid);
+        margin-bottom: 8px;
+    }
+    .bf-field input, .bf-field textarea {
+        width: 100%;
+        border: none;
+        border-bottom: 1.5px solid var(--border);
+        padding: 10px 0;
+        font-size: 1rem;
+        font-family: 'Sora', sans-serif;
+        color: var(--text-dark);
+        background: transparent;
+        transition: border-color 0.2s;
+        box-sizing: border-box;
+    }
+    .bf-field input:focus, .bf-field textarea:focus { outline: none; border-bottom-color: var(--green-deep); }
+    .bf-field input::placeholder, .bf-field textarea::placeholder { color: rgba(0,0,0,0.22); font-weight: 300; }
+    .bf-nav {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-top: 36px;
+    }
+    .bf-nav-back {
+        background: none;
+        border: none;
+        font-family: 'Sora', sans-serif;
+        font-size: 0.88rem;
+        font-weight: 600;
+        color: var(--text-light);
+        cursor: pointer;
+        padding: 10px 0;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        transition: color 0.2s;
+    }
+    .bf-nav-back:hover { color: var(--text-dark); }
+    .bf-nav-next, .bf-submit {
+        background: var(--gold);
+        color: white;
+        padding: 14px 32px;
+        border: none;
+        border-radius: var(--radius-sm);
+        font-weight: 700;
+        font-size: 0.95rem;
+        cursor: pointer;
+        font-family: 'Sora', sans-serif;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.2s;
+    }
+    .bf-nav-next:hover, .bf-submit:hover { background: #b8823a; transform: translateY(-1px); }
+    .bf-submit { width: 100%; justify-content: center; padding: 16px; font-size: 1rem; }
+    .bf-privacy {
+        margin-top: 14px;
+        font-size: 0.82rem;
+        color: var(--text-light);
+        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+    }
+    .bf-success { text-align: center; padding: 56px 40px; }
+    .bf-success-icon {
+        width: 64px; height: 64px;
+        background: var(--gold);
+        border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 1.5rem; color: white;
+        margin: 0 auto 20px;
+    }
+    .bf-success h3 { font-size: 1.6rem; color: var(--text-dark); font-weight: 700; margin-bottom: 12px; letter-spacing: -0.02em; }
+    .bf-success p { font-size: 0.95rem; color: var(--text-mid); line-height: 1.65; }
+    @media (max-width: 767px) {
+        .brand-form-section { padding: 44px 20px 72px; }
+        .brand-form-header h2 { font-size: 1.65rem; }
+        .bf-progress { padding: 22px 20px 0; }
+        .bf-prog-label { display: none; }
+        .bf-prog-dot { width: 28px; height: 28px; font-size: 0.72rem; }
+        .bf-steps { padding: 24px 20px 32px; }
+        .bf-tiles { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+        .bf-tiles-4, .bf-tiles-5 { grid-template-columns: repeat(2, 1fr); }
+        .bf-tiles-2 { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    /* ════════════════════════════════════════════════════════════
            MOBILE REDESIGN — injected, overrides earlier rules
            ════════════════════════════════════════════════════════════ */
         @media (max-width: 767px) {
@@ -792,7 +1031,7 @@
             <ul class="nav-links">
                 <li><a href="index.html">Home</a></li>
                 <li><a href="about.html">About Us</a></li>
-                <li><a href="find-match.html" class="nav-cta">Get Your Match</a></li>
+                <li><a href="find-match.html" class="nav-cta">Find Your Match</a></li>
                 <li class="nav-sep"></li>
                 <li><a href="for-brands.html" class="nav-brands active">For Franchise Brands</a></li>
                 <li class="nav-sep-sm"></li>
@@ -813,7 +1052,7 @@
         <li><a href="contact.html">Contact</a></li>
         </ul>
         <div class="nav-mobile-cta-wrap">
-            <a href="find-match.html" class="nav-mobile-cta-btn">Get Your Free Match →</a>
+            <a href="find-match.html" class="nav-mobile-cta-btn">Find Your Match →</a>
         </div>
     </div>
 
@@ -821,35 +1060,34 @@
     <section class="page-hero page-intro">
         <div class="page-hero-inner">
             <div class="page-eyebrow"><span class="eyebrow-dot"></span> Franchise Brands</div>
-            <h1>Partner With the UK's Leading Franchise Matching Service</h1>
-            <p>Connect with pre-qualified, motivated franchisees who are ready to invest in the hospitality sector.</p>
+            <h1>You know who you're looking for. We know how to find them.</h1>
+            <p>We work with a small number of hospitality franchise brands at any one time. That means proper attention, genuinely prepared candidates, and introductions we actually believe in.</p>
         </div>
     </section>
 
     <!-- Benefits Section -->
     <section class="section">
         <div class="section-container">
-            <h2 class="section-title">Why Partner with Us?</h2>
-            <p class="section-subtitle">We deliver quality franchisee candidates, not just volume. Our rigorous vetting process means you only meet people who are truly ready.</p>
+            <h2 class="section-title">What sets our introductions apart.</h2>
+            <p class="section-subtitle">We assess candidates properly, prep them before any introduction, and only bring forward the ones we genuinely believe in.</p>
             <div class="benefits-grid">
                 <div class="benefit-card">
                     <div class="benefit-icon">
                         <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <polyline points="12 3 20 7.5 20 16.5 12 21 4 16.5 4 7.5 12 3"></polyline>
+                            <polyline points="20 6 9 17 4 12"></polyline>
                         </svg>
                     </div>
-                    <h3>Pre-Qualified Candidates</h3>
-                    <p>Every candidate we introduce has been thoroughly assessed for fit, financial readiness, and genuine commitment, saving you time and reducing false starts.</p>
+                    <h3>People who are ready</h3>
+                    <p>Every introduction is considered carefully before it's made. Budget matched. Operational model assessed. Commitment checked. Every candidate we bring forward has been properly evaluated against your profile.</p>
                 </div>
                 <div class="benefit-card">
                     <div class="benefit-icon">
                         <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <line x1="12" y1="2" x2="12" y2="22"></line>
-                            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                            <rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h6M9 13h6M9 17h4"/>
                         </svg>
                     </div>
-                    <h3>Faster Conversion</h3>
-                    <p>Candidates are prepared, educated, and decision-ready before they meet you. This means shorter sales cycles and higher conversion rates.</p>
+                    <h3>Prep that protects your time</h3>
+                    <p>We walk candidates through your concept and unit economics before they ever meet you. They arrive informed, with real questions - not a blank look at your franchise disclosure document.</p>
                 </div>
                 <div class="benefit-card">
                     <div class="benefit-icon">
@@ -860,18 +1098,17 @@
                             <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
                         </svg>
                     </div>
-                    <h3>Operator Experience</h3>
-                    <p>We've built and scaled franchises ourselves. We understand what makes a successful franchisee and we know how to identify them.</p>
+                    <h3>Inside knowledge on both sides</h3>
+                    <p>We've sat at franchise recruitment tables. We know what makes a franchisee go the distance - and we share that honestly with everyone we work with.</p>
                 </div>
                 <div class="benefit-card">
                     <div class="benefit-icon">
                         <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <line x1="12" y1="5" x2="12" y2="19"></line>
-                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                            <circle cx="12" cy="12" r="10"/><path d="M8 12l2 2 4-4"/>
                         </svg>
                     </div>
-                    <h3>Quality Over Quantity</h3>
-                    <p>We focus on finding the right franchisees, not just any franchisees. Smaller pipeline, higher quality, better long-term outcomes.</p>
+                    <h3>Selective about who we work with</h3>
+                    <p>We work with a limited number of brands at once. If we partner with you, we've assessed your model and we believe in what you're offering. That selectivity shows in the quality of introductions.</p>
                 </div>
                 <div class="benefit-card">
                     <div class="benefit-icon">
@@ -879,18 +1116,17 @@
                             <path d="M12 2v20m10-10H2"></path>
                         </svg>
                     </div>
-                    <h3>Success-Based Model</h3>
-                    <p>We only succeed when you do. Our fee structure aligns our incentives with your growth goals.</p>
+                    <h3>Aligned incentives</h3>
+                    <p>We're paid by brands when the right match is made - which means we only make introductions we believe in. Our reputation is on the line with every one.</p>
                 </div>
                 <div class="benefit-card">
                     <div class="benefit-icon">
                         <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <circle cx="11" cy="11" r="8"></circle>
-                            <path d="m21 21-4.35-4.35"></path>
+                            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.15 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.06 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L7.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 21 16z"></path>
                         </svg>
                     </div>
-                    <h3>Deep Candidate Vetting</h3>
-                    <p>We assess capability, commitment, financial resilience, and cultural fit before making introductions, reducing your risk of wrong-fit franchisees.</p>
+                    <h3>Involved through the process</h3>
+                    <p>We stay involved from first conversation to franchise award. If something's not working, you'll hear it from us before it becomes a problem.</p>
                 </div>
             </div>
         </div>
@@ -899,28 +1135,28 @@
     <!-- How It Works Section -->
     <section class="section">
         <div class="section-container">
-            <h2 class="section-title how-partnership-works-title">How Partnership Works</h2>
-            <p class="section-subtitle">A straightforward process designed to deliver quality franchisee candidates to your network.</p>
+            <h2 class="section-title how-partnership-works-title">How it works</h2>
+            <p class="section-subtitle">From first conversation to franchise award.</p>
             <div class="how-partnership-works">
                 <div class="partnership-step">
                     <div class="step-number">1</div>
-                    <h3>Discovery Call</h3>
-                    <p>We'll discuss your ideal franchisee profile, growth targets, and current recruitment process.</p>
+                    <h3>Tell us about your ideal franchisee</h3>
+                    <p>Not just the checklist. We want to understand the profile behind the criteria - what makes someone succeed in your model, and what the common wrong-fits look like.</p>
                 </div>
                 <div class="partnership-step">
                     <div class="step-number">2</div>
-                    <h3>Alignment</h3>
-                    <p>We'll agree on terms, candidate criteria, and how we'll work together.</p>
+                    <h3>We match against our network</h3>
+                    <p>We score candidates against your profile - investment level, operational model, growth ambitions, experience. The people we bring forward aren't just financially eligible. They're assessed as right for your brand.</p>
                 </div>
                 <div class="partnership-step">
                     <div class="step-number">3</div>
-                    <h3>Candidate Sourcing</h3>
-                    <p>We source, assess, and prepare candidates who match your specific requirements.</p>
+                    <h3>We prep before we introduce</h3>
+                    <p>Before any introduction, we walk candidates through your concept, your unit economics, and what you're really looking for. They arrive prepared. So do you.</p>
                 </div>
                 <div class="partnership-step">
                     <div class="step-number">4</div>
-                    <h3>Introductions</h3>
-                    <p>We introduce pre-qualified, investment-ready candidates directly to you.</p>
+                    <h3>We stay involved</h3>
+                    <p>From first meeting to franchise award, we're in it with you. We manage expectations on both sides and help get the right people across the line.</p>
                 </div>
             </div>
         </div>
@@ -930,26 +1166,340 @@
     <section class="section">
         <div class="section-container">
             <div class="ideal-partner">
-                <h2>Who We Partner With</h2>
-                <p>We work with ambitious franchise brands across multiple sectors, with a particular focus on hospitality and services.</p>
+                <h2>Who we work with</h2>
+                <p>We're selective about the brands we partner with. Here's what matters to us.</p>
                 <ul class="criteria-list">
-                    <li>Established franchise brands with proven unit economics</li>
-                    <li>Clear franchisee support systems and training programmes</li>
-                    <li>Realistic growth targets and territory availability</li>
-                    <li>Commitment to quality franchisee selection over speed</li>
-                    <li>Transparent about investment requirements and expectations</li>
+                    <li>Hospitality franchise brands with clear and realistic unit economics</li>
+                    <li>Established franchisee support systems and a genuine commitment to their success</li>
+                    <li>Territory availability that makes introductions worthwhile</li>
+                    <li>Transparency about investment requirements and what the model actually demands day to day</li>
+                    <li>A long-term view on recruitment - the right people over fast numbers</li>
                 </ul>
             </div>
         </div>
     </section>
 
-    <!-- CTA Section -->
-    <section class="section dark-cta partnership-cta">
-        <div class="section-container">
-            <h2>Let's Discuss a Partnership</h2>
-            <p>Tell us about your brand and we'll be in touch to explore how we can work together.</p>
-            <a href="contact.html" class="cta-button">Get in Touch</a>
+    <!-- Brand Intake Form -->
+    <section class="brand-form-section">
+        <div class="brand-form-header">
+            <h2>Tell us about your brand</h2>
+            <p>Takes about 3 minutes &nbsp;·&nbsp; No commitment &nbsp;·&nbsp; We'll be in touch within 48 hours</p>
         </div>
+
+        <div class="brand-form-container" id="bf-container">
+            <!-- Progress -->
+            <div class="bf-progress">
+                <div class="bf-prog-step active" id="bf-prog-1">
+                    <div class="bf-prog-dot">1</div>
+                    <span class="bf-prog-label">Your Brand</span>
+                </div>
+                <div class="bf-prog-line" id="bf-line-1"></div>
+                <div class="bf-prog-step" id="bf-prog-2">
+                    <div class="bf-prog-dot">2</div>
+                    <span class="bf-prog-label">Opportunity</span>
+                </div>
+                <div class="bf-prog-line" id="bf-line-2"></div>
+                <div class="bf-prog-step" id="bf-prog-3">
+                    <div class="bf-prog-dot">3</div>
+                    <span class="bf-prog-label">Ideal Franchisee</span>
+                </div>
+                <div class="bf-prog-line" id="bf-line-3"></div>
+                <div class="bf-prog-step" id="bf-prog-4">
+                    <div class="bf-prog-dot">4</div>
+                    <span class="bf-prog-label">Recruitment</span>
+                </div>
+                <div class="bf-prog-line" id="bf-line-4"></div>
+                <div class="bf-prog-step" id="bf-prog-5">
+                    <div class="bf-prog-dot">5</div>
+                    <span class="bf-prog-label">Contact</span>
+                </div>
+            </div>
+
+            <form id="brand-intake-form" name="brand-enquiry" data-netlify="true" netlify-honeypot="bot-field" method="POST" style="display:block;">
+                <input type="hidden" name="form-name" value="brand-enquiry">
+                <p style="display:none"><label>Don't fill this out: <input name="bot-field"></label></p>
+
+                <div class="bf-steps">
+
+                    <!-- Step 1: Your Brand -->
+                    <div class="bf-step active" id="bf-step-1">
+                        <p class="bf-step-heading">Tell us about your brand</p>
+                        <p class="bf-step-sub">We want to understand your model before we talk about matching.</p>
+
+                        <div class="bf-field">
+                            <label for="bf-brand-name">Brand name</label>
+                            <input type="text" id="bf-brand-name" name="brand_name" placeholder="Your franchise brand name">
+                        </div>
+
+                        <div class="bf-tile-label">Sector</div>
+                        <div class="bf-tiles bf-tiles-2">
+                            <div class="bf-tile">
+                                <input type="radio" name="sector" id="s1" value="qsr">
+                                <label for="s1"><span class="bf-tile-main">QSR</span><span class="bf-tile-sub">Quick service</span></label>
+                            </div>
+                            <div class="bf-tile">
+                                <input type="radio" name="sector" id="s2" value="casual-dining">
+                                <label for="s2"><span class="bf-tile-main">Casual Dining</span><span class="bf-tile-sub">Sit-down restaurant</span></label>
+                            </div>
+                            <div class="bf-tile">
+                                <input type="radio" name="sector" id="s3" value="coffee-drinks">
+                                <label for="s3"><span class="bf-tile-main">Coffee & Drinks</span><span class="bf-tile-sub">Café / juice / beverage</span></label>
+                            </div>
+                            <div class="bf-tile">
+                                <input type="radio" name="sector" id="s4" value="bakery-pastry">
+                                <label for="s4"><span class="bf-tile-main">Bakery & Pastry</span><span class="bf-tile-sub">Grab-and-go / specialist</span></label>
+                            </div>
+                            <div class="bf-tile">
+                                <input type="radio" name="sector" id="s5" value="other-hospitality">
+                                <label for="s5"><span class="bf-tile-main">Other hospitality</span><span class="bf-tile-sub">Different category</span></label>
+                            </div>
+                        </div>
+
+                        <div class="bf-nav">
+                            <button type="button" class="bf-nav-back" style="visibility:hidden;" aria-hidden="true"></button>
+                            <button type="button" class="bf-nav-next" onclick="goBrandStep(2)">
+                                Continue
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Step 2: The Opportunity -->
+                    <div class="bf-step" id="bf-step-2">
+                        <p class="bf-step-heading">The opportunity</p>
+                        <p class="bf-step-sub">Help us understand what a franchisee is getting into.</p>
+
+                        <div class="bf-tile-label">Franchise investment level</div>
+                        <div class="bf-tiles bf-tiles-5">
+                            <div class="bf-tile">
+                                <input type="radio" name="investment" id="inv1" value="under-50k">
+                                <label for="inv1"><span class="bf-tile-main">Under £50k</span><span class="bf-tile-sub">Low entry</span></label>
+                            </div>
+                            <div class="bf-tile">
+                                <input type="radio" name="investment" id="inv2" value="50k-100k">
+                                <label for="inv2"><span class="bf-tile-main">£50k – 100k</span><span class="bf-tile-sub">Popular range</span></label>
+                            </div>
+                            <div class="bf-tile">
+                                <input type="radio" name="investment" id="inv3" value="100k-200k">
+                                <label for="inv3"><span class="bf-tile-main">£100k – 200k</span><span class="bf-tile-sub">Mid-tier</span></label>
+                            </div>
+                            <div class="bf-tile">
+                                <input type="radio" name="investment" id="inv4" value="200k-500k">
+                                <label for="inv4"><span class="bf-tile-main">£200k – 500k</span><span class="bf-tile-sub">Premium</span></label>
+                            </div>
+                            <div class="bf-tile">
+                                <input type="radio" name="investment" id="inv5" value="over-500k">
+                                <label for="inv5"><span class="bf-tile-main">Over £500k</span><span class="bf-tile-sub">Top-tier</span></label>
+                            </div>
+                        </div>
+
+                        <div class="bf-tile-label" style="margin-top:28px;">Territory availability</div>
+                        <div class="bf-tiles bf-tiles-4">
+                            <div class="bf-tile">
+                                <input type="radio" name="territory" id="ter1" value="1-2">
+                                <label for="ter1"><span class="bf-tile-main">1 – 2 sites</span><span class="bf-tile-sub">Limited availability</span></label>
+                            </div>
+                            <div class="bf-tile">
+                                <input type="radio" name="territory" id="ter2" value="3-5">
+                                <label for="ter2"><span class="bf-tile-main">3 – 5 sites</span><span class="bf-tile-sub">Focused growth</span></label>
+                            </div>
+                            <div class="bf-tile">
+                                <input type="radio" name="territory" id="ter3" value="6-10">
+                                <label for="ter3"><span class="bf-tile-main">6 – 10 sites</span><span class="bf-tile-sub">Active expansion</span></label>
+                            </div>
+                            <div class="bf-tile">
+                                <input type="radio" name="territory" id="ter4" value="10-plus">
+                                <label for="ter4"><span class="bf-tile-main">10+ sites</span><span class="bf-tile-sub">Wide open</span></label>
+                            </div>
+                        </div>
+
+                        <div class="bf-nav">
+                            <button type="button" class="bf-nav-back" onclick="goBrandStep(1)">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                                Back
+                            </button>
+                            <button type="button" class="bf-nav-next" onclick="goBrandStep(3)">
+                                Continue
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Step 3: Ideal Franchisee -->
+                    <div class="bf-step" id="bf-step-3">
+                        <p class="bf-step-heading">Your ideal franchisee</p>
+                        <p class="bf-step-sub">Tell us who thrives in your model. We'll match against our candidate pool.</p>
+
+                        <div class="bf-tile-label">How will they run it?</div>
+                        <div class="bf-tiles">
+                            <div class="bf-tile">
+                                <input type="radio" name="operator_type" id="ot1" value="owner-operator">
+                                <label for="ot1"><span class="bf-tile-main">Hands-on</span><span class="bf-tile-sub">Owner-operator</span></label>
+                            </div>
+                            <div class="bf-tile">
+                                <input type="radio" name="operator_type" id="ot2" value="hire-manager">
+                                <label for="ot2"><span class="bf-tile-main">Hire a manager</span><span class="bf-tile-sub">Semi-passive</span></label>
+                            </div>
+                            <div class="bf-tile">
+                                <input type="radio" name="operator_type" id="ot3" value="flexible">
+                                <label for="ot3"><span class="bf-tile-main">Either works</span><span class="bf-tile-sub">Flexible</span></label>
+                            </div>
+                        </div>
+
+                        <div class="bf-tile-label">Background preference</div>
+                        <div class="bf-tiles bf-tiles-2">
+                            <div class="bf-tile">
+                                <input type="radio" name="background" id="bg1" value="any">
+                                <label for="bg1"><span class="bf-tile-main">No preference</span><span class="bf-tile-sub">Open to all</span></label>
+                            </div>
+                            <div class="bf-tile">
+                                <input type="radio" name="background" id="bg2" value="fb-preferred">
+                                <label for="bg2"><span class="bf-tile-main">F&B preferred</span><span class="bf-tile-sub">Hospitality background</span></label>
+                            </div>
+                            <div class="bf-tile">
+                                <input type="radio" name="background" id="bg3" value="business-experience">
+                                <label for="bg3"><span class="bf-tile-main">Business experience</span><span class="bf-tile-sub">Managed teams or P&L</span></label>
+                            </div>
+                            <div class="bf-tile">
+                                <input type="radio" name="background" id="bg4" value="multi-unit">
+                                <label for="bg4"><span class="bf-tile-main">Multi-unit ambition</span><span class="bf-tile-sub">Growth mindset</span></label>
+                            </div>
+                        </div>
+
+                        <div class="bf-tile-label">Site ambition</div>
+                        <div class="bf-tiles">
+                            <div class="bf-tile">
+                                <input type="radio" name="site_ambition" id="sa1" value="single">
+                                <label for="sa1"><span class="bf-tile-main">Single site</span><span class="bf-tile-sub">One great unit</span></label>
+                            </div>
+                            <div class="bf-tile">
+                                <input type="radio" name="site_ambition" id="sa2" value="2-3-sites">
+                                <label for="sa2"><span class="bf-tile-main">2 – 3 sites</span><span class="bf-tile-sub">Steady growth</span></label>
+                            </div>
+                            <div class="bf-tile">
+                                <input type="radio" name="site_ambition" id="sa3" value="4-plus">
+                                <label for="sa3"><span class="bf-tile-main">4+ sites</span><span class="bf-tile-sub">Ambitious scale</span></label>
+                            </div>
+                        </div>
+
+                        <div class="bf-nav">
+                            <button type="button" class="bf-nav-back" onclick="goBrandStep(2)">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                                Back
+                            </button>
+                            <button type="button" class="bf-nav-next" onclick="goBrandStep(4)">
+                                Continue
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Step 4: Recruitment -->
+                    <div class="bf-step" id="bf-step-4">
+                        <p class="bf-step-heading">Your recruitment goals</p>
+                        <p class="bf-step-sub">Help us understand the scale of what you're looking to achieve.</p>
+
+                        <div class="bf-tile-label">12-month franchisee target</div>
+                        <div class="bf-tiles bf-tiles-4">
+                            <div class="bf-tile">
+                                <input type="radio" name="target" id="tg1" value="1-2">
+                                <label for="tg1"><span class="bf-tile-main">1 – 2</span><span class="bf-tile-sub">Selective</span></label>
+                            </div>
+                            <div class="bf-tile">
+                                <input type="radio" name="target" id="tg2" value="3-5">
+                                <label for="tg2"><span class="bf-tile-main">3 – 5</span><span class="bf-tile-sub">Steady growth</span></label>
+                            </div>
+                            <div class="bf-tile">
+                                <input type="radio" name="target" id="tg3" value="6-10">
+                                <label for="tg3"><span class="bf-tile-main">6 – 10</span><span class="bf-tile-sub">Ambitious</span></label>
+                            </div>
+                            <div class="bf-tile">
+                                <input type="radio" name="target" id="tg4" value="10-plus">
+                                <label for="tg4"><span class="bf-tile-main">10+</span><span class="bf-tile-sub">Scaling fast</span></label>
+                            </div>
+                        </div>
+
+                        <div class="bf-tile-label" style="margin-top:28px;">Biggest recruitment challenge</div>
+                        <div class="bf-tiles bf-tiles-2">
+                            <div class="bf-tile">
+                                <input type="radio" name="challenge" id="ch1" value="finding-candidates">
+                                <label for="ch1"><span class="bf-tile-main">Finding candidates</span><span class="bf-tile-sub">Top of funnel</span></label>
+                            </div>
+                            <div class="bf-tile">
+                                <input type="radio" name="challenge" id="ch2" value="quality-candidates">
+                                <label for="ch2"><span class="bf-tile-main">Candidate quality</span><span class="bf-tile-sub">Wrong-fit enquiries</span></label>
+                            </div>
+                            <div class="bf-tile">
+                                <input type="radio" name="challenge" id="ch3" value="conversion">
+                                <label for="ch3"><span class="bf-tile-main">Conversion speed</span><span class="bf-tile-sub">Long decision cycles</span></label>
+                            </div>
+                            <div class="bf-tile">
+                                <input type="radio" name="challenge" id="ch4" value="candidate-prep">
+                                <label for="ch4"><span class="bf-tile-main">Candidate prep</span><span class="bf-tile-sub">Arriving uninformed</span></label>
+                            </div>
+                        </div>
+
+                        <div class="bf-nav">
+                            <button type="button" class="bf-nav-back" onclick="goBrandStep(3)">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                                Back
+                            </button>
+                            <button type="button" class="bf-nav-next" onclick="goBrandStep(5)">
+                                Continue
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Step 5: Contact Details -->
+                    <div class="bf-step" id="bf-step-5">
+                        <p class="bf-step-heading">Your contact details</p>
+                        <p class="bf-step-sub">We'll be in touch within 48 hours to arrange an initial conversation.</p>
+
+                        <div class="bf-field">
+                            <label for="bf-name">Your name</label>
+                            <input type="text" id="bf-name" name="contact_name" placeholder="First and last name">
+                        </div>
+                        <div class="bf-field">
+                            <label for="bf-role">Your role</label>
+                            <input type="text" id="bf-role" name="role" placeholder="e.g. Franchise Director, MD, Founder">
+                        </div>
+                        <div class="bf-field">
+                            <label for="bf-email">Email address</label>
+                            <input type="email" id="bf-email" name="email" placeholder="you@yourbrand.com">
+                        </div>
+                        <div class="bf-field">
+                            <label for="bf-phone">Phone number</label>
+                            <input type="tel" id="bf-phone" name="phone" placeholder="+44 7700 000000">
+                        </div>
+
+                        <div class="bf-nav">
+                            <button type="button" class="bf-nav-back" onclick="goBrandStep(4)">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                                Back
+                            </button>
+                            <button type="submit" class="bf-submit">
+                                Send Enquiry
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                            </button>
+                        </div>
+                        <p class="bf-privacy">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                            Your details are used only to follow up on this enquiry. We never share them with third parties.
+                        </p>
+                    </div>
+
+                </div><!-- /.bf-steps -->
+            </form>
+
+            <!-- Success state (shown after submit) -->
+            <div class="bf-success" id="bf-success" style="display:none;">
+                <div class="bf-success-icon">✓</div>
+                <h3>Received. We'll be in touch.</h3>
+                <p>Thanks for sharing your details. A member of our team will review your brand profile and reach out within 48 hours to arrange an initial conversation.</p>
+            </div>
+
+        </div><!-- /.brand-form-container -->
     </section>
 
     <!-- Footer -->
@@ -1172,16 +1722,6 @@ async function loadCMSContent() {
                     });
                 }
             }
-
-            // CTA
-            if (forbrands.cta) {
-                setText('.partnership-cta h2', forbrands.cta.title);
-                setText('.partnership-cta p', forbrands.cta.description);
-                const ctaButton = document.querySelector('.partnership-cta .cta-button');
-                if (ctaButton && forbrands.cta.buttonText) {
-                    ctaButton.textContent = forbrands.cta.buttonText;
-                }
-            }
         }
 
         // Load settings (applies to all pages)
@@ -1289,6 +1829,59 @@ function setText(el, text) {
 }
 
 document.addEventListener('DOMContentLoaded', loadCMSContent);
+    </script>
+
+    <script>
+    // ── Brand Intake Form Step Navigation ──────────────────────────────────────
+    const BF_TOTAL = 5;
+
+    function goBrandStep(n) {
+        // Update steps
+        for (var i = 1; i <= BF_TOTAL; i++) {
+            var step = document.getElementById('bf-step-' + i);
+            if (step) step.classList.toggle('active', i === n);
+        }
+        // Update progress dots and lines
+        for (var i = 1; i <= BF_TOTAL; i++) {
+            var dot = document.getElementById('bf-prog-' + i);
+            if (dot) {
+                dot.classList.toggle('active', i === n);
+                dot.classList.toggle('done', i < n);
+            }
+            if (i < BF_TOTAL) {
+                var line = document.getElementById('bf-line-' + i);
+                if (line) line.classList.toggle('done', i < n);
+            }
+        }
+        // Scroll to form top
+        var container = document.getElementById('bf-container');
+        if (container) container.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    // Handle form submission — show success state
+    document.addEventListener('DOMContentLoaded', function() {
+        var form = document.getElementById('brand-intake-form');
+        var success = document.getElementById('bf-success');
+        if (form && success) {
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                var data = new FormData(form);
+                fetch('/', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: new URLSearchParams(data).toString()
+                }).then(function() {
+                    form.style.display = 'none';
+                    document.querySelector('.bf-progress').style.display = 'none';
+                    success.style.display = 'block';
+                }).catch(function() {
+                    form.style.display = 'none';
+                    document.querySelector('.bf-progress').style.display = 'none';
+                    success.style.display = 'block';
+                });
+            });
+        }
+    });
     </script>
 
     <script>

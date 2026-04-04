@@ -1,84 +1,67 @@
 {
-  "title": "Partner With Us",
-  "intro": "Are you a franchise brand looking for quality franchisees? We connect experienced, motivated entrepreneurs with franchise opportunities that match their skills and ambitions.",
+  "title": "You know who you're looking for. We know how to find them.",
+  "intro": "We work with a small number of hospitality franchise brands at any one time. That means proper attention, genuinely prepared candidates, and introductions we actually believe in.",
   "benefits": [
     {
-      "title": "Quality Over Quantity",
-      "description": "We focus on finding the right franchisees for your brand, not just any franchisees. Our rigorous vetting process ensures you get motivated, capable partners."
+      "title": "People who are ready",
+      "description": "Every introduction is considered carefully before it's made. Budget matched. Operational model assessed. Commitment checked. Every candidate we bring forward has been properly evaluated against your profile."
     },
     {
-      "title": "Experienced Network",
-      "description": "Access our network of entrepreneurs with proven business experience, many with hospitality and operational backgrounds."
+      "title": "Prep that protects your time",
+      "description": "We walk candidates through your concept and unit economics before they ever meet you. They arrive informed, with real questions - not a blank look at your franchise disclosure document."
     },
     {
-      "title": "Pre-Qualified Leads",
-      "description": "We only introduce franchisees who meet your investment criteria and have been thoroughly assessed for commitment and capability."
+      "title": "Inside knowledge on both sides",
+      "description": "We've sat at franchise recruitment tables. We know what makes a franchisee go the distance - and we share that honestly with everyone we work with."
     },
     {
-      "title": "Transparent Process",
-      "description": "Clear communication throughout. We represent both parties fairly, ensuring expectations are aligned from the start."
+      "title": "Selective about who we work with",
+      "description": "We work with a limited number of brands at once. If we partner with you, we've assessed your model and we believe in what you're offering. That selectivity shows in the quality of introductions."
     },
     {
-      "title": "Long-Term Relationships",
-      "description": "We're invested in the success of both franchisors and franchisees. Our support doesn't end at signing."
+      "title": "Aligned incentives",
+      "description": "We're paid by brands when the right match is made - which means we only make introductions we believe in. Our reputation is on the line with every one."
     },
     {
-      "title": "Market Expertise",
-      "description": "Deep understanding of the UK franchise landscape and what makes successful franchise partnerships."
+      "title": "Involved through the process",
+      "description": "We stay involved from first conversation to franchise award. If something's not working, you'll hear it from us before it becomes a problem."
     }
   ],
   "howItWorks": {
-    "title": "How Our Partnership Works",
+    "title": "How it works",
+    "subtitle": "From first conversation to franchise award.",
     "steps": [
       {
         "number": "1",
-        "title": "Initial Consultation",
-        "description": "We learn about your franchise opportunity, ideal franchisee profile, and support structure."
+        "title": "Tell us about your ideal franchisee",
+        "description": "Not just the checklist. We want to understand the profile behind the criteria - what makes someone succeed in your model, and what the common wrong-fits look like."
       },
       {
         "number": "2",
-        "title": "Franchisee Matching",
-        "description": "We identify candidates from our network who align with your brand values and requirements."
+        "title": "We match against our network",
+        "description": "We score candidates against your profile - investment level, operational model, growth ambitions, experience. The people we bring forward aren't just financially eligible. They're assessed as right for your brand."
       },
       {
         "number": "3",
-        "title": "Introduction & Vetting",
-        "description": "We facilitate introductions and provide detailed candidate profiles to help you make informed decisions."
+        "title": "We prep before we introduce",
+        "description": "Before any introduction, we walk candidates through your concept, your unit economics, and what you're really looking for. They arrive prepared. So do you."
       },
       {
         "number": "4",
-        "title": "Ongoing Support",
-        "description": "We support both parties through the agreement process and remain available for guidance."
+        "title": "We stay involved",
+        "description": "From first meeting to franchise award, we're in it with you. We manage expectations on both sides and help get the right people across the line."
       }
     ]
   },
   "idealPartner": {
-    "title": "Our Ideal Franchisor Partners",
-    "description": "We work with franchise brands that share our commitment to quality and franchisee success:",
+    "title": "Who we work with",
+    "description": "We're selective about the brands we partner with. Here's what matters to us.",
     "criteria": [
-      {
-        "text": "Proven business model with track record of franchisee success"
-      },
-      {
-        "text": "Comprehensive training and ongoing support systems"
-      },
-      {
-        "text": "Transparent about costs, expectations, and challenges"
-      },
-      {
-        "text": "Genuine interest in franchisee success, not just franchise fees"
-      },
-      {
-        "text": "Strong brand reputation and market positioning"
-      },
-      {
-        "text": "Realistic ROI expectations and financial projections"
-      }
+      { "text": "Hospitality franchise brands with clear and realistic unit economics" },
+      { "text": "Established franchisee support systems and a genuine commitment to their success" },
+      { "text": "Territory availability that makes introductions worthwhile" },
+      { "text": "Transparency about investment requirements and what the model actually demands day to day" },
+      { "text": "A long-term view on recruitment - the right people over fast numbers" }
     ]
-  },
-  "cta": {
-    "title": "Ready to Find Quality Franchisees?",
-    "description": "Let's discuss how we can help you find the right partners to grow your franchise network.",
-    "buttonText": "Get in Touch"
   }
 }
