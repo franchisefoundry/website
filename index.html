@@ -313,58 +313,6 @@
             line-height: 1.4;
         }
 
-        /* Ticker */
-        .ticker-bar {
-            background: var(--off-white);
-            border-bottom: 1px solid var(--border);
-            padding: 0;
-            overflow: hidden;
-            position: relative;
-        }
-
-        .ticker-bar::before,
-        .ticker-bar::after {
-            content: '';
-            position: absolute;
-            top: 0; bottom: 0;
-            width: 80px;
-            z-index: 2;
-            pointer-events: none;
-        }
-
-        .ticker-bar::before { left: 0; background: linear-gradient(to right, var(--off-white), transparent); }
-        .ticker-bar::after  { right: 0; background: linear-gradient(to left, var(--off-white), transparent); }
-
-        .ticker-track {
-            display: flex;
-            gap: 0;
-            animation: ticker 28s linear infinite;
-            white-space: nowrap;
-        }
-
-        .ticker-item {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            padding: 16px 48px;
-            font-size: 0.82rem;
-            font-weight: 600;
-            color: var(--text-mid);
-            letter-spacing: 0.03em;
-            flex-shrink: 0;
-        }
-
-        .ticker-dot {
-            width: 5px; height: 5px;
-            background: var(--gold);
-            border-radius: 50%;
-        }
-
-        @keyframes ticker {
-            0%   { transform: translateX(0); }
-            100% { transform: translateX(-50%); }
-        }
-
         /* Section utilities */
         .section { padding: 100px 40px; }
         .section-inner { max-width: 1280px; margin: 0 auto; }
@@ -1245,7 +1193,7 @@
     <section class="hero">
         <div class="hero-inner">
             <div class="hero-left">
-                <div class="hero-eyebrow"><span></span> Hospitality Franchise Matching Specialists</div>
+                <div class="hero-eyebrow"><span></span> AI-Powered Franchise Matching · Hospitality Specialists</div>
                 <h1 class="hero-headline">
                     Franchise recruitment is broken. We built something better.
                 </h1>
@@ -1304,27 +1252,6 @@
             </div>
         </div>
     </section>
-
-    <!-- Trust Ticker -->
-    <div class="ticker-bar">
-        <div class="ticker-track">
-            <div class="ticker-item"><div class="ticker-dot"></div> 100% Free Consultation</div>
-            <div class="ticker-item"><div class="ticker-dot"></div> Hospitality Franchise Specialists</div>
-            <div class="ticker-item"><div class="ticker-dot"></div> 30+ Years Experience</div>
-            <div class="ticker-item"><div class="ticker-dot"></div> Food &amp; Beverage Focused</div>
-            <div class="ticker-item"><div class="ticker-dot"></div> Personalised Matching</div>
-            <div class="ticker-item"><div class="ticker-dot"></div> Ongoing Expert Support</div>
-            <div class="ticker-item"><div class="ticker-dot"></div> No Pressure. No Obligation.</div>
-            <!-- Duplicate for seamless loop -->
-            <div class="ticker-item"><div class="ticker-dot"></div> 100% Free Consultation</div>
-            <div class="ticker-item"><div class="ticker-dot"></div> Hospitality Franchise Specialists</div>
-            <div class="ticker-item"><div class="ticker-dot"></div> 30+ Years Experience</div>
-            <div class="ticker-item"><div class="ticker-dot"></div> Food &amp; Beverage Focused</div>
-            <div class="ticker-item"><div class="ticker-dot"></div> Personalised Matching</div>
-            <div class="ticker-item"><div class="ticker-dot"></div> Ongoing Expert Support</div>
-            <div class="ticker-item"><div class="ticker-dot"></div> No Pressure. No Obligation.</div>
-        </div>
-    </div>
 
     <!-- Partners Rolling Banner -->
     <div class="partners-section">
@@ -1465,18 +1392,18 @@
                 </div>
                 <div class="step-item reveal reveal-delay-2">
                     <div class="step-num">2</div>
-                    <h3 class="step-title">We find your matches, from brands worth joining</h3>
-                    <p class="step-desc">Our network is curated, not a directory. Every brand we work with has been assessed by us first. We score them against your profile and surface the ones that are genuinely right, not just available.</p>
+                    <h3 class="step-title">Our matching engine does the work</h3>
+                    <p class="step-desc">Your submission is scored against every hospitality brand in our network. Objectively. The brands that come back aren't pushed by commission or availability - they're matched by data.</p>
                 </div>
                 <div class="step-item reveal reveal-delay-3">
                     <div class="step-num">3</div>
-                    <h3 class="step-title">We prep you. Properly.</h3>
-                    <p class="step-desc">Before any introduction, we walk you through the unit economics, pressure-test your thinking, and make sure you go in with your eyes fully open. No surprises. No rose-tinted pitch decks.</p>
+                    <h3 class="step-title">Your matches, run through properly</h3>
+                    <p class="step-desc">We arrange a call and walk through exactly what you've been matched with. Unit economics, the model, the pressure points - no rose-tinted pitch decks. We make sure you go in with your eyes fully open.</p>
                 </div>
                 <div class="step-item reveal reveal-delay-4">
                     <div class="step-num">4</div>
                     <h3 class="step-title">We're with you through to signing</h3>
-                    <p class="step-desc">What to ask. What to push back on. What the franchisor is really looking for. We stay in your corner from first call to franchise award and beyond.</p>
+                    <p class="step-desc">When you're ready, we make the introduction. What to ask. What to push back on. What the franchisor is really looking for. We stay in your corner from that first call to franchise award and beyond.</p>
                 </div>
             </div>
         </div>

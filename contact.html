@@ -716,7 +716,7 @@
             <ul class="nav-links">
                 <li><a href="index.html">Home</a></li>
                 <li><a href="about.html">About Us</a></li>
-                <li><a href="find-match.html" class="nav-cta">Get Your Match</a></li>
+                <li><a href="find-match.html" class="nav-cta">Find Your Match</a></li>
                 <li class="nav-sep"></li>
                 <li><a href="for-brands.html" class="nav-brands">For Franchise Brands</a></li>
                 <li class="nav-sep-sm"></li>
@@ -737,7 +737,7 @@
         <li><a href="contact.html" class="active">Contact</a></li>
         </ul>
         <div class="nav-mobile-cta-wrap">
-            <a href="find-match.html" class="nav-mobile-cta-btn">Get Your Free Match →</a>
+            <a href="find-match.html" class="nav-mobile-cta-btn">Find Your Match →</a>
         </div>
     </div>
 
@@ -745,8 +745,8 @@
     <section class="page-hero">
         <div class="page-hero-inner">
             <div class="page-eyebrow"><span class="eyebrow-dot"></span> Contact</div>
-            <h1>Get in Touch</h1>
-            <p>Have a question? Want to learn more? We're here to help.</p>
+            <h1>We're easy to get hold of.</h1>
+            <p>Whether you're exploring franchising for the first time or a brand wanting to understand how we work - drop us a message and we'll come back to you directly.</p>
         </div>
     </section>
 
@@ -755,8 +755,8 @@
         <div class="contact-container">
             <!-- Left: Contact Info -->
             <div class="contact-intro">
-                <h2>Let's Have a Conversation</h2>
-                <p>Whether you're ready to explore franchise opportunities or just starting your research, we're here to guide you every step of the way.</p>
+                <h2>A real conversation, not an auto-reply.</h2>
+                <p>We're a small team, which means you'll hear back from a person - not a template. Most messages get a reply the same day.</p>
 
                 <div class="contact-methods">
                     <div class="contact-method">
@@ -788,7 +788,7 @@
                     <div class="contact-method">
                         <div class="method-icon">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>
+                                <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/>
                             </svg>
                         </div>
                         <div class="method-content">
@@ -809,8 +809,8 @@
 
             <!-- Right: Contact Form -->
             <div class="contact-form">
-                <h3>Send Us a Message</h3>
-                <p>Fill out the form below and we'll get back to you as soon as possible.</p>
+                <h3>Send us a message</h3>
+                <p>We read everything and reply personally.</p>
 
                 <form name="contact" method="POST" data-netlify="true" netlify-honeypot="bot-field" action="/thank-you.html">
                     <input type="hidden" name="form-name" value="contact">
@@ -834,8 +834,14 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="subject">Subject</label>
-                        <input type="text" id="subject" name="subject" placeholder="How can we help?">
+                        <label for="enquiry-type">I'm enquiring as</label>
+                        <select id="enquiry-type" name="enquiry_type" style="width:100%;padding:14px 16px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-family:'Sora',system-ui,sans-serif;font-size:0.95rem;color:var(--text-dark);background:var(--white);transition:border-color 0.2s;-webkit-appearance:none;appearance:none;cursor:pointer;">
+                            <option value="" disabled selected>Select one...</option>
+                            <option value="potential-franchisee">A potential franchisee</option>
+                            <option value="franchise-brand">A franchise brand</option>
+                            <option value="press-partnership">Press or partnership</option>
+                            <option value="other">Other</option>
+                        </select>
                     </div>
 
                     <div class="form-group">
@@ -843,7 +849,7 @@
                         <textarea id="message" name="message" required placeholder="Tell us what's on your mind..."></textarea>
                     </div>
 
-                    <button type="submit" class="submit-button">Send Message</button>
+                    <button type="submit" class="submit-button">Send message</button>
                 </form>
             </div>
         </div>
