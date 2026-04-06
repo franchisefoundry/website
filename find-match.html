@@ -130,7 +130,7 @@
         /* Page Hero */
         .page-hero {
             background: var(--green-deep);
-            padding: 80px 40px 72px;
+            padding: 80px 40px 40px;
             text-align: center;
             position: relative;
             overflow: hidden;
@@ -202,7 +202,7 @@
 
         /* ── Multi-Step Form ─────────────────────────────────────────────── */
         .form-section {
-            padding: 80px 40px 100px;
+            padding: 48px 40px 100px;
             background: var(--green-deep);
             position: relative;
             overflow: hidden;
@@ -769,9 +769,9 @@
             .progress-dot { width: 26px; height: 26px; font-size: 0.7rem; }
             .form-progress { padding: 20px 16px 0; }
             .progress-line { margin: 0 3px; }
-            .page-hero { padding: 56px 20px 48px; }
+            .page-hero { padding: 48px 20px 28px; }
             .page-hero h1 { font-size: 2rem; }
-            .form-section { padding: 48px 16px 64px; }
+            .form-section { padding: 32px 16px 64px; }
             .form-steps { padding: 20px 20px 28px; }
         }
 
@@ -908,7 +908,7 @@
 
             /* ── Page hero ────────────────────────────────────────── */
             .page-hero {
-                padding: 52px 24px 44px;
+                padding: 48px 24px 28px;
             }
             .page-hero h1 {
                 font-size: 2.1rem;
@@ -924,7 +924,7 @@
         @media (max-width: 767px) {
 
             /* ── Form section wrapper ─────────────────────────────── */
-            .form-section { padding: 44px 20px 72px; }
+            .form-section { padding: 32px 20px 72px; }
             .form-section-header { margin-bottom: 28px; text-align: center; }
             .form-section-header h2 {
                 font-size: 1.65rem;
@@ -986,37 +986,37 @@
             .submit-button { padding: 17px; font-size: 0.98rem; }
 
             /* ── Results section ──────────────────────────────────── */
-            .match-results-section { padding: 56px 20px 72px; }
-            .results-headline { font-size: 1.85rem; letter-spacing: -0.025em; }
-            .results-subline  { font-size: 0.88rem; margin-bottom: 32px; }
-            .match-cards-grid { grid-template-columns: 1fr; gap: 16px; }
-            .match-card { padding: 24px 20px; }
+            .match-results-section { padding: 44px 20px 56px; }
+            .results-headline { font-size: 1.65rem; letter-spacing: -0.025em; }
+            .results-subline  { font-size: 0.87rem; margin-bottom: 24px; }
+            .match-cards-grid { grid-template-columns: 1fr; gap: 14px; }
+            .match-card { padding: 20px 18px; }
             .card-lock-bar { flex-wrap: wrap; gap: 8px; }
 
-            /* ── Process section ──────────────────────────────────── */
-            .process-section    { padding: 56px 24px; }
-            .section-title      { font-size: 1.9rem; margin-bottom: 36px; letter-spacing: -0.02em; }
+            /* ── Process (what happens next) section ─────────────── */
+            .process-section    { padding: 44px 20px; }
+            .section-title      { font-size: 1.65rem; margin-bottom: 28px; letter-spacing: -0.02em; }
             .steps-timeline     { padding-left: 0; }
-            .timeline-step      { padding: 20px 20px 20px 52px; margin-bottom: 20px; }
+            .timeline-step      { padding: 18px 18px 18px 48px; margin-bottom: 14px; }
             .timeline-step::before {
                 position: absolute;
-                left: 14px;
-                top: 22px;
+                left: 12px;
+                top: 20px;
                 transform: none;
-                width: 28px; height: 28px;
-                font-size: 0.85rem;
-                line-height: 20px;
+                width: 26px; height: 26px;
+                font-size: 0.82rem;
+                line-height: 18px;
             }
-            .timeline-step h3   { font-size: 1.1rem; margin-bottom: 8px; }
-            .timeline-step p    { font-size: 0.9rem; line-height: 1.6; }
+            .timeline-step h3   { font-size: 1rem; margin-bottom: 6px; }
+            .timeline-step p    { font-size: 0.87rem; line-height: 1.6; }
 
             /* ── Privacy section ──────────────────────────────────── */
-            .privacy-section    { padding: 56px 24px; }
-            .privacy-content h2 { font-size: 1.65rem; letter-spacing: -0.02em; margin-bottom: 20px; }
-            .privacy-content p  { font-size: 0.92rem; line-height: 1.65; }
-            .data-list          { padding: 20px; margin: 20px 0; }
-            .data-list h3       { font-size: 1.1rem; margin-bottom: 14px; }
-            .data-list li       { font-size: 0.9rem; padding: 8px 0 8px 26px; }
+            .privacy-section    { padding: 44px 20px; }
+            .privacy-content h2 { font-size: 1.45rem; letter-spacing: -0.02em; margin-bottom: 16px; }
+            .privacy-content p  { font-size: 0.88rem; line-height: 1.65; }
+            .data-list          { padding: 18px; margin: 16px 0; }
+            .data-list h3       { font-size: 1rem; margin-bottom: 12px; }
+            .data-list li       { font-size: 0.87rem; padding: 7px 0 7px 24px; }
         }
     </style>
 
@@ -1829,16 +1829,16 @@
             <h2 class="section-title">What happens next</h2>
             <div class="steps-timeline">
                 <div class="timeline-step">
-                    <h3>We look at your profile</h3>
-                    <p>One of our team reviews what you've shared and maps it to the brands we work with. We're looking for genuine fit, not just budget overlap.</p>
+                    <h3>Your profile, already matched</h3>
+                    <p>The moment you submit, our matching engine scores your profile against every hospitality brand in our network - investment level, operating style, background, location. By the time we pick up the phone, the data has already done its job.</p>
                 </div>
                 <div class="timeline-step">
                     <h3>We get in touch</h3>
-                    <p>Usually within 24 hours. No script, no pitch - just a proper conversation to understand what you're really looking for.</p>
+                    <p>Usually within 24 hours. We've already reviewed what you matched with - this is a real conversation to understand what matters to you beyond the numbers.</p>
                 </div>
                 <div class="timeline-step">
                     <h3>We run through your matches</h3>
-                    <p>We arrange a call to walk through the brands you've matched with - the unit economics, the model, what the day actually looks like. Real detail, not a sales pitch.</p>
+                    <p>We arrange a call to walk through exactly what you've matched with - the unit economics, the model, what the day actually looks like. Real detail, not a sales pitch.</p>
                 </div>
                 <div class="timeline-step">
                     <h3>We make the introduction</h3>
@@ -2109,12 +2109,20 @@ function highlightTileGroup(name) {
                 .filter(Boolean)
                 .sort((a, b) => b.matchScore - a.matchScore);
 
-            // Store top-3 summary — included in the enquiry form submission to Harry
+            // Store top-6 as JSON — sent to Harry via the enquiry form email
+            // Website only shows top 3 (see renderResults); email shows all 6
             _matchSummary = matches.length === 0
-                ? 'No matches found'
-                : matches.slice(0, 3).map((m, i) =>
-                    `#${i + 1} ${m.name || m.id} (${m.category}) - ${m.matchScore}% match | ${m.investmentDisplay} | ${m.locationsDisplay}`
-                  ).join('\n');
+                ? '[]'
+                : JSON.stringify(matches.slice(0, 6).map((m, i) => ({
+                    rank:             i + 1,
+                    id:               m.id || '',
+                    category:         m.category || '',
+                    score:            m.matchScore,
+                    investmentDisplay: m.investmentDisplay || '',
+                    locationsDisplay:  m.locationsDisplay || '',
+                    teaser:            m.teaser || '',
+                    highlights:        m.highlights || []
+                  })));
 
             renderResults(matches);
             loading.classList.add('ff-hiding');

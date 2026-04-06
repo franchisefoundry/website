@@ -14,23 +14,23 @@
     "submitButton": "Get My Free Match"
   },
   "nextSteps": {
-    "title": "What Happens Next?",
+    "title": "What happens next",
     "steps": [
       {
-        "title": "We Review Your Profile",
-        "description": "Our team carefully reviews your goals, budget, and preferences to understand what you're looking for."
+        "title": "Your profile, already matched",
+        "description": "The moment you submit, our matching engine scores your profile against every hospitality brand in our network - investment level, operating style, background, location. By the time we pick up the phone, the data has already done its job."
       },
       {
-        "title": "We Find Your Matches",
-        "description": "We identify franchise opportunities that genuinely align with your criteria—not just any franchises."
+        "title": "We get in touch",
+        "description": "Usually within 24 hours. We've already reviewed what you matched with - this is a real conversation to understand what matters to you beyond the numbers."
       },
       {
-        "title": "We Schedule Your Consultation",
-        "description": "We'll arrange a free, no-obligation call to discuss your personalised matches in detail."
+        "title": "We run through your matches",
+        "description": "We arrange a call to walk through exactly what you've matched with - the unit economics, the model, what the day actually looks like. Real detail, not a sales pitch."
       },
       {
-        "title": "You Make the Decision",
-        "description": "Armed with expert guidance and carefully matched opportunities, you can make an informed choice about your future."
+        "title": "We make the introduction",
+        "description": "If something looks right, we put you in front of the brand directly - and stay involved to make sure you have what you need to make a good decision."
       }
     ]
   },

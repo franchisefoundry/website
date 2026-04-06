@@ -1,10 +1,10 @@
 {
-  "title": "You know who you're looking for. We know how to find them.",
-  "intro": "We work with a small number of hospitality franchise brands at any one time. That means proper attention, genuinely prepared candidates, and introductions we actually believe in.",
+  "title": "You know who you're looking for. We have the platform to find them.",
+  "intro": "Our matching engine surfaces candidates who fit your brand on data - investment, operating model, ambitions, background. Then our team takes over: honest conversations, proper prep, and introductions we actually believe in.",
   "benefits": [
     {
-      "title": "People who are ready",
-      "description": "Every introduction is considered carefully before it's made. Budget matched. Operational model assessed. Commitment checked. Every candidate we bring forward has been properly evaluated against your profile."
+      "title": "Matched by data, confirmed by us",
+      "description": "Our matching platform scores every candidate against your brand profile across budget, operating model, growth ambitions and background before any human review takes place. The people we bring forward have been assessed as right for your model by data first, then by us."
     },
     {
       "title": "Prep that protects your time",
@@ -34,12 +34,12 @@
       {
         "number": "1",
         "title": "Tell us about your ideal franchisee",
-        "description": "Not just the checklist. We want to understand the profile behind the criteria - what makes someone succeed in your model, and what the common wrong-fits look like."
+        "description": "Not just the checklist. We want to understand the profile behind the criteria - what makes someone succeed in your model, and what the common wrong-fits look like. That detail feeds directly into how our platform weights your matches."
       },
       {
         "number": "2",
-        "title": "We match against our network",
-        "description": "We score candidates against your profile - investment level, operational model, growth ambitions, experience. The people we bring forward aren't just financially eligible. They're assessed as right for your brand."
+        "title": "Our platform does the matching",
+        "description": "Your brand profile is run through our matching engine against every candidate in our network - investment level, operational model, growth ambitions, background. The platform scores fit objectively, with no bias toward availability or volume. We review the results before making any move."
       },
       {
         "number": "3",

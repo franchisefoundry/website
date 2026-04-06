@@ -668,30 +668,39 @@
             .navbar { padding: 0 20px; }
 
             /* ── Page hero (all pages) ────────────────────────────── */
-            .page-hero { padding: 52px 24px 44px; }
+            .page-hero { padding: 44px 20px 36px; }
             .page-hero h1 {
-                font-size: 2.1rem;
+                font-size: 1.9rem;
                 letter-spacing: -0.03em;
                 line-height: 1.15;
             }
-            .page-hero p { font-size: 0.95rem; line-height: 1.65; }
-            .page-eyebrow { font-size: 0.7rem; margin-bottom: 20px; padding: 6px 14px; }
+            .page-hero p { font-size: 0.9rem; line-height: 1.65; }
+            .page-eyebrow { font-size: 0.7rem; margin-bottom: 16px; padding: 6px 14px; }
 
             /* ── Footer ──────────────────────────────────────────── */
-            footer { padding: 48px 24px 28px; }
+            footer { padding: 40px 20px 24px; }
         }
         @media (max-width: 767px) {
 
             /* ── Layout ───────────────────────────────────────────── */
-            .contact-layout { grid-template-columns: 1fr; gap: 40px; }
-            .section        { padding: 64px 24px; }
+            .contact-layout { grid-template-columns: 1fr; gap: 32px; }
+            .section        { padding: 48px 20px; }
+
+            /* ── Contact intro left col ───────────────────────────── */
+            .contact-intro h2 { font-size: 1.5rem; letter-spacing: -0.02em; line-height: 1.2; }
+            .contact-intro p  { font-size: 0.9rem; line-height: 1.65; }
+            .contact-method   { padding: 14px 16px; gap: 12px; }
+            .contact-method h4 { font-size: 0.85rem; }
+            .contact-method p  { font-size: 0.82rem; }
 
             /* ── Contact form ─────────────────────────────────────── */
-            .contact-form   { padding: 32px 24px; }
-            .contact-form h2 {
-                font-size: 1.6rem;
-                letter-spacing: -0.025em;
+            .contact-form   { padding: 28px 20px; }
+            .contact-form h3 {
+                font-size: 1.3rem;
+                letter-spacing: -0.02em;
             }
+            .contact-form p   { font-size: 0.87rem; }
+            .form-group label { font-size: 0.8rem; }
             /* iOS zoom fix on all inputs */
             input[type="text"],
             input[type="email"],
@@ -702,8 +711,8 @@
             /* ── Submit button ────────────────────────────────────── */
             button[type="submit"] {
                 width: 100%;
-                padding: 16px;
-                font-size: 1rem;
+                padding: 15px;
+                font-size: 0.95rem;
             }
         }
     </style>

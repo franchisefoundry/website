@@ -213,15 +213,16 @@ function parseMatches(matchesRaw) {
   try {
     const matches = JSON.parse(matchesRaw);
     if (!Array.isArray(matches) || matches.length === 0) return null;
-    return matches.map((m, i) => {
-      const name = m.category || m.id || 'Brand';
-      const score = m.score != null ? `${m.score}% match` : '';
+    return matches.map((m) => {
+      const rank  = m.rank || (matches.indexOf(m) + 1);
+      const name  = m.category || m.id || 'Brand';
+      const score = (m.score != null) ? `${m.score}% match` : '';
       const invest = m.investmentDisplay ? `Investment: ${m.investmentDisplay}` : '';
-      const locs = m.locationsDisplay ? `Locations: ${m.locationsDisplay}` : '';
+      const locs   = m.locationsDisplay  ? `Locations: ${m.locationsDisplay}`   : '';
       const teaser = m.teaser || '';
-      const parts = [invest, locs, teaser].filter(Boolean).join(' &middot; ');
+      const parts  = [invest, locs, teaser].filter(Boolean).join(' &middot; ');
       return `<div style="margin:8px 0;padding:12px 14px;background:#f7f8f5;border-radius:6px;border-left:3px solid #c8924a;">
-        <span style="font-size:13px;font-weight:600;color:#2a352a;">${i + 1}. ${name}</span>
+        <span style="font-size:13px;font-weight:600;color:#2a352a;">${rank}. ${name}</span>
         ${score ? `<span style="font-size:12px;color:#5f725f;margin-left:8px;">${score}</span>` : ''}
         ${parts ? `<div style="font-size:12px;color:#4a5568;margin-top:4px;">${parts}</div>` : ''}
       </div>`;
