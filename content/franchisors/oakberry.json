@@ -1,0 +1,17 @@
+{
+  "category": "Quick Service (Açaí)",
+  "emoji": "🫐",
+  "teaser": "A globally recognised premium açaí brand with a vertically integrated supply chain and simple, high-margin store operations across dine-in, takeaway, and kiosk formats — no complex supplier management required.",
+  "investmentMin": 150000,
+  "investmentMax": 210000,
+  "investmentDisplay": "£150,000 – £210,000",
+  "locationsAvailable": ["london", "manchester"],
+  "locationsDisplay": "London & Manchester",
+  "sectors": ["food-beverage", "health-fitness"],
+  "timelineMonths": 4,
+  "highlights": [
+    "Globally recognised açaí brand — centralised supply chain, simple day-to-day operations",
+    "High-margin model: 70% in-store, 30% delivery | 6% royalty + 2% marketing",
+    "2-year break-even target | Priority sites in London & Manchester"
+  ]
+}

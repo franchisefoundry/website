@@ -1,0 +1,17 @@
+{
+  "category": "Artisanal Gelato & Coffee",
+  "emoji": "🍦",
+  "teaser": "A premium handmade gelato and artisan coffee concept blending Italian tradition with a modern British identity. Available as a kiosk or full café format, with centralised gelato supply keeping quality consistent across all sites — no hospitality experience required.",
+  "investmentMin": 115000,
+  "investmentMax": 165000,
+  "investmentDisplay": "£115,000 – £165,000",
+  "locationsAvailable": ["london", "staines", "kingston", "guildford"],
+  "locationsDisplay": "London & Surrey",
+  "sectors": ["food-beverage"],
+  "timelineMonths": 3,
+  "highlights": [
+    "Kiosk or full café format — flexible entry point with centralised gelato supply",
+    "£15,000 franchise fee | 5% royalty + 1% marketing | full training & ops manuals provided",
+    "Target locations across London & Surrey — mock P&L and site list available"
+  ]
+}

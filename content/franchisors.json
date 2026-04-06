@@ -153,10 +153,79 @@
       "category": "Fast Casual Döner",
       "highlights": [
         "Automated kitchen tech — consistent premium product, no food experience needed",
-        "Semi-absentee model: runs with an approved GM, not hands-on",
-        "18-month break-even target | €40,000 franchise fee"
+        "Semi-absentee model: operated by an approved GM, not hands-on",
+        "18-month break-even target | €40,000 franchise fee | 7% royalty, no hidden fees"
       ],
       "investmentMin": 250000
+    },
+    {
+      "multiSiteReady": true,
+      "locationsDisplay": "Greater Manchester & West Yorkshire",
+      "operatorModel": "owner-operator",
+      "experienceRequired": "none",
+      "locationsAvailable": ["manchester", "leeds"],
+      "name": "Zambrero",
+      "sectors": ["food-beverage"],
+      "investmentDisplay": "£150,000 – £350,000",
+      "teaser": "A fresh, healthy Mexican fusion concept with a powerful social mission — for every meal sold, one is donated to someone in need through the Plate 4 Plate programme. Fully standardised operations mean no prior food experience is required.",
+      "investmentMax": 350000,
+      "timelineMonths": 6,
+      "format": ["dine-in", "takeaway"],
+      "id": "zambrero",
+      "fullTimeRequired": true,
+      "category": "Mexican Fusion",
+      "highlights": [
+        "Plate 4 Plate social mission — every meal sold donates a meal to someone in need",
+        "No prior food experience needed — fully standardised operations",
+        "Pioneer opportunity: 4–6 sites available in Greater Manchester & West Yorkshire"
+      ],
+      "investmentMin": 150000
+    },
+    {
+      "multiSiteReady": false,
+      "locationsDisplay": "London & Manchester",
+      "operatorModel": "either",
+      "experienceRequired": "management",
+      "locationsAvailable": ["london", "manchester"],
+      "name": "Oakberry",
+      "sectors": ["food-beverage", "health-fitness"],
+      "investmentDisplay": "£150,000 – £210,000",
+      "teaser": "A globally recognised premium açaí brand with a vertically integrated supply chain and simple, high-margin store operations across dine-in, takeaway, and kiosk formats — no complex supplier management required.",
+      "investmentMax": 210000,
+      "timelineMonths": 4,
+      "format": ["dine-in", "takeaway", "kiosk"],
+      "id": "oakberry",
+      "fullTimeRequired": false,
+      "category": "Quick Service (Açaí)",
+      "highlights": [
+        "Globally recognised açaí brand — centralised supply chain, simple day-to-day operations",
+        "High-margin model: 70% in-store, 30% delivery | 6% royalty + 2% marketing",
+        "2-year break-even target | Priority sites in London & Manchester"
+      ],
+      "investmentMin": 150000
+    },
+    {
+      "multiSiteReady": true,
+      "locationsDisplay": "London & Surrey",
+      "operatorModel": "hire-manager",
+      "experienceRequired": "management",
+      "locationsAvailable": ["london", "staines", "kingston", "guildford"],
+      "name": "Paradice",
+      "sectors": ["food-beverage"],
+      "investmentDisplay": "£115,000 – £165,000",
+      "teaser": "A premium handmade gelato and artisan coffee concept blending Italian tradition with a modern British identity. Available as a kiosk or full café format, with centralised gelato supply keeping quality consistent across all sites — no hospitality experience required.",
+      "investmentMax": 165000,
+      "timelineMonths": 3,
+      "format": ["dine-in", "kiosk"],
+      "id": "paradice",
+      "fullTimeRequired": false,
+      "category": "Artisanal Gelato & Coffee",
+      "highlights": [
+        "Kiosk or full café format — flexible entry point with centralised gelato supply",
+        "£15,000 franchise fee | 5% royalty + 1% marketing | full training & ops manuals provided",
+        "Target locations across London & Surrey — mock P&L and site list available"
+      ],
+      "investmentMin": 115000
     }
   ]
 }

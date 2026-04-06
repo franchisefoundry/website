@@ -1,0 +1,17 @@
+{
+  "category": "Mexican Fusion",
+  "emoji": "🌮",
+  "teaser": "A fresh, healthy Mexican fusion concept with a powerful social mission — for every meal sold, one is donated to someone in need through the Plate 4 Plate programme. Fully standardised operations mean no prior food experience is required.",
+  "investmentMin": 150000,
+  "investmentMax": 350000,
+  "investmentDisplay": "£150,000 – £350,000",
+  "locationsAvailable": ["manchester", "leeds"],
+  "locationsDisplay": "Greater Manchester & West Yorkshire",
+  "sectors": ["food-beverage"],
+  "timelineMonths": 6,
+  "highlights": [
+    "Plate 4 Plate social mission — every meal sold donates a meal to someone in need",
+    "No prior food experience needed — fully standardised operations",
+    "Pioneer opportunity: 4–6 sites available in Greater Manchester & West Yorkshire"
+  ]
+}
