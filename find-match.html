@@ -923,6 +923,10 @@
         }
         @media (max-width: 767px) {
 
+            /* ── Page hero ────────────────────────────────────────── */
+            .page-hero { padding: 44px 20px 28px; }
+            .page-hero h1 { font-size: 1.75rem; letter-spacing: -0.02em; line-height: 1.2; }
+
             /* ── Form section wrapper ─────────────────────────────── */
             .form-section { padding: 32px 20px 72px; }
             .form-section-header { margin-bottom: 28px; text-align: center; }
@@ -2118,7 +2122,8 @@ function highlightTileGroup(name) {
                         m.investmentDisplay,
                         m.locationsDisplay
                     ].filter(Boolean).join(' | ');
-                    return `${i + 1}. ${m.category} — ${m.matchScore}% match${parts ? ' | ' + parts : ''}`;
+                    const brandLabel = m.name ? `${m.name} (${m.category})` : m.category;
+                    return `${i + 1}. ${brandLabel} — ${m.matchScore}% match${parts ? ' | ' + parts : ''}`;
                   }).join('\n');
 
             renderResults(matches);
