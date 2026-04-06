@@ -206,30 +206,41 @@ function replyButton(email, name) {
   </div>`;
 }
 
-// ── Parse matches JSON into readable lines ────────────────────────────────────
+// ── Parse matches into readable HTML blocks ───────────────────────────────────
+// Accepts the plain-text format stored by find-match.html:
+//   "1. Category — 91% match | £20,000–£35,000 | London, Manchester"
+//   (one match per line, separated by \n)
 
 function parseMatches(matchesRaw) {
-  if (!matchesRaw || matchesRaw.trim() === '') return null;
-  try {
-    const matches = JSON.parse(matchesRaw);
-    if (!Array.isArray(matches) || matches.length === 0) return null;
-    return matches.map((m) => {
-      const rank  = m.rank || (matches.indexOf(m) + 1);
-      const name  = m.category || m.id || 'Brand';
-      const score = (m.score != null) ? `${m.score}% match` : '';
-      const invest = m.investmentDisplay ? `Investment: ${m.investmentDisplay}` : '';
-      const locs   = m.locationsDisplay  ? `Locations: ${m.locationsDisplay}`   : '';
-      const teaser = m.teaser || '';
-      const parts  = [invest, locs, teaser].filter(Boolean).join(' &middot; ');
-      return `<div style="margin:8px 0;padding:12px 14px;background:#f7f8f5;border-radius:6px;border-left:3px solid #c8924a;">
-        <span style="font-size:13px;font-weight:600;color:#2a352a;">${rank}. ${name}</span>
-        ${score ? `<span style="font-size:12px;color:#5f725f;margin-left:8px;">${score}</span>` : ''}
-        ${parts ? `<div style="font-size:12px;color:#4a5568;margin-top:4px;">${parts}</div>` : ''}
-      </div>`;
-    }).join('');
-  } catch (e) {
-    return null;
-  }
+  if (!matchesRaw || matchesRaw.trim() === '' || matchesRaw === 'No matches found') return null;
+
+  // Split into lines, skip empty
+  const lines = matchesRaw.split('\n').map(l => l.trim()).filter(Boolean);
+  if (lines.length === 0) return null;
+
+  return lines.map(line => {
+    // Format: "1. Category — 91% match | £x–£y | Locations"
+    // Split on ' | ' to get the parts after the first
+    const dashIdx = line.indexOf('—');
+    const rankAndCat = dashIdx > -1 ? line.slice(0, dashIdx).trim() : line;
+    const rest       = dashIdx > -1 ? line.slice(dashIdx + 1).trim() : '';
+
+    // Pull out rank number and category
+    const rankMatch = rankAndCat.match(/^(\d+)\.\s*(.+)$/);
+    const rank     = rankMatch ? rankMatch[1] : '';
+    const category = rankMatch ? rankMatch[2].trim() : rankAndCat;
+
+    // Split rest by ' | ' to get score and detail fields
+    const restParts = rest.split(' | ').map(p => p.trim()).filter(Boolean);
+    const score     = restParts[0] || '';      // e.g. "91% match"
+    const details   = restParts.slice(1).join(' &middot; '); // investment, locations
+
+    return `<div style="margin:8px 0;padding:12px 14px;background:#f7f8f5;border-radius:6px;border-left:3px solid #c8924a;">
+      <span style="font-size:13px;font-weight:600;color:#2a352a;">${rank ? rank + '. ' : ''}${category}</span>
+      ${score ? `<span style="font-size:12px;color:#5f725f;margin-left:8px;">${score}</span>` : ''}
+      ${details ? `<div style="font-size:12px;color:#4a5568;margin-top:4px;">${details}</div>` : ''}
+    </div>`;
+  }).join('');
 }
 
 // ── Email builders ────────────────────────────────────────────────────────────

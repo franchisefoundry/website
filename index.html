@@ -1088,12 +1088,12 @@
         @media (max-width: 767px) {
 
             /* ── Hero ─────────────────────────────────────────────── */
-            .hero { padding: 44px 20px 48px; }
+            .hero { padding: 52px 24px 56px; }
             /* Collapse to flex so child widths are properly constrained */
             .hero-inner {
                 display: flex !important;
                 flex-direction: column;
-                gap: 24px;
+                gap: 32px;
                 min-width: 0;
             }
             .hero-left { min-width: 0; width: 100%; overflow: hidden; }
@@ -1104,7 +1104,7 @@
             /* Eyebrow badge: centred, compact, wraps naturally */
             .hero-eyebrow {
                 font-size: 0.62rem;
-                margin: 0 auto 14px;
+                margin: 0 auto 16px;
                 max-width: 220px;
                 white-space: normal;
                 text-align: center;
@@ -1112,50 +1112,44 @@
                 flex-wrap: wrap;
             }
             .hero-headline {
-                font-size: 2.15rem;
+                font-size: 2.5rem;
                 letter-spacing: -0.04em;
-                line-height: 1.1;
+                line-height: 1.08;
             }
             .hero-subtext {
-                font-size: 0.9rem;
-                line-height: 1.6;
-                margin-bottom: 24px;
+                font-size: 0.93rem;
+                line-height: 1.65;
+                margin-bottom: 28px;
                 max-width: 100%;
             }
-            .hero-ctas { flex-direction: column; gap: 10px; align-items: stretch; }
+            .hero-ctas { flex-direction: column; gap: 12px; align-items: stretch; }
             .btn-primary, .btn-ghost {
                 width: 100%;
                 text-align: center;
                 justify-content: center;
-                padding: 15px 24px;
-                font-size: 0.93rem;
+                padding: 16px 24px;
+                font-size: 0.95rem;
             }
 
             /* ── Sections ─────────────────────────────────────────── */
-            .section        { padding: 48px 20px; }
-            .section-title  { font-size: 1.65rem; letter-spacing: -0.025em; line-height: 1.2; margin-bottom: 10px; }
-            .section-subtitle { font-size: 0.88rem; line-height: 1.6; }
+            .section        { padding: 60px 24px; }
+            .section-title  { font-size: 1.85rem; letter-spacing: -0.03em; line-height: 1.15; }
+            .section-subtitle { font-size: 0.93rem; line-height: 1.6; }
 
             /* ── Stat / benefit / step cards ─────────────────────── */
-            .benefit-card   { padding: 20px 18px; }
-            .step-card      { padding: 20px 18px; }
-            .benefit-card h3, .step-card h3 { font-size: 1rem; }
-            .benefit-card p, .step-card p   { font-size: 0.87rem; line-height: 1.6; }
-
-            /* ── Partners banner ─────────────────────────────────── */
-            .partners-section { padding: 28px 20px; }
+            .benefit-card   { padding: 24px 20px; }
+            .step-card      { padding: 24px 20px; }
 
             /* ── Final CTA ────────────────────────────────────────── */
-            .final-cta      { padding: 48px 20px; }
+            .final-cta      { padding: 60px 24px; }
             .final-cta-inner h2 {
-                font-size: 1.65rem;
-                letter-spacing: -0.025em;
-                line-height: 1.2;
+                font-size: 1.9rem;
+                letter-spacing: -0.03em;
             }
-            .final-cta p    { font-size: 0.88rem; line-height: 1.6; }
+            .final-cta > p  { font-size: 0.93rem; }
 
             /* ── Footer ──────────────────────────────────────────── */
-            .footer-grid    { grid-template-columns: 1fr; gap: 28px; }
+            .footer-grid    { grid-template-columns: 1fr; gap: 32px; }
         }
     </style>
 </head>

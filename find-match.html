@@ -2109,20 +2109,17 @@ function highlightTileGroup(name) {
                 .filter(Boolean)
                 .sort((a, b) => b.matchScore - a.matchScore);
 
-            // Store top-6 as JSON — sent to Harry via the enquiry form email
-            // Website only shows top 3 (see renderResults); email shows all 6
+            // Store top-6 as readable plain text — sent to Harry via the enquiry form email
+            // Website only shows top 3 cards (see renderResults below)
             _matchSummary = matches.length === 0
-                ? '[]'
-                : JSON.stringify(matches.slice(0, 6).map((m, i) => ({
-                    rank:             i + 1,
-                    id:               m.id || '',
-                    category:         m.category || '',
-                    score:            m.matchScore,
-                    investmentDisplay: m.investmentDisplay || '',
-                    locationsDisplay:  m.locationsDisplay || '',
-                    teaser:            m.teaser || '',
-                    highlights:        m.highlights || []
-                  })));
+                ? 'No matches found'
+                : matches.slice(0, 6).map((m, i) => {
+                    const parts = [
+                        m.investmentDisplay,
+                        m.locationsDisplay
+                    ].filter(Boolean).join(' | ');
+                    return `${i + 1}. ${m.category} — ${m.matchScore}% match${parts ? ' | ' + parts : ''}`;
+                  }).join('\n');
 
             renderResults(matches);
             loading.classList.add('ff-hiding');
