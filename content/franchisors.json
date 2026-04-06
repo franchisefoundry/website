@@ -2,136 +2,6 @@
   "partners": [
     {
       "multiSiteReady": true,
-      "locationsDisplay": "London, Manchester & Leeds",
-      "operatorModel": "owner-operator",
-      "experienceRequired": "none",
-      "locationsAvailable": [
-        "london",
-        "manchester",
-        "leeds"
-      ],
-      "name": "Harry's Handies",
-      "sectors": [
-        "food-beverage"
-      ],
-      "investmentDisplay": "£10,000 – £25,000",
-      "teaser": "A fast-growing handheld food concept with an affordable entry point and strong multi-site operator network across major UK cities.",
-      "investmentMax": 25000,
-      "timelineMonths": 2,
-      "format": [
-        "takeaway",
-        "kiosk"
-      ],
-      "id": "harrys-handies",
-      "fullTimeRequired": true,
-      "category": "Quick Service Restaurant",
-      "highlights": [
-        "Low entry investment",
-        "Multi-site friendly",
-        "Rapid setup"
-      ],
-      "investmentMin": 10000
-    },
-    {
-      "multiSiteReady": false,
-      "locationsDisplay": "Harrogate, London & Liverpool",
-      "operatorModel": "owner-operator",
-      "experienceRequired": "management",
-      "locationsAvailable": [
-        "harrogate",
-        "london",
-        "liverpool"
-      ],
-      "name": "Ben's Burritos",
-      "sectors": [
-        "food-beverage"
-      ],
-      "investmentDisplay": "£100,000 – £140,000",
-      "teaser": "A vibrant Mexican street food brand with a strong identity and growing presence across key UK locations.",
-      "investmentMax": 140000,
-      "timelineMonths": 4,
-      "format": [
-        "dine-in",
-        "takeaway"
-      ],
-      "id": "bens-burritos",
-      "fullTimeRequired": true,
-      "category": "Mexican Street Food",
-      "highlights": [
-        "Established brand",
-        "Full training provided",
-        "Exclusive territories"
-      ],
-      "investmentMin": 100000
-    },
-    {
-      "multiSiteReady": true,
-      "locationsDisplay": "London, Liverpool, Manchester & Brighton",
-      "operatorModel": "either",
-      "experienceRequired": "food-beverage",
-      "locationsAvailable": [
-        "london",
-        "liverpool",
-        "manchester",
-        "brighton"
-      ],
-      "name": "Super Sushi",
-      "sectors": [
-        "food-beverage"
-      ],
-      "investmentDisplay": "£75,000 – £110,000",
-      "teaser": "A premium sushi concept bringing authentic Japanese dining to high-footfall UK locations, with proven systems and full operational support.",
-      "investmentMax": 110000,
-      "timelineMonths": 3,
-      "format": [
-        "dine-in"
-      ],
-      "id": "super-sushi",
-      "fullTimeRequired": true,
-      "category": "Japanese Cuisine",
-      "highlights": [
-        "Premium market positioning",
-        "Growing UK demand",
-        "Comprehensive support"
-      ],
-      "investmentMin": 75000
-    },
-    {
-      "multiSiteReady": true,
-      "locationsDisplay": "London, Liverpool, Manchester & Brighton",
-      "operatorModel": "either",
-      "experienceRequired": "none",
-      "locationsAvailable": [
-        "london",
-        "liverpool",
-        "manchester",
-        "brighton"
-      ],
-      "name": "Jungle Juice",
-      "sectors": [
-        "food-beverage",
-        "health-fitness"
-      ],
-      "investmentDisplay": "£20,000 – £35,000",
-      "teaser": "A bold tropical drinks brand riding the health and premium beverage trend across UK high streets and shopping centres.",
-      "investmentMax": 35000,
-      "timelineMonths": 2,
-      "format": [
-        "kiosk",
-        "flexible"
-      ],
-      "id": "jungle-juice",
-      "fullTimeRequired": false,
-      "category": "Drinks & Beverages",
-      "highlights": [
-        "Low overhead",
-        "Health trend tailwind",
-        "Flexible site formats"
-      ],
-      "investmentMin": 20000
-    },
-    {
-      "multiSiteReady": true,
       "locationsDisplay": "International",
       "operatorModel": "hire-manager",
       "experienceRequired": "none",
@@ -163,14 +33,22 @@
       "locationsDisplay": "Greater Manchester & West Yorkshire",
       "operatorModel": "owner-operator",
       "experienceRequired": "none",
-      "locationsAvailable": ["manchester", "leeds"],
+      "locationsAvailable": [
+        "manchester",
+        "leeds"
+      ],
       "name": "Zambrero",
-      "sectors": ["food-beverage"],
+      "sectors": [
+        "food-beverage"
+      ],
       "investmentDisplay": "£150,000 – £350,000",
       "teaser": "A fresh, healthy Mexican fusion concept with a powerful social mission — for every meal sold, one is donated to someone in need through the Plate 4 Plate programme. Fully standardised operations mean no prior food experience is required.",
       "investmentMax": 350000,
       "timelineMonths": 6,
-      "format": ["dine-in", "takeaway"],
+      "format": [
+        "dine-in",
+        "takeaway"
+      ],
       "id": "zambrero",
       "fullTimeRequired": true,
       "category": "Mexican Fusion",
@@ -186,14 +64,24 @@
       "locationsDisplay": "London & Manchester",
       "operatorModel": "either",
       "experienceRequired": "management",
-      "locationsAvailable": ["london", "manchester"],
+      "locationsAvailable": [
+        "london",
+        "manchester"
+      ],
       "name": "Oakberry",
-      "sectors": ["food-beverage", "health-fitness"],
+      "sectors": [
+        "food-beverage",
+        "health-fitness"
+      ],
       "investmentDisplay": "£150,000 – £210,000",
       "teaser": "A globally recognised premium açaí brand with a vertically integrated supply chain and simple, high-margin store operations across dine-in, takeaway, and kiosk formats — no complex supplier management required.",
       "investmentMax": 210000,
       "timelineMonths": 4,
-      "format": ["dine-in", "takeaway", "kiosk"],
+      "format": [
+        "dine-in",
+        "takeaway",
+        "kiosk"
+      ],
       "id": "oakberry",
       "fullTimeRequired": false,
       "category": "Quick Service (Açaí)",
@@ -209,14 +97,24 @@
       "locationsDisplay": "London & Surrey",
       "operatorModel": "hire-manager",
       "experienceRequired": "management",
-      "locationsAvailable": ["london", "staines", "kingston", "guildford"],
+      "locationsAvailable": [
+        "london",
+        "staines",
+        "kingston",
+        "guildford"
+      ],
       "name": "Paradice",
-      "sectors": ["food-beverage"],
+      "sectors": [
+        "food-beverage"
+      ],
       "investmentDisplay": "£115,000 – £165,000",
       "teaser": "A premium handmade gelato and artisan coffee concept blending Italian tradition with a modern British identity. Available as a kiosk or full café format, with centralised gelato supply keeping quality consistent across all sites — no hospitality experience required.",
       "investmentMax": 165000,
       "timelineMonths": 3,
-      "format": ["dine-in", "kiosk"],
+      "format": [
+        "dine-in",
+        "kiosk"
+      ],
       "id": "paradice",
       "fullTimeRequired": false,
       "category": "Artisanal Gelato & Coffee",
