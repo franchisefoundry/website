@@ -1,0 +1,17 @@
+{
+  "category": "Coffee & Beverages (Bubble Tea)",
+  "emoji": "🧋",
+  "teaser": "A specialist bubble tea brand with a proven in-store model, flexible site formats, and a low-overhead, sales-focused operation — ideal for hands-on owner-operators ready to grow a high-footfall café concept across the UK.",
+  "investmentMin": 150000,
+  "investmentMax": 150000,
+  "investmentDisplay": "From £150,000",
+  "locationsAvailable": ["london", "manchester", "birmingham", "leeds", "bristol", "edinburgh", "glasgow", "liverpool", "sheffield", "nottingham"],
+  "locationsDisplay": "UK-wide",
+  "sectors": ["food-beverage"],
+  "timelineMonths": 6,
+  "highlights": [
+    "Bubble tea specialist with flexible formats: dine-in, takeaway, and kiosk",
+    "Simple sales-only model — no franchisor staff or rent obligations | 4% monthly royalty",
+    "Owner-operator model: hands-on franchisees, long-term growth ambition required"
+  ]
+}
