@@ -1463,10 +1463,55 @@
     /* No matches state */
     .no-matches {
         text-align: center;
-        color: rgba(255,255,255,0.4);
-        padding: 60px 20px;
-        font-size: 1rem;
+        padding: 50px 20px;
+        max-width: 560px;
+        margin: 0 auto;
+    }
+
+    .no-matches-icon {
+        width: 72px;
+        height: 72px;
+        background: rgba(200, 146, 74, 0.12);
+        border: 2px solid rgba(200, 146, 74, 0.35);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 24px;
+    }
+
+    .no-matches-title {
+        font-size: 1.4rem;
+        font-weight: 600;
+        color: #fff;
+        margin: 0 0 14px;
+        line-height: 1.35;
+    }
+
+    .no-matches-body {
+        font-size: 0.97rem;
+        color: rgba(255,255,255,0.65);
+        line-height: 1.7;
+        margin: 0 0 30px;
         font-weight: 300;
+    }
+
+    .no-matches-cta {
+        display: inline-block;
+        background: linear-gradient(135deg, #c8924a, #d4a574);
+        color: #fff;
+        padding: 14px 34px;
+        border-radius: 50px;
+        font-weight: 600;
+        font-size: 0.95rem;
+        text-decoration: none;
+        letter-spacing: 0.01em;
+        transition: opacity 0.2s, transform 0.2s;
+    }
+
+    .no-matches-cta:hover {
+        opacity: 0.88;
+        transform: translateY(-1px);
     }
 
     @media (max-width: 768px) {
@@ -2203,9 +2248,19 @@ function highlightTileGroup(name) {
         const sub     = document.getElementById('results-subline');
 
         if (matches.length === 0) {
-            hl.textContent = 'No exact matches found';
-            sub.innerHTML  = 'Enter your details below and our team will personally find the right fit for you.';
-            grid.innerHTML = '<div class="no-matches"><p>We\'ll be in touch within 24 hours with personalised recommendations.</p></div>';
+            hl.textContent = 'No perfect match just yet';
+            sub.innerHTML  = 'Here\'s what we\'d suggest instead';
+            grid.innerHTML = `<div class="no-matches">
+                <div class="no-matches-icon">
+                    <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#c8924a" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                        <line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/>
+                    </svg>
+                </div>
+                <h3 class="no-matches-title">We don't have an exact match for your profile right now — but we're not far off</h3>
+                <p class="no-matches-body">We have several brands that come close to what you're looking for, plus a number of exciting new franchises joining our pipeline soon. Book a free 20-minute call and we'll walk you through what's available today and what's on the horizon.</p>
+                <a href="contact.html" class="no-matches-cta">Book a Free Call &rarr;</a>
+            </div>`;
         } else {
             const top = matches.slice(0, 3);
             hl.textContent = top.length === 1
@@ -2241,15 +2296,17 @@ function highlightTileGroup(name) {
             }, i * 220);
         });
 
-        // Reveal the enquiry form after the last card animates in
-        const lastCardDelay = Math.max(cards.length - 1, 0) * 220 + 600;
-        setTimeout(() => {
-            const enquiry = document.getElementById('enquiry-section');
-            if (enquiry) {
-                enquiry.style.display = 'block';
-                enquiry.style.animation = 'ffFadeIn 0.5s ease forwards';
-            }
-        }, lastCardDelay);
+        // Reveal the enquiry form after the last card animates in (only when matches exist)
+        if (cards.length > 0) {
+            const lastCardDelay = Math.max(cards.length - 1, 0) * 220 + 600;
+            setTimeout(() => {
+                const enquiry = document.getElementById('enquiry-section');
+                if (enquiry) {
+                    enquiry.style.display = 'block';
+                    enquiry.style.animation = 'ffFadeIn 0.5s ease forwards';
+                }
+            }, lastCardDelay);
+        }
     }
 
     function buildCard(match, rank) {

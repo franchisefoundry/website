@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>No Match Preview</title>
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Sora', sans-serif;
+            background: #161a16;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+        }
+
+        .match-results-section {
+            background: linear-gradient(160deg, #1e2a1e 0%, #161a16 60%);
+            border-radius: 20px;
+            padding: 60px 40px;
+            max-width: 700px;
+            width: 100%;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.06);
+        }
+
+        .results-headline {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 10px;
+            line-height: 1.2;
+        }
+
+        .results-subline {
+            font-size: 1rem;
+            color: rgba(255,255,255,0.5);
+            margin-bottom: 40px;
+            font-weight: 300;
+        }
+
+        /* No matches state */
+        .no-matches {
+            text-align: center;
+            padding: 50px 20px;
+            max-width: 560px;
+            margin: 0 auto;
+        }
+
+        .no-matches-icon {
+            width: 72px;
+            height: 72px;
+            background: rgba(200, 146, 74, 0.12);
+            border: 2px solid rgba(200, 146, 74, 0.35);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 24px;
+        }
+
+        .no-matches-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #fff;
+            margin: 0 0 14px;
+            line-height: 1.35;
+        }
+
+        .no-matches-body {
+            font-size: 0.97rem;
+            color: rgba(255,255,255,0.65);
+            line-height: 1.7;
+            margin: 0 0 30px;
+            font-weight: 300;
+        }
+
+        .no-matches-cta {
+            display: inline-block;
+            background: linear-gradient(135deg, #c8924a, #d4a574);
+            color: #fff;
+            padding: 14px 34px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            text-decoration: none;
+            letter-spacing: 0.01em;
+            transition: opacity 0.2s, transform 0.2s;
+        }
+
+        .no-matches-cta:hover {
+            opacity: 0.88;
+            transform: translateY(-1px);
+        }
+
+        .preview-label {
+            font-family: 'Sora', sans-serif;
+            font-size: 0.75rem;
+            color: rgba(255,255,255,0.2);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="match-results-section">
+        <p class="preview-label">Preview — No Match State</p>
+
+        <h2 class="results-headline">No perfect match just yet</h2>
+        <p class="results-subline">Here's what we'd suggest instead</p>
+
+        <div class="no-matches">
+            <div class="no-matches-icon">
+                <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#c8924a" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                    <line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/>
+                </svg>
+            </div>
+            <h3 class="no-matches-title">We don't have an exact match for your profile right now — but we're not far off</h3>
+            <p class="no-matches-body">We have several brands that come close to what you're looking for, plus a number of exciting new franchises joining our pipeline soon. Book a free 20-minute call and we'll walk you through what's available today and what's on the horizon.</p>
+            <a href="#" class="no-matches-cta">Book a Free Call &rarr;</a>
+        </div>
+    </div>
+</body>
+</html>
