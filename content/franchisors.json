@@ -124,16 +124,23 @@
         "Target locations across London & Surrey — mock P&L and site list available"
       ],
       "investmentMin": 115000
-    }
-    ,
+    },
     {
       "multiSiteReady": false,
       "locationsDisplay": "UK-wide",
       "operatorModel": "owner-operator",
       "experienceRequired": "none",
       "locationsAvailable": [
-        "london", "manchester", "birmingham", "leeds", "bristol",
-        "edinburgh", "glasgow", "liverpool", "sheffield", "nottingham"
+        "london",
+        "manchester",
+        "birmingham",
+        "leeds",
+        "bristol",
+        "edinburgh",
+        "glasgow",
+        "liverpool",
+        "sheffield",
+        "nottingham"
       ],
       "name": "T4",
       "sectors": [
@@ -164,15 +171,23 @@
       "operatorModel": "hire-manager",
       "experienceRequired": "management",
       "locationsAvailable": [
-        "london", "manchester", "birmingham", "leeds", "liverpool",
-        "glasgow", "edinburgh", "bristol", "sheffield", "nottingham"
+        "london",
+        "manchester",
+        "birmingham",
+        "leeds",
+        "liverpool",
+        "glasgow",
+        "edinburgh",
+        "bristol",
+        "sheffield",
+        "nottingham"
       ],
       "name": "Sides",
       "sectors": [
         "food-beverage"
       ],
       "investmentDisplay": "£150,000 – £300,000",
-      "teaser": "A high-growth, culturally powered QSR franchise built around 100% British Red Tractor-assured hot chicken — amplified by the Sidemen, the biggest YouTube group in the world, converting unmatched digital influence into sustained in-store demand and repeat footfall that traditional QSR competitors simply can't replicate.",
+      "teaser": "A high-growth, culturally powered QSR franchise built around 100% British Red Tractor-assured hot chicken — amplified by the biggest YouTube group in the world, converting unmatched digital influence into sustained in-store demand and repeat footfall that traditional QSR competitors simply can't replicate.",
       "investmentMax": 300000,
       "timelineMonths": 6,
       "format": [
@@ -182,9 +197,9 @@
       ],
       "id": "sides",
       "fullTimeRequired": false,
-      "category": "Quick Service (Hot Chicken)",
+      "category": "Quick Service (Fried Chicken)",
       "highlights": [
-        "100% British Red Tractor hot chicken backed by the Sidemen — unrivalled brand heat and cultural relevance in UK QSR",
+        "100% British Red Tractor hot chicken — unrivalled brand heat and cultural relevance in UK QSR",
         "£150k–£300k investment | 6% royalty + 3% marketing | semi-absentee permitted with approved GM",
         "Multi-unit growth model targeting 10–14 sites across major UK cities — shopping centres and retail parks"
       ],
