@@ -1,0 +1,17 @@
+{
+  "category": "Casual Dining (Premium Sushi)",
+  "emoji": "🍣",
+  "teaser": "Premium Japanese sushi and hot food prepared with consistent precision, fresh ingredients, and fast-casual convenience — a trusted brand delivering exceptional quality, speed, and value across dine-in, takeaway, kiosk, and delivery formats.",
+  "investmentMin": 160000,
+  "investmentMax": 200000,
+  "investmentDisplay": "£160,000 – £200,000",
+  "locationsAvailable": ["manchester", "leeds", "liverpool", "sheffield", "newcastle", "birmingham", "nottingham", "leicester", "bristol", "exeter", "edinburgh", "glasgow", "belfast", "dublin"],
+  "locationsDisplay": "North, Midlands, South West, Ireland & Scotland",
+  "sectors": ["food-beverage"],
+  "timelineMonths": 12,
+  "highlights": [
+    "Premium Japanese sushi and hot dishes — grab-and-go, eat-in, kiosk, and delivery in one streamlined model",
+    "5% royalty + 2% marketing | disciplined fast-casual operation with strong delivery-platform integration",
+    "5 territories available across North, Midlands, South West, Ireland and Scotland"
+  ]
+}
