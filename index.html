@@ -373,18 +373,18 @@
 
         .partners-track {
             display: flex;
-            gap: 0;
             width: max-content;
+            animation: partnersScroll 28s linear infinite;
         }
 
-        .partners-set {
-            display: flex;
-            gap: 32px;
-            padding-right: 32px;
+        @keyframes partnersScroll {
+            from { transform: translateX(0); }
+            to   { transform: translateX(-50%); }
         }
 
         .partner-logo-slot {
             width: 130px; height: 130px;
+            margin-right: 32px;
             background: var(--off-white);
             border: 1px solid var(--border);
             border-radius: 12px;
@@ -408,7 +408,6 @@
             opacity: 0.45;
         }
 
-        /* Animation injected by JS after logos are measured */
 
         /* Why Choose */
         .why-section { background: var(--white); }
@@ -1267,25 +1266,22 @@
         <p class="partners-label">Trusted by leading hospitality franchise brands</p>
         <div class="partners-scroll">
             <div class="partners-track">
-                <div class="partners-set">
-                    <div class="partner-logo-slot placeholder"></div>
-                    <div class="partner-logo-slot placeholder"></div>
-                    <div class="partner-logo-slot placeholder"></div>
-                    <div class="partner-logo-slot placeholder"></div>
-                    <div class="partner-logo-slot placeholder"></div>
-                    <div class="partner-logo-slot placeholder"></div>
-                    <div class="partner-logo-slot placeholder"></div>
-                </div>
-                <!-- Duplicate for seamless loop -->
-                <div class="partners-set">
-                    <div class="partner-logo-slot placeholder"></div>
-                    <div class="partner-logo-slot placeholder"></div>
-                    <div class="partner-logo-slot placeholder"></div>
-                    <div class="partner-logo-slot placeholder"></div>
-                    <div class="partner-logo-slot placeholder"></div>
-                    <div class="partner-logo-slot placeholder"></div>
-                    <div class="partner-logo-slot placeholder"></div>
-                </div>
+                <div class="partner-logo-slot placeholder"></div>
+                <div class="partner-logo-slot placeholder"></div>
+                <div class="partner-logo-slot placeholder"></div>
+                <div class="partner-logo-slot placeholder"></div>
+                <div class="partner-logo-slot placeholder"></div>
+                <div class="partner-logo-slot placeholder"></div>
+                <div class="partner-logo-slot placeholder"></div>
+                <div class="partner-logo-slot placeholder"></div>
+                <div class="partner-logo-slot placeholder"></div>
+                <div class="partner-logo-slot placeholder"></div>
+                <div class="partner-logo-slot placeholder"></div>
+                <div class="partner-logo-slot placeholder"></div>
+                <div class="partner-logo-slot placeholder"></div>
+                <div class="partner-logo-slot placeholder"></div>
+                <div class="partner-logo-slot placeholder"></div>
+                <div class="partner-logo-slot placeholder"></div>
             </div>
         </div>
     </div>
@@ -1582,10 +1578,9 @@
                     const track = document.querySelector('.partners-track');
                     if (track) {
                         track.innerHTML = '';
-                        // Build two identical sets so the scroll can wrap seamlessly
+                        // Two identical copies — CSS animation runs to -50% (= one copy width)
+                        // margin-right on every slot means -50% is always mathematically exact
                         for (let i = 0; i < 2; i++) {
-                            const set = document.createElement('div');
-                            set.className = 'partners-set';
                             settings.partners.forEach(partner => {
                                 const slot = document.createElement('div');
                                 slot.className = 'partner-logo-slot';
@@ -1593,34 +1588,9 @@
                                 img.src = partner.logo;
                                 img.alt = partner.name;
                                 slot.appendChild(img);
-                                set.appendChild(slot);
+                                track.appendChild(slot);
                             });
-                            track.appendChild(set);
                         }
-
-                        // After two frames (layout settled), measure the exact pixel width
-                        // of one set, then inject a complete @keyframes + animation rule
-                        // with that hardcoded value. Injecting the style tag is the most
-                        // reliable cross-browser way — no CSS variables, no play-state toggling.
-                        requestAnimationFrame(function() {
-                            requestAnimationFrame(function() {
-                                var firstSet = track.querySelector('.partners-set');
-                                if (!firstSet) return;
-                                var w = firstSet.offsetWidth;
-                                if (!w || w <= 0) return;
-                                var dur = Math.round(w / 50); // ~50px per second
-                                var styleEl = document.createElement('style');
-                                styleEl.textContent =
-                                    '@keyframes partnersScroll {' +
-                                    '  from { transform: translateX(0); }' +
-                                    '  to   { transform: translateX(-' + w + 'px); }' +
-                                    '}' +
-                                    '.partners-track {' +
-                                    '  animation: partnersScroll ' + dur + 's linear infinite;' +
-                                    '}';
-                                document.head.appendChild(styleEl);
-                            });
-                        });
                     }
                 }
             }
