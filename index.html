@@ -4,6 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Franchise Foundry - Hospitality Franchise Matching Specialists</title>
+    <meta name="description" content="Franchise Foundry matches ambitious people with the right hospitality franchise opportunity. Free, expert, impartial advice — with 15+ years of experience on both sides of franchising.">
+    <meta property="og:title" content="Franchise Foundry - Hospitality Franchise Matching Specialists">
+    <meta property="og:description" content="Free, expert franchise matching for the hospitality sector. We work for you — not the brands.">
+    <meta property="og:image" content="https://franchisefoundry.co.uk/images/copy-of-franchise-foundry-logo-final-2.png">
+    <meta property="og:url" content="https://franchisefoundry.co.uk/">
+    <meta property="og:type" content="website">
     <link rel="icon" type="image/png" href="images/favicon.png">
     <link rel="apple-touch-icon" href="images/favicon.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -360,15 +366,22 @@
 
         .partners-scroll {
             position: relative;
+            overflow: hidden;
             mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
             -webkit-mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
         }
 
         .partners-track {
             display: flex;
-            gap: 32px;
+            gap: 0;
             animation: partnersScroll 35s linear infinite;
             width: max-content;
+        }
+
+        .partners-set {
+            display: flex;
+            gap: 32px;
+            padding-right: 32px;
         }
 
         .partner-logo-slot {
@@ -1258,21 +1271,25 @@
         <p class="partners-label">Trusted by leading hospitality franchise brands</p>
         <div class="partners-scroll">
             <div class="partners-track">
-                <div class="partner-logo-slot placeholder"></div>
-                <div class="partner-logo-slot placeholder"></div>
-                <div class="partner-logo-slot placeholder"></div>
-                <div class="partner-logo-slot placeholder"></div>
-                <div class="partner-logo-slot placeholder"></div>
-                <div class="partner-logo-slot placeholder"></div>
-                <div class="partner-logo-slot placeholder"></div>
+                <div class="partners-set">
+                    <div class="partner-logo-slot placeholder"></div>
+                    <div class="partner-logo-slot placeholder"></div>
+                    <div class="partner-logo-slot placeholder"></div>
+                    <div class="partner-logo-slot placeholder"></div>
+                    <div class="partner-logo-slot placeholder"></div>
+                    <div class="partner-logo-slot placeholder"></div>
+                    <div class="partner-logo-slot placeholder"></div>
+                </div>
                 <!-- Duplicate for seamless loop -->
-                <div class="partner-logo-slot placeholder"></div>
-                <div class="partner-logo-slot placeholder"></div>
-                <div class="partner-logo-slot placeholder"></div>
-                <div class="partner-logo-slot placeholder"></div>
-                <div class="partner-logo-slot placeholder"></div>
-                <div class="partner-logo-slot placeholder"></div>
-                <div class="partner-logo-slot placeholder"></div>
+                <div class="partners-set">
+                    <div class="partner-logo-slot placeholder"></div>
+                    <div class="partner-logo-slot placeholder"></div>
+                    <div class="partner-logo-slot placeholder"></div>
+                    <div class="partner-logo-slot placeholder"></div>
+                    <div class="partner-logo-slot placeholder"></div>
+                    <div class="partner-logo-slot placeholder"></div>
+                    <div class="partner-logo-slot placeholder"></div>
+                </div>
             </div>
         </div>
     </div>
@@ -1570,6 +1587,8 @@
                     if (track) {
                         track.innerHTML = '';
                         for (let i = 0; i < 2; i++) {
+                            const set = document.createElement('div');
+                            set.className = 'partners-set';
                             settings.partners.forEach(partner => {
                                 const slot = document.createElement('div');
                                 slot.className = 'partner-logo-slot';
@@ -1577,8 +1596,9 @@
                                 img.src = partner.logo;
                                 img.alt = partner.name;
                                 slot.appendChild(img);
-                                track.appendChild(slot);
+                                set.appendChild(slot);
                             });
+                            track.appendChild(set);
                         }
                     }
                 }
