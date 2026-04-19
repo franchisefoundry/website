@@ -372,12 +372,7 @@
         .partners-track {
             display: flex;
             width: max-content;
-            animation: partnersScroll 24s linear infinite;
-        }
-
-        @keyframes partnersScroll {
-            from { transform: translateX(0); }
-            to   { transform: translateX(-1134px); }
+            /* Animation injected by JS once logos are known */
         }
 
         .partner-logo-slot {
@@ -1264,38 +1259,10 @@
         <p class="partners-label">Trusted by leading hospitality franchise brands</p>
         <div class="partners-scroll">
             <div class="partners-track">
-                <!-- Copy 1 -->
-                <div class="partner-logo-slot"><img src="/images/images-2-.png" alt="SoBe Burger"></div>
-                <div class="partner-logo-slot"><img src="/images/images.png" alt="You Me Sushi"></div>
-                <div class="partner-logo-slot"><img src="/images/7c767b2c-3c32-4c21-bf7d-e25319055296.avif" alt="Ivan Ramen"></div>
-                <div class="partner-logo-slot"><img src="/images/4954d99005c969b95b8bc904eb3dcad85669470a.png" alt="OakBerry"></div>
-                <div class="partner-logo-slot"><img src="/images/sides.webp" alt="Sides"></div>
-                <div class="partner-logo-slot"><img src="/images/images-1-.png" alt="Chapati Man"></div>
-                <div class="partner-logo-slot"><img src="/images/zambrero_logo.svg.png" alt="Zambrero"></div>
-                <!-- Copy 2 -->
-                <div class="partner-logo-slot"><img src="/images/images-2-.png" alt="SoBe Burger"></div>
-                <div class="partner-logo-slot"><img src="/images/images.png" alt="You Me Sushi"></div>
-                <div class="partner-logo-slot"><img src="/images/7c767b2c-3c32-4c21-bf7d-e25319055296.avif" alt="Ivan Ramen"></div>
-                <div class="partner-logo-slot"><img src="/images/4954d99005c969b95b8bc904eb3dcad85669470a.png" alt="OakBerry"></div>
-                <div class="partner-logo-slot"><img src="/images/sides.webp" alt="Sides"></div>
-                <div class="partner-logo-slot"><img src="/images/images-1-.png" alt="Chapati Man"></div>
-                <div class="partner-logo-slot"><img src="/images/zambrero_logo.svg.png" alt="Zambrero"></div>
-                <!-- Copy 3 -->
-                <div class="partner-logo-slot"><img src="/images/images-2-.png" alt="SoBe Burger"></div>
-                <div class="partner-logo-slot"><img src="/images/images.png" alt="You Me Sushi"></div>
-                <div class="partner-logo-slot"><img src="/images/7c767b2c-3c32-4c21-bf7d-e25319055296.avif" alt="Ivan Ramen"></div>
-                <div class="partner-logo-slot"><img src="/images/4954d99005c969b95b8bc904eb3dcad85669470a.png" alt="OakBerry"></div>
-                <div class="partner-logo-slot"><img src="/images/sides.webp" alt="Sides"></div>
-                <div class="partner-logo-slot"><img src="/images/images-1-.png" alt="Chapati Man"></div>
-                <div class="partner-logo-slot"><img src="/images/zambrero_logo.svg.png" alt="Zambrero"></div>
-                <!-- Copy 4 -->
-                <div class="partner-logo-slot"><img src="/images/images-2-.png" alt="SoBe Burger"></div>
-                <div class="partner-logo-slot"><img src="/images/images.png" alt="You Me Sushi"></div>
-                <div class="partner-logo-slot"><img src="/images/7c767b2c-3c32-4c21-bf7d-e25319055296.avif" alt="Ivan Ramen"></div>
-                <div class="partner-logo-slot"><img src="/images/4954d99005c969b95b8bc904eb3dcad85669470a.png" alt="OakBerry"></div>
-                <div class="partner-logo-slot"><img src="/images/sides.webp" alt="Sides"></div>
-                <div class="partner-logo-slot"><img src="/images/images-1-.png" alt="Chapati Man"></div>
-                <div class="partner-logo-slot"><img src="/images/zambrero_logo.svg.png" alt="Zambrero"></div>
+                <div class="partner-logo-slot placeholder"></div>
+                <div class="partner-logo-slot placeholder"></div>
+                <div class="partner-logo-slot placeholder"></div>
+                <div class="partner-logo-slot placeholder"></div>
             </div>
         </div>
     </div>
@@ -1588,7 +1555,44 @@
                         if (a.textContent.includes('@')) a.textContent = settings.email;
                     });
                 }
-                // Carousel logos are hardcoded in HTML for reliability
+                if (settings.partners && settings.partners.length > 0) {
+                    var track = document.querySelector('.partners-track');
+                    if (track) {
+                        // Each slot is 130px wide + 32px margin-right = 162px per slot
+                        var slotPx    = 162;
+                        var oneSetPx  = settings.partners.length * slotPx;
+                        // Build enough copies to fill twice the screen width at all times
+                        var screenW   = window.innerWidth || 1440;
+                        var copies    = Math.max(4, Math.ceil((screenW * 2) / oneSetPx) + 1);
+
+                        track.innerHTML = '';
+                        for (var c = 0; c < copies; c++) {
+                            settings.partners.forEach(function(partner) {
+                                var slot = document.createElement('div');
+                                slot.className = 'partner-logo-slot';
+                                var img = document.createElement('img');
+                                img.src = partner.logo;
+                                img.alt = partner.name;
+                                slot.appendChild(img);
+                                track.appendChild(slot);
+                            });
+                        }
+
+                        // Inject the animation with the exact pixel value for this logo set.
+                        // Using a style tag means no CSS cascade conflicts and no % guesswork.
+                        var dur = Math.round(oneSetPx / 50); // 50px per second
+                        var styleEl = document.createElement('style');
+                        styleEl.textContent =
+                            '@keyframes partnersScroll {' +
+                            ' from { transform: translateX(0); }' +
+                            ' to   { transform: translateX(-' + oneSetPx + 'px); }' +
+                            '}' +
+                            '.partners-track {' +
+                            ' animation: partnersScroll ' + dur + 's linear infinite;' +
+                            '}';
+                        document.head.appendChild(styleEl);
+                    }
+                }
             }
 
             // Footer
