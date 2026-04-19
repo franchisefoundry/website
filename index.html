@@ -375,7 +375,7 @@
             display: flex;
             gap: 0;
             width: max-content;
-            will-change: transform;
+            animation: partnersScroll 30s linear infinite paused;
         }
 
         .partners-set {
@@ -409,7 +409,10 @@
             opacity: 0.45;
         }
 
-        /* Carousel driven by JS — no keyframes needed */
+        @keyframes partnersScroll {
+            from { transform: translateX(0); }
+            to   { transform: translateX(var(--scroll-to, -50%)); }
+        }
 
         /* Why Choose */
         .why-section { background: var(--white); }
@@ -1599,23 +1602,18 @@
                             track.appendChild(set);
                         }
 
-                        // Measure one set's width after layout settles, then scroll forever
+                        // Wait two frames for the browser to fully lay out the logos,
+                        // then measure the exact pixel width of one set and start the animation.
+                        // Using an absolute px value (not a percentage) means the loop
+                        // point is always exact regardless of screen size.
                         requestAnimationFrame(function() {
                             requestAnimationFrame(function() {
                                 var firstSet = track.querySelector('.partners-set');
-                                var oneSetWidth = firstSet ? firstSet.offsetWidth : track.offsetWidth / 2;
-                                if (!oneSetWidth || oneSetWidth <= 0) return;
-                                var scrollPos = 0;
-                                var speed = 0.6;
-                                function tick() {
-                                    scrollPos += speed;
-                                    if (scrollPos >= oneSetWidth) {
-                                        scrollPos = scrollPos - oneSetWidth;
-                                    }
-                                    track.style.transform = 'translateX(-' + scrollPos + 'px)';
-                                    requestAnimationFrame(tick);
-                                }
-                                tick();
+                                if (!firstSet) return;
+                                var w = firstSet.offsetWidth;
+                                if (!w || w <= 0) return;
+                                track.style.setProperty('--scroll-to', '-' + w + 'px');
+                                track.style.animationPlayState = 'running';
                             });
                         });
                     }
