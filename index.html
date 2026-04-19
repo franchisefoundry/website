@@ -375,7 +375,6 @@
             display: flex;
             gap: 0;
             width: max-content;
-            animation: partnersScroll 30s linear infinite paused;
         }
 
         .partners-set {
@@ -409,10 +408,7 @@
             opacity: 0.45;
         }
 
-        @keyframes partnersScroll {
-            from { transform: translateX(0); }
-            to   { transform: translateX(var(--scroll-to, -50%)); }
-        }
+        /* Animation injected by JS after logos are measured */
 
         /* Why Choose */
         .why-section { background: var(--white); }
@@ -1602,18 +1598,27 @@
                             track.appendChild(set);
                         }
 
-                        // Wait two frames for the browser to fully lay out the logos,
-                        // then measure the exact pixel width of one set and start the animation.
-                        // Using an absolute px value (not a percentage) means the loop
-                        // point is always exact regardless of screen size.
+                        // After two frames (layout settled), measure the exact pixel width
+                        // of one set, then inject a complete @keyframes + animation rule
+                        // with that hardcoded value. Injecting the style tag is the most
+                        // reliable cross-browser way — no CSS variables, no play-state toggling.
                         requestAnimationFrame(function() {
                             requestAnimationFrame(function() {
                                 var firstSet = track.querySelector('.partners-set');
                                 if (!firstSet) return;
                                 var w = firstSet.offsetWidth;
                                 if (!w || w <= 0) return;
-                                track.style.setProperty('--scroll-to', '-' + w + 'px');
-                                track.style.animationPlayState = 'running';
+                                var dur = Math.round(w / 50); // ~50px per second
+                                var styleEl = document.createElement('style');
+                                styleEl.textContent =
+                                    '@keyframes partnersScroll {' +
+                                    '  from { transform: translateX(0); }' +
+                                    '  to   { transform: translateX(-' + w + 'px); }' +
+                                    '}' +
+                                    '.partners-track {' +
+                                    '  animation: partnersScroll ' + dur + 's linear infinite;' +
+                                    '}';
+                                document.head.appendChild(styleEl);
                             });
                         });
                     }
