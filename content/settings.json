@@ -11,7 +11,7 @@
       "name": "SoBe Burger"
     },
     {
-      "logo": "/images/5bbc6001c4b4b.jpg",
+      "logo": "/images/images.png",
       "name": "You Me Sushi"
     },
     {
@@ -19,7 +19,7 @@
       "name": "Ivan Ramen"
     },
     {
-      "logo": "/images/oakberry_logo.jpg",
+      "logo": "/images/4954d99005c969b95b8bc904eb3dcad85669470a.png",
       "name": "OakBerry"
     },
     {
@@ -33,10 +33,6 @@
     {
       "logo": "/images/zambrero_logo.svg.png",
       "name": "Zambrero"
-    },
-    {
-      "logo": "/images/logo.png",
-      "name": "T4"
     }
   ]
 }
