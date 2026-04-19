@@ -374,8 +374,8 @@
         .partners-track {
             display: flex;
             gap: 0;
-            animation: partnersScroll 35s linear infinite;
             width: max-content;
+            will-change: transform;
         }
 
         .partners-set {
@@ -409,10 +409,7 @@
             opacity: 0.45;
         }
 
-        @keyframes partnersScroll {
-            0%   { transform: translateX(0); }
-            100% { transform: translateX(-50%); }
-        }
+        /* Carousel driven by JS — no keyframes needed */
 
         /* Why Choose */
         .why-section { background: var(--white); }
@@ -1586,6 +1583,7 @@
                     const track = document.querySelector('.partners-track');
                     if (track) {
                         track.innerHTML = '';
+                        // Build two identical sets so the scroll can wrap seamlessly
                         for (let i = 0; i < 2; i++) {
                             const set = document.createElement('div');
                             set.className = 'partners-set';
@@ -1600,6 +1598,25 @@
                             });
                             track.appendChild(set);
                         }
+
+                        // Wait for all logos to load so scrollWidth is correct, then start
+                        const imgs = Array.from(track.querySelectorAll('img'));
+                        Promise.all(imgs.map(img => new Promise(res => {
+                            if (img.complete) res();
+                            else { img.onload = res; img.onerror = res; }
+                        }))).then(() => {
+                            let scrollPos = 0;
+                            const speed = 0.6; // pixels per frame (~36px/sec at 60fps)
+                            function tick() {
+                                scrollPos += speed;
+                                // halfWidth = exact width of one set — wrap here so there's no jump
+                                const halfWidth = track.scrollWidth / 2;
+                                if (scrollPos >= halfWidth) scrollPos -= halfWidth;
+                                track.style.transform = 'translateX(-' + scrollPos + 'px)';
+                                requestAnimationFrame(tick);
+                            }
+                            requestAnimationFrame(tick);
+                        });
                     }
                 }
             }
