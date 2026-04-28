@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to Evaluate Franchisor Support Before You Sign - Franchise Foundry</title>
+    <meta name="description" content="Franchisor support sounds reassuring in every sales pitch. Here are the specific questions that cut through the brochure and reveal what franchisees actually experience.">
+    <meta property="og:title" content="How to Evaluate Franchisor Support Before You Sign">
+    <meta property="og:description" content="Franchisor support sounds reassuring in every sales pitch. Here are the specific questions that cut through the brochure.">
+    <meta property="og:image" content="https://franchisefoundry.co.uk/images/copy-of-franchise-foundry-logo-final-2.png">
+    <meta property="og:url" content="https://franchisefoundry.co.uk/articles/franchisor-support-evaluation.html">
+    <meta property="og:type" content="article">
+    <link rel="icon" type="image/png" href="/images/favicon.png">
+    <link rel="apple-touch-icon" href="/images/favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --green:       #5f725f;
+            --green-deep:  #3a4a3a;
+            --green-dark:  #2a352a;
+            --green-light: #eef3ee;
+            --green-mid:   #d4e0d4;
+            --gold:        #c8924a;
+            --gold-light:  #f0d4a8;
+            --off-white:   #f7f8f5;
+            --text-dark:   #161a16;
+            --text-mid:    #4a5568;
+            --text-light:  #7a8990;
+            --white:       #ffffff;
+            --border:      #e2e8e2;
+            --radius-sm:   8px;
+            --radius-md:   16px;
+            --radius-lg:   24px;
+            --radius-xl:   32px;
+        }
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Sora', system-ui, sans-serif; line-height: 1.6; color: var(--text-dark); background: var(--white); -webkit-font-smoothing: antialiased; }
+
+        .navbar { background: var(--green-deep); padding: 0 40px; position: sticky; top: 0; z-index: 100; border-bottom: 1px solid rgba(255,255,255,0.08); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); }
+        .nav-container { max-width: 1280px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; height: 72px; }
+        .navbar-logo { height: 48px; display: block; }
+        .nav-links { display: flex; gap: 28px; list-style: none; align-items: center; }
+        .nav-links a { color: rgba(255,255,255,0.75); text-decoration: none; font-size: 0.9rem; font-weight: 500; transition: color 0.2s; }
+        .nav-links a:hover, .nav-links a.active { color: white; }
+        .nav-links a.active { font-weight: 600; }
+        .nav-sep { width: 1px; height: 20px; background: rgba(255,255,255,0.2); }
+        .nav-sep-sm { width: 1px; height: 14px; background: rgba(255,255,255,0.12); }
+        .nav-brands { color: var(--gold-light) !important; }
+        .nav-cta { background: var(--gold); color: white !important; padding: 10px 22px; border-radius: var(--radius-sm); font-weight: 600 !important; font-size: 0.88rem !important; transition: background 0.2s, transform 0.15s; }
+        .nav-cta:hover { background: #b07830 !important; transform: translateY(-1px); }
+        .nav-blog { font-size: 0.82rem !important; opacity: 0.65; }
+        .nav-blog:hover, .nav-blog.active { opacity: 1; }
+        @media (max-width: 900px) { .nav-links { display: none; } .navbar-logo { height: 38px; } }
+
+        .nav-hamburger { display: none; flex-direction: column; justify-content: center; gap: 5px; background: none; border: none; cursor: pointer; padding: 8px; flex-shrink: 0; position: relative; z-index: 201; }
+        .nav-hamburger span { display: block; width: 22px; height: 2px; background: rgba(255,255,255,0.9); border-radius: 2px; transition: transform 0.28s cubic-bezier(0.4,0,0.2,1), opacity 0.2s; transform-origin: center; }
+        .nav-hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+        .nav-hamburger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+        .nav-hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+        .nav-mobile-menu { position: fixed; top: 72px; left: 0; right: 0; bottom: 0; background: var(--green-dark); z-index: 99; display: flex; flex-direction: column; padding: 32px 28px 48px; visibility: hidden; opacity: 0; transform: translateY(-10px); transition: opacity 0.26s ease, transform 0.26s ease, visibility 0s linear 0.26s; overflow-y: auto; }
+        .nav-mobile-menu.open { visibility: visible; opacity: 1; transform: translateY(0); transition: opacity 0.26s ease, transform 0.26s ease, visibility 0s; }
+        .nav-mobile-links { list-style: none; padding: 0; margin: 0; flex: 0 0 auto; }
+        .nav-mobile-links li { margin: 0; }
+        .nav-mobile-links a { display: block; padding: 18px 0; color: rgba(255,255,255,0.55); text-decoration: none; font-size: 1.6rem; font-weight: 700; letter-spacing: -0.03em; border-bottom: 1px solid rgba(255,255,255,0.06); transition: color 0.18s; }
+        .nav-mobile-links a:hover { color: rgba(255,255,255,0.85); }
+        .nav-mobile-links a.active { color: white; }
+        .nav-mobile-links .nav-mobile-brands { color: rgba(240,212,168,0.65); }
+        .nav-mobile-cta-wrap { margin-top: 32px; padding-top: 28px; border-top: 1px solid rgba(255,255,255,0.08); }
+        .nav-mobile-cta-btn { display: block; padding: 17px 20px; background: var(--gold); color: white; text-align: center; text-decoration: none; font-weight: 700; font-size: 1.05rem; border-radius: 12px; letter-spacing: -0.01em; transition: background 0.2s, transform 0.15s; }
+        .nav-mobile-cta-btn:hover { background: #b07830; transform: translateY(-1px); }
+        @media (max-width: 900px) { .nav-hamburger { display: flex; } }
+
+        .article-hero { background: var(--green-deep); padding: 80px 40px 72px; position: relative; overflow: hidden; }
+        .article-hero::before { content: ''; position: absolute; top: -200px; right: -200px; width: 600px; height: 600px; background: radial-gradient(circle, rgba(95,114,95,0.3) 0%, transparent 70%); pointer-events: none; }
+        .article-hero-inner { max-width: 800px; margin: 0 auto; position: relative; z-index: 1; }
+        .article-back { display: inline-flex; align-items: center; gap: 8px; color: rgba(255,255,255,0.55); text-decoration: none; font-size: 0.82rem; font-weight: 500; margin-bottom: 28px; transition: color 0.2s; }
+        .article-back:hover { color: rgba(255,255,255,0.9); }
+        .article-category-badge { display: inline-block; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; padding: 5px 14px; border-radius: 100px; background: var(--green-light); color: var(--green); margin-bottom: 20px; }
+        .article-hero h1 { font-size: 3rem; font-weight: 800; color: white; letter-spacing: -0.03em; line-height: 1.1; margin-bottom: 24px; }
+        .article-byline { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
+        .article-byline-text { font-size: 0.88rem; color: rgba(255,255,255,0.6); font-weight: 300; }
+        .article-byline-text strong { color: rgba(255,255,255,0.85); font-weight: 600; }
+        .byline-sep { display: inline-block; width: 3px; height: 3px; background: rgba(255,255,255,0.3); border-radius: 50%; vertical-align: middle; margin: 0 6px; }
+
+        .article-body-wrap { background: var(--off-white); padding: 72px 40px 100px; }
+        .article-body { max-width: 720px; margin: 0 auto; }
+        .article-body p { font-size: 1.05rem; color: var(--text-mid); font-weight: 300; line-height: 1.85; margin-bottom: 28px; }
+        .article-body p:first-child { font-size: 1.15rem; color: var(--text-dark); font-weight: 400; line-height: 1.8; }
+        .article-body h2 { font-size: 1.6rem; font-weight: 700; color: var(--text-dark); letter-spacing: -0.02em; line-height: 1.25; margin-top: 56px; margin-bottom: 20px; }
+        .article-body h2:first-of-type { margin-top: 0; }
+
+        .article-question-list { list-style: none; margin: 28px 0; display: flex; flex-direction: column; gap: 20px; }
+        .article-question-list li { background: white; border: 1.5px solid var(--border); border-left: 4px solid var(--green); border-radius: var(--radius-md); padding: 20px 24px; font-size: 0.97rem; color: var(--text-mid); font-weight: 300; line-height: 1.7; }
+        .article-question-list li strong { display: block; color: var(--text-dark); font-weight: 600; margin-bottom: 6px; font-size: 1rem; }
+
+        .article-divider { border: none; border-top: 1.5px solid var(--border); margin: 56px 0; }
+
+        .article-cta-box { background: var(--green-deep); border-radius: var(--radius-lg); padding: 48px 40px; text-align: center; margin-top: 72px; }
+        .article-cta-box h3 { font-size: 1.5rem; font-weight: 700; color: white; letter-spacing: -0.02em; margin-bottom: 14px; }
+        .article-cta-box p { font-size: 0.95rem !important; color: rgba(255,255,255,0.7) !important; font-weight: 300 !important; line-height: 1.7 !important; max-width: 480px; margin: 0 auto 28px !important; }
+        .btn-gold { background: var(--gold); color: white; padding: 14px 32px; border-radius: var(--radius-sm); text-decoration: none; font-weight: 700; font-size: 0.95rem; display: inline-block; transition: all 0.2s; }
+        .btn-gold:hover { background: #b07830; transform: translateY(-2px); }
+
+        footer { background: var(--green-dark); color: white; padding: 72px 40px 32px; }
+        .footer-grid { max-width: 1280px; margin: 0 auto; display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr; gap: 48px; padding-bottom: 48px; border-bottom: 1px solid rgba(255,255,255,0.08); margin-bottom: 32px; }
+        .footer-logo { height: 34px; margin-bottom: 16px; display: block; }
+        .footer-brand p { font-size: 0.9rem; color: rgba(255,255,255,0.5); line-height: 1.7; font-weight: 300; }
+        .footer-tagline { margin-top: 16px !important; }
+        .footer-tagline em { font-style: normal; font-size: 0.78rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--gold-light); }
+        .footer-col h4 { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.35); margin-bottom: 20px; }
+        .footer-links { list-style: none; }
+        .footer-links li { margin-bottom: 10px; }
+        .footer-col a, .footer-links a, .footer-col p { display: block; font-size: 0.9rem; color: rgba(255,255,255,0.6); text-decoration: none; margin-bottom: 10px; font-weight: 300; transition: color 0.2s; }
+        .footer-col a:hover, .footer-links a:hover { color: white; }
+        .footer-social-links { display: flex; gap: 12px; margin-top: 4px; }
+        .footer-social-links a { display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.2); color: rgba(255,255,255,0.6); transition: all 0.2s; text-decoration: none !important; margin-bottom: 0 !important; }
+        .footer-social-links a:hover { border-color: var(--gold); color: var(--gold); background: rgba(200,146,74,0.08); }
+        .footer-social-links svg { flex-shrink: 0; }
+        .footer-bottom { max-width: 1280px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .footer-bottom p { font-size: 0.82rem; color: rgba(255,255,255,0.3); font-weight: 300; }
+
+        @media (max-width: 900px) { .footer-grid { grid-template-columns: 1fr 1fr; gap: 32px; } }
+        @media (max-width: 768px) { .article-hero { padding: 60px 20px 56px; } .article-hero h1 { font-size: 2.1rem; } .article-body-wrap { padding: 48px 20px 72px; } .article-cta-box { padding: 36px 24px; } }
+        @media (max-width: 640px) { .footer-grid { grid-template-columns: 1fr; } .footer-bottom { flex-direction: column; gap: 8px; text-align: center; } footer { padding: 48px 24px 28px; } }
+        @media (max-width: 480px) { .article-hero h1 { font-size: 1.75rem; } }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="/index.html"><img src="/images/copy-of-franchise-foundry-logo-final-2.png" alt="Franchise Foundry" class="navbar-logo"></a>
+            <ul class="nav-links">
+                <li><a href="/index.html">Home</a></li>
+                <li><a href="/about.html">About Us</a></li>
+                <li><a href="/find-match.html" class="nav-cta">Find Your Match</a></li>
+                <li class="nav-sep"></li>
+                <li><a href="/for-brands.html" class="nav-brands">For Franchise Brands</a></li>
+                <li class="nav-sep-sm"></li>
+                <li><a href="/contact.html">Contact</a></li>
+                <li class="nav-sep-sm"></li>
+                <li><a href="/blog.html" class="nav-blog active">Blog &amp; Insights</a></li>
+            </ul>
+            <button class="nav-hamburger" id="nav-hamburger" aria-label="Open menu" aria-expanded="false">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </nav>
+
+    <div class="nav-mobile-menu" id="nav-mobile-menu">
+        <ul class="nav-mobile-links">
+            <li><a href="/index.html">Home</a></li>
+            <li><a href="/about.html">About Us</a></li>
+            <li><a href="/for-brands.html" class="nav-mobile-brands">For Franchise Brands</a></li>
+            <li><a href="/contact.html">Contact</a></li>
+            <li><a href="/blog.html" class="active">Blog &amp; Insights</a></li>
+        </ul>
+        <div class="nav-mobile-cta-wrap">
+            <a href="/find-match.html" class="nav-mobile-cta-btn">Find Your Match &#8594;</a>
+        </div>
+    </div>
+
+    <section class="article-hero">
+        <div class="article-hero-inner">
+            <a href="/blog.html" class="article-back">&#8592; Back to Blog &amp; Insights</a>
+            <span class="article-category-badge">Franchise Advice</span>
+            <h1>How to Evaluate Franchisor Support Before You Sign</h1>
+            <div class="article-byline">
+                <span class="article-byline-text"><strong>Franchise Foundry</strong></span>
+                <span class="article-byline-text">21 April 2026</span>
+                <span class="article-byline-text">7 min read</span>
+            </div>
+        </div>
+    </section>
+
+    <div class="article-body-wrap">
+        <div class="article-body">
+
+            <p>Franchisor support is mentioned in almost every franchise recruitment conversation. Training programmes, field visits, dedicated helplines, head office teams - it all sounds reassuring. The problem is that every franchisor describes their support in broadly positive terms, regardless of what franchisees actually experience once they are operating.</p>
+
+            <p>By the time you discover a support model is weaker than advertised, you have signed a franchise agreement, invested your capital, and given up whatever you were doing before. The only useful moment to evaluate support is before you commit, and doing it well requires going beyond the brochure.</p>
+
+            <h2>Why the standard questions do not work</h2>
+
+            <p>Most prospective franchisees ask some version of "what support do you provide?" The answer they receive is a list: induction training, field support visits, a helpdesk, marketing materials, an annual conference. These things may all exist. They tell you almost nothing about whether the support is actually useful.</p>
+
+            <p>The questions that reveal something meaningful are the ones that require specific, verifiable answers - not general descriptions of what the system contains, but concrete details about how it works and what franchisees say about it.</p>
+
+            <h2>The questions worth asking</h2>
+
+            <ul class="article-question-list">
+                <li>
+                    <strong>How many franchisee units does each field support manager carry?</strong>
+                    A ratio above 40 units per manager suggests the team is stretched. At that level, support will almost certainly be reactive - responding to problems rather than preventing them. Ask for a specific number, not a reassurance.
+                </li>
+                <li>
+                    <strong>How often will I receive a field visit in my first year, and what does a typical visit involve?</strong>
+                    You are looking for a clear schedule and a sense of what the visit is designed to achieve. Vague answers - "regularly", "whenever you need us" - indicate the visits are not structured around franchisee needs.
+                </li>
+                <li>
+                    <strong>Can you show me the last three years of franchisee turnover data?</strong>
+                    How many franchisees have left the network, and why? A brand with a strong support culture will have this data and share it without hesitation. Evasiveness here is informative.
+                </li>
+                <li>
+                    <strong>What does your support look like at month six, once the launch phase is over?</strong>
+                    Many brands provide intensive support during the opening period and then step back sharply. Ask specifically what ongoing support looks like after the initial phase, and verify the answer with franchisees who are past that point.
+                </li>
+                <li>
+                    <strong>Tell me about a franchisee who struggled and how you helped them.</strong>
+                    This is the question that cuts through most effectively. A franchisor with a genuine support culture can answer it with a specific example. One without will give you a generalisation or redirect the conversation.
+                </li>
+            </ul>
+
+            <h2>How to verify the answers</h2>
+
+            <p>Every answer a franchisor gives you should be verifiable through existing franchisees. Ask for a full franchisee list - not a curated selection of their strongest performers - and choose who you speak to yourself. Aim to speak with at least four or five, including some who have been in the network for two or more years.</p>
+
+            <p>The questions to ask franchisees are the mirror image of the ones you asked the franchisor. Does the support match what was described at recruitment? Are field visits useful or perfunctory? When you have had a difficult period, did head office notice before you flagged it, or did you have to chase? What is the one thing about the support you wish you had known before signing?</p>
+
+            <p>Pay particular attention to what franchisees say about the period between months three and twelve. This is when launch support has typically stepped back and the franchisee is operating more independently - and it is when gaps in the support model tend to show up.</p>
+
+            <h2>What good support actually looks like</h2>
+
+            <p>The best indication of a strong support model is not what the franchisor tells you - it is what you observe in the franchisee network. Brands with genuinely good support tend to have low franchisee turnover, franchisees who have been in the network for a long time, and a culture where franchisees speak well of head office even when they have had challenges.</p>
+
+            <p>They also tend to have support structured around outcomes rather than activity: field visits that result in specific agreed actions, data monitoring that lets the support team identify struggling units before the franchisee has to ask for help, and a track record of turning around underperformance rather than managing franchisees out.</p>
+
+            <p>None of this is visible in a brochure. All of it is visible if you ask the right questions of the right people before you sign.</p>
+
+            <div class="article-cta-box">
+                <h3>Not sure what questions to ask?</h3>
+                <p>We've been through this process with dozens of candidates. Get in touch and we'll walk you through it - no obligation, no agenda.</p>
+                <a href="/contact.html" class="btn-gold">Get in touch</a>
+            </div>
+
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-grid">
+            <div class="footer-brand">
+                <img src="/images/copy-of-franchise-foundry-logo-final-2.png" alt="Franchise Foundry" class="footer-logo">
+                <p>Built by hospitality operators. For people who want to get franchising right.</p>
+                <p class="footer-tagline"><em>Discover. Connect. Franchise.</em></p>
+            </div>
+            <div class="footer-col">
+                <h4>Quick Links</h4>
+                <ul class="footer-links">
+                    <li><a href="/index.html">Home</a></li>
+                    <li><a href="/about.html">About Us</a></li>
+                    <li><a href="/find-match.html">Find Your Match</a></li>
+                    <li><a href="/for-brands.html">For Franchise Brands</a></li>
+                    <li><a href="/contact.html">Contact Us</a></li>
+                    <li><a href="/blog.html">Blog &amp; Insights</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Company</h4>
+                <a href="/about.html">About Us</a>
+                <a href="/for-brands.html">For Franchise Brands</a>
+                <a href="/blog.html">Blog &amp; Insights</a>
+            </div>
+            <div class="footer-col">
+                <h4>Contact</h4>
+                <p><a href="mailto:connect@franchisefoundry.co.uk">connect@franchisefoundry.co.uk</a></p>
+            </div>
+            <div class="footer-col">
+                <h4>Follow Us</h4>
+                <div class="footer-social-links">
+                    <a href="https://linkedin.com/company/franchisefoundryuk" target="_blank" rel="noopener" aria-label="LinkedIn">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+                    </a>
+                    <a href="https://instagram.com/franchisefoundry" target="_blank" rel="noopener" aria-label="Instagram">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 Franchise Foundry. All rights reserved.</p>
+            <p>Built for hospitality franchise matching.</p>
+        </div>
+    </footer>
+
+    <script>
+    const hamburger = document.getElementById('nav-hamburger');
+    const mobileMenu = document.getElementById('nav-mobile-menu');
+    if (hamburger && mobileMenu) {
+        hamburger.addEventListener('click', () => {
+            const isOpen = mobileMenu.classList.toggle('open');
+            hamburger.classList.toggle('open', isOpen);
+            hamburger.setAttribute('aria-expanded', isOpen);
+            document.body.style.overflow = isOpen ? 'hidden' : '';
+        });
+        mobileMenu.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.remove('open');
+                hamburger.classList.remove('open');
+                hamburger.setAttribute('aria-expanded', 'false');
+                document.body.style.overflow = '';
+            });
+        });
+    }
+    </script>
+
+</body>
+</html>

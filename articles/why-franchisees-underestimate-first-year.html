@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Why Most Franchisees Underestimate Their First Year - Franchise Foundry</title>
+    <meta name="description" content="The first twelve months of a franchise are harder than the brochure suggests. Here's what actually catches people out - and how to prepare for the specific challenges, not the general ones.">
+    <meta property="og:title" content="Why Most Franchisees Underestimate Their First Year">
+    <meta property="og:description" content="The first twelve months are harder than the brochure suggests. Here's what catches people out - and how to prepare differently.">
+    <meta property="og:image" content="https://franchisefoundry.co.uk/images/copy-of-franchise-foundry-logo-final-2.png">
+    <meta property="og:url" content="https://franchisefoundry.co.uk/articles/why-franchisees-underestimate-first-year.html">
+    <meta property="og:type" content="article">
+    <link rel="icon" type="image/png" href="/images/favicon.png">
+    <link rel="apple-touch-icon" href="/images/favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --green:       #5f725f;
+            --green-deep:  #3a4a3a;
+            --green-dark:  #2a352a;
+            --green-light: #eef3ee;
+            --green-mid:   #d4e0d4;
+            --gold:        #c8924a;
+            --gold-light:  #f0d4a8;
+            --off-white:   #f7f8f5;
+            --text-dark:   #161a16;
+            --text-mid:    #4a5568;
+            --text-light:  #7a8990;
+            --white:       #ffffff;
+            --border:      #e2e8e2;
+            --radius-sm:   8px;
+            --radius-md:   16px;
+            --radius-lg:   24px;
+            --radius-xl:   32px;
+        }
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Sora', system-ui, sans-serif; line-height: 1.6; color: var(--text-dark); background: var(--white); -webkit-font-smoothing: antialiased; }
+
+        .navbar { background: var(--green-deep); padding: 0 40px; position: sticky; top: 0; z-index: 100; border-bottom: 1px solid rgba(255,255,255,0.08); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); }
+        .nav-container { max-width: 1280px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; height: 72px; }
+        .navbar-logo { height: 48px; display: block; }
+        .nav-links { display: flex; gap: 28px; list-style: none; align-items: center; }
+        .nav-links a { color: rgba(255,255,255,0.75); text-decoration: none; font-size: 0.9rem; font-weight: 500; transition: color 0.2s; }
+        .nav-links a:hover, .nav-links a.active { color: white; }
+        .nav-links a.active { font-weight: 600; }
+        .nav-sep { width: 1px; height: 20px; background: rgba(255,255,255,0.2); }
+        .nav-sep-sm { width: 1px; height: 14px; background: rgba(255,255,255,0.12); }
+        .nav-brands { color: var(--gold-light) !important; }
+        .nav-cta { background: var(--gold); color: white !important; padding: 10px 22px; border-radius: var(--radius-sm); font-weight: 600 !important; font-size: 0.88rem !important; transition: background 0.2s, transform 0.15s; }
+        .nav-cta:hover { background: #b07830 !important; transform: translateY(-1px); }
+        .nav-blog { font-size: 0.82rem !important; opacity: 0.65; }
+        .nav-blog:hover, .nav-blog.active { opacity: 1; }
+        @media (max-width: 900px) { .nav-links { display: none; } .navbar-logo { height: 38px; } }
+
+        .nav-hamburger { display: none; flex-direction: column; justify-content: center; gap: 5px; background: none; border: none; cursor: pointer; padding: 8px; flex-shrink: 0; position: relative; z-index: 201; }
+        .nav-hamburger span { display: block; width: 22px; height: 2px; background: rgba(255,255,255,0.9); border-radius: 2px; transition: transform 0.28s cubic-bezier(0.4,0,0.2,1), opacity 0.2s; transform-origin: center; }
+        .nav-hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+        .nav-hamburger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+        .nav-hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+        .nav-mobile-menu { position: fixed; top: 72px; left: 0; right: 0; bottom: 0; background: var(--green-dark); z-index: 99; display: flex; flex-direction: column; padding: 32px 28px 48px; visibility: hidden; opacity: 0; transform: translateY(-10px); transition: opacity 0.26s ease, transform 0.26s ease, visibility 0s linear 0.26s; overflow-y: auto; }
+        .nav-mobile-menu.open { visibility: visible; opacity: 1; transform: translateY(0); transition: opacity 0.26s ease, transform 0.26s ease, visibility 0s; }
+        .nav-mobile-links { list-style: none; padding: 0; margin: 0; flex: 0 0 auto; }
+        .nav-mobile-links li { margin: 0; }
+        .nav-mobile-links a { display: block; padding: 18px 0; color: rgba(255,255,255,0.55); text-decoration: none; font-size: 1.6rem; font-weight: 700; letter-spacing: -0.03em; border-bottom: 1px solid rgba(255,255,255,0.06); transition: color 0.18s; }
+        .nav-mobile-links a:hover { color: rgba(255,255,255,0.85); }
+        .nav-mobile-links a.active { color: white; }
+        .nav-mobile-links .nav-mobile-brands { color: rgba(240,212,168,0.65); }
+        .nav-mobile-cta-wrap { margin-top: 32px; padding-top: 28px; border-top: 1px solid rgba(255,255,255,0.08); }
+        .nav-mobile-cta-btn { display: block; padding: 17px 20px; background: var(--gold); color: white; text-align: center; text-decoration: none; font-weight: 700; font-size: 1.05rem; border-radius: 12px; letter-spacing: -0.01em; transition: background 0.2s, transform 0.15s; }
+        .nav-mobile-cta-btn:hover { background: #b07830; transform: translateY(-1px); }
+        @media (max-width: 900px) { .nav-hamburger { display: flex; } }
+
+        .article-hero { background: var(--green-deep); padding: 80px 40px 72px; position: relative; overflow: hidden; }
+        .article-hero::before { content: ''; position: absolute; top: -200px; right: -200px; width: 600px; height: 600px; background: radial-gradient(circle, rgba(95,114,95,0.3) 0%, transparent 70%); pointer-events: none; }
+        .article-hero-inner { max-width: 800px; margin: 0 auto; position: relative; z-index: 1; }
+        .article-back { display: inline-flex; align-items: center; gap: 8px; color: rgba(255,255,255,0.55); text-decoration: none; font-size: 0.82rem; font-weight: 500; margin-bottom: 28px; transition: color 0.2s; }
+        .article-back:hover { color: rgba(255,255,255,0.9); }
+        .article-category-badge { display: inline-block; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; padding: 5px 14px; border-radius: 100px; background: var(--green-light); color: var(--green); margin-bottom: 20px; }
+        .article-hero h1 { font-size: 3rem; font-weight: 800; color: white; letter-spacing: -0.03em; line-height: 1.1; margin-bottom: 24px; }
+        .article-byline { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
+        .article-byline-text { font-size: 0.88rem; color: rgba(255,255,255,0.6); font-weight: 300; }
+        .article-byline-text strong { color: rgba(255,255,255,0.85); font-weight: 600; }
+
+        .article-body-wrap { background: var(--off-white); padding: 72px 40px 100px; }
+        .article-body { max-width: 720px; margin: 0 auto; }
+        .article-body p { font-size: 1.05rem; color: var(--text-mid); font-weight: 300; line-height: 1.85; margin-bottom: 28px; }
+        .article-body p:first-child { font-size: 1.15rem; color: var(--text-dark); font-weight: 400; line-height: 1.8; }
+        .article-body h2 { font-size: 1.6rem; font-weight: 700; color: var(--text-dark); letter-spacing: -0.02em; line-height: 1.25; margin-top: 56px; margin-bottom: 20px; }
+        .article-body h2:first-of-type { margin-top: 0; }
+
+        .article-callout { background: white; border: 1.5px solid var(--border); border-left: 4px solid var(--gold); border-radius: var(--radius-md); padding: 28px 32px; margin: 36px 0; }
+        .article-callout p { margin: 0; font-size: 1rem !important; color: var(--text-dark) !important; font-weight: 500 !important; line-height: 1.7 !important; font-style: italic; }
+
+        .article-checklist { list-style: none; margin: 28px 0; display: flex; flex-direction: column; gap: 14px; }
+        .article-checklist li { display: flex; gap: 14px; align-items: flex-start; font-size: 1rem; color: var(--text-mid); font-weight: 300; line-height: 1.65; }
+        .article-checklist li::before { content: ''; display: block; flex-shrink: 0; width: 20px; height: 20px; margin-top: 2px; background: var(--green-light); border-radius: 50%; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%235f725f' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: center; background-size: 12px; }
+
+        .article-divider { border: none; border-top: 1.5px solid var(--border); margin: 56px 0; }
+
+        .article-cta-box { background: var(--green-deep); border-radius: var(--radius-lg); padding: 48px 40px; text-align: center; margin-top: 72px; }
+        .article-cta-box h3 { font-size: 1.5rem; font-weight: 700; color: white; letter-spacing: -0.02em; margin-bottom: 14px; }
+        .article-cta-box p { font-size: 0.95rem !important; color: rgba(255,255,255,0.7) !important; font-weight: 300 !important; line-height: 1.7 !important; max-width: 480px; margin: 0 auto 28px !important; }
+        .btn-gold { background: var(--gold); color: white; padding: 14px 32px; border-radius: var(--radius-sm); text-decoration: none; font-weight: 700; font-size: 0.95rem; display: inline-block; transition: all 0.2s; }
+        .btn-gold:hover { background: #b07830; transform: translateY(-2px); }
+
+        footer { background: var(--green-dark); color: white; padding: 72px 40px 32px; }
+        .footer-grid { max-width: 1280px; margin: 0 auto; display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr; gap: 48px; padding-bottom: 48px; border-bottom: 1px solid rgba(255,255,255,0.08); margin-bottom: 32px; }
+        .footer-logo { height: 34px; margin-bottom: 16px; display: block; }
+        .footer-brand p { font-size: 0.9rem; color: rgba(255,255,255,0.5); line-height: 1.7; font-weight: 300; }
+        .footer-tagline { margin-top: 16px !important; }
+        .footer-tagline em { font-style: normal; font-size: 0.78rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--gold-light); }
+        .footer-col h4 { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.35); margin-bottom: 20px; }
+        .footer-links { list-style: none; }
+        .footer-links li { margin-bottom: 10px; }
+        .footer-col a, .footer-links a, .footer-col p { display: block; font-size: 0.9rem; color: rgba(255,255,255,0.6); text-decoration: none; margin-bottom: 10px; font-weight: 300; transition: color 0.2s; }
+        .footer-col a:hover, .footer-links a:hover { color: white; }
+        .footer-social-links { display: flex; gap: 12px; margin-top: 4px; }
+        .footer-social-links a { display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.2); color: rgba(255,255,255,0.6); transition: all 0.2s; text-decoration: none !important; margin-bottom: 0 !important; }
+        .footer-social-links a:hover { border-color: var(--gold); color: var(--gold); background: rgba(200,146,74,0.08); }
+        .footer-social-links svg { flex-shrink: 0; }
+        .footer-bottom { max-width: 1280px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .footer-bottom p { font-size: 0.82rem; color: rgba(255,255,255,0.3); font-weight: 300; }
+
+        @media (max-width: 900px) { .footer-grid { grid-template-columns: 1fr 1fr; gap: 32px; } }
+        @media (max-width: 768px) { .article-hero { padding: 60px 20px 56px; } .article-hero h1 { font-size: 2.1rem; } .article-body-wrap { padding: 48px 20px 72px; } .article-cta-box { padding: 36px 24px; } }
+        @media (max-width: 640px) { .footer-grid { grid-template-columns: 1fr; } .footer-bottom { flex-direction: column; gap: 8px; text-align: center; } footer { padding: 48px 24px 28px; } }
+        @media (max-width: 480px) { .article-hero h1 { font-size: 1.75rem; } }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="/index.html"><img src="/images/copy-of-franchise-foundry-logo-final-2.png" alt="Franchise Foundry" class="navbar-logo"></a>
+            <ul class="nav-links">
+                <li><a href="/index.html">Home</a></li>
+                <li><a href="/about.html">About Us</a></li>
+                <li><a href="/find-match.html" class="nav-cta">Find Your Match</a></li>
+                <li class="nav-sep"></li>
+                <li><a href="/for-brands.html" class="nav-brands">For Franchise Brands</a></li>
+                <li class="nav-sep-sm"></li>
+                <li><a href="/contact.html">Contact</a></li>
+                <li class="nav-sep-sm"></li>
+                <li><a href="/blog.html" class="nav-blog active">Blog &amp; Insights</a></li>
+            </ul>
+            <button class="nav-hamburger" id="nav-hamburger" aria-label="Open menu" aria-expanded="false">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </nav>
+
+    <div class="nav-mobile-menu" id="nav-mobile-menu">
+        <ul class="nav-mobile-links">
+            <li><a href="/index.html">Home</a></li>
+            <li><a href="/about.html">About Us</a></li>
+            <li><a href="/for-brands.html" class="nav-mobile-brands">For Franchise Brands</a></li>
+            <li><a href="/contact.html">Contact</a></li>
+            <li><a href="/blog.html" class="active">Blog &amp; Insights</a></li>
+        </ul>
+        <div class="nav-mobile-cta-wrap">
+            <a href="/find-match.html" class="nav-mobile-cta-btn">Find Your Match &#8594;</a>
+        </div>
+    </div>
+
+    <section class="article-hero">
+        <div class="article-hero-inner">
+            <a href="/blog.html" class="article-back">&#8592; Back to Blog &amp; Insights</a>
+            <span class="article-category-badge">Franchise Advice</span>
+            <h1>Why Most Franchisees Underestimate Their First Year</h1>
+            <div class="article-byline">
+                <span class="article-byline-text"><strong>Franchise Foundry</strong></span>
+                <span class="article-byline-text">7 April 2026</span>
+                <span class="article-byline-text">5 min read</span>
+            </div>
+        </div>
+    </section>
+
+    <div class="article-body-wrap">
+        <div class="article-body">
+
+            <p>There is a version of franchising that gets talked about a lot: proven systems, established brand, lower risk than going it alone. That version is true. But there is another version that does not get discussed enough - the version where the first twelve months are significantly harder than the prospective franchisee expected.</p>
+
+            <p>This is not a cautionary tale. It is a preparation guide. Because the franchisees who navigate their first year well are not the ones who got lucky - they are the ones who prepared for a different set of challenges than the brochure described.</p>
+
+            <h2>The gap between training and trading</h2>
+
+            <p>Almost every franchise system has a training programme. Most of them are good. But there is an irreducible gap between learning how to run a franchise and actually running one, and that gap tends to hit hardest in months two to four - once the franchisor's launch support has stepped back and the day-to-day reality has set in.</p>
+
+            <p>The things that catch new franchisees off guard are rarely the operational processes (the training covers those). They are the softer, less documented challenges: managing staff who were in place before you arrived, handling your first difficult customer complaint without a manager above you to escalate to, or realising that your local marketing needs more active management than you anticipated.</p>
+
+            <div class="article-callout">
+                <p>"The franchisees who navigate year one well are not the ones who got lucky - they are the ones who prepared for a different set of challenges."</p>
+            </div>
+
+            <h2>Cash flow is not just an opening problem</h2>
+
+            <p>Most prospective franchisees build a cash flow model. Fewer build one that accounts for the reality that revenue in months one to three is typically lower than projected, because footfall, repeat custom, and word of mouth take time to develop, while costs are fully live from day one.</p>
+
+            <p>The practical implication is straightforward: your working capital buffer should be sized for a slower ramp than your projections suggest. A common benchmark among experienced multi-unit operators is to ensure you could sustain six months of operation at 70% of projected revenue without needing to draw on personal assets. If your current funding position does not clear that bar, it is worth revisiting before signing.</p>
+
+            <h2>Your relationship with the franchisor is a partnership, not a guarantee</h2>
+
+            <p>Franchisees who perform well in year one tend to engage actively with their franchisor - not just reactively (calling when something goes wrong) but proactively (attending regional meetings, using the support channels, asking questions before problems develop). The system is there to be used.</p>
+
+            <p>At the same time, it is worth being clear-eyed about what franchisors can and cannot do. They can give you the brand, the system, and the support. They cannot make your local market respond the way the model projects, manage your team for you, or substitute for your own judgement as a business owner. The franchisee who thrives is the one who combines the franchisor's system with their own active ownership.</p>
+
+            <h2>What good preparation actually looks like</h2>
+
+            <ul class="article-checklist">
+                <li><strong>Before signing:</strong> spend time with existing franchisees - not just the ones the franchisor introduces you to, but others you find independently. Ask them specifically about year one, and listen for the things they wish they had known.</li>
+                <li><strong>Before launch:</strong> build a detailed 90-day operational plan that goes beyond the franchisor's launch checklist. What will you do in week three when the opening buzz has faded? What is your local marketing plan for month two?</li>
+                <li><strong>After launch:</strong> establish a weekly rhythm of reviewing your numbers, even when trading is going well. The franchisees who catch problems early are the ones who are looking for them.</li>
+            </ul>
+
+            <p>Year one in a franchise is hard in specific, predictable ways. Preparing for those specific challenges - rather than the general ones - makes the difference.</p>
+
+            <div class="article-cta-box">
+                <h3>We help you prepare before you sign</h3>
+                <p>Our process puts the unit economics and year-one reality front and centre - before you ever sit across from a franchisor. Get in touch to find out how.</p>
+                <a href="/contact.html" class="btn-gold">Get in touch</a>
+            </div>
+
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-grid">
+            <div class="footer-brand">
+                <img src="/images/copy-of-franchise-foundry-logo-final-2.png" alt="Franchise Foundry" class="footer-logo">
+                <p>Built by hospitality operators. For people who want to get franchising right.</p>
+                <p class="footer-tagline"><em>Discover. Connect. Franchise.</em></p>
+            </div>
+            <div class="footer-col">
+                <h4>Quick Links</h4>
+                <ul class="footer-links">
+                    <li><a href="/index.html">Home</a></li>
+                    <li><a href="/about.html">About Us</a></li>
+                    <li><a href="/find-match.html">Find Your Match</a></li>
+                    <li><a href="/for-brands.html">For Franchise Brands</a></li>
+                    <li><a href="/contact.html">Contact Us</a></li>
+                    <li><a href="/blog.html">Blog &amp; Insights</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Company</h4>
+                <a href="/about.html">About Us</a>
+                <a href="/for-brands.html">For Franchise Brands</a>
+                <a href="/blog.html">Blog &amp; Insights</a>
+            </div>
+            <div class="footer-col">
+                <h4>Contact</h4>
+                <p><a href="mailto:connect@franchisefoundry.co.uk">connect@franchisefoundry.co.uk</a></p>
+            </div>
+            <div class="footer-col">
+                <h4>Follow Us</h4>
+                <div class="footer-social-links">
+                    <a href="https://linkedin.com/company/franchisefoundryuk" target="_blank" rel="noopener" aria-label="LinkedIn">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+                    </a>
+                    <a href="https://instagram.com/franchisefoundry" target="_blank" rel="noopener" aria-label="Instagram">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 Franchise Foundry. All rights reserved.</p>
+            <p>Built for hospitality franchise matching.</p>
+        </div>
+    </footer>
+
+    <script>
+    const hamburger = document.getElementById('nav-hamburger');
+    const mobileMenu = document.getElementById('nav-mobile-menu');
+    if (hamburger && mobileMenu) {
+        hamburger.addEventListener('click', () => {
+            const isOpen = mobileMenu.classList.toggle('open');
+            hamburger.classList.toggle('open', isOpen);
+            hamburger.setAttribute('aria-expanded', isOpen);
+            document.body.style.overflow = isOpen ? 'hidden' : '';
+        });
+        mobileMenu.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.remove('open');
+                hamburger.classList.remove('open');
+                hamburger.setAttribute('aria-expanded', 'false');
+                document.body.style.overflow = '';
+            });
+        });
+    }
+    </script>
+
+</body>
+</html>

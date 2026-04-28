@@ -331,6 +331,116 @@
             line-height: 1.6;
         }
 
+        /* ── Featured Article ───────────────────────────────────────── */
+        .featured-article {
+            background: white;
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius-xl);
+            padding: 48px;
+            margin-bottom: 52px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 48px;
+            align-items: center;
+            transition: box-shadow 0.25s ease, border-color 0.25s ease;
+        }
+
+        .featured-article:hover {
+            box-shadow: 0 16px 48px rgba(58,74,58,0.1);
+            border-color: var(--green);
+        }
+
+        .featured-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--gold);
+            background: rgba(200,146,74,0.1);
+            padding: 6px 14px;
+            border-radius: 100px;
+            margin-bottom: 20px;
+        }
+
+        .featured-label-dot {
+            display: inline-block;
+            width: 6px; height: 6px;
+            background: var(--gold);
+            border-radius: 50%;
+        }
+
+        .featured-article-left h2 {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--text-dark);
+            letter-spacing: -0.03em;
+            line-height: 1.15;
+            margin-bottom: 16px;
+        }
+
+        .featured-category {
+            display: inline-block;
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            padding: 5px 12px;
+            border-radius: 100px;
+            background: var(--green-light);
+            color: var(--green);
+            margin-bottom: 16px;
+        }
+
+        .featured-article-right p {
+            font-size: 1rem;
+            color: var(--text-mid);
+            font-weight: 300;
+            line-height: 1.8;
+            margin-bottom: 32px;
+        }
+
+        .featured-article-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-top: 24px;
+            border-top: 1px solid var(--border);
+        }
+
+        .featured-meta {
+            font-size: 0.82rem;
+            color: var(--text-light);
+        }
+
+        .btn-green {
+            background: var(--green);
+            color: white;
+            padding: 13px 28px;
+            border-radius: var(--radius-sm);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            display: inline-block;
+            transition: background 0.2s, transform 0.15s;
+        }
+
+        .btn-green:hover {
+            background: var(--green-deep);
+            transform: translateY(-1px);
+        }
+
+        @media (max-width: 768px) {
+            .featured-article {
+                grid-template-columns: 1fr;
+                gap: 24px;
+                padding: 32px 24px;
+            }
+            .featured-article-left h2 { font-size: 1.6rem; }
+        }
+
         /* ── Article Grid ───────────────────────────────────────────── */
         .article-grid {
             display: grid;
@@ -693,73 +803,57 @@
                 </div>
             </div>
 
+            <!-- Featured Article -->
+            <article class="featured-article reveal">
+                <div class="featured-article-left">
+                    <div class="featured-label"><span class="featured-label-dot"></span> Featured Article</div>
+                    <span class="featured-category">Franchise Advice</span>
+                    <h2>What your royalty is actually costing you each month</h2>
+                </div>
+                <div class="featured-article-right">
+                    <p>A 6% royalty on a £600,000 turnover unit costs £36,000 a year - whether you had a good month or a terrible one. Here's how to run the numbers properly before you sign anything, including the marketing levy, mandatory purchasing, and how to stress-test the model.</p>
+                    <div class="featured-article-footer">
+                        <span class="featured-meta">28 April 2026 &nbsp;·&nbsp; 8 min read</span>
+                        <a href="articles/franchise-royalty-cost.html" class="btn-green">Read article &rarr;</a>
+                    </div>
+                </div>
+            </article>
+
             <div class="article-grid">
 
                 <!-- Article 1 -->
                 <article class="article-card reveal">
                     <span class="article-category cat-advice">Franchise Advice</span>
-                    <h2 class="article-title">How to Choose the Right Franchise for Your Lifestyle and Budget</h2>
-                    <p class="article-excerpt">Not every franchise is the right franchise. We break down how to match a brand to your budget, your hours, and your long-term goals — before you sign anything.</p>
+                    <h2 class="article-title">How to Evaluate Franchisor Support Before You Sign</h2>
+                    <p class="article-excerpt">Every franchisor describes their support in broadly positive terms. Here are the specific questions that cut through the sales pitch and reveal what franchisees actually experience.</p>
                     <div class="article-footer">
-                        <span class="article-meta">15 April 2026 &nbsp;·&nbsp; 5 min read</span>
-                        <a href="#" class="article-link">Read article <span>→</span></a>
+                        <span class="article-meta">21 April 2026 &nbsp;·&nbsp; 7 min read</span>
+                        <a href="articles/franchisor-support-evaluation.html" class="article-link">Read article <span>→</span></a>
                     </div>
                 </article>
 
                 <!-- Article 2 -->
                 <article class="article-card reveal">
-                    <span class="article-category cat-industry">Industry Insights</span>
-                    <h2 class="article-title">Why Hospitality Franchises Are Leading UK Business Growth in 2026</h2>
-                    <p class="article-excerpt">From QSR to premium casual dining, hospitality franchise openings are outpacing most other sectors this year. Here's what's driving it — and what it means for prospective franchisees.</p>
+                    <span class="article-category cat-advice">Franchise Advice</span>
+                    <h2 class="article-title">What UK Franchisors Are Not Required to Tell You</h2>
+                    <p class="article-excerpt">The UK has no mandatory franchise disclosure law. What a franchisor shares before you sign depends entirely on them - here's what to ask for, and how to find out what you need to know anyway.</p>
                     <div class="article-footer">
-                        <span class="article-meta">8 April 2026 &nbsp;·&nbsp; 4 min read</span>
-                        <a href="#" class="article-link">Read article <span>→</span></a>
+                        <span class="article-meta">14 April 2026 &nbsp;·&nbsp; 6 min read</span>
+                        <a href="articles/what-franchisors-not-required-to-tell-you.html" class="article-link">Read article <span>→</span></a>
                     </div>
                 </article>
 
                 <!-- Article 3 -->
                 <article class="article-card reveal">
                     <span class="article-category cat-advice">Franchise Advice</span>
-                    <h2 class="article-title">7 Questions Every Aspiring Franchisee Should Ask Before Signing</h2>
-                    <p class="article-excerpt">Most people ask the wrong questions in franchise discovery calls. These are the seven that actually tell you what you need to know — and the answers to watch out for.</p>
+                    <h2 class="article-title">Why Most Franchisees Underestimate Their First Year</h2>
+                    <p class="article-excerpt">The first twelve months are harder than the brochure suggests - not because of the operational processes, but the softer challenges nobody warns you about. Here's how to prepare differently.</p>
                     <div class="article-footer">
-                        <span class="article-meta">1 April 2026 &nbsp;·&nbsp; 6 min read</span>
-                        <a href="#" class="article-link">Read article <span>→</span></a>
+                        <span class="article-meta">7 April 2026 &nbsp;·&nbsp; 5 min read</span>
+                        <a href="articles/why-franchisees-underestimate-first-year.html" class="article-link">Read article <span>→</span></a>
                     </div>
                 </article>
 
-                <!-- Article 4 -->
-                <article class="article-card reveal">
-                    <span class="article-category cat-story">Success Story</span>
-                    <h2 class="article-title">From Restaurant Manager to Franchise Owner: A Real Story</h2>
-                    <p class="article-excerpt">When Jamie left a 12-year career in restaurant management, he had a budget, a postcode, and no idea where to start. Eighteen months later, he's running two sites. His story.</p>
-                    <div class="article-footer">
-                        <span class="article-meta">22 March 2026 &nbsp;·&nbsp; 3 min read</span>
-                        <a href="#" class="article-link">Read article <span>→</span></a>
-                    </div>
-                </article>
-
-                <!-- Article 5 -->
-                <article class="article-card reveal">
-                    <span class="article-category cat-advice">Franchise Advice</span>
-                    <h2 class="article-title">What Does a Franchise Investment Actually Include? The Full Breakdown</h2>
-                    <p class="article-excerpt">The headline franchise fee is rarely the full picture. We walk through every cost involved in getting a franchise site operational — from legal fees to fit-out to working capital.</p>
-                    <div class="article-footer">
-                        <span class="article-meta">14 March 2026 &nbsp;·&nbsp; 7 min read</span>
-                        <a href="#" class="article-link">Read article <span>→</span></a>
-                    </div>
-                </article>
-
-                <!-- Article 6 -->
-                <article class="article-card reveal">
-                    <span class="article-category cat-spotlight">Brand Spotlight</span>
-                    <h2 class="article-title">QSR vs Casual Dining: Which Franchise Model Is Right for You?</h2>
-                    <p class="article-excerpt">High volume vs high margin. Quick-service franchises and casual dining brands attract very different operators. We compare the two models across investment, lifestyle, and risk.</p>
-                    <div class="article-footer">
-                        <span class="article-meta">5 March 2026 &nbsp;·&nbsp; 5 min read</span>
-                        <a href="#" class="article-link">Read article <span>→</span></a>
-                    </div>
-                </article>
 
             </div><!-- /.article-grid -->
         </div><!-- /.blog-inner -->
