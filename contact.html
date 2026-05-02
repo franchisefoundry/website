@@ -52,7 +52,7 @@
 
         /* Navigation */
         .navbar {
-            background: var(--green-deep);
+            background: #3a4a3a;
             padding: 0 40px;
             position: sticky;
             top: 0;
@@ -125,8 +125,8 @@
         }
 
         .nav-cta {
-            background: var(--gold);
-            color: white !important;
+            background: white;
+            color: #5f725f !important;
             padding: 10px 22px;
             border-radius: var(--radius-sm);
             font-weight: 600 !important;
@@ -135,7 +135,8 @@
         }
 
         .nav-cta:hover {
-            background: #b07830 !important;
+            background: #b8c4b8 !important;
+            color: #3a4a3a !important;
             transform: translateY(-1px);
         }
 
@@ -151,21 +152,15 @@
 
         /* Page Hero */
         .page-hero {
-            background: var(--green-deep);
+            background: white;
+            border-bottom: 1px solid #e8ede8;
             padding: 80px 40px;
             position: relative;
             overflow: hidden;
         }
 
         .page-hero::before {
-            content: '';
-            position: absolute;
-            top: -200px;
-            right: -200px;
-            width: 600px;
-            height: 600px;
-            background: radial-gradient(circle, rgba(95, 114, 95, 0.3) 0%, transparent 70%);
-            pointer-events: none;
+            display: none;
         }
 
         .page-hero-inner {
@@ -179,8 +174,9 @@
             display: inline-flex;
             align-items: center;
             gap: 10px;
-            background: rgba(200, 146, 74, 0.15);
-            color: var(--gold-light);
+            background: #eef3ee;
+            border: 1px solid #d4e0d4;
+            color: #5f725f;
             padding: 8px 16px;
             border-radius: 24px;
             font-size: 0.78rem;
@@ -194,14 +190,14 @@
             display: inline-block;
             width: 6px;
             height: 6px;
-            background: var(--gold);
+            background: #5f725f;
             border-radius: 50%;
         }
 
         .page-hero h1 {
             font-size: 3.5rem;
             font-weight: 800;
-            color: white;
+            color: #111827;
             letter-spacing: -0.03em;
             line-height: 1.1;
             margin-bottom: 20px;
@@ -209,7 +205,7 @@
 
         .page-hero p {
             font-size: 1.15rem;
-            color: rgba(255, 255, 255, 0.75);
+            color: #4b5563;
             font-weight: 300;
             line-height: 1.75;
             max-width: 640px;

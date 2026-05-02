@@ -53,7 +53,7 @@
 
         /* Navigation */
         .navbar {
-            background: var(--green-deep);
+            background: #3a4a3a;
             padding: 0 40px;
             position: sticky;
             top: 0;
@@ -127,8 +127,8 @@
         }
 
         .nav-cta {
-            background: var(--gold);
-            color: white !important;
+            background: white;
+            color: #5f725f !important;
             padding: 10px 22px !important;
             border-radius: var(--radius-sm);
             font-weight: 600 !important;
@@ -137,13 +137,15 @@
         }
 
         .nav-cta:hover {
-            background: #b07830 !important;
+            background: #b8c4b8 !important;
+            color: #3a4a3a !important;
             transform: translateY(-1px);
         }
 
         /* Page Hero */
         .page-hero {
-            background: var(--green-deep);
+            background: white;
+            border-bottom: 1px solid #e8ede8;
             padding: 80px 40px 40px;
             text-align: center;
             position: relative;
@@ -151,21 +153,11 @@
         }
 
         .page-hero::before {
-            content: '';
-            position: absolute;
-            top: -150px; right: -150px;
-            width: 500px; height: 500px;
-            background: radial-gradient(circle, rgba(95,114,95,0.3) 0%, transparent 70%);
-            pointer-events: none;
+            display: none;
         }
 
         .page-hero::after {
-            content: '';
-            position: absolute;
-            bottom: -100px; left: -100px;
-            width: 400px; height: 400px;
-            background: radial-gradient(circle, rgba(200,146,74,0.07) 0%, transparent 70%);
-            pointer-events: none;
+            display: none;
         }
 
         .page-hero-inner {
@@ -179,9 +171,9 @@
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            background: rgba(200,146,74,0.15);
-            border: 1px solid rgba(200,146,74,0.3);
-            color: var(--gold-light);
+            background: #eef3ee;
+            border: 1px solid #d4e0d4;
+            color: #5f725f;
             font-size: 0.78rem;
             font-weight: 600;
             letter-spacing: 0.1em;
@@ -193,7 +185,7 @@
 
         .eyebrow-dot {
             width: 6px; height: 6px;
-            background: var(--gold);
+            background: #5f725f;
             border-radius: 50%;
             flex-shrink: 0;
         }
@@ -201,7 +193,7 @@
         .page-hero h1 {
             font-size: 3.5rem;
             font-weight: 800;
-            color: white;
+            color: #111827;
             margin-bottom: 20px;
             line-height: 1.1;
             letter-spacing: -0.03em;
@@ -209,7 +201,7 @@
 
         .page-hero p {
             font-size: 1.15rem;
-            color: rgba(255,255,255,0.72);
+            color: #4b5563;
             font-weight: 300;
             line-height: 1.75;
         }
