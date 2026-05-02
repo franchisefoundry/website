@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terms of Engagement - Franchise Foundry</title>
+    <meta name="description" content="Franchise Foundry Terms of Engagement for prospective franchisees. Please read before submitting your details.">
+    <link rel="icon" type="image/png" href="images/favicon.png">
+    <link rel="apple-touch-icon" href="images/favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+    <style>
+        :root {
+            --green:#5f725f;
+            --green-deep:#3a4a3a;
+            --green-dark:#2a352a;
+            --green-light:#eef3ee;
+            --green-mid:#d4e0d4;
+            --gold:#c8924a;
+            --gold-light:#f0d4a8;
+            --off-white:#f7f8f5;
+            --text-dark:#161a16;
+            --text-mid:#4a5568;
+            --text-light:#7a8990;
+            --white:#ffffff;
+            --border:#e2e8e2;
+            --radius-sm:8px;
+            --radius-md:16px;
+            --radius-lg:24px;
+        }
+
+        * { margin:0; padding:0; box-sizing:border-box; }
+
+        body {
+            font-family: 'Sora', system-ui, sans-serif;
+            line-height: 1.7;
+            color: var(--text-dark);
+            background: var(--white);
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ── Navigation ─────────────────────────────────────────── */
+        .navbar {
+            background: #3a4a3a;
+            padding: 0 40px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            -webkit-backdrop-filter: blur(12px);
+            backdrop-filter: blur(12px);
+        }
+
+        .nav-container {
+            max-width: 1280px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 72px;
+        }
+
+        .navbar-logo { height: 48px; display: block; }
+
+        .nav-links {
+            display: flex;
+            gap: 28px;
+            list-style: none;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: rgba(255,255,255,0.75);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            letter-spacing: 0.01em;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover, .nav-links a.active { color: white; }
+
+        .nav-sep { width: 1px; height: 20px; background: rgba(255,255,255,0.15); }
+        .nav-sep-sm { display: none; }
+
+        .nav-links .nav-cta {
+            background: var(--gold);
+            color: white !important;
+            padding: 9px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: background 0.2s, transform 0.15s;
+        }
+
+        .nav-links .nav-cta:hover { background: #b07830; transform: translateY(-1px); }
+
+        .nav-hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 8px;
+        }
+
+        .nav-hamburger span {
+            width: 22px; height: 2px;
+            background: white;
+            border-radius: 2px;
+            transition: transform 0.28s cubic-bezier(0.4,0,0.2,1), opacity 0.2s;
+            transform-origin: center;
+        }
+
+        .nav-hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+        .nav-hamburger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+        .nav-hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+        .nav-mobile-menu {
+            display: none;
+            flex-direction: column;
+            background: #2a352a;
+            padding: 24px 28px 28px;
+            gap: 0;
+        }
+
+        .nav-mobile-menu.open { display: flex; }
+
+        .nav-mobile-links {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 16px;
+            margin-bottom: 16px;
+        }
+
+        .nav-mobile-links li a {
+            display: block;
+            color: rgba(255,255,255,0.82);
+            text-decoration: none;
+            font-size: 1rem;
+            font-weight: 500;
+            padding: 11px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.07);
+            transition: color 0.18s;
+        }
+
+        .nav-mobile-links li:last-child a { border-bottom: none; }
+        .nav-mobile-links li a:hover { color: white; }
+
+        .nav-mobile-cta-wrap { display: flex; justify-content: center; }
+
+        .nav-mobile-cta-btn {
+            display: inline-block;
+            background: var(--gold);
+            color: white;
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 600;
+            padding: 13px 32px;
+            border-radius: 10px;
+            transition: background 0.2s, transform 0.15s;
+        }
+
+        .nav-mobile-cta-btn:hover { background: #b07830; transform: translateY(-1px); }
+
+        @media (max-width: 968px) {
+            .nav-links { display: none; }
+            .nav-hamburger { display: flex; }
+            .navbar { padding: 0 20px; }
+        }
+
+        /* ── Page hero ──────────────────────────────────────────── */
+        .page-hero {
+            background: linear-gradient(135deg, var(--green-dark) 0%, var(--green-deep) 60%, #4a5e4a 100%);
+            padding: 64px 40px 56px;
+            text-align: center;
+            color: white;
+        }
+
+        .page-hero-inner { max-width: 760px; margin: 0 auto; }
+
+        .page-eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--gold-light);
+            margin-bottom: 16px;
+        }
+
+        .eyebrow-dot {
+            width: 6px; height: 6px;
+            background: var(--gold);
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .page-hero h1 {
+            font-size: clamp(2rem, 4vw, 2.8rem);
+            font-weight: 700;
+            margin-bottom: 16px;
+            line-height: 1.15;
+        }
+
+        .page-hero p {
+            font-size: 1.05rem;
+            color: rgba(255,255,255,0.78);
+            max-width: 620px;
+            margin: 0 auto;
+            line-height: 1.7;
+        }
+
+        @media (max-width: 600px) {
+            .page-hero { padding: 48px 20px 40px; }
+            .page-hero h1 { font-size: 1.75rem; }
+            .page-hero p { font-size: 0.93rem; }
+        }
+
+        /* ── Main content ───────────────────────────────────────── */
+        .terms-section {
+            padding: 72px 40px 100px;
+            background: var(--off-white);
+        }
+
+        .terms-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 56px 64px;
+            box-shadow: 0 2px 24px rgba(0,0,0,0.06);
+        }
+
+        .terms-meta {
+            font-size: 0.82rem;
+            color: var(--text-light);
+            margin-bottom: 40px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .terms-container h2 {
+            font-size: 1.35rem;
+            font-weight: 700;
+            color: var(--green-deep);
+            margin: 40px 0 12px;
+            padding-top: 8px;
+        }
+
+        .terms-container h2:first-of-type { margin-top: 0; }
+
+        .terms-container p {
+            font-size: 0.95rem;
+            color: var(--text-mid);
+            margin-bottom: 16px;
+            line-height: 1.75;
+        }
+
+        .terms-container ul {
+            margin: 0 0 20px 0;
+            padding-left: 24px;
+        }
+
+        .terms-container ul li {
+            font-size: 0.95rem;
+            color: var(--text-mid);
+            line-height: 1.75;
+            margin-bottom: 8px;
+        }
+
+        /* Plain English summary box */
+        .terms-summary {
+            background: var(--green-light);
+            border: 1.5px solid var(--green-mid);
+            border-radius: var(--radius-md);
+            padding: 28px 32px;
+            margin-bottom: 40px;
+        }
+
+        .terms-summary-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--green);
+            margin-bottom: 14px;
+        }
+
+        .terms-summary h3 {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--green-deep);
+            margin-bottom: 16px;
+        }
+
+        .terms-summary ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .terms-summary ul li {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            font-size: 0.92rem;
+            color: var(--text-mid);
+            line-height: 1.6;
+        }
+
+        .terms-summary ul li .sum-icon {
+            flex-shrink: 0;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 1px;
+        }
+
+        .terms-summary ul li .sum-icon.green {
+            background: var(--green);
+            color: white;
+        }
+
+        .terms-summary ul li .sum-icon.gold {
+            background: var(--gold);
+            color: white;
+        }
+
+        .terms-summary p.sum-footer {
+            margin: 16px 0 0;
+            font-size: 0.82rem;
+            color: var(--text-light);
+        }
+
+        /* Existing highlight box */
+        .terms-highlight {
+            background: var(--green-light);
+            border-left: 3px solid var(--green);
+            border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+            padding: 16px 20px;
+            margin: 24px 0;
+        }
+
+        .terms-highlight p {
+            margin: 0;
+            color: var(--green-deep);
+            font-weight: 500;
+            font-size: 0.93rem;
+        }
+
+        .terms-divider {
+            border: none;
+            border-top: 1px solid var(--border);
+            margin: 40px 0;
+        }
+
+        .terms-back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--green);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-top: 40px;
+            transition: color 0.2s;
+        }
+
+        .terms-back-link:hover { color: var(--green-deep); }
+
+        @media (max-width: 768px) {
+            .terms-section { padding: 40px 20px 72px; }
+            .terms-container { padding: 36px 28px; border-radius: var(--radius-md); }
+        }
+
+        @media (max-width: 480px) {
+            .terms-container { padding: 28px 20px; }
+            .terms-container h2 { font-size: 1.15rem; }
+        }
+
+        /* ── Footer ─────────────────────────────────────────────── */
+        footer {
+            background: var(--green-dark);
+            color: rgba(255,255,255,0.75);
+            padding: 60px 40px 32px;
+        }
+
+        .footer-content {
+            max-width: 1280px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 48px;
+            padding-bottom: 40px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .footer-section h3 {
+            font-size: 0.85rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.5);
+            margin-bottom: 16px;
+        }
+
+        .footer-section p, .footer-section li {
+            font-size: 0.88rem;
+            line-height: 1.7;
+        }
+
+        .footer-section a {
+            color: rgba(255,255,255,0.75);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .footer-section a:hover { color: white; }
+
+        .footer-links { list-style: none; }
+        .footer-links li { margin-bottom: 8px; }
+
+        .footer-social-links {
+            display: flex;
+            gap: 12px;
+            margin-top: 4px;
+        }
+
+        .footer-social-links a {
+            width: 36px; height: 36px;
+            border-radius: 50%;
+            border: 1px solid rgba(255,255,255,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: rgba(255,255,255,0.6);
+            transition: background 0.2s, color 0.2s;
+        }
+
+        .footer-social-links a:hover {
+            background: rgba(255,255,255,0.1);
+            color: white;
+        }
+
+        .footer-bottom {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding-top: 28px;
+            font-size: 0.8rem;
+            color: rgba(255,255,255,0.35);
+        }
+
+        @media (max-width: 968px) {
+            .footer-content { grid-template-columns: 1fr 1fr; gap: 32px; }
+            footer { padding: 48px 28px 28px; }
+        }
+
+        @media (max-width: 600px) {
+            .footer-content { grid-template-columns: 1fr; gap: 28px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html"><img src="/images/copy-of-franchise-foundry-logo-final-2.png" alt="Franchise Foundry" class="navbar-logo"></a>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="about.html">About Us</a></li>
+                <li><a href="find-match.html" class="nav-cta">Get Your Match</a></li>
+                <li class="nav-sep"></li>
+                <li><a href="for-brands.html" class="nav-brands">For Franchise Brands</a></li>
+                <li class="nav-sep-sm"></li>
+                <li><a href="contact.html">Contact</a></li>
+                <li class="nav-sep-sm"></li>
+                <li><a href="blog.html" class="nav-blog">Blog &amp; Insights</a></li>
+            </ul>
+            <button class="nav-hamburger" id="nav-hamburger" aria-label="Open menu" aria-expanded="false">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </nav>
+
+    <div class="nav-mobile-menu" id="nav-mobile-menu">
+        <ul class="nav-mobile-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="about.html">About Us</a></li>
+            <li><a href="for-brands.html">For Franchise Brands</a></li>
+            <li><a href="contact.html">Contact</a></li>
+            <li><a href="blog.html">Blog &amp; Insights</a></li>
+        </ul>
+        <div class="nav-mobile-cta-wrap">
+            <a href="find-match.html" class="nav-mobile-cta-btn">Find Your Match →</a>
+        </div>
+    </div>
+
+    <!-- Page Header -->
+    <section class="page-hero">
+        <div class="page-hero-inner">
+            <div class="page-eyebrow"><span class="eyebrow-dot"></span> Legal</div>
+            <h1>Terms of Engagement</h1>
+            <p>Please read these terms carefully before submitting your details. They set out how we work together and the protections in place for you and the brands we introduce you to.</p>
+        </div>
+    </section>
+
+    <!-- Terms Content -->
+    <section class="terms-section">
+        <div class="terms-container">
+
+            <p class="terms-meta">Last updated: May 2026 &nbsp;·&nbsp; Franchise Foundry Ltd &nbsp;·&nbsp; <a href="mailto:connect@franchisefoundry.co.uk">connect@franchisefoundry.co.uk</a></p>
+
+            <!-- Plain English Summary -->
+            <div class="terms-summary">
+                <div class="terms-summary-label">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+                    The short version — plain English
+                </div>
+                <h3>What you're agreeing to, in a nutshell</h3>
+                <ul>
+                    <li>
+                        <span class="sum-icon green">
+                            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg>
+                        </span>
+                        <span><strong>Our service is free to you.</strong> We're paid by the franchise brand if and when you sign a franchise agreement — not before, and never by you.</span>
+                    </li>
+                    <li>
+                        <span class="sum-icon green">
+                            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg>
+                        </span>
+                        <span><strong>We match you based on fit, not fees.</strong> We're not tied to any single brand — your matches are based entirely on your profile and goals.</span>
+                    </li>
+                    <li>
+                        <span class="sum-icon green">
+                            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg>
+                        </span>
+                        <span><strong>Your data stays private.</strong> We'll never sell your details or share them with anyone except the specific brands we introduce you to — and we'll tell you before we do.</span>
+                    </li>
+                    <li>
+                        <span class="sum-icon gold">
+                            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M12 9v4M12 17h.01"/></svg>
+                        </span>
+                        <span><strong>One thing we ask:</strong> if we introduce you to a brand, please keep us involved. Don't approach that brand directly — that's how we keep the service free for you. This applies for 24 months from the date of any introduction.</span>
+                    </li>
+                </ul>
+                <p class="sum-footer">The full legal terms are set out below. By ticking the box on our form, you're agreeing to both.</p>
+            </div>
+
+            <h2>1. Who We Are</h2>
+            <p>Franchise Foundry is a franchise brokerage and matching service operating in the UK hospitality sector. We act as an intermediary, connecting prospective franchisees with franchise brands that suit their goals, budget, and background.</p>
+            <p>Our service to you is provided free of charge. Franchise Foundry receives an introductory fee from the franchise brand if and when a successful franchise agreement is completed. This does not affect the impartiality of our matching process — we are not tied to any single brand and our recommendations are based solely on your profile.</p>
+
+            <div class="terms-highlight">
+                <p>By submitting your details through our website, you confirm that you have read and agree to these Terms of Engagement in full.</p>
+            </div>
+
+            <h2>2. Our Role</h2>
+            <p>Franchise Foundry will:</p>
+            <ul>
+                <li>Use the information you provide to match you with suitable franchise opportunities from our network</li>
+                <li>Arrange and facilitate introductions between you and franchise brands on your behalf</li>
+                <li>Provide guidance and support throughout your enquiry process, free of charge</li>
+                <li>Act in your best interests when recommending matches</li>
+            </ul>
+            <p>We do not provide legal, financial, or investment advice. We strongly recommend that you take independent professional advice before entering into any franchise agreement.</p>
+
+            <h2>3. Non-Circumvention — Your Key Obligation</h2>
+            <p>This is the most important clause in these terms, and we ask you to take it seriously.</p>
+            <p>When Franchise Foundry introduces you to a franchise brand — whether by sharing a brand name, arranging a meeting, or facilitating any communication — that introduction is made in our capacity as a broker. <strong>You agree not to approach, contact, or enter into any discussions or negotiations with that brand directly</strong>, or through any third party, without Franchise Foundry's knowledge and involvement.</p>
+            <p>This obligation applies:</p>
+            <ul>
+                <li>From the date of the first introduction to that brand</li>
+                <li>For a period of <strong>24 months</strong> from the date of that introduction</li>
+                <li>Whether or not you proceed with Franchise Foundry's assistance</li>
+                <li>Regardless of how the introduction was made (email, call, meeting, or otherwise)</li>
+            </ul>
+            <p>If you breach this obligation, Franchise Foundry reserves the right to seek recovery of its introductory fee directly from you, equivalent to the fee that would have been payable by the franchise brand upon completion of a franchise agreement.</p>
+
+            <div class="terms-highlight">
+                <p>In plain terms: if we introduce you to a brand, please keep us in the loop. Going directly to a brand we've matched you with cuts us out of a process we've invested time and resource in — and it's something we take very seriously.</p>
+            </div>
+
+            <hr class="terms-divider">
+
+            <h2>4. Your Information</h2>
+            <p>By submitting the enquiry form, you consent to Franchise Foundry holding and processing your personal data for the purpose of providing our matching and introductory services. Specifically, we will:</p>
+            <ul>
+                <li>Use your contact details (name, email, phone number) to get in touch with you about your matches</li>
+                <li>Share relevant profile information (budget range, location, preferences) with franchise brands we introduce you to — we will always tell you before doing so</li>
+                <li>Store your data securely for the duration of our working relationship</li>
+            </ul>
+            <p>We will never sell your data or share it with any third party other than the specific franchise brands you are introduced to through our service.</p>
+            <p>You have the right to request that your data be amended or deleted at any time. To do so, contact us at <a href="mailto:connect@franchisefoundry.co.uk">connect@franchisefoundry.co.uk</a>.</p>
+            <p>Our handling of your data is governed by UK GDPR and the Data Protection Act 2018.</p>
+
+            <h2>5. No Guarantee of Outcome</h2>
+            <p>Franchise Foundry makes no guarantee that your enquiry will result in a franchise agreement, a meeting with a brand, or any particular outcome. Our matching service is provided in good faith, based on the information you supply. The ultimate decision to proceed with any franchise opportunity rests with you and the franchise brand concerned.</p>
+
+            <h2>6. Accuracy of Information</h2>
+            <p>You agree to provide accurate and truthful information when using our service. Providing false or misleading information — for example about your available budget or location — may result in poor-quality matches and wastes time for all parties involved.</p>
+
+            <h2>7. Changes to These Terms</h2>
+            <p>Franchise Foundry may update these terms from time to time. The current version will always be available at <a href="https://franchisefoundry.co.uk/terms.html">franchisefoundry.co.uk/terms.html</a>. Your continued use of our service constitutes acceptance of the current terms.</p>
+
+            <h2>8. Governing Law</h2>
+            <p>These terms are governed by and construed in accordance with the laws of England and Wales. Any disputes arising from these terms shall be subject to the exclusive jurisdiction of the courts of England and Wales.</p>
+
+            <h2>9. Contact</h2>
+            <p>If you have any questions about these terms, please get in touch:</p>
+            <p><strong>Franchise Foundry</strong><br>
+            <a href="mailto:connect@franchisefoundry.co.uk">connect@franchisefoundry.co.uk</a></p>
+
+            <a href="find-match.html" class="terms-back-link">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                Back to Find Your Match
+            </a>
+
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Franchise Foundry</h3>
+                <p>Helping aspiring franchisees find the perfect franchise opportunity since 2024.</p>
+                <p style="margin-top: 20px;"><em>Discover. Connect. Franchise.</em></p>
+            </div>
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <ul class="footer-links">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="about.html">About Us</a></li>
+                    <li><a href="find-match.html">Find Your Match</a></li>
+                    <li><a href="for-brands.html">For Franchise Brands</a></li>
+                    <li><a href="contact.html">Contact Us</a></li>
+                    <li><a href="blog.html">Blog &amp; Insights</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Contact</h3>
+                <p><a href="mailto:connect@franchisefoundry.co.uk">connect@franchisefoundry.co.uk</a></p>
+            </div>
+            <div class="footer-section">
+                <h3>Follow Us</h3>
+                <div class="footer-social-links">
+                    <a href="https://linkedin.com/company/franchisefoundryuk" target="_blank" rel="noopener" aria-label="LinkedIn">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+                    </a>
+                    <a href="https://instagram.com/franchisefoundry" target="_blank" rel="noopener" aria-label="Instagram">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 Franchise Foundry. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile nav toggle
+        const hamburger = document.getElementById('nav-hamburger');
+        const mobileMenu = document.getElementById('nav-mobile-menu');
+        if (hamburger && mobileMenu) {
+            hamburger.addEventListener('click', function () {
+                const open = mobileMenu.classList.toggle('open');
+                hamburger.classList.toggle('open', open);
+                hamburger.setAttribute('aria-expanded', open);
+            });
+        }
+    </script>
+</body>
+</html>

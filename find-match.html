@@ -1202,6 +1202,66 @@
     .enquiry-submit-btn:hover  { background: #b07830; transform: translateY(-1px); }
     .enquiry-submit-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
     .enq-privacy { color: rgba(255,255,255,0.4); margin-top: 14px; font-size: 0.8rem; }
+
+    /* T&Cs checkbox */
+    .enq-terms-wrap {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        margin: 20px 0 24px;
+        cursor: pointer;
+    }
+    .enq-terms-wrap input[type="checkbox"] {
+        appearance: none;
+        -webkit-appearance: none;
+        width: 20px;
+        height: 20px;
+        min-width: 20px;
+        border: 2px solid rgba(255,255,255,0.35);
+        border-radius: 5px;
+        background: rgba(255,255,255,0.08);
+        cursor: pointer;
+        margin-top: 2px;
+        transition: border-color 0.2s, background 0.2s;
+        position: relative;
+    }
+    .enq-terms-wrap input[type="checkbox"]:checked {
+        background: var(--gold);
+        border-color: var(--gold);
+    }
+    .enq-terms-wrap input[type="checkbox"]:checked::after {
+        content: '';
+        position: absolute;
+        left: 5px;
+        top: 2px;
+        width: 6px;
+        height: 10px;
+        border: 2px solid white;
+        border-top: none;
+        border-left: none;
+        transform: rotate(45deg);
+    }
+    .enq-terms-wrap input[type="checkbox"].terms-error {
+        border-color: #fc8181;
+        background: rgba(252,129,129,0.15);
+    }
+    .enq-terms-label {
+        font-size: 0.82rem;
+        color: rgba(255,255,255,0.6);
+        line-height: 1.55;
+    }
+    .enq-terms-label a {
+        color: var(--gold-light);
+        text-decoration: underline;
+        text-underline-offset: 2px;
+    }
+    .enq-terms-label a:hover { color: white; }
+    .enq-terms-error-msg {
+        display: none;
+        color: #fc8181;
+        font-size: 0.8rem;
+        margin: -16px 0 18px;
+    }
     /* Success state */
     .enquiry-success { text-align: center; padding: 40px 20px; }
     .enquiry-success-icon {
@@ -1859,6 +1919,12 @@
                             </div>
                         </div>
 
+                        <label class="enq-terms-wrap">
+                            <input type="checkbox" id="enq-terms" name="terms_agreed" value="yes">
+                            <span class="enq-terms-label">I agree to the <a href="terms.html" target="_blank">Franchise Foundry Terms of Engagement</a>. I understand that any franchise introductions made by Franchise Foundry are made in a brokerage capacity, and I agree not to approach any introduced brand directly without Franchise Foundry's involvement.</span>
+                        </label>
+                        <p class="enq-terms-error-msg" id="enq-terms-error">Please tick the box above to continue.</p>
+
                         <button type="submit" class="enquiry-submit-btn" id="enquiry-submit-btn">
                             Unlock My Matches
                             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
@@ -2208,6 +2274,9 @@ function highlightTileGroup(name) {
             const email = document.getElementById('enq-email').value.trim();
             const phone = document.getElementById('enq-phone').value.trim();
 
+            const termsBox   = document.getElementById('enq-terms');
+            const termsError = document.getElementById('enq-terms-error');
+
             if (!name || !email || !phone) {
                 ['enq-name','enq-email','enq-phone'].forEach(id => {
                     const el = document.getElementById(id);
@@ -2215,6 +2284,17 @@ function highlightTileGroup(name) {
                 });
                 return;
             }
+
+            if (termsBox && !termsBox.checked) {
+                termsBox.classList.add('terms-error');
+                if (termsError) termsError.style.display = 'block';
+                termsBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                return;
+            }
+
+            // Clear terms error if previously shown
+            if (termsBox) termsBox.classList.remove('terms-error');
+            if (termsError) termsError.style.display = 'none';
 
             btn.disabled = true;
             btn.textContent = 'Sending…';
@@ -2231,7 +2311,8 @@ function highlightTileGroup(name) {
                         name,
                         email,
                         phone,
-                        matches: _matchSummary
+                        matches: _matchSummary,
+                        terms_agreed: 'yes'
                     }).toString()
                 });
 
