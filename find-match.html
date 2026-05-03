@@ -16,6 +16,14 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+    <!-- EmailJS — franchisee confirmation email -->
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <script>
+        (function() {
+            // Replace with your EmailJS Public Key
+            emailjs.init("SFC9tT7f4QUBJYW1s");
+        })();
+    </script>
     <style>
         :root {
             --green:#5f725f;
@@ -2324,6 +2332,16 @@ function highlightTileGroup(name) {
                 const hl = document.getElementById('results-headline');
                 const firstName = name.split(' ')[0];
                 if (hl && firstName) hl.textContent = `Your top franchise matches, ${firstName}!`;
+
+                // Send confirmation email to franchisee via EmailJS
+                // Replace YOUR_SERVICE_ID and YOUR_TEMPLATE_ID with values from your EmailJS dashboard
+                emailjs.send("service_4wiskq2", "template_tza7fbi", {
+                    to_name:    firstName,
+                    to_email:   email,
+                    reply_to:   "connect@franchisefoundry.co.uk"
+                }).catch(function() {
+                    // Confirmation email failed silently — does not affect user experience
+                });
 
             } catch (err) {
                 btn.disabled = false;

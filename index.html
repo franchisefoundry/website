@@ -158,13 +158,20 @@
 
         .hero::after { display: none; }
 
+        .hero-top {
+            max-width: 1280px;
+            margin: 0 auto 44px;
+            position: relative;
+            z-index: 1;
+        }
+
         .hero-inner {
             max-width: 1280px;
             margin: 0 auto;
             display: grid;
             grid-template-columns: 1.1fr 1fr;
             gap: 80px;
-            align-items: center;
+            align-items: start;
             position: relative;
             z-index: 1;
         }
@@ -193,12 +200,13 @@
         }
 
         .hero-headline {
-            font-size: 4.2rem;
+            font-size: clamp(2rem, 4.5vw, 4.5rem);
             font-weight: 800;
             color: #111827;
             line-height: 1.05;
-            letter-spacing: -0.035em;
-            margin-bottom: 24px;
+            letter-spacing: -0.04em;
+            margin-bottom: 0;
+            white-space: nowrap;
         }
 
         .hero-headline em {
@@ -1167,10 +1175,12 @@
                 justify-content: center;
                 flex-wrap: wrap;
             }
+            .hero-top { margin-bottom: 24px; }
             .hero-headline {
-                font-size: 2.5rem;
-                letter-spacing: -0.04em;
-                line-height: 1.08;
+                font-size: clamp(1.6rem, 7vw, 2.5rem);
+                letter-spacing: -0.03em;
+                line-height: 1.1;
+                white-space: normal;
             }
             .hero-subtext {
                 font-size: 0.93rem;
@@ -1196,6 +1206,28 @@
             .benefit-card   { padding: 24px 20px; }
             .step-card      { padding: 24px 20px; }
 
+            /* ── Partner logo bar ────────────────────────────────── */
+            .partner-logo-slot {
+                width: 88px; height: 88px;
+                padding: 12px;
+                margin-right: 20px;
+            }
+            .partners-section { padding: 32px 0; }
+
+            /* ── Match preview section ────────────────────────────── */
+            .match-preview-section { padding: 56px 24px; }
+            .match-header h2 { font-size: 1.75rem; letter-spacing: -0.03em; }
+            .match-header p  { font-size: 0.9rem; }
+            .match-header    { margin-bottom: 36px; }
+            .match-ui-header .ui-url-bar { display: none; }
+            .match-ui-body   { padding: 20px 16px; }
+            .match-cards-row { grid-template-columns: 1fr; gap: 12px; margin-bottom: 20px; }
+            .match-card      { padding: 18px; }
+            .match-ui        { border-radius: 16px; }
+
+            /* ── Why section ──────────────────────────────────────── */
+            .why-pullquote   { padding: 20px 20px; font-size: 0.95rem; }
+
             /* ── Final CTA ────────────────────────────────────────── */
             .final-cta      { padding: 60px 24px; }
             .final-cta-inner h2 {
@@ -1206,6 +1238,7 @@
 
             /* ── Footer ──────────────────────────────────────────── */
             .footer-grid    { grid-template-columns: 1fr; gap: 32px; }
+            .footer-bottom  { flex-direction: column; gap: 8px; text-align: center; }
         }
     </style>
 </head>
@@ -1250,12 +1283,14 @@
 
     <!-- Hero -->
     <section class="hero">
+        <div class="hero-top">
+            <div class="hero-eyebrow"><span></span> AI-Powered Franchise Matching · Hospitality Specialists</div>
+            <h1 class="hero-headline">
+                Franchise recruitment is broken. We built something better.
+            </h1>
+        </div>
         <div class="hero-inner">
             <div class="hero-left">
-                <div class="hero-eyebrow"><span></span> AI-Powered Franchise Matching · Hospitality Specialists</div>
-                <h1 class="hero-headline">
-                    Franchise recruitment is broken. We built something better.
-                </h1>
                 <p class="hero-subtext">
                     Traditional brokers and portals were built to shift volume, not find the right fit. We're hospitality operators who've built, scaled and recruited for real brands - that inside knowledge is now entirely in your corner, and it won't cost you a penny.
                 </p>
