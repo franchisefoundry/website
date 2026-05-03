@@ -2335,24 +2335,16 @@ function highlightTileGroup(name) {
 
                 // Send confirmation email to franchisee via EmailJS
                 // Replace YOUR_SERVICE_ID and YOUR_TEMPLATE_ID with values from your EmailJS dashboard
-                // Send confirmation email
+                // Send confirmation email to franchisee — fails silently if unavailable
                 try {
-                    if (typeof emailjs === 'undefined') {
-                        alert("EmailJS did not load — check internet connection or browser extensions blocking scripts.");
-                    } else {
+                    if (typeof emailjs !== 'undefined') {
                         emailjs.send("service_4wiskq2", "template_tza7fbi", {
                             to_name:  firstName,
                             email:    email,
                             reply_to: "connect@franchisefoundry.co.uk"
-                        }).then(function(response) {
-                            alert("EmailJS success — status: " + response.status);
-                        }).catch(function(error) {
-                            alert("EmailJS send failed: " + JSON.stringify(error));
                         });
                     }
-                } catch(e) {
-                    alert("EmailJS exception: " + e.message);
-                }
+                } catch(e) { /* silent */ }
 
             } catch (err) {
                 btn.disabled = false;
