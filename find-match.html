@@ -2337,7 +2337,7 @@ function highlightTileGroup(name) {
                 // Replace YOUR_SERVICE_ID and YOUR_TEMPLATE_ID with values from your EmailJS dashboard
                 emailjs.send("service_4wiskq2", "template_tza7fbi", {
                     to_name:    firstName,
-                    to_email:   email,
+                    email:      email,
                     reply_to:   "connect@franchisefoundry.co.uk"
                 }).catch(function() {
                     // Confirmation email failed silently — does not affect user experience
