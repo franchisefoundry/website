@@ -273,6 +273,48 @@
         "Multi-unit growth model targeting 3–5 stores across London and major UK cities — perfectly timed for the surge in Indian food demand"
       ],
       "investmentMin": 20000
+    },
+    {
+      "multiSiteReady": true,
+      "locationsDisplay": "Major UK cities & university towns",
+      "operatorModel": "hire-manager",
+      "experienceRequired": "management",
+      "locationsAvailable": [
+        "london",
+        "manchester",
+        "leeds",
+        "liverpool",
+        "sheffield",
+        "newcastle",
+        "edinburgh",
+        "nottingham",
+        "reading",
+        "oxford",
+        "cardiff",
+        "cambridge"
+      ],
+      "name": "PG Fast Food",
+      "sectors": [
+        "food-beverage"
+      ],
+      "investmentDisplay": "£150,000 – £300,000",
+      "teaser": "A contemporary QSR brand bringing genuine innovation to the fast food market — chef-developed recipes, a family-friendly menu spanning lunch and dinner, and a commercially refined model built from the ground up for franchising. The concept balances bold, creative food with great value pricing and a strong digital presence including a proprietary loyalty scheme and delivery portal. Designed for experienced QSR operators ready to grow a multi-site estate quickly across UK cities and university towns.",
+      "investmentMax": 300000,
+      "timelineMonths": 27,
+      "format": [
+        "dine-in",
+        "takeaway",
+        "delivery"
+      ],
+      "id": "pg-fast-food",
+      "fullTimeRequired": false,
+      "category": "Quick Service (QSR)",
+      "highlights": [
+        "Chef-developed menu with innovative flavour combinations — proprietary loyalty scheme, own delivery portal, and aggregator integration",
+        "£150k–£300k investment | 9% royalty + 3% marketing + £20k franchise fee | semi-absentee with approved GM",
+        "Targeting 10 franchise partners in 12 months, each with 5–10 site development agreements — focus on major UK cities and university towns"
+      ],
+      "investmentMin": 150000
     }
   ]
 }
