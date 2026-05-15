@@ -29,13 +29,22 @@ export default function InviteUserButton() {
     setLoading(true)
     setError(null)
 
-    const res = await fetch('/api/admin/invite', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, full_name: name, role }),
-    })
+    let res: Response
+    let data: { error?: string; success?: boolean }
 
-    const data = await res.json()
+    try {
+      res = await fetch('/api/admin/invite', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, full_name: name, role }),
+      })
+      data = await res.json()
+    } catch (err) {
+      setError(`Request failed: ${err instanceof Error ? err.message : 'Unknown error'}`)
+      setLoading(false)
+      return
+    }
+
     setLoading(false)
 
     if (!res.ok) {
