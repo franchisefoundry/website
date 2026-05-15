@@ -13,16 +13,20 @@ export async function GET(request: Request) {
     if (!error) {
       const { data: { user } } = await supabase.auth.getUser()
       if (user) {
-        const { data: profile } = await supabase
-          .from('profiles')
-          .select('role, full_name')
-          .eq('id', user.id)
-          .single()
+        // Check if this is an invite flow — user has no password identity yet
+        const hasPassword = user.identities?.some(i => i.provider === 'email') ?? false
 
-        // New invite — no name set yet, go to setup
-        if (!profile?.full_name) {
+        if (!hasPassword) {
+          // Brand new invite — send to setup to set password + confirm details
           return NextResponse.redirect(`${origin}/setup-account`)
         }
+
+        // Existing user following a magic link — send to their portal
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('role')
+          .eq('id', user.id)
+          .single()
 
         const role = profile?.role ?? 'franchisee'
         return NextResponse.redirect(`${origin}/${role}`)
