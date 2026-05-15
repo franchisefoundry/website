@@ -1,5 +1,5 @@
 import { createServerClient } from '@supabase/ssr'
-import { cookies, type ResponseCookie } from 'next/headers'
+import { cookies } from 'next/headers'
 import { createClient as createSupabaseAdmin } from '@supabase/supabase-js'
 
 export async function createClient() {
@@ -13,10 +13,11 @@ export async function createClient() {
         getAll() {
           return cookieStore.getAll()
         },
-        setAll(cookiesToSet: ResponseCookie[]) {
+        setAll(cookiesToSet: { name: string; value: string; options?: object }[]) {
           try {
-            cookiesToSet.forEach(({ name, value, ...options }) =>
-              cookieStore.set(name, value, options)
+            cookiesToSet.forEach(({ name, value, options }) =>
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              cookieStore.set(name, value, options as any)
             )
           } catch {
             // Called from Server Component — middleware handles session refresh
