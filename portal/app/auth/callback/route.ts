@@ -13,23 +13,8 @@ export async function GET(request: Request) {
     if (!error) {
       const { data: { user } } = await supabase.auth.getUser()
       if (user) {
-        // Check if this is an invite flow — user has no password identity yet
-        const hasPassword = user.identities?.some(i => i.provider === 'email') ?? false
-
-        if (!hasPassword) {
-          // Brand new invite — send to setup to set password + confirm details
-          return NextResponse.redirect(`${origin}/setup-account`)
-        }
-
-        // Existing user following a magic link — send to their portal
-        const { data: profile } = await supabase
-          .from('profiles')
-          .select('role')
-          .eq('id', user.id)
-          .single()
-
-        const role = profile?.role ?? 'franchisee'
-        return NextResponse.redirect(`${origin}/${role}`)
+        // Always go through setup-account — it will auto-redirect if already complete
+        return NextResponse.redirect(`${origin}/setup-account`)
       }
     }
   }
