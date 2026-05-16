@@ -26,13 +26,32 @@ export async function POST(request: Request) {
 
   const adminClient = createAdminClient()
 
+  const redirectTo = `${process.env.NEXT_PUBLIC_SITE_URL}/auth/confirm`
+
   const { error } = await adminClient.auth.admin.inviteUserByEmail(email, {
     data: { role, full_name: full_name ?? '' },
-    redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/auth/callback`,
+    redirectTo,
   })
 
   if (error) {
-    return NextResponse.json({ error: error.message }, { status: 400 })
+    const alreadyExists = error.message.toLowerCase().includes('already')
+    if (!alreadyExists) {
+      return NextResponse.json({ error: error.message }, { status: 400 })
+    }
+    // Existing user — send a magic link via the OTP (non-PKCE) flow so the email actually delivers
+    const { createClient: createAnonClient } = await import('@supabase/supabase-js')
+    const anonClient = createAnonClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      { auth: { flowType: 'implicit', autoRefreshToken: false, detectSessionInUrl: false } }
+    )
+    const { error: otpError } = await anonClient.auth.signInWithOtp({
+      email,
+      options: { emailRedirectTo: redirectTo, shouldCreateUser: false },
+    })
+    if (otpError) {
+      return NextResponse.json({ error: `Could not send login link: ${otpError.message}` }, { status: 500 })
+    }
   }
 
   // Log the invite

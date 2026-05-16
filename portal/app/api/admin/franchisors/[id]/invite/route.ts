@@ -52,15 +52,20 @@ export async function POST(
         return NextResponse.json({ error: 'Could not find or create user.' }, { status: 500 })
       }
 
-      // Generate a fresh magic link so they receive an email
-      const { error: linkError } = await admin.auth.admin.generateLink({
-        type: 'magiclink',
+      // Send a magic link via the OTP (non-PKCE) flow so the email actually delivers
+      // Note: generateLink() does NOT send emails — it's for custom providers only
+      const { createClient: createAnonClient } = await import('@supabase/supabase-js')
+      const anonClient = createAnonClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+        { auth: { flowType: 'implicit', autoRefreshToken: false, detectSessionInUrl: false } }
+      )
+      const { error: otpError } = await anonClient.auth.signInWithOtp({
         email,
-        options: { redirectTo },
+        options: { emailRedirectTo: redirectTo, shouldCreateUser: false },
       })
-
-      if (linkError) {
-        return NextResponse.json({ error: `Could not send login link: ${linkError.message}` }, { status: 500 })
+      if (otpError) {
+        return NextResponse.json({ error: `Could not send login link: ${otpError.message}` }, { status: 500 })
       }
     }
 

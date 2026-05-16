@@ -58,7 +58,18 @@ export async function POST(
     const { data: { users } } = await admin.auth.admin.listUsers()
     authUserId = users.find(u => u.email === typedLead.email)?.id
     if (authUserId) {
-      await admin.auth.admin.generateLink({ type: 'magiclink', email: typedLead.email, options: { redirectTo } })
+      // Send a magic link via OTP (non-PKCE) flow so the email actually delivers
+      // Note: generateLink() does NOT send emails — it's for custom providers only
+      const { createClient: createAnonClient } = await import('@supabase/supabase-js')
+      const anonClient = createAnonClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+        { auth: { flowType: 'implicit', autoRefreshToken: false, detectSessionInUrl: false } }
+      )
+      await anonClient.auth.signInWithOtp({
+        email: typedLead.email,
+        options: { emailRedirectTo: redirectTo, shouldCreateUser: false },
+      })
     }
   }
 

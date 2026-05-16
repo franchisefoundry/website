@@ -7,14 +7,14 @@ import { UK_CITIES } from '@/lib/supabase/types'
 const TOTAL_STEPS = 3
 const STEP_LABELS = ['Investment', 'Your Vision', 'About You']
 
-type Budget = { min: number; max: number; label: string; sub: string }
-const BUDGETS: Budget[] = [
-  { min: 0,      max: 50000,   label: 'Under £50k',    sub: 'Low entry' },
-  { min: 50000,  max: 100000,  label: '£50k – £100k',  sub: 'Popular range' },
-  { min: 100000, max: 200000,  label: '£100k – £200k', sub: 'Most options' },
-  { min: 200000, max: 500000,  label: '£200k – £500k', sub: 'Premium brands' },
-  { min: 500000, max: 1500000, label: 'Over £500k',    sub: 'Top-tier' },
-]
+const BUDGET_POINTS = [0, 50000, 100000, 200000, 500000, 1000000, 1500000]
+const BUDGET_LABELS = ['£0', '£50k', '£100k', '£200k', '£500k', '£1m', '£1.5m+']
+
+function formatBudget(v: number) {
+  if (v === 0) return '£0'
+  if (v >= 1000000) return `£${(v / 1000000).toFixed(v % 1000000 === 0 ? 0 : 1)}m`
+  return `£${v / 1000}k`
+}
 
 const TIMELINES = [
   { value: '3',  label: 'Now',         sub: 'Ready to go' },
@@ -25,7 +25,8 @@ const TIMELINES = [
 ]
 
 type FormData = {
-  budget: Budget | null
+  budget_min_idx: number
+  budget_max_idx: number
   timelineLabel: string
   timeline_months: string
   operator_model: string
@@ -38,7 +39,8 @@ type FormData = {
 }
 
 const initial: FormData = {
-  budget: null,
+  budget_min_idx: 1,  // £50k
+  budget_max_idx: 4,  // £500k
   timelineLabel: '',
   timeline_months: '',
   operator_model: '',
@@ -110,14 +112,14 @@ export default function QuizForm() {
 
   function validateStep(): string | null {
     if (step === 1) {
-      if (!data.budget) return 'Please select your investment budget.'
+      if (data.budget_min_idx >= data.budget_max_idx) return 'Please set a valid budget range (min must be less than max).'
       if (!data.timeline_months) return 'Please select your timeline.'
     }
     if (step === 2) {
       if (!data.operator_model) return 'Please select how you plan to run the business.'
-      if (!data.experience) return 'Please select your experience level.'
     }
     if (step === 3) {
+      if (!data.experience) return 'Please select your business background.'
       if (data.preferred_locations.length === 0 && !data.other_location.trim())
         return 'Please select at least one location or enter your preferred area.'
     }
@@ -141,10 +143,8 @@ export default function QuizForm() {
     if (err) { setError(err); return }
 
     const params = new URLSearchParams()
-    if (data.budget) {
-      params.set('bmin', String(data.budget.min))
-      params.set('bmax', String(data.budget.max))
-    }
+    params.set('bmin', String(BUDGET_POINTS[data.budget_min_idx]))
+    params.set('bmax', String(BUDGET_POINTS[data.budget_max_idx]))
     params.set('op', data.operator_model)
     params.set('exp', data.experience)
     params.set('ft', String(data.full_time_available))
@@ -235,12 +235,59 @@ export default function QuizForm() {
 
                 <div>
                   <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-3">Investment Budget</p>
-                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-3">
-                    {BUDGETS.map(b => (
-                      <Tile key={b.label} label={b.label} sub={b.sub}
-                        selected={data.budget?.label === b.label}
-                        onClick={() => set('budget', b)} />
-                    ))}
+                  {/* Selected range display */}
+                  <div className="text-center mb-4">
+                    <span className="text-2xl font-bold text-brand-green">
+                      {formatBudget(BUDGET_POINTS[data.budget_min_idx])}
+                      {' – '}
+                      {data.budget_max_idx === BUDGET_POINTS.length - 1
+                        ? '£1.5m+'
+                        : formatBudget(BUDGET_POINTS[data.budget_max_idx])}
+                    </span>
+                  </div>
+                  {/* Min slider */}
+                  <div className="mb-3">
+                    <div className="flex justify-between text-xs text-slate-400 mb-1">
+                      <span>Min</span>
+                      <span className="font-medium text-slate-600">{formatBudget(BUDGET_POINTS[data.budget_min_idx])}</span>
+                    </div>
+                    <input type="range" min={0} max={BUDGET_POINTS.length - 2} step={1}
+                      value={data.budget_min_idx}
+                      onChange={e => {
+                        const v = Number(e.target.value)
+                        setData(prev => ({
+                          ...prev,
+                          budget_min_idx: v,
+                          budget_max_idx: v >= prev.budget_max_idx ? v + 1 : prev.budget_max_idx,
+                        }))
+                      }}
+                      className="w-full accent-brand-green h-2 cursor-pointer"
+                    />
+                  </div>
+                  {/* Max slider */}
+                  <div>
+                    <div className="flex justify-between text-xs text-slate-400 mb-1">
+                      <span>Max</span>
+                      <span className="font-medium text-slate-600">
+                        {data.budget_max_idx === BUDGET_POINTS.length - 1 ? '£1.5m+' : formatBudget(BUDGET_POINTS[data.budget_max_idx])}
+                      </span>
+                    </div>
+                    <input type="range" min={1} max={BUDGET_POINTS.length - 1} step={1}
+                      value={data.budget_max_idx}
+                      onChange={e => {
+                        const v = Number(e.target.value)
+                        setData(prev => ({
+                          ...prev,
+                          budget_max_idx: v,
+                          budget_min_idx: v <= prev.budget_min_idx ? v - 1 : prev.budget_min_idx,
+                        }))
+                      }}
+                      className="w-full accent-brand-green h-2 cursor-pointer"
+                    />
+                  </div>
+                  {/* Tick labels */}
+                  <div className="flex justify-between text-xs text-slate-300 mt-2">
+                    {BUDGET_LABELS.map(l => <span key={l}>{l}</span>)}
                   </div>
                 </div>
 
