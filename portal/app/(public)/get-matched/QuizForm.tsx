@@ -3,16 +3,24 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
-import { UK_CITIES } from '@/lib/supabase/types'
+import { UK_CITIES, FORMAT_TYPES } from '@/lib/supabase/types'
 
 const TOTAL_STEPS = 3
 const STEP_LABELS = ['Investment', 'Your Vision', 'About You']
 
 const BUDGET_MAX = 1_500_000
 const BUDGET_STEP = 10_000
+const LIQUID_MAX = 500_000
+const LIQUID_STEP = 5_000
 
 function formatBudget(v: number, isMax = false): string {
   if (isMax && v >= BUDGET_MAX) return '£1.5m+'
+  if (v >= 1_000_000) return `£${(v / 1_000_000).toFixed(1).replace('.0', '')}m`
+  if (v === 0) return '£0'
+  return `£${v / 1_000}k`
+}
+
+function formatLiquid(v: number): string {
   if (v >= 1_000_000) return `£${(v / 1_000_000).toFixed(1).replace('.0', '')}m`
   if (v === 0) return '£0'
   return `£${v / 1_000}k`
@@ -29,9 +37,11 @@ const TIMELINES = [
 type FormData = {
   budget_min: number
   budget_max: number
+  liquid_capital: number
   timelineLabel: string
   timeline_months: string
   operator_model: string
+  format_types: string[]
   full_time_available: boolean
   multi_site_interest: boolean
   experience: string
@@ -43,9 +53,11 @@ type FormData = {
 const initial: FormData = {
   budget_min: 50_000,
   budget_max: 300_000,
+  liquid_capital: 25_000,
   timelineLabel: '',
   timeline_months: '',
   operator_model: '',
+  format_types: [],
   full_time_available: true,
   multi_site_interest: false,
   experience: '',
@@ -113,6 +125,21 @@ export default function QuizForm() {
     setError(null)
   }
 
+  function toggleFormat(val: string) {
+    setData(prev => {
+      // 'flexible' is exclusive — selecting it clears others; selecting another clears flexible
+      if (val === 'flexible') {
+        return { ...prev, format_types: prev.format_types.includes('flexible') ? [] : ['flexible'] }
+      }
+      const without = prev.format_types.filter(v => v !== 'flexible')
+      return {
+        ...prev,
+        format_types: without.includes(val) ? without.filter(v => v !== val) : [...without, val],
+      }
+    })
+    setError(null)
+  }
+
   function validateStep(): string | null {
     if (step === 1) {
       if (data.budget_min >= data.budget_max) return 'Please set a valid budget range — min must be less than max.'
@@ -150,11 +177,13 @@ export default function QuizForm() {
     const params = new URLSearchParams()
     params.set('bmin', String(data.budget_min))
     params.set('bmax', String(data.budget_max))
+    params.set('liq', String(data.liquid_capital))
     params.set('op', data.operator_model)
     params.set('exp', data.experience)
     params.set('ft', String(data.full_time_available))
     params.set('ms', String(data.multi_site_interest))
     params.set('tl', data.timeline_months)
+    if (data.format_types.length) params.set('fmt', data.format_types.join(','))
     if (data.preferred_locations.length) params.set('loc', data.preferred_locations.join(','))
     if (data.other_location.trim()) params.set('oloc', data.other_location.trim())
     if (data.goals.trim()) params.set('goals', data.goals.trim())
@@ -324,6 +353,28 @@ export default function QuizForm() {
                   </div>
                 </div>
 
+                {/* Liquid capital */}
+                <div>
+                  <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1">Liquid Capital Available</p>
+                  <p className="text-xs text-slate-400 mb-3">Cash you can access now — separate from your total budget</p>
+                  <div className="text-center mb-4">
+                    <span className="text-2xl font-bold text-brand-green">{formatLiquid(data.liquid_capital)}</span>
+                  </div>
+                  <input
+                    type="range"
+                    min={0}
+                    max={LIQUID_MAX}
+                    step={LIQUID_STEP}
+                    value={data.liquid_capital}
+                    onChange={e => { set('liquid_capital', Number(e.target.value)); setError(null) }}
+                    className="w-full accent-brand-green cursor-pointer"
+                    style={{ height: 6 }}
+                  />
+                  <div className="flex justify-between text-xs text-slate-300 mt-2">
+                    <span>£0</span><span>£125k</span><span>£250k</span><span>£375k</span><span>£500k</span>
+                  </div>
+                </div>
+
                 {/* Timeline */}
                 <div>
                   <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-3">When do you want to start?</p>
@@ -360,6 +411,17 @@ export default function QuizForm() {
                       <RadioCard key={opt.value} label={opt.label} description={opt.description}
                         selected={data.operator_model === opt.value}
                         onClick={() => set('operator_model', opt.value)} />
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2">What kind of venue? <span className="normal-case font-normal text-slate-400">(select all that interest you)</span></p>
+                  <div className="flex flex-wrap gap-2">
+                    {FORMAT_TYPES.map(ft => (
+                      <TogglePill key={ft.value} label={ft.label}
+                        active={data.format_types.includes(ft.value)}
+                        onClick={() => toggleFormat(ft.value)} />
                     ))}
                   </div>
                 </div>

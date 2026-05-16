@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Card, CardBody, CardHeader, CardTitle } from '@/components/ui/card'
-import { UK_CITIES, SECTORS, type FranchisorProfile } from '@/lib/supabase/types'
+import { UK_CITIES, SECTORS, FORMAT_TYPES, type FranchisorProfile } from '@/lib/supabase/types'
 import { createClient } from '@/lib/supabase/client'
 
 function toggle(arr: string[], val: string) {
@@ -65,6 +65,7 @@ export default function EditBrandForm({ franchisor }: Props) {
     investment_min: franchisor.investment_min?.toString() ?? '',
     investment_max: franchisor.investment_max?.toString() ?? '',
     investment_display: franchisor.investment_display ?? '',
+    liquid_capital_min: franchisor.liquid_capital_min?.toString() ?? '',
     timeline_months: franchisor.timeline_months?.toString() ?? '',
     highlights: (franchisor.highlights?.length >= 3
       ? franchisor.highlights.slice(0, 3)
@@ -74,6 +75,7 @@ export default function EditBrandForm({ franchisor }: Props) {
     format: franchisor.format ?? [],
     full_time_required: franchisor.full_time_required ?? false,
     multi_site_ready: franchisor.multi_site_ready ?? false,
+    min_sites_required: franchisor.min_sites_required?.toString() ?? '1',
     locations_available: franchisor.locations_available ?? [],
     locations_display: franchisor.locations_display ?? '',
     sectors: franchisor.sectors ?? [],
@@ -99,6 +101,7 @@ export default function EditBrandForm({ franchisor }: Props) {
           investment_min: form.investment_min ? Number(form.investment_min) : null,
           investment_max: form.investment_max ? Number(form.investment_max) : null,
           investment_display: form.investment_display || null,
+          liquid_capital_min: form.liquid_capital_min ? Number(form.liquid_capital_min) : null,
           timeline_months: form.timeline_months ? Number(form.timeline_months) : null,
           highlights: form.highlights.filter(Boolean),
           operator_model: form.operator_model || null,
@@ -106,6 +109,7 @@ export default function EditBrandForm({ franchisor }: Props) {
           format: form.format,
           full_time_required: form.full_time_required,
           multi_site_ready: form.multi_site_ready,
+          min_sites_required: form.min_sites_required ? Number(form.min_sites_required) : null,
           locations_available: form.locations_available,
           locations_display: form.locations_display || null,
           sectors: form.sectors,
@@ -210,6 +214,13 @@ export default function EditBrandForm({ franchisor }: Props) {
               className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-green focus:border-transparent"
               placeholder="e.g. 6" />
           </div>
+          <div>
+            <label className="block text-sm font-medium text-slate-700 mb-1">Minimum liquid capital (£)</label>
+            <input type="number" value={form.liquid_capital_min} onChange={e => set('liquid_capital_min', e.target.value)}
+              className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-green focus:border-transparent"
+              placeholder="e.g. 50000" />
+            <p className="text-xs text-slate-400 mt-1">Cash the franchisee must have available now</p>
+          </div>
           <div className="col-span-3">
             <label className="block text-sm font-medium text-slate-700 mb-1">
               Display text <span className="text-slate-400 font-normal text-xs">— shown to candidates e.g. &ldquo;£150,000 – £300,000&rdquo;</span>
@@ -246,14 +257,14 @@ export default function EditBrandForm({ franchisor }: Props) {
           <div>
             <label className="block text-sm font-medium text-slate-700 mb-2">Site format(s)</label>
             <div className="flex gap-3 flex-wrap">
-              {['dine-in', 'takeaway', 'kiosk', 'delivery', 'flexible'].map(v => (
-                <Pill key={v} label={v.charAt(0).toUpperCase() + v.slice(1)}
-                  active={form.format.includes(v)}
-                  onClick={() => set('format', toggle(form.format, v))} />
+              {FORMAT_TYPES.map(ft => (
+                <Pill key={ft.value} label={ft.label}
+                  active={form.format.includes(ft.value)}
+                  onClick={() => set('format', toggle(form.format, ft.value))} />
               ))}
             </div>
           </div>
-          <div className="grid grid-cols-2 gap-6">
+          <div className="grid grid-cols-3 gap-6">
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-2">Full-time required?</label>
               <RadioRow value={String(form.full_time_required)} onChange={v => set('full_time_required', v === 'true')}
@@ -263,6 +274,14 @@ export default function EditBrandForm({ franchisor }: Props) {
               <label className="block text-sm font-medium text-slate-700 mb-2">Multi-site ready?</label>
               <RadioRow value={String(form.multi_site_ready)} onChange={v => set('multi_site_ready', v === 'true')}
                 options={[{ value: 'true', label: 'Yes' }, { value: 'false', label: 'No' }]} />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-2">Minimum sites required</label>
+              <RadioRow value={form.min_sites_required} onChange={v => set('min_sites_required', v)}
+                options={[
+                  { value: '1', label: 'Single site OK' },
+                  { value: '2', label: '2+ sites required' },
+                ]} />
             </div>
           </div>
         </CardBody>

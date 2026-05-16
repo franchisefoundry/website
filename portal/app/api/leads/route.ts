@@ -9,10 +9,10 @@ export async function POST(request: NextRequest) {
 
     const {
       full_name, email, phone,
-      investment_min, investment_max,
+      investment_min, investment_max, liquid_capital,
       preferred_locations, operator_model, experience,
       full_time_available, multi_site_interest, timeline_months,
-      sectors, goals,
+      sectors, format_types, goals,
       status = 'meeting_requested',
     } = body
 
@@ -34,6 +34,7 @@ export async function POST(request: NextRequest) {
         phone: phone || null,
         investment_min: investment_min || null,
         investment_max: investment_max || null,
+        liquid_capital: liquid_capital || null,
         preferred_locations: preferred_locations ?? [],
         operator_model: operator_model || null,
         experience: experience || null,
@@ -41,6 +42,7 @@ export async function POST(request: NextRequest) {
         multi_site_interest: multi_site_interest ?? false,
         timeline_months: timeline_months || null,
         sectors: sectors?.length ? sectors : ['food-beverage'],
+        format_types: format_types ?? [],
         goals: goals || null,
         status,
       })
@@ -67,6 +69,7 @@ export async function POST(request: NextRequest) {
         user_id: lead.id,
         investment_min: investment_min ?? null,
         investment_max: investment_max ?? null,
+        liquid_capital: liquid_capital ?? null,
         preferred_locations: preferred_locations ?? [],
         operator_model: operator_model ?? null,
         experience: experience ?? null,
@@ -74,6 +77,7 @@ export async function POST(request: NextRequest) {
         multi_site_interest: multi_site_interest ?? false,
         timeline_months: timeline_months ?? null,
         sectors: sectors ?? [],
+        format_types: format_types ?? [],
         goals: goals ?? null,
         status: 'active',
         tier_2_unlocked: false,

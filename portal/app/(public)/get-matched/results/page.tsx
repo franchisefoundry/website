@@ -31,11 +31,13 @@ export default async function ResultsPage({ searchParams }: Props) {
 
   const bmin = get('bmin') ? Number(get('bmin')) : null
   const bmax = get('bmax') ? Number(get('bmax')) : null
+  const liquid_capital = get('liq') ? Number(get('liq')) : null
   const operator_model = get('op') || null
   const experience = get('exp') || null
   const full_time_available = get('ft') !== 'false'
   const multi_site_interest = get('ms') === 'true'
   const timeline_months = get('tl') ? Number(get('tl')) : null
+  const format_types = get('fmt') ? get('fmt').split(',').filter(Boolean) : []
   const preferred_locations = get('loc') ? get('loc').split(',').filter(Boolean) : []
   const other_location = get('oloc') || ''
   const goals = get('goals') || ''
@@ -52,6 +54,7 @@ export default async function ResultsPage({ searchParams }: Props) {
     user_id: 'temp',
     investment_min: bmin,
     investment_max: bmax,
+    liquid_capital,
     preferred_locations,
     operator_model: operator_model as FranchiseeProfile['operator_model'],
     experience: experience as FranchiseeProfile['experience'],
@@ -59,6 +62,7 @@ export default async function ResultsPage({ searchParams }: Props) {
     multi_site_interest,
     timeline_months,
     sectors: ['food-beverage'],
+    format_types,
     goals,
     status: 'active',
     tier_2_unlocked: false,
@@ -73,7 +77,7 @@ export default async function ResultsPage({ searchParams }: Props) {
     .sort((a, b) => b.score - a.score)
     .slice(0, 3)
 
-  const quizData = { bmin, bmax, operator_model, experience, full_time_available, multi_site_interest, timeline_months, preferred_locations, other_location, goals }
+  const quizData = { bmin, bmax, liquid_capital, operator_model, experience, full_time_available, multi_site_interest, timeline_months, format_types, preferred_locations, other_location, goals }
 
   return (
     <>

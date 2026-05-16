@@ -5,11 +5,13 @@ import { useState } from 'react'
 interface QuizData {
   bmin: number | null
   bmax: number | null
+  liquid_capital: number | null
   operator_model: string | null
   experience: string | null
   full_time_available: boolean
   multi_site_interest: boolean
   timeline_months: number | null
+  format_types: string[]
   preferred_locations: string[]
   other_location: string
   goals: string
@@ -46,11 +48,13 @@ export default function UnlockForm({ quizData, matchCount }: { quizData: QuizDat
           phone: form.phone.trim(),
           investment_min: quizData.bmin,
           investment_max: quizData.bmax,
+          liquid_capital: quizData.liquid_capital,
           operator_model: quizData.operator_model,
           experience: quizData.experience,
           full_time_available: quizData.full_time_available,
           multi_site_interest: quizData.multi_site_interest,
           timeline_months: quizData.timeline_months,
+          format_types: quizData.format_types,
           preferred_locations: quizData.preferred_locations,
           sectors: ['food-beverage'],
           goals: [quizData.goals, quizData.other_location ? `Preferred area: ${quizData.other_location}` : ''].filter(Boolean).join('\n\n'),

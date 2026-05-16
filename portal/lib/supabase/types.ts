@@ -1,6 +1,14 @@
 export type Role = 'franchisee' | 'franchisor' | 'admin'
 export type OperatorModel = 'owner-operator' | 'hire-manager' | 'either'
 export type Experience = 'none' | 'management' | 'food-beverage'
+
+export const FORMAT_TYPES = [
+  { value: 'dine-in',   label: 'Restaurant / Dine-in' },
+  { value: 'takeaway',  label: 'Fast Food / Takeaway' },
+  { value: 'kiosk',     label: 'Kiosk / Counter' },
+  { value: 'delivery',  label: 'Dark Kitchen / Delivery' },
+  { value: 'flexible',  label: 'No preference' },
+]
 export type FranchiseeStatus = 'pending_invite' | 'active' | 'signed' | 'inactive'
 export type FranchisorStatus = 'draft' | 'pending_review' | 'active' | 'inactive'
 export type MatchStatus = 'suggested' | 'shown' | 'interested' | 'intro_made' | 'declined'
@@ -23,6 +31,7 @@ export interface FranchiseeProfile {
   user_id: string
   investment_min: number | null
   investment_max: number | null
+  liquid_capital: number | null
   preferred_locations: string[]
   operator_model: OperatorModel | null
   experience: Experience | null
@@ -30,6 +39,7 @@ export interface FranchiseeProfile {
   multi_site_interest: boolean
   timeline_months: number | null
   sectors: string[]
+  format_types: string[]
   goals: string | null
   status: FranchiseeStatus
   tier_2_unlocked: boolean
@@ -53,6 +63,7 @@ export interface FranchisorProfile {
   investment_min: number | null
   investment_max: number | null
   investment_display: string | null
+  liquid_capital_min: number | null
   locations_available: string[]
   locations_display: string | null
   sectors: string[]
@@ -62,6 +73,7 @@ export interface FranchisorProfile {
   format: string[]
   experience_required: Experience | null
   multi_site_ready: boolean
+  min_sites_required: number | null
   full_time_required: boolean
   status: FranchisorStatus
   admin_notes: string | null
@@ -158,6 +170,7 @@ export interface Lead {
   phone: string | null
   investment_min: number | null
   investment_max: number | null
+  liquid_capital: number | null
   preferred_locations: string[]
   operator_model: OperatorModel | null
   experience: Experience | null
@@ -165,6 +178,7 @@ export interface Lead {
   multi_site_interest: boolean
   timeline_months: number | null
   sectors: string[]
+  format_types: string[]
   goals: string | null
   status: LeadStatus
   created_at: string
