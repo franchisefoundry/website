@@ -39,23 +39,40 @@ export async function POST(
 
   const typedLead = lead as Lead
 
-  // Send portal invite via Supabase Auth
-  const { error: inviteError } = await admin.auth.admin.inviteUserByEmail(typedLead.email, {
+  const redirectTo = `${process.env.NEXT_PUBLIC_SITE_URL}/auth/confirm`
+
+  // Send portal invite
+  const { data: inviteData, error: inviteError } = await admin.auth.admin.inviteUserByEmail(typedLead.email, {
     data: { full_name: typedLead.full_name },
-    redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/auth/confirm`,
+    redirectTo,
   })
 
-  if (inviteError && !inviteError.message.includes('already been registered')) {
-    return NextResponse.json({ error: inviteError.message }, { status: 500 })
+  let authUserId = inviteData?.user?.id
+
+  if (inviteError) {
+    const alreadyExists = inviteError.message.toLowerCase().includes('already')
+    if (!alreadyExists) {
+      return NextResponse.json({ error: inviteError.message }, { status: 500 })
+    }
+    // User already exists — look them up and send a magic link so they get an email
+    const { data: { users } } = await admin.auth.admin.listUsers()
+    authUserId = users.find(u => u.email === typedLead.email)?.id
+    if (authUserId) {
+      await admin.auth.admin.generateLink({ type: 'magiclink', email: typedLead.email, options: { redirectTo } })
+    }
   }
 
-  // Get or create auth user
-  const { data: { users } } = await admin.auth.admin.listUsers()
-  const authUser = users.find(u => u.email === typedLead.email)
+  if (!authUserId) {
+    // Fallback lookup
+    const { data: { users } } = await admin.auth.admin.listUsers()
+    authUserId = users.find(u => u.email === typedLead.email)?.id
+  }
 
-  if (!authUser) {
+  if (!authUserId) {
     return NextResponse.json({ error: 'Could not find user after invite.' }, { status: 500 })
   }
+
+  const authUser = { id: authUserId }
 
   // Ensure profile exists with franchisee role
   await admin.from('profiles').upsert({

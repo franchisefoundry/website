@@ -87,7 +87,7 @@ export default async function ResultsPage({ params }: { params: Promise<{ id: st
           <h2 style={{ textAlign: 'center', color: 'white', fontSize: '2.4rem', fontWeight: 800, letterSpacing: '-0.03em', marginBottom: 10 }}>
             {topMatches.length > 0
               ? `We found your top ${topMatches.length} franchise match${topMatches.length === 1 ? '' : 'es'}!`
-              : 'We're reviewing your profile'}
+              : "We're reviewing your profile"}
           </h2>
           <p style={{ textAlign: 'center', color: 'rgba(255,255,255,0.55)', fontSize: '0.95rem', fontWeight: 300, marginBottom: 48 }}>
             {topMatches.length > 0

@@ -27,33 +27,53 @@ export async function POST(
     }
 
     const admin = createAdminClient()
+    const redirectTo = `${process.env.NEXT_PUBLIC_SITE_URL}/auth/confirm`
 
-    // Invite the user
+    // Try to invite — works for new users
     const { data: inviteData, error: inviteError } = await admin.auth.admin.inviteUserByEmail(email, {
       data: { full_name: name },
-      redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/auth/confirm`,
+      redirectTo,
     })
 
-    if (inviteError && !inviteError.message.toLowerCase().includes('already')) {
-      return NextResponse.json({ error: inviteError.message }, { status: 500 })
-    }
-
     let userId = inviteData?.user?.id
-    if (!userId) {
+
+    if (inviteError) {
+      const alreadyExists = inviteError.message.toLowerCase().includes('already')
+      if (!alreadyExists) {
+        return NextResponse.json({ error: inviteError.message }, { status: 500 })
+      }
+
+      // User already exists — look them up and send a magic link instead
       const { data: { users } } = await admin.auth.admin.listUsers()
-      userId = users.find(u => u.email === email)?.id
+      const existing = users.find(u => u.email === email)
+      userId = existing?.id
+
+      if (!userId) {
+        return NextResponse.json({ error: 'Could not find or create user.' }, { status: 500 })
+      }
+
+      // Generate a fresh magic link so they receive an email
+      const { error: linkError } = await admin.auth.admin.generateLink({
+        type: 'magiclink',
+        email,
+        options: { redirectTo },
+      })
+
+      if (linkError) {
+        return NextResponse.json({ error: `Could not send login link: ${linkError.message}` }, { status: 500 })
+      }
     }
 
     if (!userId) {
       return NextResponse.json({ error: 'Could not find or create user.' }, { status: 500 })
     }
 
-    // Ensure profile record
+    // Ensure profile record exists with correct role
     await admin.from('profiles').upsert({
       id: userId, email, full_name: name, role: 'franchisor',
     }, { onConflict: 'id' })
 
-    // Link the brand profile to this user
+    // Link brand profile to user
     await admin
       .from('franchisor_profiles')
       .update({ user_id: userId, contact_email: email, contact_name: name })
