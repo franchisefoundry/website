@@ -65,16 +65,14 @@ export function NavSidebar({ profile }: NavSidebarProps) {
     <aside className="w-60 min-h-screen bg-brand-green flex flex-col">
       {/* Logo */}
       <div className="px-6 py-5 border-b border-brand-green-dark">
-        <div className="flex items-center gap-3">
-          <Image
-            src="/logo-icon.png"
-            alt="Franchise Foundry"
-            width={28}
-            height={36}
-            className="object-contain"
-          />
-          <span className="text-white font-semibold text-sm tracking-tight">Franchise Foundry</span>
-        </div>
+        <Image
+          src="/logo-white.png"
+          alt="Franchise Foundry"
+          width={160}
+          height={42}
+          className="object-contain"
+          priority
+        />
       </div>
 
       {/* Nav */}
