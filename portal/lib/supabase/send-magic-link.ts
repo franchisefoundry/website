@@ -26,20 +26,33 @@ export async function sendMagicLink(
     options: { redirectTo },
   })
 
-  if (linkError) return linkError.message
+  if (linkError) {
+    console.error('[sendMagicLink] generateLink error:', linkError.message, linkError.status)
+    return linkError.message
+  }
   const actionLink = (data as { properties?: { action_link?: string } })?.properties?.action_link
-  if (!actionLink) return 'Could not generate login link.'
+  if (!actionLink) {
+    console.error('[sendMagicLink] generateLink returned no action_link. data keys:', Object.keys(data ?? {}))
+    return 'Could not generate login link.'
+  }
 
   const resend = new Resend(process.env.RESEND_API_KEY!)
+  const from = `Franchise Foundry <${process.env.RESEND_FROM_EMAIL ?? 'team@franchisefoundry.co.uk'}>`
 
-  const { error: emailError } = await resend.emails.send({
-    from: `Franchise Foundry <${process.env.RESEND_FROM_EMAIL ?? 'team@franchisefoundry.co.uk'}>`,
+  const { data: sendData, error: emailError } = await resend.emails.send({
+    from,
     to: email,
     subject: 'Access your Franchise Foundry portal',
     html: buildEmail(name, actionLink, email),
   })
 
-  return emailError ? String(emailError) : null
+  if (emailError) {
+    console.error('[sendMagicLink] Resend error:', emailError.name, emailError.message)
+    return `${emailError.name}: ${emailError.message}`
+  }
+
+  console.log('[sendMagicLink] Email sent successfully. id:', sendData?.id)
+  return null
 }
 
 function buildEmail(name: string | null, link: string, toEmail: string): string {

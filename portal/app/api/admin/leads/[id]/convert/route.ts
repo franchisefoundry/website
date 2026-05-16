@@ -40,7 +40,8 @@ export async function POST(
     const { data: { users } } = await admin.auth.admin.listUsers()
     authUserId = users.find(u => u.email === typedLead.email)?.id
     if (authUserId) {
-      await sendMagicLink(typedLead.email, typedLead.full_name, redirectTo)
+      const linkErr = await sendMagicLink(typedLead.email, typedLead.full_name, redirectTo)
+      if (linkErr) console.error('[convert] sendMagicLink failed:', linkErr)
     }
   }
 
