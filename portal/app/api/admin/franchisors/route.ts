@@ -33,15 +33,61 @@ export async function POST(request: NextRequest) {
       sectors,
       // Status
       status = 'active',
+      // Whether to send the invite email immediately
+      send_invite = false,
     } = body
 
-    if (!franchisor_email || !franchisor_name) {
-      return NextResponse.json({ error: 'Franchisor name and email are required.' }, { status: 400 })
+    const admin = createAdminClient()
+    const slug = slugify(brand_name || franchisor_name || 'brand')
+
+    const profileData = {
+      brand_name: brand_name || null,
+      slug,
+      category: category || null,
+      teaser: teaser || null,
+      investment_min: investment_min || null,
+      investment_max: investment_max || null,
+      investment_display: investment_min && investment_max
+        ? `£${Number(investment_min).toLocaleString('en-GB')} – £${Number(investment_max).toLocaleString('en-GB')}`
+        : null,
+      timeline_months: timeline_months || null,
+      highlights: highlights?.filter(Boolean) ?? [],
+      operator_model: operator_model || null,
+      experience_required: experience_required || null,
+      format: format ?? [],
+      full_time_required: full_time_required ?? true,
+      multi_site_ready: multi_site_ready ?? false,
+      locations_available: locations_available ?? [],
+      locations_display: locations_display || null,
+      sectors: sectors ?? [],
+      status,
+      contact_email: franchisor_email || null,
+      contact_name: franchisor_name || null,
     }
 
-    const admin = createAdminClient()
+    if (!send_invite) {
+      // Save profile only — no invite sent
+      const { data: profile, error: profileError } = await admin
+        .from('franchisor_profiles')
+        .insert({ ...profileData, user_id: null })
+        .select('id')
+        .single()
 
-    // Invite the franchisor user
+      if (profileError || !profile) {
+        return NextResponse.json(
+          { error: `Could not save profile: ${profileError?.message}` },
+          { status: 500 }
+        )
+      }
+
+      return NextResponse.json({ id: profile.id, success: true })
+    }
+
+    // Send invite flow
+    if (!franchisor_email || !franchisor_name) {
+      return NextResponse.json({ error: 'Name and email are required to send an invite.' }, { status: 400 })
+    }
+
     const { data: inviteData, error: inviteError } = await admin.auth.admin.inviteUserByEmail(
       franchisor_email,
       {
@@ -50,24 +96,20 @@ export async function POST(request: NextRequest) {
       }
     )
 
-    // Allow "already registered" — we'll still create/update the profile
     if (inviteError && !inviteError.message.toLowerCase().includes('already')) {
       return NextResponse.json({ error: inviteError.message }, { status: 500 })
     }
 
-    // Get the user ID (either from invite or existing user lookup)
     let franchiseeUserId = inviteData?.user?.id
     if (!franchiseeUserId) {
       const { data: { users } } = await admin.auth.admin.listUsers()
-      const existing = users.find(u => u.email === franchisor_email)
-      franchiseeUserId = existing?.id
+      franchiseeUserId = users.find(u => u.email === franchisor_email)?.id
     }
 
     if (!franchiseeUserId) {
       return NextResponse.json({ error: 'Could not find or create user.' }, { status: 500 })
     }
 
-    // Ensure profile record exists with franchisor role
     await admin.from('profiles').upsert({
       id: franchiseeUserId,
       email: franchisor_email,
@@ -75,34 +117,9 @@ export async function POST(request: NextRequest) {
       role: 'franchisor',
     }, { onConflict: 'id' })
 
-    const slug = slugify(brand_name || franchisor_name)
-
-    // Create/update the brand profile
     const { data: profile, error: profileError } = await admin
       .from('franchisor_profiles')
-      .upsert({
-        user_id: franchiseeUserId,
-        brand_name: brand_name || null,
-        slug,
-        category: category || null,
-        teaser: teaser || null,
-        investment_min: investment_min || null,
-        investment_max: investment_max || null,
-        investment_display: investment_min && investment_max
-          ? `£${Number(investment_min).toLocaleString('en-GB')} – £${Number(investment_max).toLocaleString('en-GB')}`
-          : null,
-        timeline_months: timeline_months || null,
-        highlights: highlights?.filter(Boolean) ?? [],
-        operator_model: operator_model || null,
-        experience_required: experience_required || null,
-        format: format ?? [],
-        full_time_required: full_time_required ?? true,
-        multi_site_ready: multi_site_ready ?? false,
-        locations_available: locations_available ?? [],
-        locations_display: locations_display || null,
-        sectors: sectors ?? [],
-        status,
-      }, { onConflict: 'user_id' })
+      .upsert({ ...profileData, user_id: franchiseeUserId }, { onConflict: 'user_id' })
       .select('id')
       .single()
 
@@ -113,7 +130,6 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Log the invite
     await admin.from('invites').insert({
       email: franchisor_email,
       role: 'franchisor',

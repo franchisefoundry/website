@@ -45,7 +45,7 @@ export interface FranchiseeProfile {
 
 export interface FranchisorProfile {
   id: string
-  user_id: string
+  user_id: string | null
   brand_name: string | null
   slug: string | null
   category: string | null
@@ -65,6 +65,8 @@ export interface FranchisorProfile {
   full_time_required: boolean
   status: FranchisorStatus
   admin_notes: string | null
+  contact_email: string | null
+  contact_name: string | null
   created_at: string
   updated_at: string
   // joined

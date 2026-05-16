@@ -7,13 +7,17 @@ import type { FranchisorProfile } from '@/lib/supabase/types'
 import { createClient } from '@/lib/supabase/client'
 
 interface Props {
-  franchisor: FranchisorProfile
+  franchisor: FranchisorProfile & { contact_email?: string | null; contact_name?: string | null }
 }
 
 export default function FranchisorStatusActions({ franchisor }: Props) {
   const router = useRouter()
   const [loading, setLoading] = useState<string | null>(null)
   const [notes, setNotes] = useState(franchisor.admin_notes ?? '')
+  const [inviteEmail, setInviteEmail] = useState(franchisor.contact_email ?? '')
+  const [inviteName, setInviteName] = useState(franchisor.contact_name ?? '')
+  const [inviteError, setInviteError] = useState<string | null>(null)
+  const [inviteSent, setInviteSent] = useState(false)
 
   async function updateStatus(status: string) {
     setLoading(status)
@@ -23,6 +27,25 @@ export default function FranchisorStatusActions({ franchisor }: Props) {
       .update({ status })
       .eq('id', franchisor.id)
     setLoading(null)
+    router.refresh()
+  }
+
+  async function sendInvite() {
+    if (!inviteEmail || !inviteName) {
+      setInviteError('Name and email are required.')
+      return
+    }
+    setLoading('invite')
+    setInviteError(null)
+    const res = await fetch(`/api/admin/franchisors/${franchisor.id}/invite`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: inviteEmail, name: inviteName }),
+    })
+    const data = await res.json()
+    setLoading(null)
+    if (!res.ok) { setInviteError(data.error ?? 'Something went wrong.'); return }
+    setInviteSent(true)
     router.refresh()
   }
 
@@ -39,6 +62,46 @@ export default function FranchisorStatusActions({ franchisor }: Props) {
 
   return (
     <div className="space-y-4">
+
+      {/* Send invite — only shown when no user is linked yet */}
+      {!franchisor.user_id && (
+        <Card>
+          <CardHeader><CardTitle>Send portal invite</CardTitle></CardHeader>
+          <CardBody className="space-y-3">
+            {inviteSent ? (
+              <p className="text-sm text-emerald-600 bg-emerald-50 border border-emerald-200 rounded-lg px-3 py-2">
+                ✓ Invite sent successfully.
+              </p>
+            ) : (
+              <>
+                <p className="text-xs text-slate-500">
+                  This profile has no linked user yet. Enter the franchisor&apos;s details to send their invite.
+                </p>
+                <div>
+                  <label className="block text-xs font-medium text-slate-700 mb-1">Name</label>
+                  <input type="text" value={inviteName} onChange={e => setInviteName(e.target.value)}
+                    className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-green focus:border-transparent"
+                    placeholder="Jane Smith" />
+                </div>
+                <div>
+                  <label className="block text-xs font-medium text-slate-700 mb-1">Email</label>
+                  <input type="email" value={inviteEmail} onChange={e => setInviteEmail(e.target.value)}
+                    className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-green focus:border-transparent"
+                    placeholder="jane@brand.com" />
+                </div>
+                {inviteError && (
+                  <p className="text-xs text-red-600">{inviteError}</p>
+                )}
+                <button onClick={sendInvite} disabled={loading === 'invite'}
+                  className="w-full bg-brand-green hover:bg-brand-green-dark text-white text-sm font-medium py-2 rounded-lg transition-colors disabled:opacity-60">
+                  {loading === 'invite' ? 'Sending…' : 'Send invite'}
+                </button>
+              </>
+            )}
+          </CardBody>
+        </Card>
+      )}
+
       <Card>
         <CardHeader><CardTitle>Profile status</CardTitle></CardHeader>
         <CardBody className="space-y-2">

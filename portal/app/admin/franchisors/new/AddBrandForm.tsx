@@ -92,7 +92,7 @@ function RadioRow({ options, value, onChange }: {
 
 export default function AddBrandForm() {
   const [form, setForm] = useState<FormState>(initial)
-  const [saving, setSaving] = useState(false)
+  const [saving, setSaving] = useState<'save' | 'invite' | null>(null)
   const [error, setError] = useState<string | null>(null)
   const router = useRouter()
 
@@ -100,9 +100,12 @@ export default function AddBrandForm() {
     setForm(prev => ({ ...prev, [key]: value }))
   }
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault()
-    setSaving(true)
+  async function handleSubmit(sendInvite: boolean) {
+    if (sendInvite && (!form.franchisor_email || !form.franchisor_name)) {
+      setError('Please enter the franchisor name and email before sending an invite.')
+      return
+    }
+    setSaving(sendInvite ? 'invite' : 'save')
     setError(null)
 
     try {
@@ -114,6 +117,7 @@ export default function AddBrandForm() {
           investment_min: form.investment_min ? Number(form.investment_min) : null,
           investment_max: form.investment_max ? Number(form.investment_max) : null,
           timeline_months: form.timeline_months ? Number(form.timeline_months) : null,
+          send_invite: sendInvite,
         }),
       })
 
@@ -121,7 +125,7 @@ export default function AddBrandForm() {
 
       if (!res.ok) {
         setError(data.error ?? 'Something went wrong.')
-        setSaving(false)
+        setSaving(null)
         return
       }
 
@@ -129,22 +133,23 @@ export default function AddBrandForm() {
       router.refresh()
     } catch (err) {
       setError(`Request failed: ${err instanceof Error ? err.message : String(err)}`)
-      setSaving(false)
+      setSaving(null)
     }
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6 max-w-4xl">
+    <form onSubmit={e => e.preventDefault()} className="space-y-6 max-w-4xl">
 
       {/* Franchisor contact */}
       <Card>
-        <CardHeader><CardTitle>Franchisor contact</CardTitle></CardHeader>
+        <CardHeader>
+          <CardTitle>Franchisor contact <span className="text-slate-400 font-normal text-sm ml-1">— optional, required only to send invite</span></CardTitle>
+        </CardHeader>
         <CardBody className="grid grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium text-slate-700 mb-1">Full name</label>
             <input
               type="text"
-              required
               value={form.franchisor_name}
               onChange={e => set('franchisor_name', e.target.value)}
               className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-green focus:border-transparent"
@@ -155,7 +160,6 @@ export default function AddBrandForm() {
             <label className="block text-sm font-medium text-slate-700 mb-1">Email address</label>
             <input
               type="email"
-              required
               value={form.franchisor_email}
               onChange={e => set('franchisor_email', e.target.value)}
               className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-green focus:border-transparent"
@@ -366,16 +370,26 @@ export default function AddBrandForm() {
 
       <div className="flex gap-3 pb-8">
         <button
-          type="submit"
-          disabled={saving}
+          type="button"
+          onClick={() => handleSubmit(false)}
+          disabled={saving !== null}
           className="bg-brand-green hover:bg-brand-green-dark text-white font-medium py-2.5 px-8 rounded-lg text-sm transition-colors disabled:opacity-60"
         >
-          {saving ? 'Creating…' : 'Create profile & send invite'}
+          {saving === 'save' ? 'Saving…' : 'Save profile'}
+        </button>
+        <button
+          type="button"
+          onClick={() => handleSubmit(true)}
+          disabled={saving !== null}
+          className="border-2 border-brand-green text-brand-green hover:bg-brand-green hover:text-white font-medium py-2.5 px-8 rounded-lg text-sm transition-colors disabled:opacity-60"
+        >
+          {saving === 'invite' ? 'Sending…' : 'Save & send invite'}
         </button>
         <button
           type="button"
           onClick={() => router.back()}
-          className="border border-slate-300 text-slate-700 text-sm font-medium py-2.5 px-6 rounded-lg hover:bg-slate-50 transition-colors"
+          disabled={saving !== null}
+          className="border border-slate-300 text-slate-700 text-sm font-medium py-2.5 px-6 rounded-lg hover:bg-slate-50 transition-colors disabled:opacity-60"
         >
           Cancel
         </button>
