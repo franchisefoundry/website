@@ -19,18 +19,21 @@ const adminNav: NavItem[] = [
   { label: 'Franchisees',   href: '/admin/franchisees',     icon: '▪' },
   { label: 'Franchisors',   href: '/admin/franchisors',     icon: '▪' },
   { label: 'Matches',       href: '/admin/matches',         icon: '▪' },
+  { label: 'Partners',      href: '/admin/partners',        icon: '▪' },
   { label: 'Intro Requests',href: '/admin/intro-requests',  icon: '▪' },
 ]
 
 const franchiseeNav: NavItem[] = [
-  { label: 'Dashboard',  href: '/franchisee',          icon: '▪' },
-  { label: 'My Matches', href: '/franchisee/matches',  icon: '▪' },
-  { label: 'My Profile', href: '/franchisee/profile',  icon: '▪' },
+  { label: 'Dashboard',   href: '/franchisee',             icon: '▪' },
+  { label: 'My Matches',  href: '/franchisee/matches',     icon: '▪' },
+  { label: 'Marketplace', href: '/franchisee/marketplace', icon: '▪' },
+  { label: 'My Profile',  href: '/franchisee/profile',     icon: '▪' },
 ]
 
 const franchisorNav: NavItem[] = [
   { label: 'Dashboard',      href: '/franchisor',                  icon: '▪' },
   { label: 'Brand Profile',  href: '/franchisor/brand-profile',    icon: '▪' },
+  { label: 'Marketplace',    href: '/franchisor/marketplace',      icon: '▪' },
 ]
 
 function navForRole(role: string): NavItem[] {

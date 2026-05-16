@@ -59,12 +59,12 @@ export default function FranchiseeActions({ franchisee }: Props) {
       </Card>
 
       <Card>
-        <CardHeader><CardTitle>Tier 2 access</CardTitle></CardHeader>
+        <CardHeader><CardTitle>Marketplace access</CardTitle></CardHeader>
         <CardBody>
           <p className="text-xs text-slate-500 mb-3">
             {franchisee.tier_2_unlocked
-              ? 'Partner directory is unlocked for this franchisee.'
-              : 'Unlock after they\'ve signed with a brand to give access to the partner directory.'}
+              ? 'Marketplace is unlocked — franchisee can browse partners and request intros.'
+              : 'Unlock to give this franchisee access to the partner marketplace.'}
           </p>
           <button
             onClick={toggleTier2}
@@ -75,7 +75,7 @@ export default function FranchiseeActions({ franchisee }: Props) {
                 : 'bg-brand-green text-white hover:bg-brand-green-dark'
             }`}
           >
-            {loading === 'tier2' ? 'Saving…' : franchisee.tier_2_unlocked ? 'Lock Tier 2' : 'Unlock Tier 2'}
+            {loading === 'tier2' ? 'Saving…' : franchisee.tier_2_unlocked ? '🔒 Lock marketplace' : '🔓 Unlock marketplace'}
           </button>
         </CardBody>
       </Card>

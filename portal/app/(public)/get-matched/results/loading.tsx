@@ -79,7 +79,7 @@ export default function ResultsLoading() {
           height: 4,
           background: 'linear-gradient(90deg, #5f725f, #c8924a)',
           borderRadius: '0 2px 2px 0',
-          animation: 'ffProgress 5s ease-out forwards',
+          animation: 'ffProgress 6s ease-out forwards',
         }} />
       </div>
     </>

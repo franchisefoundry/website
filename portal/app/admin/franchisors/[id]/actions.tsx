@@ -14,6 +14,7 @@ export default function FranchisorStatusActions({ franchisor }: Props) {
   const router = useRouter()
   const [loading, setLoading] = useState<string | null>(null)
   const [notes, setNotes] = useState(franchisor.admin_notes ?? '')
+  const [marketplaceUnlocked, setMarketplaceUnlocked] = useState(franchisor.marketplace_unlocked ?? false)
   const [inviteEmail, setInviteEmail] = useState(franchisor.contact_email ?? '')
   const [inviteName, setInviteName] = useState(franchisor.contact_name ?? '')
   const [inviteError, setInviteError] = useState<string | null>(null)
@@ -46,6 +47,16 @@ export default function FranchisorStatusActions({ franchisor }: Props) {
     setLoading(null)
     if (!res.ok) { setInviteError(data.error ?? 'Something went wrong.'); return }
     setInviteSent(true)
+    router.refresh()
+  }
+
+  async function toggleMarketplace() {
+    setLoading('marketplace')
+    const supabase = createClient()
+    const next = !marketplaceUnlocked
+    await supabase.from('franchisor_profiles').update({ marketplace_unlocked: next }).eq('id', franchisor.id)
+    setMarketplaceUnlocked(next)
+    setLoading(null)
     router.refresh()
   }
 
@@ -122,6 +133,28 @@ export default function FranchisorStatusActions({ franchisor }: Props) {
           <p className="text-xs text-slate-400 pt-1">
             Set to <strong>Active</strong> to make this brand available for matching.
           </p>
+        </CardBody>
+      </Card>
+
+      <Card>
+        <CardHeader><CardTitle>Marketplace access</CardTitle></CardHeader>
+        <CardBody>
+          <p className="text-xs text-slate-500 mb-3">
+            {marketplaceUnlocked
+              ? 'Marketplace is unlocked — franchisor can browse partners and request intros.'
+              : 'Unlock to give this franchisor access to the partner marketplace.'}
+          </p>
+          <button
+            onClick={toggleMarketplace}
+            disabled={loading === 'marketplace'}
+            className={`w-full py-2 px-3 rounded-lg text-sm font-medium transition-colors ${
+              marketplaceUnlocked
+                ? 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                : 'bg-brand-green text-white hover:bg-brand-green-dark'
+            }`}
+          >
+            {loading === 'marketplace' ? 'Saving…' : marketplaceUnlocked ? '🔒 Lock marketplace' : '🔓 Unlock marketplace'}
+          </button>
         </CardBody>
       </Card>
 

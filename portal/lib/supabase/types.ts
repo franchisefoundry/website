@@ -75,6 +75,7 @@ export interface FranchisorProfile {
   multi_site_ready: boolean
   min_sites_required: number | null
   full_time_required: boolean
+  marketplace_unlocked: boolean
   status: FranchisorStatus
   admin_notes: string | null
   contact_email: string | null

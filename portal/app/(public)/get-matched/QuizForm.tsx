@@ -8,14 +8,24 @@ import { UK_CITIES, FORMAT_TYPES } from '@/lib/supabase/types'
 const TOTAL_STEPS = 3
 const STEP_LABELS = ['Investment', 'Your Vision', 'About You']
 
-const BUDGET_MAX = 1_500_000
-const BUDGET_STEP = 10_000
+// Non-linear budget slider: positions 0-50 = £10k steps (£0-£500k),
+// positions 51-54 = £250k steps (£750k, £1m, £1.25m, £1.5m)
+const BUDGET_SLIDER_MAX = 54
 const LIQUID_MAX = 500_000
 const LIQUID_STEP = 5_000
 
+function posToValue(pos: number): number {
+  if (pos <= 50) return pos * 10_000
+  return 500_000 + (pos - 50) * 250_000
+}
+function valueToPos(value: number): number {
+  if (value <= 500_000) return value / 10_000
+  return 50 + (value - 500_000) / 250_000
+}
+
 function formatBudget(v: number, isMax = false): string {
-  if (isMax && v >= BUDGET_MAX) return '£1.5m+'
-  if (v >= 1_000_000) return `£${(v / 1_000_000).toFixed(1).replace('.0', '')}m`
+  if (isMax && v >= 1_500_000) return '£1.5m+'
+  if (v >= 1_000_000) return `£${(v / 1_000_000).toFixed(2).replace(/\.?0+$/, '')}m`
   if (v === 0) return '£0'
   return `£${v / 1_000}k`
 }
@@ -51,8 +61,8 @@ type FormData = {
 }
 
 const initial: FormData = {
-  budget_min: 50_000,
-  budget_max: 300_000,
+  budget_min: 100_000,
+  budget_max: 250_000,
   liquid_capital: 25_000,
   timelineLabel: '',
   timeline_months: '',
@@ -142,7 +152,7 @@ export default function QuizForm() {
 
   function validateStep(): string | null {
     if (step === 1) {
-      if (data.budget_min >= data.budget_max) return 'Please set a valid budget range — min must be less than max.'
+      if (data.budget_min >= data.budget_max) return 'Please set a valid budget range — minimum must be less than maximum.'
       if (!data.timeline_months) return 'Please select your timeline.'
     }
     if (step === 2) {
@@ -233,7 +243,7 @@ export default function QuizForm() {
           <p style={{ margin: 0, fontSize: '0.92rem', fontWeight: 400, color: '#aaa', textAlign: 'center' }}>
             Finding the best franchise opportunities for you
           </p>
-          <div style={{ position: 'absolute', bottom: 0, left: 0, height: 4, background: 'linear-gradient(90deg, #5f725f, #c8924a)', borderRadius: '0 2px 2px 0', animation: 'ffProgress 5s ease-out forwards' }} />
+          <div style={{ position: 'absolute', bottom: 0, left: 0, height: 4, background: 'linear-gradient(90deg, #5f725f, #c8924a)', borderRadius: '0 2px 2px 0', animation: 'ffProgress 6s ease-out forwards' }} />
         </div>
       </>
     )
@@ -330,15 +340,15 @@ export default function QuizForm() {
                       <input
                         type="range"
                         min={0}
-                        max={BUDGET_MAX - BUDGET_STEP}
-                        step={BUDGET_STEP}
-                        value={data.budget_min}
+                        max={BUDGET_SLIDER_MAX - 1}
+                        step={1}
+                        value={valueToPos(data.budget_min)}
                         onChange={e => {
-                          const v = Number(e.target.value)
+                          const v = posToValue(Number(e.target.value))
                           setData(prev => ({
                             ...prev,
                             budget_min: v,
-                            budget_max: v >= prev.budget_max ? v + BUDGET_STEP : prev.budget_max,
+                            budget_max: v >= prev.budget_max ? posToValue(valueToPos(v) + 1) : prev.budget_max,
                           }))
                           setError(null)
                         }}
@@ -353,16 +363,16 @@ export default function QuizForm() {
                       </div>
                       <input
                         type="range"
-                        min={BUDGET_STEP}
-                        max={BUDGET_MAX}
-                        step={BUDGET_STEP}
-                        value={data.budget_max}
+                        min={1}
+                        max={BUDGET_SLIDER_MAX}
+                        step={1}
+                        value={valueToPos(data.budget_max)}
                         onChange={e => {
-                          const v = Number(e.target.value)
+                          const v = posToValue(Number(e.target.value))
                           setData(prev => ({
                             ...prev,
                             budget_max: v,
-                            budget_min: v <= prev.budget_min ? Math.max(0, v - BUDGET_STEP) : prev.budget_min,
+                            budget_min: v <= prev.budget_min ? posToValue(Math.max(0, valueToPos(v) - 1)) : prev.budget_min,
                           }))
                           setError(null)
                         }}
@@ -372,7 +382,7 @@ export default function QuizForm() {
                     </div>
                   </div>
                   <div className="flex justify-between text-xs text-slate-300 mt-2">
-                    <span>£0</span><span>£375k</span><span>£750k</span><span>£1.1m</span><span>£1.5m+</span>
+                    <span>£0</span><span>£150k</span><span>£300k</span><span>£500k</span><span>£1m</span><span>£1.5m+</span>
                   </div>
                 </div>
 
