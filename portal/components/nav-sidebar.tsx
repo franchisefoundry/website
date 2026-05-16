@@ -98,6 +98,25 @@ export function NavSidebar({ profile }: NavSidebarProps) {
         })}
       </nav>
 
+      {/* Admin preview switcher */}
+      {profile.role === 'admin' && (
+        <div className="px-3 pb-3 border-t border-brand-green-dark pt-3">
+          <p className="px-3 text-white/40 text-xs font-medium mb-1">Preview as</p>
+          <Link
+            href="/franchisee"
+            className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs text-white/60 hover:text-white hover:bg-white/10 transition-colors"
+          >
+            <span>👤</span> Franchisee view
+          </Link>
+          <Link
+            href="/franchisor"
+            className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs text-white/60 hover:text-white hover:bg-white/10 transition-colors"
+          >
+            <span>🏢</span> Franchisor view
+          </Link>
+        </div>
+      )}
+
       {/* User */}
       <div className="px-3 pb-4 border-t border-brand-green-dark pt-4">
         <div className="flex items-center gap-3 px-3 py-2 mb-1">

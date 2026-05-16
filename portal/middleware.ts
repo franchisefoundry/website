@@ -66,13 +66,14 @@ export async function middleware(request: NextRequest) {
   }
 
   // Enforce portal boundaries
+  // Admins can visit any portal section (preview mode)
   if (pathname.startsWith('/admin') && role !== 'admin') {
     return NextResponse.redirect(new URL(`/${role}`, request.url))
   }
-  if (pathname.startsWith('/franchisee') && role !== 'franchisee') {
+  if (pathname.startsWith('/franchisee') && role !== 'franchisee' && role !== 'admin') {
     return NextResponse.redirect(new URL(`/${role}`, request.url))
   }
-  if (pathname.startsWith('/franchisor') && role !== 'franchisor') {
+  if (pathname.startsWith('/franchisor') && role !== 'franchisor' && role !== 'admin') {
     return NextResponse.redirect(new URL(`/${role}`, request.url))
   }
 
