@@ -9,21 +9,40 @@ function CallbackHandler() {
   const searchParams = useSearchParams()
 
   useEffect(() => {
-    const code = searchParams.get('code')
-
-    if (!code) {
-      router.replace('/login?error=auth_failed')
-      return
-    }
-
     const supabase = createClient()
-    supabase.auth.exchangeCodeForSession(code).then(({ error }) => {
-      if (error) {
-        router.replace('/login?error=auth_failed')
-      } else {
+
+    // Listen for auth state change — handles BOTH:
+    // 1. PKCE flow: code in URL query param (?code=xxx)
+    // 2. Implicit flow: token in URL hash (#access_token=xxx)
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'SIGNED_IN' && session) {
+        subscription.unsubscribe()
         router.replace('/setup-account')
       }
     })
+
+    // Handle PKCE code flow manually if code is present
+    const code = searchParams.get('code')
+    if (code) {
+      supabase.auth.exchangeCodeForSession(code).then(({ error }) => {
+        if (error) {
+          subscription.unsubscribe()
+          router.replace('/login?error=auth_failed')
+        }
+        // If successful, onAuthStateChange above will fire and redirect
+      })
+    }
+
+    // Fallback timeout — if nothing happens in 10s, go to login
+    const timeout = setTimeout(() => {
+      subscription.unsubscribe()
+      router.replace('/login')
+    }, 10000)
+
+    return () => {
+      subscription.unsubscribe()
+      clearTimeout(timeout)
+    }
   }, [router, searchParams])
 
   return (
