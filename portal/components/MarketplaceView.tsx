@@ -94,18 +94,44 @@ function RequestIntroModal({ partner, onClose }: RequestIntroModalProps) {
 interface Props {
   partners: Partner[]
   unlocked: boolean
+  isAdmin?: boolean
   role: 'franchisee' | 'franchisor'
 }
 
-export default function MarketplaceView({ partners, unlocked, role }: Props) {
+export default function MarketplaceView({ partners, unlocked: initialUnlocked, isAdmin = false, role }: Props) {
   const [filter, setFilter] = useState<PartnerSector | 'all'>('all')
   const [introPartner, setIntroPartner] = useState<Partner | null>(null)
+  // Admin can toggle preview between locked/unlocked
+  const [previewUnlocked, setPreviewUnlocked] = useState(initialUnlocked)
+  const unlocked = isAdmin ? previewUnlocked : initialUnlocked
 
   const sectors = ['all', ...Array.from(new Set(partners.map(p => p.sector)))] as (PartnerSector | 'all')[]
   const filtered = filter === 'all' ? partners : partners.filter(p => p.sector === filter)
 
   return (
     <>
+      {/* Admin preview banner */}
+      {isAdmin && (
+        <div className="flex items-center justify-between gap-4 bg-amber-50 border border-amber-200 rounded-xl px-5 py-3 mb-6">
+          <div className="flex items-center gap-2.5">
+            <span className="text-amber-500 text-sm">👁</span>
+            <p className="text-sm text-amber-800 font-medium">
+              Admin preview — {role === 'franchisee' ? 'Franchisee' : 'Franchisor'} marketplace
+            </p>
+          </div>
+          <button
+            onClick={() => setPreviewUnlocked(v => !v)}
+            className={`flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold border transition-colors ${
+              previewUnlocked
+                ? 'bg-emerald-600 text-white border-emerald-600 hover:bg-emerald-700'
+                : 'bg-white text-slate-600 border-slate-300 hover:border-slate-400'
+            }`}
+          >
+            {previewUnlocked ? '🔓 Unlocked view' : '🔒 Locked view'}
+          </button>
+        </div>
+      )}
+
       {/* Page header */}
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-slate-900 tracking-tight mb-1">Partner Marketplace</h1>
