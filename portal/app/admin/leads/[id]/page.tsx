@@ -5,6 +5,7 @@ import { PageHeader } from '@/components/page-header'
 import { scoreLabel, scoreColour } from '@/lib/matching'
 import type { Lead, LeadMatch } from '@/lib/supabase/types'
 import ConvertButton from './ConvertButton'
+import DeleteLeadButton from '../DeleteLeadButton'
 
 const OPERATOR_LABELS: Record<string, string> = {
   'owner-operator': 'Owner-operator',
@@ -45,6 +46,7 @@ export default async function LeadDetailPage({ params }: { params: Promise<{ id:
       <PageHeader
         title={typedLead.full_name}
         description={`Lead · ${new Date(typedLead.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}`}
+        action={<DeleteLeadButton leadId={id} redirectAfter />}
       />
 
       <div className="grid grid-cols-3 gap-6">

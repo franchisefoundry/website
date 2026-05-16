@@ -13,10 +13,14 @@ export async function POST(request: NextRequest) {
       preferred_locations, operator_model, experience,
       full_time_available, multi_site_interest, timeline_months,
       sectors, goals,
+      status = 'meeting_requested',
     } = body
 
     if (!full_name || !email) {
       return NextResponse.json({ error: 'Name and email are required.' }, { status: 400 })
+    }
+    if (!phone) {
+      return NextResponse.json({ error: 'Phone number is required.' }, { status: 400 })
     }
 
     const supabase = createAdminClient()
@@ -36,9 +40,9 @@ export async function POST(request: NextRequest) {
         full_time_available: full_time_available ?? true,
         multi_site_interest: multi_site_interest ?? false,
         timeline_months: timeline_months || null,
-        sectors: sectors ?? [],
+        sectors: sectors?.length ? sectors : ['food-beverage'],
         goals: goals || null,
-        status: 'new',
+        status,
       })
       .select('id')
       .single()

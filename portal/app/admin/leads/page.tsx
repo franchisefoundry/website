@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase/server'
 import { PageHeader } from '@/components/page-header'
 import Link from 'next/link'
 import type { Lead } from '@/lib/supabase/types'
+import DeleteLeadButton from './DeleteLeadButton'
 
 const STATUS_STYLES: Record<string, string> = {
   new: 'bg-blue-50 text-blue-700',
@@ -70,12 +71,12 @@ export default async function AdminLeadsPage() {
                     {new Date(lead.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
                   </td>
                   <td className="px-4 py-3 text-right">
-                    <Link
-                      href={`/admin/leads/${lead.id}`}
-                      className="text-brand-green text-xs font-medium hover:underline"
-                    >
-                      View →
-                    </Link>
+                    <div className="flex items-center justify-end gap-3">
+                      <Link href={`/admin/leads/${lead.id}`} className="text-brand-green text-xs font-medium hover:underline">
+                        View →
+                      </Link>
+                      <DeleteLeadButton leadId={lead.id} />
+                    </div>
                   </td>
                 </tr>
               ))}

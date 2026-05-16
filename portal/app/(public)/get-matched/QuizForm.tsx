@@ -2,49 +2,95 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { UK_CITIES, SECTORS } from '@/lib/supabase/types'
+import { UK_CITIES } from '@/lib/supabase/types'
 
-const TOTAL_STEPS = 6
+const TOTAL_STEPS = 3
+const STEP_LABELS = ['Investment', 'Your Vision', 'About You']
+
+type Budget = { min: number; max: number; label: string; sub: string }
+const BUDGETS: Budget[] = [
+  { min: 0,      max: 50000,   label: 'Under £50k',    sub: 'Low entry' },
+  { min: 50000,  max: 100000,  label: '£50k – £100k',  sub: 'Popular range' },
+  { min: 100000, max: 200000,  label: '£100k – £200k', sub: 'Most options' },
+  { min: 200000, max: 500000,  label: '£200k – £500k', sub: 'Premium brands' },
+  { min: 500000, max: 1500000, label: 'Over £500k',    sub: 'Top-tier' },
+]
+
+const TIMELINES = [
+  { value: '3',  label: 'Now',        sub: 'Ready to go' },
+  { value: '3',  label: '1–3 months', sub: 'Very soon' },
+  { value: '6',  label: '3–6 months', sub: 'Exploring' },
+  { value: '12', label: '6–12 months',sub: 'Planning ahead' },
+  { value: '24', label: '12+ months', sub: 'Future goal' },
+]
 
 type FormData = {
-  full_name: string
-  email: string
-  phone: string
-  investment_min: string
-  investment_max: string
+  budget: Budget | null
+  timelineLabel: string
+  timeline_months: string
   operator_model: string
-  experience: string
   full_time_available: boolean
   multi_site_interest: boolean
-  timeline_months: string
+  experience: string
   preferred_locations: string[]
-  sectors: string[]
+  other_location: string
   goals: string
 }
 
 const initial: FormData = {
-  full_name: '',
-  email: '',
-  phone: '',
-  investment_min: '',
-  investment_max: '',
+  budget: null,
+  timelineLabel: '',
+  timeline_months: '',
   operator_model: '',
-  experience: '',
   full_time_available: true,
   multi_site_interest: false,
-  timeline_months: '',
+  experience: '',
   preferred_locations: [],
-  sectors: [],
+  other_location: '',
   goals: '',
 }
 
-const STEP_LABELS = ['About you', 'Budget', 'Preferences', 'Location', 'Sectors', 'Background']
+function Tile({ label, sub, selected, onClick }: { label: string; sub: string; selected: boolean; onClick: () => void }) {
+  return (
+    <button type="button" onClick={onClick}
+      className={`text-center p-3 rounded-xl border-2 transition-colors cursor-pointer ${
+        selected
+          ? 'border-brand-green bg-brand-green/5 text-brand-green'
+          : 'border-slate-200 hover:border-slate-300 bg-white text-slate-800'
+      }`}>
+      <div className="text-sm font-semibold leading-tight">{label}</div>
+      <div className="text-xs text-slate-400 mt-0.5">{sub}</div>
+    </button>
+  )
+}
+
+function RadioCard({ label, description, selected, onClick }: { label: string; description?: string; selected: boolean; onClick: () => void }) {
+  return (
+    <button type="button" onClick={onClick}
+      className={`w-full text-left px-4 py-3 rounded-xl border-2 transition-colors ${
+        selected ? 'border-brand-green bg-brand-green/5' : 'border-slate-200 hover:border-slate-300 bg-white'
+      }`}>
+      <span className="text-sm font-medium text-slate-800">{label}</span>
+      {description && <p className="text-xs text-slate-500 mt-0.5">{description}</p>}
+    </button>
+  )
+}
+
+function TogglePill({ label, active, onClick }: { label: string; active: boolean; onClick: () => void }) {
+  return (
+    <button type="button" onClick={onClick}
+      className={`px-3 py-1.5 rounded-full text-sm font-medium border transition-colors ${
+        active ? 'bg-brand-green text-white border-brand-green' : 'bg-white text-slate-600 border-slate-300 hover:border-brand-green'
+      }`}>
+      {label}
+    </button>
+  )
+}
 
 export default function QuizForm() {
   const [step, setStep] = useState(1)
   const [data, setData] = useState<FormData>(initial)
   const [error, setError] = useState<string | null>(null)
-  const [submitting, setSubmitting] = useState(false)
   const router = useRouter()
 
   function set<K extends keyof FormData>(key: K, value: FormData[K]) {
@@ -52,30 +98,29 @@ export default function QuizForm() {
     setError(null)
   }
 
-  function toggleArray(key: 'preferred_locations' | 'sectors', value: string) {
-    setData(prev => {
-      const arr = prev[key]
-      return { ...prev, [key]: arr.includes(value) ? arr.filter(v => v !== value) : [...arr, value] }
-    })
+  function toggleLocation(val: string) {
+    setData(prev => ({
+      ...prev,
+      preferred_locations: prev.preferred_locations.includes(val)
+        ? prev.preferred_locations.filter(v => v !== val)
+        : [...prev.preferred_locations, val],
+    }))
+    setError(null)
   }
 
   function validateStep(): string | null {
     if (step === 1) {
-      if (!data.full_name.trim()) return 'Please enter your full name.'
-      if (!data.email.trim() || !data.email.includes('@')) return 'Please enter a valid email.'
-    }
-    if (step === 2) {
-      if (!data.investment_min) return 'Please enter your minimum budget.'
-      if (!data.investment_max) return 'Please enter your maximum budget.'
-      if (Number(data.investment_max) < Number(data.investment_min)) return 'Maximum must be at least your minimum.'
-    }
-    if (step === 3) {
-      if (!data.operator_model) return 'Please select an operator model.'
-      if (!data.experience) return 'Please select your experience level.'
+      if (!data.budget) return 'Please select your investment budget.'
       if (!data.timeline_months) return 'Please select your timeline.'
     }
-    if (step === 4 && data.preferred_locations.length === 0) return 'Please select at least one location.'
-    if (step === 5 && data.sectors.length === 0) return 'Please select at least one sector.'
+    if (step === 2) {
+      if (!data.operator_model) return 'Please select how you plan to run the business.'
+      if (!data.experience) return 'Please select your experience level.'
+    }
+    if (step === 3) {
+      if (data.preferred_locations.length === 0 && !data.other_location.trim())
+        return 'Please select at least one location or enter your preferred area.'
+    }
     return null
   }
 
@@ -91,380 +136,224 @@ export default function QuizForm() {
     setStep(s => s - 1)
   }
 
-  async function submit() {
+  function submit() {
     const err = validateStep()
     if (err) { setError(err); return }
-    setSubmitting(true)
-    setError(null)
-    try {
-      const res = await fetch('/api/leads', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          ...data,
-          investment_min: data.investment_min ? Number(data.investment_min) : null,
-          investment_max: data.investment_max ? Number(data.investment_max) : null,
-          timeline_months: data.timeline_months ? Number(data.timeline_months) : null,
-        }),
-      })
-      const text = await res.text()
-      let json: { error?: string; id?: string } = {}
-      try { json = JSON.parse(text) } catch { /* not JSON */ }
-      if (!res.ok) { setError(json.error ?? `Error (${res.status})`); setSubmitting(false); return }
-      if (!json.id) { setError('No ID returned. Please try again.'); setSubmitting(false); return }
-      router.push(`/get-matched/results/${json.id}`)
-    } catch (err) {
-      setError(`Request failed: ${err instanceof Error ? err.message : String(err)}`)
-      setSubmitting(false)
+
+    const params = new URLSearchParams()
+    if (data.budget) {
+      params.set('bmin', String(data.budget.min))
+      params.set('bmax', String(data.budget.max))
     }
+    params.set('op', data.operator_model)
+    params.set('exp', data.experience)
+    params.set('ft', String(data.full_time_available))
+    params.set('ms', String(data.multi_site_interest))
+    params.set('tl', data.timeline_months)
+    if (data.preferred_locations.length) params.set('loc', data.preferred_locations.join(','))
+    if (data.other_location.trim()) params.set('oloc', data.other_location.trim())
+    if (data.goals.trim()) params.set('goals', data.goals.trim())
+
+    router.push(`/get-matched/results?${params.toString()}`)
   }
 
-  // ── Loading overlay ──────────────────────────────────────────────────────────
-  if (submitting) {
-    return (
-      <div style={{
-        position: 'fixed', inset: 0, zIndex: 9999,
-        background: 'rgba(255,255,255,0.97)',
-        backdropFilter: 'blur(8px)',
-        display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column',
-      }}>
-        <style>{`
-          @keyframes ffRingSpin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-          @keyframes ffLogoPulse {
-            0%,100% { transform: translate(-50%,-50%) scale(1); opacity: 1; }
-            50% { transform: translate(-50%,-50%) scale(1.10); opacity: 0.88; }
-          }
-          @keyframes ffDotFade { 0%,80%,100% { opacity: 0; } 40% { opacity: 1; } }
-          @keyframes ffProgress { from { width: 0%; } to { width: 100%; } }
-          .ff-dot { display: inline-block; opacity: 0; animation: ffDotFade 1.5s infinite both; }
-          .ff-dot:nth-child(2) { animation-delay: 0.2s; }
-          .ff-dot:nth-child(3) { animation-delay: 0.4s; }
-        `}</style>
-        <div style={{ textAlign: 'center', padding: '40px 24px' }}>
-          <div style={{ position: 'relative', width: 220, height: 220, margin: '0 auto 36px' }}>
-            <svg
-              viewBox="0 0 140 140"
-              style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', animation: 'ffRingSpin 1.9s linear infinite', transformOrigin: 'center' }}
-            >
-              <circle cx="70" cy="70" r="62" fill="none" stroke="#c8924a" strokeWidth="5" strokeDasharray="95 294" strokeLinecap="round" />
-              <circle cx="70" cy="70" r="62" fill="none" stroke="#c8924a" strokeWidth="5" strokeDasharray="20 369" strokeDashoffset="-130" strokeLinecap="round" opacity="0.35" />
-            </svg>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="/favicon-icon.png"
-              alt="Franchise Foundry"
-              style={{
-                position: 'absolute', top: '50%', left: '50%',
-                transform: 'translate(-50%, -50%)',
-                width: 148, height: 148, objectFit: 'contain',
-                animation: 'ffLogoPulse 2.2s ease-in-out infinite',
-              }}
-            />
-          </div>
-          <p style={{ fontFamily: "'Sora', sans-serif", fontSize: '1.45rem', fontWeight: 600, color: '#5f725f', margin: '0 0 10px', letterSpacing: '-0.01em' }}>
-            Getting your matches<span><span className="ff-dot">.</span><span className="ff-dot">.</span><span className="ff-dot">.</span></span>
-          </p>
-          <p style={{ fontFamily: "'Sora', sans-serif", fontSize: '0.92rem', color: '#aaa', margin: 0 }}>
-            Finding the best franchise opportunities for you
-          </p>
-        </div>
-        <div style={{
-          position: 'absolute', bottom: 0, left: 0, height: 4,
-          background: 'linear-gradient(90deg, #5f725f, #c8924a)',
-          borderRadius: '0 2px 2px 0',
-          animation: 'ffProgress 5s ease-out forwards',
-        }} />
-      </div>
-    )
-  }
+  const progress = (step / TOTAL_STEPS) * 100
 
-  // ── Form ─────────────────────────────────────────────────────────────────────
   return (
-    <>
-      <style>{`
-        .quiz-tile { cursor: pointer; transition: all 0.2s; }
-        .quiz-tile:hover { border-color: #5f725f !important; background: rgba(90,110,90,0.04) !important; }
-        .quiz-tile.selected { border-color: #c8924a !important; background: rgba(200,146,74,0.07) !important; box-shadow: 0 0 0 3px rgba(200,146,74,0.12) !important; }
-        .quiz-tile.selected .tile-main-text { color: #c8924a !important; }
-        .quiz-field input, .quiz-field textarea, .quiz-field select {
-          width: 100%; border: none; border-bottom: 1.5px solid #e2e8e2;
-          padding: 10px 0; font-size: 1rem; font-family: 'Sora', sans-serif;
-          color: #161a16; background: transparent; transition: border-color 0.2s; box-sizing: border-box;
-        }
-        .quiz-field input:focus, .quiz-field textarea:focus, .quiz-field select:focus {
-          outline: none; border-bottom-color: #3a4a3a;
-        }
-        .quiz-field input::placeholder, .quiz-field textarea::placeholder { color: rgba(0,0,0,0.22); font-weight: 300; }
-        .pill-toggle { cursor: pointer; transition: all 0.2s; padding: 8px 16px; border-radius: 100px; font-size: 0.84rem; font-weight: 600; border: 1.5px solid #e2e8e2; color: #4a5568; background: white; }
-        .pill-toggle.active { background: #3a4a3a; border-color: #3a4a3a; color: white; }
-        .pill-toggle:hover:not(.active) { border-color: #5f725f; }
-      `}</style>
-
-      {/* Hero */}
-      <div style={{ background: 'white', borderBottom: '1px solid #e8ede8', padding: '64px 40px 48px', textAlign: 'center' }}>
-        <div style={{ maxWidth: 700, margin: '0 auto' }}>
-          <div style={{
-            display: 'inline-flex', alignItems: 'center', gap: 8,
-            background: '#eef3ee', border: '1px solid #d4e0d4',
-            color: '#5f725f', fontSize: '0.78rem', fontWeight: 600,
-            letterSpacing: '0.1em', textTransform: 'uppercase',
-            padding: '7px 16px', borderRadius: 100, marginBottom: 28,
-          }}>
-            <span style={{ width: 6, height: 6, background: '#5f725f', borderRadius: '50%', display: 'inline-block' }} />
-            Free matching service
-          </div>
-          <h1 style={{ fontSize: '3rem', fontWeight: 800, color: '#111827', marginBottom: 20, lineHeight: 1.1, letterSpacing: '-0.03em' }}>
-            Find your franchise match
-          </h1>
-          <p style={{ fontSize: '1.1rem', color: '#4b5563', fontWeight: 300, lineHeight: 1.75 }}>
-            Answer a few questions and we&apos;ll match you with franchise brands that fit your goals, budget and lifestyle.
-          </p>
+    <div className="max-w-xl mx-auto">
+      {/* Hero copy */}
+      <div className="mb-8 text-center">
+        <div className="inline-flex items-center gap-2 bg-brand-green/10 border border-brand-green/20 text-brand-green text-xs font-semibold uppercase tracking-widest px-4 py-1.5 rounded-full mb-5">
+          <span className="w-1.5 h-1.5 bg-brand-green rounded-full" />
+          Matching Platform
         </div>
+        <h1 className="text-3xl font-bold text-slate-900 mb-3 tracking-tight">Find Your Match</h1>
+        <p className="text-slate-500 text-sm leading-relaxed">
+          Our matching engine scores your profile against every hospitality brand in our network — investment level, how you want to operate, your background, your ambitions. No broker gut feel. No bias toward any particular brand. Just fit.
+        </p>
       </div>
 
-      {/* Form section */}
-      <div style={{ padding: '48px 40px 100px', background: '#3a4a3a', position: 'relative', overflow: 'hidden' }}>
-        <div style={{ position: 'absolute', bottom: -80, left: -80, width: 380, height: 380, background: 'radial-gradient(circle, rgba(95,114,95,0.22) 0%, transparent 70%)', pointerEvents: 'none' }} />
-
-        <div style={{ textAlign: 'center', marginBottom: 44 }}>
-          <h2 style={{ fontSize: '2.2rem', fontWeight: 800, color: 'white', letterSpacing: '-0.03em', marginBottom: 10 }}>
-            Tell us about yourself
-          </h2>
-          <p style={{ fontSize: '1rem', color: 'rgba(255,255,255,0.6)', fontWeight: 300 }}>
-            Takes about 2 minutes — we&apos;ll show your matches instantly.
-          </p>
-        </div>
-
-        <div style={{ maxWidth: 700, margin: '0 auto', background: 'white', borderRadius: 32, overflow: 'hidden', boxShadow: '0 24px 64px rgba(0,0,0,0.2)' }}>
-
-          {/* Progress dots */}
-          <div style={{ display: 'flex', alignItems: 'center', padding: '28px 40px 0' }}>
-            {STEP_LABELS.map((label, i) => {
-              const num = i + 1
-              const done = num < step
-              const active = num === step
-              return (
-                <div key={num} style={{ display: 'flex', alignItems: 'center', flex: num < TOTAL_STEPS ? 1 : 0 }}>
-                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
-                    <div style={{
-                      width: 32, height: 32, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      fontSize: '0.78rem', fontWeight: 700, flexShrink: 0,
-                      background: done ? '#c8924a' : active ? '#3a4a3a' : 'white',
-                      border: done ? '2px solid #c8924a' : active ? '2px solid #3a4a3a' : '2px solid #e2e8e2',
-                      color: done || active ? 'white' : '#7a8990',
-                    }}>
-                      {done ? '✓' : num}
-                    </div>
-                    <span style={{ fontSize: '0.65rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', color: active ? '#3a4a3a' : '#7a8990', whiteSpace: 'nowrap' }}>
-                      {label}
-                    </span>
-                  </div>
-                  {num < TOTAL_STEPS && (
-                    <div style={{ flex: 1, height: 2, background: done ? '#c8924a' : '#e2e8e2', margin: '0 8px', marginBottom: 20, transition: 'background 0.3s' }} />
-                  )}
+      {/* Progress */}
+      <div className="flex items-center mb-6">
+        {STEP_LABELS.map((label, i) => {
+          const num = i + 1
+          const done = num < step
+          const active = num === step
+          return (
+            <div key={num} className={`flex items-center ${num < TOTAL_STEPS ? 'flex-1' : ''}`}>
+              <div className="flex flex-col items-center gap-1">
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold border-2 transition-colors ${
+                  done ? 'bg-brand-gold border-brand-gold text-white' : active ? 'bg-brand-green border-brand-green text-white' : 'border-slate-200 text-slate-400'
+                }`}>
+                  {done ? '✓' : num}
                 </div>
-              )
-            })}
-          </div>
-
-          {/* Steps */}
-          <div style={{ padding: '32px 40px 40px' }}>
-
-            {/* Step 1 — Contact */}
-            {step === 1 && (
-              <div>
-                <h2 style={{ fontSize: '1.5rem', fontWeight: 700, color: '#161a16', marginBottom: 6, letterSpacing: '-0.02em' }}>About you</h2>
-                <p style={{ fontSize: '0.92rem', color: '#4a5568', fontWeight: 300, marginBottom: 32 }}>We&apos;ll use this to send your personalised match report.</p>
-                <div className="quiz-field" style={{ marginBottom: 28 }}>
-                  <label style={{ display: 'block', fontSize: '0.76rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em', color: '#4a5568', marginBottom: 8 }}>Full name *</label>
-                  <input type="text" value={data.full_name} onChange={e => set('full_name', e.target.value)} placeholder="Jane Smith" autoComplete="name" />
-                </div>
-                <div className="quiz-field" style={{ marginBottom: 28 }}>
-                  <label style={{ display: 'block', fontSize: '0.76rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em', color: '#4a5568', marginBottom: 8 }}>Email address *</label>
-                  <input type="email" value={data.email} onChange={e => set('email', e.target.value)} placeholder="jane@example.com" autoComplete="email" />
-                </div>
-                <div className="quiz-field">
-                  <label style={{ display: 'block', fontSize: '0.76rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em', color: '#4a5568', marginBottom: 8 }}>Phone <span style={{ fontWeight: 400, textTransform: 'none' }}>(optional)</span></label>
-                  <input type="tel" value={data.phone} onChange={e => set('phone', e.target.value)} placeholder="+44 7700 000000" autoComplete="tel" />
-                </div>
+                <span className={`text-xs font-semibold uppercase tracking-wide whitespace-nowrap ${active ? 'text-brand-green' : 'text-slate-400'}`}>{label}</span>
               </div>
-            )}
-
-            {/* Step 2 — Budget */}
-            {step === 2 && (
-              <div>
-                <h2 style={{ fontSize: '1.5rem', fontWeight: 700, color: '#161a16', marginBottom: 6, letterSpacing: '-0.02em' }}>Investment budget</h2>
-                <p style={{ fontSize: '0.92rem', color: '#4a5568', fontWeight: 300, marginBottom: 32 }}>Total you&apos;re able to invest, including any finance or funding.</p>
-                <div className="quiz-field" style={{ marginBottom: 28 }}>
-                  <label style={{ display: 'block', fontSize: '0.76rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em', color: '#4a5568', marginBottom: 8 }}>Minimum (£) *</label>
-                  <input type="number" value={data.investment_min} onChange={e => set('investment_min', e.target.value)} placeholder="e.g. 50000" min={0} />
-                </div>
-                <div className="quiz-field">
-                  <label style={{ display: 'block', fontSize: '0.76rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em', color: '#4a5568', marginBottom: 8 }}>Maximum (£) *</label>
-                  <input type="number" value={data.investment_max} onChange={e => set('investment_max', e.target.value)} placeholder="e.g. 300000" min={0} />
-                </div>
-              </div>
-            )}
-
-            {/* Step 3 — Preferences */}
-            {step === 3 && (
-              <div>
-                <h2 style={{ fontSize: '1.5rem', fontWeight: 700, color: '#161a16', marginBottom: 6, letterSpacing: '-0.02em' }}>Your preferences</h2>
-                <p style={{ fontSize: '0.92rem', color: '#4a5568', fontWeight: 300, marginBottom: 32 }}>Help us understand how you want to operate.</p>
-
-                <p style={{ fontSize: '0.76rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: '#4a5568', marginBottom: 12 }}>How would you like to operate?</p>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10, marginBottom: 28 }}>
-                  {[
-                    { value: 'owner-operator', main: 'Owner-operator', sub: 'Hands-on, day-to-day' },
-                    { value: 'hire-manager', main: 'Hire a manager', sub: 'Semi-passive model' },
-                    { value: 'either', main: 'Either', sub: 'Open to both' },
-                  ].map(opt => (
-                    <button key={opt.value} type="button" className={`quiz-tile${data.operator_model === opt.value ? ' selected' : ''}`}
-                      onClick={() => set('operator_model', opt.value)}
-                      style={{ padding: '14px 8px', border: '1.5px solid #e2e8e2', borderRadius: 16, textAlign: 'center', background: 'white' }}>
-                      <div className="tile-main-text" style={{ fontSize: '0.84rem', fontWeight: 700, color: '#161a16', lineHeight: 1.2 }}>{opt.main}</div>
-                      <div style={{ fontSize: '0.7rem', color: '#7a8990', fontWeight: 400, marginTop: 2 }}>{opt.sub}</div>
-                    </button>
-                  ))}
-                </div>
-
-                <p style={{ fontSize: '0.76rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: '#4a5568', marginBottom: 12 }}>Experience level</p>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10, marginBottom: 28 }}>
-                  {[
-                    { value: 'none', main: 'No experience', sub: 'First-time investor' },
-                    { value: 'management', main: 'Management', sub: 'Team leadership' },
-                    { value: 'food-beverage', main: 'F&B / hospitality', sub: 'Industry background' },
-                  ].map(opt => (
-                    <button key={opt.value} type="button" className={`quiz-tile${data.experience === opt.value ? ' selected' : ''}`}
-                      onClick={() => set('experience', opt.value)}
-                      style={{ padding: '14px 8px', border: '1.5px solid #e2e8e2', borderRadius: 16, textAlign: 'center', background: 'white' }}>
-                      <div className="tile-main-text" style={{ fontSize: '0.84rem', fontWeight: 700, color: '#161a16', lineHeight: 1.2 }}>{opt.main}</div>
-                      <div style={{ fontSize: '0.7rem', color: '#7a8990', fontWeight: 400, marginTop: 2 }}>{opt.sub}</div>
-                    </button>
-                  ))}
-                </div>
-
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24, marginBottom: 28 }}>
-                  <div>
-                    <p style={{ fontSize: '0.76rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: '#4a5568', marginBottom: 12 }}>Full-time commitment?</p>
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
-                      {[{ v: true, l: 'Yes' }, { v: false, l: 'No / Part-time' }].map(({ v, l }) => (
-                        <button key={l} type="button" className={`quiz-tile${data.full_time_available === v ? ' selected' : ''}`}
-                          onClick={() => set('full_time_available', v)}
-                          style={{ padding: '12px 8px', border: '1.5px solid #e2e8e2', borderRadius: 12, textAlign: 'center', background: 'white' }}>
-                          <div className="tile-main-text" style={{ fontSize: '0.84rem', fontWeight: 700, color: '#161a16' }}>{l}</div>
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                  <div>
-                    <p style={{ fontSize: '0.76rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: '#4a5568', marginBottom: 12 }}>Multi-site ambition?</p>
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
-                      {[{ v: true, l: 'Yes' }, { v: false, l: 'Single site' }].map(({ v, l }) => (
-                        <button key={l} type="button" className={`quiz-tile${data.multi_site_interest === v ? ' selected' : ''}`}
-                          onClick={() => set('multi_site_interest', v)}
-                          style={{ padding: '12px 8px', border: '1.5px solid #e2e8e2', borderRadius: 12, textAlign: 'center', background: 'white' }}>
-                          <div className="tile-main-text" style={{ fontSize: '0.84rem', fontWeight: 700, color: '#161a16' }}>{l}</div>
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-
-                <p style={{ fontSize: '0.76rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: '#4a5568', marginBottom: 12 }}>Timeline to opening *</p>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 10 }}>
-                  {[{ v: '3', main: '3 months', sub: 'ASAP' }, { v: '6', main: '6 months', sub: 'Near-term' }, { v: '12', main: '1 year', sub: 'Planning' }, { v: '18', main: '18 months', sub: 'Medium-term' }, { v: '24', main: '2 years', sub: 'Long-term' }].map(opt => (
-                    <button key={opt.v} type="button" className={`quiz-tile${data.timeline_months === opt.v ? ' selected' : ''}`}
-                      onClick={() => set('timeline_months', opt.v)}
-                      style={{ padding: '14px 8px', border: '1.5px solid #e2e8e2', borderRadius: 16, textAlign: 'center', background: 'white' }}>
-                      <div className="tile-main-text" style={{ fontSize: '0.84rem', fontWeight: 700, color: '#161a16', lineHeight: 1.2 }}>{opt.main}</div>
-                      <div style={{ fontSize: '0.7rem', color: '#7a8990', fontWeight: 400, marginTop: 2 }}>{opt.sub}</div>
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Step 4 — Locations */}
-            {step === 4 && (
-              <div>
-                <h2 style={{ fontSize: '1.5rem', fontWeight: 700, color: '#161a16', marginBottom: 6, letterSpacing: '-0.02em' }}>Preferred locations</h2>
-                <p style={{ fontSize: '0.92rem', color: '#4a5568', fontWeight: 300, marginBottom: 28 }}>Select all areas you&apos;d consider opening in.</p>
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
-                  {UK_CITIES.map(city => (
-                    <button key={city.value} type="button"
-                      className={`pill-toggle${data.preferred_locations.includes(city.value) ? ' active' : ''}`}
-                      onClick={() => toggleArray('preferred_locations', city.value)}>
-                      {city.label}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Step 5 — Sectors */}
-            {step === 5 && (
-              <div>
-                <h2 style={{ fontSize: '1.5rem', fontWeight: 700, color: '#161a16', marginBottom: 6, letterSpacing: '-0.02em' }}>Sectors of interest</h2>
-                <p style={{ fontSize: '0.92rem', color: '#4a5568', fontWeight: 300, marginBottom: 28 }}>Select all sectors you&apos;d consider investing in.</p>
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
-                  {SECTORS.map(s => (
-                    <button key={s.value} type="button"
-                      className={`pill-toggle${data.sectors.includes(s.value) ? ' active' : ''}`}
-                      onClick={() => toggleArray('sectors', s.value)}>
-                      {s.label}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Step 6 — Background */}
-            {step === 6 && (
-              <div>
-                <h2 style={{ fontSize: '1.5rem', fontWeight: 700, color: '#161a16', marginBottom: 6, letterSpacing: '-0.02em' }}>Your background</h2>
-                <p style={{ fontSize: '0.92rem', color: '#4a5568', fontWeight: 300, marginBottom: 28 }}>
-                  Tell us briefly about your goals and background — this helps us find your best-fit brands.
-                </p>
-                <div className="quiz-field">
-                  <label style={{ display: 'block', fontSize: '0.76rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em', color: '#4a5568', marginBottom: 8 }}>Goals &amp; background</label>
-                  <textarea value={data.goals} onChange={e => set('goals', e.target.value)} rows={5}
-                    placeholder="e.g. I've managed teams in hospitality for 8 years and I'm looking to invest in a food concept in Manchester…" />
-                </div>
-              </div>
-            )}
-
-            {/* Error */}
-            {error && (
-              <p style={{ marginTop: 16, fontSize: '0.875rem', color: '#dc2626', background: '#fef2f2', border: '1px solid #fecaca', borderRadius: 8, padding: '10px 14px' }}>
-                {error}
-              </p>
-            )}
-
-            {/* Navigation */}
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 36 }}>
-              {step > 1 ? (
-                <button type="button" onClick={back}
-                  style={{ background: 'none', border: 'none', fontFamily: "'Sora', sans-serif", fontSize: '0.88rem', fontWeight: 600, color: '#7a8990', cursor: 'pointer', padding: '10px 0', display: 'flex', alignItems: 'center', gap: 6 }}>
-                  ← Back
-                </button>
-              ) : <div />}
-
-              {step < TOTAL_STEPS ? (
-                <button type="button" onClick={next}
-                  style={{ background: '#c8924a', color: 'white', padding: '14px 32px', border: 'none', borderRadius: 8, fontWeight: 700, fontSize: '0.95rem', cursor: 'pointer', fontFamily: "'Sora', sans-serif" }}>
-                  Continue →
-                </button>
-              ) : (
-                <button type="button" onClick={submit} disabled={submitting}
-                  style={{ background: '#c8924a', color: 'white', padding: '14px 32px', border: 'none', borderRadius: 8, fontWeight: 700, fontSize: '0.95rem', cursor: 'pointer', fontFamily: "'Sora', sans-serif", opacity: submitting ? 0.6 : 1 }}>
-                  {submitting ? 'Finding your matches…' : 'See my matches →'}
-                </button>
+              {num < TOTAL_STEPS && (
+                <div className={`flex-1 h-0.5 mx-2 mb-5 ${done ? 'bg-brand-gold' : 'bg-slate-200'}`} />
               )}
             </div>
+          )
+        })}
+      </div>
+      <div className="h-1 bg-slate-100 rounded-full overflow-hidden mb-6">
+        <div className="h-full bg-brand-green rounded-full transition-all duration-300" style={{ width: `${progress}%` }} />
+      </div>
+
+      <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
+
+        {/* Step 1 — Investment */}
+        {step === 1 && (
+          <div className="space-y-6">
+            <div>
+              <h2 className="text-lg font-bold text-slate-800 mb-1">Let&apos;s find your match</h2>
+              <p className="text-sm text-slate-500">Tell us about your investment and how quickly you want to move.</p>
+            </div>
+
+            <div>
+              <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-3">Investment Budget</p>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-3">
+                {BUDGETS.map(b => (
+                  <Tile key={b.label} label={b.label} sub={b.sub}
+                    selected={data.budget?.label === b.label}
+                    onClick={() => set('budget', b)} />
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-3">When do you want to start?</p>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                {TIMELINES.map(t => (
+                  <Tile key={t.label} label={t.label} sub={t.sub}
+                    selected={data.timelineLabel === t.label}
+                    onClick={() => setData(prev => ({ ...prev, timelineLabel: t.label, timeline_months: t.value }))} />
+                ))}
+              </div>
+            </div>
           </div>
+        )}
+
+        {/* Step 2 — Your Vision */}
+        {step === 2 && (
+          <div className="space-y-5">
+            <div>
+              <h2 className="text-lg font-bold text-slate-800 mb-1">Your Vision</h2>
+              <p className="text-sm text-slate-500">Help us understand the kind of franchise that fits your lifestyle.</p>
+            </div>
+
+            <div>
+              <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2">How do you plan to run it?</p>
+              <div className="space-y-2">
+                {[
+                  { value: 'owner-operator', label: 'Hands-on', description: "I'll run it myself, day-to-day" },
+                  { value: 'hire-manager', label: 'Hire a manager', description: 'Semi-passive — I oversee, a GM runs it' },
+                  { value: 'either', label: 'Open to either', description: "Flexible — I'll see what fits" },
+                ].map(opt => (
+                  <RadioCard key={opt.value} label={opt.label} description={opt.description}
+                    selected={data.operator_model === opt.value}
+                    onClick={() => set('operator_model', opt.value)} />
+                ))}
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2">Full-time commitment?</p>
+                {[{ v: true, l: 'Yes' }, { v: false, l: 'No / part-time' }].map(({ v, l }) => (
+                  <RadioCard key={l} label={l} selected={data.full_time_available === v}
+                    onClick={() => set('full_time_available', v)} />
+                ))}
+              </div>
+              <div>
+                <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2">Multi-site ambition?</p>
+                {[{ v: true, l: 'Yes, I want to grow' }, { v: false, l: 'Single site for now' }].map(({ v, l }) => (
+                  <RadioCard key={l} label={l} selected={data.multi_site_interest === v}
+                    onClick={() => set('multi_site_interest', v)} />
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Step 3 — About You */}
+        {step === 3 && (
+          <div className="space-y-5">
+            <div>
+              <h2 className="text-lg font-bold text-slate-800 mb-1">About You</h2>
+              <p className="text-sm text-slate-500">A few final details to fine-tune your matches.</p>
+            </div>
+
+            <div>
+              <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2">Your business background</p>
+              <div className="space-y-2">
+                {[
+                  { value: 'none', label: 'First venture', description: 'New to business ownership' },
+                  { value: 'management', label: 'Management experience', description: "I've led teams before" },
+                  { value: 'food-beverage', label: 'F&B / hospitality', description: 'I know the industry' },
+                ].map(opt => (
+                  <RadioCard key={opt.value} label={opt.label} description={opt.description}
+                    selected={data.experience === opt.value}
+                    onClick={() => set('experience', opt.value)} />
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2">Where are you looking to open?</p>
+              <div className="flex flex-wrap gap-2 mb-3">
+                {UK_CITIES.map(city => (
+                  <TogglePill key={city.value} label={city.label}
+                    active={data.preferred_locations.includes(city.value)}
+                    onClick={() => toggleLocation(city.value)} />
+                ))}
+              </div>
+              <input
+                type="text"
+                value={data.other_location}
+                onChange={e => set('other_location', e.target.value)}
+                placeholder="Other area not listed above…"
+                className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-green focus:border-transparent"
+              />
+            </div>
+
+            <div>
+              <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2">Anything else we should know? <span className="normal-case font-normal text-slate-400">(optional)</span></p>
+              <textarea value={data.goals} onChange={e => set('goals', e.target.value)} rows={3}
+                placeholder="e.g. I've managed teams in hospitality for 8 years and I'm looking to invest in a food concept in Manchester…"
+                className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-green focus:border-transparent resize-none" />
+            </div>
+          </div>
+        )}
+
+        {error && (
+          <p className="mt-4 text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2">{error}</p>
+        )}
+
+        <div className="flex gap-3 mt-6">
+          {step > 1 && (
+            <button type="button" onClick={back}
+              className="flex-none border border-slate-300 text-slate-600 text-sm font-medium py-2.5 px-5 rounded-lg hover:bg-slate-50 transition-colors">
+              ← Back
+            </button>
+          )}
+          {step < TOTAL_STEPS ? (
+            <button type="button" onClick={next}
+              className="flex-1 bg-brand-green hover:bg-brand-green-dark text-white text-sm font-medium py-2.5 rounded-lg transition-colors">
+              Continue →
+            </button>
+          ) : (
+            <button type="button" onClick={submit}
+              className="flex-1 bg-brand-green hover:bg-brand-green-dark text-white text-sm font-medium py-2.5 rounded-lg transition-colors">
+              See my matches →
+            </button>
+          )}
         </div>
       </div>
-    </>
+
+      <p className="text-center text-xs text-slate-400 mt-4">
+        Takes 2 minutes &nbsp;·&nbsp; No obligation &nbsp;·&nbsp; Completely free
+      </p>
+    </div>
   )
 }
