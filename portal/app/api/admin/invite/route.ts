@@ -15,21 +15,30 @@ export async function POST(request: Request) {
   if (!email || !role) return NextResponse.json({ error: 'email and role are required' }, { status: 400 })
 
   const adminClient = createAdminClient()
-  const redirectTo = `${process.env.NEXT_PUBLIC_SITE_URL}/auth/confirm`
 
-  const { error } = await adminClient.auth.admin.inviteUserByEmail(email, {
-    data: { role, full_name: full_name ?? '' },
-    redirectTo,
+  // createUser with email_confirm:true creates the account without sending any Supabase email.
+  // We always send our own email via sendMagicLink so every link uses token_hash (no PKCE).
+  const { data: created, error: createError } = await adminClient.auth.admin.createUser({
+    email,
+    email_confirm: true,
+    user_metadata: { full_name: full_name ?? '', role },
   })
 
-  if (error) {
-    if (!error.message.toLowerCase().includes('already')) {
-      return NextResponse.json({ error: error.message }, { status: 400 })
-    }
-    // Existing user — send a magic link email instead
-    const linkError = await sendMagicLink(email, full_name ?? null, redirectTo)
-    if (linkError) return NextResponse.json({ error: `Could not send login link: ${linkError}` }, { status: 500 })
+  let userId = created?.user?.id
+
+  if (createError && !createError.message.toLowerCase().includes('already')) {
+    return NextResponse.json({ error: createError.message }, { status: 400 })
   }
+
+  if (!userId) {
+    const { data: { users } } = await adminClient.auth.admin.listUsers()
+    userId = users.find(u => u.email === email)?.id
+  }
+
+  if (!userId) return NextResponse.json({ error: 'Could not create or find user.' }, { status: 500 })
+
+  const linkError = await sendMagicLink(email, full_name ?? null, null)
+  if (linkError) return NextResponse.json({ error: `Could not send login link: ${linkError}` }, { status: 500 })
 
   await supabase.from('invites').insert({ email, role, full_name: full_name ?? null, invited_by: user.id })
   return NextResponse.json({ success: true })

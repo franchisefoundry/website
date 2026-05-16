@@ -24,30 +24,27 @@ export async function POST(
     const admin = createAdminClient()
     const redirectTo = `${process.env.NEXT_PUBLIC_SITE_URL}/auth/confirm`
 
-    const { data: inviteData, error: inviteError } = await admin.auth.admin.inviteUserByEmail(email, {
-      data: { full_name: name },
-      redirectTo,
+    const { data: created, error: createError } = await admin.auth.admin.createUser({
+      email,
+      email_confirm: true,
+      user_metadata: { full_name: name },
     })
 
-    let userId = inviteData?.user?.id
+    let userId = created?.user?.id
 
-    if (inviteError) {
-      if (!inviteError.message.toLowerCase().includes('already')) {
-        return NextResponse.json({ error: inviteError.message }, { status: 500 })
-      }
+    if (createError && !createError.message.toLowerCase().includes('already')) {
+      return NextResponse.json({ error: createError.message }, { status: 500 })
+    }
 
-      // Existing user — look up their ID and send a magic link email
+    if (!userId) {
       const { data: { users } } = await admin.auth.admin.listUsers()
-      const existing = users.find(u => u.email === email)
-      userId = existing?.id
-
-      if (!userId) return NextResponse.json({ error: 'Could not find or create user.' }, { status: 500 })
-
-      const linkError = await sendMagicLink(email, name, redirectTo)
-      if (linkError) return NextResponse.json({ error: `Could not send login link: ${linkError}` }, { status: 500 })
+      userId = users.find(u => u.email === email)?.id
     }
 
     if (!userId) return NextResponse.json({ error: 'Could not find or create user.' }, { status: 500 })
+
+    const linkError = await sendMagicLink(email, name, null)
+    if (linkError) return NextResponse.json({ error: `Could not send login link: ${linkError}` }, { status: 500 })
 
     await admin.from('profiles').upsert(
       { id: userId, email, full_name: name, role: 'franchisor' },

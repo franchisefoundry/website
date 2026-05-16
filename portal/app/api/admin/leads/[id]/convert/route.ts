@@ -23,26 +23,18 @@ export async function POST(
   if (leadError || !lead) return NextResponse.json({ error: 'Lead not found.' }, { status: 404 })
 
   const typedLead = lead as Lead
-  const redirectTo = `${process.env.NEXT_PUBLIC_SITE_URL}/auth/confirm`
-
-  const { data: inviteData, error: inviteError } = await admin.auth.admin.inviteUserByEmail(typedLead.email, {
-    data: { full_name: typedLead.full_name },
-    redirectTo,
+  // createUser with email_confirm:true — no Supabase email sent, no PKCE complications.
+  // We always send our own magic link so every link uses token_hash.
+  const { data: created, error: createError } = await admin.auth.admin.createUser({
+    email: typedLead.email,
+    email_confirm: true,
+    user_metadata: { full_name: typedLead.full_name },
   })
 
-  let authUserId = inviteData?.user?.id
+  let authUserId = created?.user?.id
 
-  if (inviteError) {
-    if (!inviteError.message.toLowerCase().includes('already')) {
-      return NextResponse.json({ error: inviteError.message }, { status: 500 })
-    }
-    // Existing user — look up and send magic link
-    const { data: { users } } = await admin.auth.admin.listUsers()
-    authUserId = users.find(u => u.email === typedLead.email)?.id
-    if (authUserId) {
-      const linkErr = await sendMagicLink(typedLead.email, typedLead.full_name, redirectTo)
-      if (linkErr) console.error('[convert] sendMagicLink failed:', linkErr)
-    }
+  if (createError && !createError.message.toLowerCase().includes('already')) {
+    return NextResponse.json({ error: createError.message }, { status: 500 })
   }
 
   if (!authUserId) {
@@ -50,7 +42,7 @@ export async function POST(
     authUserId = users.find(u => u.email === typedLead.email)?.id
   }
 
-  if (!authUserId) return NextResponse.json({ error: 'Could not find user after invite.' }, { status: 500 })
+  if (!authUserId) return NextResponse.json({ error: 'Could not find or create user.' }, { status: 500 })
 
   await admin.from('profiles').upsert({
     id: authUserId,
@@ -100,6 +92,9 @@ export async function POST(
 
   await admin.from('leads').update({ status: 'converted' }).eq('id', id)
   await admin.from('invites').insert({ email: typedLead.email, role: 'franchisee', full_name: typedLead.full_name, invited_by: user.id })
+
+  const linkErr = await sendMagicLink(typedLead.email, typedLead.full_name, null)
+  if (linkErr) console.error('[convert] sendMagicLink failed:', linkErr)
 
   return NextResponse.json({ success: true })
 }

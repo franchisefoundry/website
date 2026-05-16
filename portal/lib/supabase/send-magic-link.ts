@@ -13,7 +13,7 @@ import { createAdminClient } from './admin'
 export async function sendMagicLink(
   email: string,
   name: string | null,
-  _redirectTo: string
+  _redirectTo: string | null
 ): Promise<string | null> {
   const admin = createAdminClient()
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL!

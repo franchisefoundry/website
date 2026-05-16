@@ -48,12 +48,18 @@ export default function AuthConfirmPage() {
 
       const { data: profile } = await supabase
         .from('profiles')
-        .select('role')
+        .select('role, activated_at')
         .eq('id', user.id)
         .single()
 
-      if (profile?.role === 'admin') router.replace('/admin')
-      else if (profile?.role === 'franchisor') router.replace('/franchisor')
+      // No profile yet or first login — send to setup
+      if (!profile || !profile.activated_at) {
+        router.replace('/setup-account')
+        return
+      }
+
+      if (profile.role === 'admin') router.replace('/admin')
+      else if (profile.role === 'franchisor') router.replace('/franchisor')
       else router.replace('/franchisee')
     }
 
