@@ -37,20 +37,26 @@ export async function GET(request: NextRequest) {
     options: { redirectTo },
   })
 
+  const props = (linkData as { properties?: { hashed_token?: string; action_link?: string } })?.properties
   trace.step2_generateLink = {
     error: linkError ? { message: linkError.message, status: linkError.status } : null,
-    hasActionLink: !!(linkData as { properties?: { action_link?: string } })?.properties?.action_link,
-    propertiesKeys: linkData ? Object.keys((linkData as Record<string, unknown>).properties ?? {}) : [],
+    hasHashedToken: !!props?.hashed_token,
+    hasActionLink: !!props?.action_link,
+    propertiesKeys: props ? Object.keys(props) : [],
   }
 
   if (linkError) {
     return NextResponse.json({ ...trace, verdict: 'FAILED at generateLink', reason: linkError.message })
   }
 
-  const actionLink = (linkData as { properties?: { action_link?: string } })?.properties?.action_link
-  if (!actionLink) {
-    return NextResponse.json({ ...trace, verdict: 'FAILED — generateLink returned no action_link', raw_data_keys: Object.keys(linkData ?? {}) })
+  const hashedToken = props?.hashed_token
+  if (!hashedToken) {
+    return NextResponse.json({ ...trace, verdict: 'FAILED — generateLink returned no hashed_token', raw_data_keys: Object.keys(linkData ?? {}) })
   }
+
+  // Direct link to our handler — bypasses PKCE flow
+  const actionLink = `${process.env.NEXT_PUBLIC_SITE_URL}/auth/confirm?token_hash=${hashedToken}&type=magiclink`
+  trace.step2_generateLink = { ...trace.step2_generateLink as object, constructedLink: actionLink.slice(0, 80) + '…' }
 
   // Step 3 — send via Resend
   const resend = new Resend(process.env.RESEND_API_KEY!)

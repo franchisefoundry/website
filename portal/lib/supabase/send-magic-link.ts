@@ -4,37 +4,40 @@ import { createAdminClient } from './admin'
 /**
  * Sends a portal access email to an existing Supabase user.
  *
- * Uses admin.generateLink() to obtain the verified magic link URL, then
- * sends it via Resend directly. This is more reliable than signInWithOtp()
- * which has PKCE complications and Supabase rate limits.
- *
- * Only call this for users who already exist in Supabase auth (i.e. after
- * inviteUserByEmail has failed with "already registered").
+ * Generates a hashed token via admin.generateLink(), then constructs a direct
+ * /auth/confirm?token_hash=...&type=magiclink URL. This bypasses Supabase's
+ * own verify redirect (which returns a PKCE ?code= that requires a code verifier
+ * stored in the browser — impossible for server-generated links). The /auth/confirm
+ * route handles token_hash via verifyOtp() which needs no browser state.
  */
 export async function sendMagicLink(
   email: string,
   name: string | null,
-  redirectTo: string
+  _redirectTo: string
 ): Promise<string | null> {
   const admin = createAdminClient()
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL!
 
-  // generateLink creates a one-time verified link but does NOT send the email.
-  // We send it ourselves via Resend below.
   const { data, error: linkError } = await admin.auth.admin.generateLink({
     type: 'magiclink',
     email,
-    options: { redirectTo },
+    options: { redirectTo: `${siteUrl}/auth/confirm` },
   })
 
   if (linkError) {
     console.error('[sendMagicLink] generateLink error:', linkError.message, linkError.status)
     return linkError.message
   }
-  const actionLink = (data as { properties?: { action_link?: string } })?.properties?.action_link
-  if (!actionLink) {
-    console.error('[sendMagicLink] generateLink returned no action_link. data keys:', Object.keys(data ?? {}))
+
+  const props = (data as { properties?: { hashed_token?: string } })?.properties
+  const hashedToken = props?.hashed_token
+  if (!hashedToken) {
+    console.error('[sendMagicLink] generateLink returned no hashed_token. data keys:', Object.keys(data ?? {}))
     return 'Could not generate login link.'
   }
+
+  // Construct link that goes directly to our route handler — no PKCE, no browser state needed.
+  const actionLink = `${siteUrl}/auth/confirm?token_hash=${hashedToken}&type=magiclink`
 
   const resend = new Resend(process.env.RESEND_API_KEY!)
   const from = `Franchise Foundry <${process.env.RESEND_FROM_EMAIL ?? 'team@franchisefoundry.co.uk'}>`
