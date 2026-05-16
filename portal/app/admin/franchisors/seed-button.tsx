@@ -10,7 +10,7 @@ export default function SeedFranchisorsButton() {
   const [error, setError] = useState<string | null>(null)
 
   async function handleSeed() {
-    if (!confirm('This will import all brands from the Franchise Foundry website into the portal. Existing brands (matched by slug) will be skipped. Continue?')) return
+    if (!confirm('This will upsert all brands from the Franchise Foundry website into the portal. Existing brands will be updated with the latest data. Continue?')) return
     setLoading(true)
     setError(null)
     setResults(null)
@@ -33,7 +33,7 @@ export default function SeedFranchisorsButton() {
         disabled={loading}
         className="border border-slate-300 text-slate-700 text-sm font-medium px-4 py-2 rounded-lg hover:bg-slate-50 transition-colors disabled:opacity-60"
       >
-        {loading ? 'Importing…' : 'Import from website'}
+        {loading ? 'Updating…' : 'Sync brands from website'}
       </button>
 
       {error && (
@@ -46,7 +46,7 @@ export default function SeedFranchisorsButton() {
           {results.map(r => (
             <div key={r.brand} className="flex justify-between gap-4">
               <span className="text-slate-600">{r.brand}</span>
-              <span className={r.status === 'created' ? 'text-emerald-600 font-medium' : 'text-slate-400'}>
+              <span className={r.status === 'upserted' ? 'text-emerald-600 font-medium' : r.status.startsWith('error') ? 'text-red-500 font-medium' : 'text-slate-400'}>
                 {r.status}
               </span>
             </div>

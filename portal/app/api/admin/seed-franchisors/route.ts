@@ -228,29 +228,21 @@ export async function POST() {
 
     const results = []
     for (const brand of BRANDS) {
-      // Skip if slug already exists
-      const { data: existing } = await admin
-        .from('franchisor_profiles')
-        .select('id')
-        .eq('slug', brand.slug)
-        .single()
-
-      if (existing) {
-        results.push({ brand: brand.brand_name, status: 'skipped (already exists)' })
-        continue
-      }
-
-      const { error } = await admin.from('franchisor_profiles').insert({
-        ...brand,
-        user_id: null,
-        status: 'active',
-        contact_email: null,
-        contact_name: null,
-      })
+      // Upsert by slug — updates existing brands with latest field values
+      const { error } = await admin.from('franchisor_profiles').upsert(
+        {
+          ...brand,
+          user_id: null,
+          status: 'active',
+          contact_email: null,
+          contact_name: null,
+        },
+        { onConflict: 'slug', ignoreDuplicates: false }
+      )
 
       results.push({
         brand: brand.brand_name,
-        status: error ? `error: ${error.message}` : 'created',
+        status: error ? `error: ${error.message}` : 'upserted',
       })
     }
 
