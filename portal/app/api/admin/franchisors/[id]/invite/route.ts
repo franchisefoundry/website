@@ -43,7 +43,7 @@ export async function POST(
 
       if (!userId) return NextResponse.json({ error: 'Could not find or create user.' }, { status: 500 })
 
-      const linkError = await sendMagicLink(email, redirectTo)
+      const linkError = await sendMagicLink(email, name, redirectTo)
       if (linkError) return NextResponse.json({ error: `Could not send login link: ${linkError}` }, { status: 500 })
     }
 

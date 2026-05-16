@@ -27,7 +27,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: error.message }, { status: 400 })
     }
     // Existing user — send a magic link email instead
-    const linkError = await sendMagicLink(email, redirectTo)
+    const linkError = await sendMagicLink(email, full_name ?? null, redirectTo)
     if (linkError) return NextResponse.json({ error: `Could not send login link: ${linkError}` }, { status: 500 })
   }
 
