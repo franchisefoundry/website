@@ -5,6 +5,7 @@ import { Card, CardBody, CardHeader, CardTitle } from '@/components/ui/card'
 import { statusBadge } from '@/components/ui/badge'
 import { formatInvestmentRange } from '@/lib/utils'
 import FranchisorStatusActions from './actions'
+import Link from 'next/link'
 
 interface Props {
   params: Promise<{ id: string }>
@@ -30,6 +31,14 @@ export default async function FranchisorDetailPage({ params }: Props) {
       <PageHeader
         title={franchisor.brand_name || 'Incomplete profile'}
         description={profile?.email}
+        action={
+          <Link
+            href={`/admin/franchisors/${id}/edit`}
+            className="bg-brand-green hover:bg-brand-green-dark text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors"
+          >
+            Edit profile
+          </Link>
+        }
       />
 
       <div className="grid grid-cols-3 gap-6">
