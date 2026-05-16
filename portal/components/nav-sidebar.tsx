@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
@@ -64,11 +65,15 @@ export function NavSidebar({ profile }: NavSidebarProps) {
     <aside className="w-60 min-h-screen bg-brand-green flex flex-col">
       {/* Logo */}
       <div className="px-6 py-5 border-b border-brand-green-dark">
-        <div className="flex items-center gap-2">
-          <div className="w-7 h-7 bg-white/20 rounded-md flex items-center justify-center">
-            <span className="text-white font-bold text-xs">FF</span>
-          </div>
-          <span className="text-white font-semibold text-sm">Franchise Foundry</span>
+        <div className="flex items-center gap-3">
+          <Image
+            src="/logo-icon.png"
+            alt="Franchise Foundry"
+            width={28}
+            height={36}
+            className="object-contain"
+          />
+          <span className="text-white font-semibold text-sm tracking-tight">Franchise Foundry</span>
         </div>
       </div>
 
