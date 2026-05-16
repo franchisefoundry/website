@@ -26,15 +26,9 @@ export default function SetupAccountForm() {
 
       const { data: profile } = await supabase
         .from('profiles')
-        .select('full_name, phone, role, setup_complete')
+        .select('full_name, phone, role')
         .eq('id', user.id)
         .single()
-
-      // Already set up — send straight to their portal
-      if (profile?.setup_complete) {
-        router.replace(`/${profile.role}`)
-        return
-      }
 
       if (profile?.full_name) setFullName(profile.full_name)
       if (profile?.phone) setPhone(profile.phone)
@@ -77,7 +71,7 @@ export default function SetupAccountForm() {
       // Save profile and mark setup complete
       const { error: updateError } = await supabase
         .from('profiles')
-        .update({ full_name: fullName, phone: phone || null, setup_complete: true })
+        .update({ full_name: fullName, phone: phone || null })
         .eq('id', user.id)
 
       if (updateError) {
