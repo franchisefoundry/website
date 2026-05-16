@@ -198,7 +198,11 @@ export default function QuizForm() {
     if (data.other_location.trim()) params.set('oloc', data.other_location.trim())
     if (data.goals.trim()) params.set('goals', data.goals.trim())
 
-    router.push(`/get-matched/results?${params.toString()}`)
+    const url = `/get-matched/results?${params.toString()}`
+    // Prefetch in background so the page is ready when we navigate
+    router.prefetch(url)
+    // Show loading screen for the full 6 seconds, then navigate
+    setTimeout(() => router.push(url), 6000)
   }
 
   const progress = (step / TOTAL_STEPS) * 100
