@@ -4,6 +4,7 @@ import { scoreMatch } from '@/lib/matching'
 import type { FranchiseeProfile, FranchisorProfile } from '@/lib/supabase/types'
 
 export async function POST(request: NextRequest) {
+  try {
   const body = await request.json()
 
   const {
@@ -92,4 +93,11 @@ export async function POST(request: NextRequest) {
   }
 
   return NextResponse.json({ id: lead.id })
+  } catch (err) {
+    console.error('Leads API error:', err)
+    return NextResponse.json(
+      { error: `Unexpected error: ${err instanceof Error ? err.message : String(err)}` },
+      { status: 500 }
+    )
+  }
 }

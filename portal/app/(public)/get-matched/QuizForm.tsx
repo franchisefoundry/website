@@ -174,17 +174,25 @@ export default function QuizForm() {
         }),
       })
 
-      const json = await res.json()
+      const text = await res.text()
+      let json: { error?: string; id?: string } = {}
+      try { json = JSON.parse(text) } catch { /* not JSON */ }
 
       if (!res.ok) {
-        setError(json.error ?? 'Something went wrong. Please try again.')
+        setError(json.error ?? `Server error (${res.status}): ${text.substring(0, 200)}`)
+        setSubmitting(false)
+        return
+      }
+
+      if (!json.id) {
+        setError('No lead ID returned. Please try again.')
         setSubmitting(false)
         return
       }
 
       router.push(`/get-matched/results/${json.id}`)
-    } catch {
-      setError('Something went wrong. Please try again.')
+    } catch (err) {
+      setError(`Request failed: ${err instanceof Error ? err.message : String(err)}`)
       setSubmitting(false)
     }
   }
