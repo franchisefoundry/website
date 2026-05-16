@@ -33,10 +33,10 @@ export default function RequestAccessButton({
 
   if (requested) {
     return (
-      <div className="bg-white/20 rounded-xl px-4 py-3">
-        <p className="text-white font-medium text-sm">✓ Request received</p>
-        <p className="text-white/80 text-xs mt-0.5">
-          We&apos;ll be in touch within 1 working day to arrange your call.
+      <div style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.12)', borderRadius: 12, padding: '20px 24px', marginBottom: 8 }}>
+        <p style={{ color: '#f0d4a8', fontWeight: 700, fontSize: '1rem', marginBottom: 6 }}>✓ Request received</p>
+        <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.9rem', margin: 0, lineHeight: 1.6 }}>
+          We&apos;ll be in touch within 1 working day to arrange your free consultation call.
         </p>
       </div>
     )
@@ -47,11 +47,33 @@ export default function RequestAccessButton({
       <button
         onClick={handleRequest}
         disabled={loading}
-        className="w-full bg-white text-brand-green font-semibold py-3 px-6 rounded-xl text-sm hover:bg-white/90 transition-colors disabled:opacity-70"
+        style={{
+          width: '100%',
+          background: '#c8924a',
+          color: 'white',
+          padding: '16px 32px',
+          border: 'none',
+          borderRadius: 8,
+          fontWeight: 700,
+          fontSize: '1rem',
+          cursor: loading ? 'not-allowed' : 'pointer',
+          fontFamily: "'Sora', sans-serif",
+          opacity: loading ? 0.7 : 1,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: 8,
+          marginBottom: 8,
+        }}
       >
-        {loading ? 'Requesting…' : 'Book a free call to unlock my matches'}
+        {loading ? 'Requesting…' : (
+          <>
+            Unlock My Matches
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
+          </>
+        )}
       </button>
-      {error && <p className="text-red-200 text-xs mt-2">{error}</p>}
+      {error && <p style={{ color: '#fca5a5', fontSize: '0.85rem', marginTop: 8 }}>{error}</p>}
     </>
   )
 }
