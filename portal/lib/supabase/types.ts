@@ -147,6 +147,36 @@ export const UK_CITIES = [
   { value: 'belfast', label: 'Belfast' },
 ]
 
+export type LeadStatus = 'new' | 'meeting_requested' | 'converted' | 'rejected'
+
+export interface Lead {
+  id: string
+  full_name: string
+  email: string
+  phone: string | null
+  investment_min: number | null
+  investment_max: number | null
+  preferred_locations: string[]
+  operator_model: OperatorModel | null
+  experience: Experience | null
+  full_time_available: boolean
+  multi_site_interest: boolean
+  timeline_months: number | null
+  sectors: string[]
+  goals: string | null
+  status: LeadStatus
+  created_at: string
+}
+
+export interface LeadMatch {
+  id: string
+  lead_id: string
+  franchisor_id: string
+  score: number
+  // joined
+  franchisor?: FranchisorProfile
+}
+
 export const SECTORS = [
   { value: 'food-beverage', label: 'Food & Beverage' },
   { value: 'health-fitness', label: 'Health & Fitness' },

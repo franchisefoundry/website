@@ -27,7 +27,7 @@ export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
 
   // Public routes — always allow through
-  const publicPaths = ['/login', '/setup-account', '/auth/callback', '/auth/confirm']
+  const publicPaths = ['/login', '/setup-account', '/auth/callback', '/auth/confirm', '/get-matched']
   if (publicPaths.some(p => pathname.startsWith(p))) {
     return supabaseResponse
   }
