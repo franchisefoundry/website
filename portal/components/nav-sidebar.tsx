@@ -32,11 +32,12 @@ const franchiseeNav: NavItem[] = [
 ]
 
 const franchisorNav: NavItem[] = [
-  { label: 'Dashboard',      href: '/franchisor',                  icon: '▪' },
-  { label: 'Brand Profile',  href: '/franchisor/brand-profile',    icon: '▪' },
-  { label: 'My Matches',     href: '/franchisor/matches',          icon: '▪' },
-  { label: 'Marketplace',    href: '/franchisor/marketplace',      icon: '▪' },
-  { label: 'My Account',     href: '/franchisor/profile',          icon: '▪' },
+  { label: 'Dashboard',        href: '/franchisor',                    icon: '▪' },
+  { label: 'Brand Profile',    href: '/franchisor/brand-profile',      icon: '▪' },
+  { label: 'My Matches',       href: '/franchisor/matches',            icon: '▪' },
+  { label: 'Marketplace',      href: '/franchisor/marketplace',        icon: '▪' },
+  { label: 'Questionnaire',    href: '/franchisor/questionnaire',      icon: '▪' },
+  { label: 'My Account',       href: '/franchisor/profile',            icon: '▪' },
 ]
 
 function navForRole(role: string): NavItem[] {

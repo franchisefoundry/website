@@ -33,6 +33,9 @@ export async function middleware(request: NextRequest) {
   }
 
   // Check auth
+  // Inject current pathname so server-component layouts can read it
+  supabaseResponse.headers.set('x-pathname', pathname)
+
   const { data: { user }, error } = await supabase.auth.getUser()
 
   if (error || !user) {
