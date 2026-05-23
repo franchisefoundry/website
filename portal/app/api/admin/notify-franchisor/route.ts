@@ -46,6 +46,10 @@ export async function POST(request: NextRequest) {
 
   const typedFranchisor = franchisor as FranchisorProfile
 
+  if (!typedFranchisor.user_id) {
+    return NextResponse.json({ error: 'Franchisor has no linked user account' }, { status: 404 })
+  }
+
   // Get the franchisor's email from auth
   const { data: userData } = await admin.auth.admin.getUserById(typedFranchisor.user_id)
   const franchisorEmail = userData?.user?.email
