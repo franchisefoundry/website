@@ -32,13 +32,15 @@ export default function ResultsLoading() {
         fontFamily: "'Sora', system-ui, sans-serif",
         zIndex: 9999,
       }}>
-        {/* Logo + spinning ring */}
-        <div style={{ position: 'relative', width: 220, height: 220, margin: '0 auto 36px' }}>
+        {/* Logo icon + spinning ring */}
+        <div style={{ position: 'relative', width: 180, height: 180, margin: '0 auto 36px' }}>
           <img
-            src="/logo-full.png"
+            src="/logo-icon.png"
             alt="Franchise Foundry"
-            width={148}
-            height={148}
+            width={90}
+            height={90}
+            fetchPriority="high"
+            decoding="sync"
             style={{
               position: 'absolute', top: '50%', left: '50%',
               objectFit: 'contain',

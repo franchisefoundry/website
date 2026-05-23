@@ -272,7 +272,7 @@ export default function QuizForm() {
             Find Your Match
           </h1>
           <p style={{ fontSize: '1.15rem', color: '#4b5563', fontWeight: 300, lineHeight: 1.75, maxWidth: 620, margin: '0 auto' }}>
-            Our matching engine scores your profile against every hospitality brand in our network — investment level, how you want to operate, your background, your ambitions. No broker gut feel. No bias toward any particular brand. Just fit. Fill in the form below — it takes about two minutes — and we&apos;ll arrange a call to run through exactly what you&apos;ve been matched with.
+            Our matching engine scores your profile against every hospitality brand in our network: investment level, how you want to operate, your background, your ambitions. No broker gut feel. No bias toward any particular brand. Just fit. Fill in the form below (it takes about two minutes) and we&apos;ll arrange a call to run through exactly what you&apos;ve been matched with.
           </p>
         </div>
       </section>
@@ -332,7 +332,7 @@ export default function QuizForm() {
                   <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-3">Investment Budget</p>
                   <div className="text-center mb-5">
                     <span className="text-2xl font-bold text-brand-green">
-                      {formatBudget(data.budget_min)} – {formatBudget(data.budget_max, true)}
+                      {formatBudget(data.budget_min)} to {formatBudget(data.budget_max, true)}
                     </span>
                   </div>
                   <div className="space-y-4">
@@ -393,7 +393,7 @@ export default function QuizForm() {
                 {/* Liquid capital */}
                 <div>
                   <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1">Liquid Capital Available</p>
-                  <p className="text-xs text-slate-400 mb-3">Cash you can access now — separate from your total budget</p>
+                  <p className="text-xs text-slate-400 mb-3">Cash you can access now, separate from your total budget</p>
                   <div className="text-center mb-4">
                     <span className="text-2xl font-bold text-brand-green">{formatLiquid(data.liquid_capital)}</span>
                   </div>
@@ -442,8 +442,8 @@ export default function QuizForm() {
                   <div className="space-y-2">
                     {[
                       { value: 'owner-operator', label: 'Hands-on', description: "I'll run it myself, day-to-day" },
-                      { value: 'hire-manager', label: 'Hire a manager', description: 'Semi-passive — I oversee, a GM runs it' },
-                      { value: 'either', label: 'Open to either', description: "Flexible — I'll see what fits" },
+                      { value: 'hire-manager', label: 'Hire a manager', description: 'Semi-passive, a GM runs day-to-day' },
+                      { value: 'either', label: 'Open to either', description: "Flexible, I'll see what fits best" },
                     ].map(opt => (
                       <RadioCard key={opt.value} label={opt.label} description={opt.description}
                         selected={data.operator_model === opt.value}
