@@ -6,6 +6,7 @@ import { scoreLabel, scoreColour } from '@/lib/matching'
 import type { Lead, LeadMatch } from '@/lib/supabase/types'
 import ConvertButton from './ConvertButton'
 import DeleteLeadButton from '../DeleteLeadButton'
+import NotifyFranchisorButton from './NotifyFranchisorButton'
 
 const OPERATOR_LABELS: Record<string, string> = {
   'owner-operator': 'Owner-operator',
@@ -187,9 +188,16 @@ export default async function LeadDetailPage({ params }: { params: Promise<{ id:
                         <p className="font-semibold text-slate-800 text-sm">{f?.brand_name ?? 'Unknown brand'}</p>
                         {f?.category && <p className="text-xs text-slate-400 mt-0.5">{f.category}</p>}
                       </div>
-                      <span className={`px-2.5 py-1 rounded-full text-xs font-semibold ${scoreColour(match.score)}`}>
-                        {match.score}% · {scoreLabel(match.score)}
-                      </span>
+                      <div className="flex items-center gap-2">
+                        <span className={`px-2.5 py-1 rounded-full text-xs font-semibold ${scoreColour(match.score)}`}>
+                          {match.score}% · {scoreLabel(match.score)}
+                        </span>
+                        <NotifyFranchisorButton
+                          leadId={id}
+                          franchisorId={match.franchisor_id}
+                          brandName={f?.brand_name ?? 'franchisor'}
+                        />
+                      </div>
                     </div>
                     {f?.teaser && <p className="text-sm text-slate-600 mb-3 leading-relaxed">{f.teaser}</p>}
                     <div className="flex gap-4 text-xs text-slate-500">

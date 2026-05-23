@@ -1,6 +1,7 @@
 import { NextResponse, type NextRequest } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { scoreMatch } from '@/lib/matching'
+import { sendLeadNotificationToTeam, sendLeadConfirmationToFranchisee } from '@/lib/email'
 import type { FranchiseeProfile, FranchisorProfile } from '@/lib/supabase/types'
 
 export async function POST(request: NextRequest) {
@@ -63,6 +64,8 @@ export async function POST(request: NextRequest) {
       .select('*')
       .eq('status', 'active')
 
+    let matchCount = 0
+
     if (franchisors?.length) {
       const pseudoFranchisee: FranchiseeProfile = {
         id: lead.id,
@@ -98,10 +101,32 @@ export async function POST(request: NextRequest) {
         }
       }
 
+      matchCount = matchRows.length
+
       if (matchRows.length > 0) {
         await supabase.from('lead_matches').insert(matchRows)
       }
     }
+
+    // Send emails — fire-and-forget via Promise.allSettled so failures don't
+    // block the response or surface as errors to the user
+    void Promise.allSettled([
+      sendLeadNotificationToTeam({
+        leadId: lead.id,
+        fullName: full_name,
+        email,
+        phone,
+        investmentMin: investment_min,
+        investmentMax: investment_max,
+        operatorModel: operator_model,
+        timelineMonths: timeline_months,
+        matchCount,
+      }),
+      sendLeadConfirmationToFranchisee({
+        fullName: full_name,
+        email,
+      }),
+    ])
 
     return NextResponse.json({ id: lead.id })
 
