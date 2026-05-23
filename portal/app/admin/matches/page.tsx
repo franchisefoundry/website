@@ -4,6 +4,7 @@ import { statusBadge } from '@/components/ui/badge'
 import { scoreColour, scoreLabel } from '@/lib/matching'
 import RunMatchingButton from './run-matching-button'
 import MatchStatusSelect from './match-status-select'
+import MatchPipelineSelect from './match-pipeline-select'
 
 export default async function MatchesPage() {
   const supabase = await createClient()
@@ -33,7 +34,7 @@ export default async function MatchesPage() {
               <th className="text-left px-6 py-3 text-xs font-medium text-slate-500 uppercase tracking-wide">Brand</th>
               <th className="text-left px-6 py-3 text-xs font-medium text-slate-500 uppercase tracking-wide">Score</th>
               <th className="text-left px-6 py-3 text-xs font-medium text-slate-500 uppercase tracking-wide">Status</th>
-              <th className="px-6 py-3" />
+              <th className="text-left px-6 py-3 text-xs font-medium text-slate-500 uppercase tracking-wide">Pipeline</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100">
@@ -63,9 +64,11 @@ export default async function MatchesPage() {
                       {m.score}% — {scoreLabel(m.score)}
                     </span>
                   </td>
-                  <td className="px-6 py-3">{statusBadge(m.status)}</td>
                   <td className="px-6 py-3">
                     <MatchStatusSelect matchId={m.id} currentStatus={m.status} />
+                  </td>
+                  <td className="px-6 py-3">
+                    <MatchPipelineSelect matchId={m.id} currentStage={m.pipeline_stage ?? null} />
                   </td>
                 </tr>
               )

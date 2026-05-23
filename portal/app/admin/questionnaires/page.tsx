@@ -11,30 +11,34 @@ export default async function QuestionnairesPage() {
 
   const admin = createAdminClient()
 
-  // Join questionnaires with franchisor profiles for brand name / category
-  const { data: questionnaires } = await admin
-    .from('franchisor_questionnaires')
-    .select('id, franchisor_id, completed_at, created_at, franchisor_profiles(brand_name, category)')
-    .order('completed_at', { ascending: false, nullsFirst: false })
+  // Fetch all brands + their questionnaire (if any)
+  const [{ data: allBrands }, { data: questionnaires }] = await Promise.all([
+    admin.from('franchisor_profiles').select('id, brand_name, category').order('brand_name'),
+    admin.from('franchisor_questionnaires').select('id, franchisor_id, completed_at, created_at'),
+  ])
 
-  const rows = (questionnaires ?? []).map(q => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const fp = q.franchisor_profiles as any
+  const questionnaireMap = new Map((questionnaires ?? []).map(q => [q.franchisor_id, q]))
+
+  const rows = (allBrands ?? []).map(brand => {
+    const q = questionnaireMap.get(brand.id)
     return {
-      id: q.id,
-      franchisor_id: q.franchisor_id,
-      completed_at: q.completed_at,
-      created_at: q.created_at,
-      brand_name: fp?.brand_name ?? null,
-      category: fp?.category ?? null,
+      id: q?.id ?? null,
+      franchisor_id: brand.id,
+      completed_at: q?.completed_at ?? null,
+      created_at: q?.created_at ?? null,
+      brand_name: brand.brand_name,
+      category: brand.category,
+      has_submission: !!q,
     }
   })
+
+  const submitted = rows.filter(r => r.has_submission).length
 
   return (
     <div>
       <PageHeader
         title="Questionnaires"
-        description={`${rows.length} brand${rows.length === 1 ? '' : 's'} have submitted onboarding questionnaires.`}
+        description={`${submitted} of ${rows.length} brands have submitted questionnaire answers.`}
       />
       <QuestionnairesClient rows={rows} />
     </div>

@@ -11,6 +11,41 @@ export const FORMAT_TYPES = [
 ]
 export type FranchiseeStatus = 'pending_invite' | 'active' | 'signed' | 'inactive'
 export type FranchisorStatus = 'draft' | 'pending_review' | 'active' | 'inactive'
+export type FranchiseePipelineStage =
+  | 'new_enquiry'
+  | 'profile_complete'
+  | 'matches_sent'
+  | 'brand_shortlisted'
+  | 'meeting_booked'
+  | 'intro_made'
+  | 'agreement_sent'
+  | 'signed'
+export type MatchPipelineStage =
+  | 'match_assigned'
+  | 'match_approved'
+  | 'meeting_booked'
+  | 'agreement_sent'
+  | 'agreement_signed'
+
+export const MATCH_PIPELINE_STAGES: { value: MatchPipelineStage; label: string; emoji: string }[] = [
+  { value: 'match_assigned',   label: 'Match Assigned',   emoji: '📥' },
+  { value: 'match_approved',   label: 'Match Approved',   emoji: '✅' },
+  { value: 'meeting_booked',   label: 'Meeting Booked',   emoji: '📅' },
+  { value: 'agreement_sent',   label: 'Agreement Sent',   emoji: '📄' },
+  { value: 'agreement_signed', label: 'Agreement Signed', emoji: '🎉' },
+]
+
+export const FRANCHISEE_PIPELINE_STAGES: { value: FranchiseePipelineStage; label: string; emoji: string }[] = [
+  { value: 'new_enquiry',       label: 'New Enquiry',        emoji: '📥' },
+  { value: 'profile_complete',  label: 'Profile Complete',   emoji: '✅' },
+  { value: 'matches_sent',      label: 'Matches Sent',       emoji: '📋' },
+  { value: 'brand_shortlisted', label: 'Brand Shortlisted',  emoji: '⭐' },
+  { value: 'meeting_booked',    label: 'Meeting Booked',     emoji: '📅' },
+  { value: 'intro_made',        label: 'Intro Made',         emoji: '🤝' },
+  { value: 'agreement_sent',    label: 'Agreement Sent',     emoji: '📄' },
+  { value: 'signed',            label: 'Signed Up',          emoji: '🎉' },
+]
+
 export type MatchStatus = 'suggested' | 'shown' | 'interested' | 'intro_made' | 'declined'
 export type PartnerSector = 'finance' | 'property' | 'tech' | 'legal' | 'other'
 export type PartnerAudience = 'franchisee' | 'franchisor' | 'both'
@@ -43,6 +78,8 @@ export interface FranchiseeProfile {
   format_types: string[]
   goals: string | null
   status: FranchiseeStatus
+  pipeline_stage?: FranchiseePipelineStage
+  assigned_franchisor_id?: string | null
   tier_2_unlocked: boolean
   invited_at: string | null
   activated_at: string | null
@@ -93,6 +130,7 @@ export interface Match {
   franchisor_id: string
   score: number
   status: MatchStatus
+  pipeline_stage?: MatchPipelineStage | null
   admin_notes: string | null
   created_at: string
   updated_at: string

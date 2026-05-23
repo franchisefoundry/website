@@ -233,34 +233,41 @@ export default function AdminQuestionnaireForm({ franchisorId, existing }: { fra
         {ta('Ideal franchisee profile', idealFranchisee, setIdealFranchisee)}
         {ta('Required / preferred experience', backgroundExp, setBackgroundExp, 2)}
         {multiSelect('Top approval factors', APPROVAL_FACTOR_OPTIONS, approvalFactors, setApprovalFactors)}
-        <div>
-          <label className="block text-xs font-medium text-slate-600 mb-2">Single-location licences granted</label>
-          <div className="flex gap-2">
-            {([true, false] as const).map(val => (
-              <button key={String(val)} type="button" onClick={() => setSingleLicence(val)}
-                className={`px-4 py-1.5 rounded-lg text-xs border transition-colors ${
-                  singleLicence === val ? 'bg-brand-green text-white border-brand-green' : 'border-slate-300 text-slate-700 hover:bg-slate-50'
-                }`}>
-                {val ? 'Yes' : 'No'}
-              </button>
-            ))}
+        {/* Locked fields — managed via Brand Profile */}
+        <div className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 space-y-3">
+          <p className="text-xs text-amber-700 font-medium flex items-center gap-1.5">
+            🔒 These fields are linked to the brand profile — edit them via{' '}
+            <a href="../edit" className="underline hover:text-amber-900">Brand Profile → Edit</a>
+          </p>
+          <div>
+            <label className="block text-xs font-medium text-slate-500 mb-2">Single-location licences granted</label>
+            <div className="flex gap-2">
+              {([true, false] as const).map(val => (
+                <div key={String(val)}
+                  className={`px-4 py-1.5 rounded-lg text-xs border cursor-not-allowed select-none ${
+                    singleLicence === val ? 'bg-slate-200 border-slate-300 text-slate-600 font-semibold' : 'border-slate-200 text-slate-400'
+                  }`}>
+                  {val ? 'Yes' : 'No'}
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
-        <div>
-          <label className="block text-xs font-medium text-slate-600 mb-2">Operating model</label>
-          <div className="flex flex-col gap-1.5">
-            {[
-              { val: 'owner-operator', label: 'Must be owner-operator' },
-              { val: 'hire-manager',   label: 'Can hire a manager' },
-              { val: 'either',         label: 'Either is acceptable' },
-            ].map(opt => (
-              <button key={opt.val} type="button" onClick={() => setOperatingModel(opt.val)}
-                className={`px-3 py-2 rounded-lg text-xs border text-left transition-colors ${
-                  operatingModel === opt.val ? 'bg-brand-green text-white border-brand-green' : 'border-slate-300 text-slate-700 hover:bg-slate-50'
-                }`}>
-                {opt.label}
-              </button>
-            ))}
+          <div>
+            <label className="block text-xs font-medium text-slate-500 mb-2">Operating model</label>
+            <div className="flex flex-col gap-1.5">
+              {[
+                { val: 'owner-operator', label: 'Must be owner-operator' },
+                { val: 'hire-manager',   label: 'Can hire a manager' },
+                { val: 'either',         label: 'Either is acceptable' },
+              ].map(opt => (
+                <div key={opt.val}
+                  className={`px-3 py-2 rounded-lg text-xs border cursor-not-allowed select-none ${
+                    operatingModel === opt.val ? 'bg-slate-200 border-slate-300 text-slate-600 font-semibold' : 'border-slate-200 text-slate-400'
+                  }`}>
+                  {opt.label}
+                </div>
+              ))}
+            </div>
           </div>
         </div>
         {multiSelect('Common decline reasons', DECLINE_REASON_OPTIONS, declineReasons, setDeclineReasons)}

@@ -6,7 +6,10 @@ import { statusBadge } from '@/components/ui/badge'
 import { formatInvestmentRange } from '@/lib/utils'
 import { createAdminClient } from '@/lib/supabase/admin'
 import FranchisorStatusActions from './actions'
+import MatchPipelineSelect from '@/app/admin/matches/match-pipeline-select'
+import MatchStatusSelect from '@/app/admin/matches/match-status-select'
 import Link from 'next/link'
+import { MATCH_PIPELINE_STAGES } from '@/lib/supabase/types'
 
 interface Props {
   params: Promise<{ id: string }>
@@ -25,11 +28,14 @@ export default async function FranchisorDetailPage({ params }: Props) {
   if (!franchisor) notFound()
 
   const admin = createAdminClient()
-  const { data: questionnaire } = await admin
-    .from('franchisor_questionnaires')
-    .select('completed_at')
-    .eq('franchisor_id', id)
-    .single()
+  const [{ data: questionnaire }, { data: matches }] = await Promise.all([
+    admin.from('franchisor_questionnaires').select('completed_at').eq('franchisor_id', id).single(),
+    admin
+      .from('matches')
+      .select('id, status, pipeline_stage, score, franchisee_profiles(id, profiles(full_name))')
+      .eq('franchisor_id', id)
+      .order('created_at', { ascending: false }),
+  ])
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const profile = franchisor.profiles as any
@@ -112,6 +118,39 @@ export default async function FranchisorDetailPage({ params }: Props) {
               )}
             </CardBody>
           </Card>
+
+          {/* Candidate pipeline */}
+          {(matches?.length ?? 0) > 0 && (
+            <Card>
+              <CardHeader><CardTitle>Candidates ({matches!.length})</CardTitle></CardHeader>
+              <div className="divide-y divide-slate-100">
+                {matches!.map(m => {
+                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                  const franchisee = (m as any).franchisee_profiles as any
+                  const name = franchisee?.profiles?.full_name || 'Unknown'
+                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                  const stage = MATCH_PIPELINE_STAGES.find(s => s.value === (m as any).pipeline_stage)
+                  return (
+                    <div key={m.id} className="px-6 py-4">
+                      <div className="flex items-center justify-between mb-2">
+                        <p className="text-sm font-medium text-slate-900">{name}</p>
+                        {stage && (
+                          <span className="text-xs text-slate-500 flex items-center gap-1">
+                            {stage.emoji} {stage.label}
+                          </span>
+                        )}
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <MatchStatusSelect matchId={m.id} currentStatus={m.status} />
+                        {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+                        <MatchPipelineSelect matchId={m.id} currentStage={(m as any).pipeline_stage ?? null} />
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+            </Card>
+          )}
 
           {/* Questionnaire link card */}
           <Card className="p-5">
