@@ -15,8 +15,8 @@ export default async function IntroRequestsPage() {
   return (
     <div>
       <PageHeader
-        title="Intro requests"
-        description="Requests from franchisees and franchisors to be connected with a partner."
+        title="Marketplace Intro Requests"
+        description="Requests from franchisees and franchisors to be connected with a marketplace partner."
       />
 
       <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">

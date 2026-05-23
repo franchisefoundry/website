@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { PageHeader } from '@/components/page-header'
 import BrandProfileForm from './brand-profile-form'
+import Link from 'next/link'
 
 export default async function BrandProfilePage() {
   const supabase = await createClient()
@@ -17,6 +18,14 @@ export default async function BrandProfilePage() {
       <PageHeader
         title="Brand profile"
         description="This information is used to match your brand with the right franchisee candidates."
+        action={
+          <Link
+            href="/franchisor/questionnaire"
+            className="text-sm text-slate-500 border border-slate-300 hover:border-slate-400 px-4 py-2 rounded-lg transition-colors"
+          >
+            Edit questionnaire →
+          </Link>
+        }
       />
       <BrandProfileForm brandProfile={brandProfile} userId={user!.id} />
     </div>

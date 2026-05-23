@@ -15,13 +15,13 @@ interface NavItem {
 }
 
 const adminNav: NavItem[] = [
-  { label: 'Dashboard',            href: '/admin',                 icon: '▪' },
-  { label: 'Leads',                href: '/admin/leads',           icon: '▪' },
-  { label: 'Franchisees',          href: '/admin/franchisees',     icon: '▪' },
-  { label: 'Franchisors',          href: '/admin/franchisors',     icon: '▪' },
-  { label: 'Matches',              href: '/admin/matches',         icon: '▪' },
-  { label: 'Marketplace Partners', href: '/admin/partners',        icon: '▪' },
-  { label: 'Intro Requests',       href: '/admin/intro-requests',  icon: '▪' },
+  { label: 'Dashboard',               href: '/admin',                 icon: '▪' },
+  { label: 'Leads',                   href: '/admin/leads',           icon: '▪' },
+  { label: 'Franchisees',             href: '/admin/franchisees',     icon: '▪' },
+  { label: 'Franchisors',             href: '/admin/franchisors',     icon: '▪' },
+  { label: 'Matches',                 href: '/admin/matches',         icon: '▪' },
+  { label: 'Marketplace Partners',    href: '/admin/partners',        icon: '▪' },
+  { label: 'Marketplace Intros',      href: '/admin/intro-requests',  icon: '▪' },
 ]
 
 const franchiseeNav: NavItem[] = [
@@ -32,12 +32,11 @@ const franchiseeNav: NavItem[] = [
 ]
 
 const franchisorNav: NavItem[] = [
-  { label: 'Dashboard',        href: '/franchisor',                    icon: '▪' },
-  { label: 'Brand Profile',    href: '/franchisor/brand-profile',      icon: '▪' },
-  { label: 'My Matches',       href: '/franchisor/matches',            icon: '▪' },
-  { label: 'Marketplace',      href: '/franchisor/marketplace',        icon: '▪' },
-  { label: 'Questionnaire',    href: '/franchisor/questionnaire',      icon: '▪' },
-  { label: 'My Account',       href: '/franchisor/profile',            icon: '▪' },
+  { label: 'Dashboard',      href: '/franchisor',                  icon: '▪' },
+  { label: 'Brand Profile',  href: '/franchisor/brand-profile',    icon: '▪' },
+  { label: 'My Matches',     href: '/franchisor/matches',          icon: '▪' },
+  { label: 'Marketplace',    href: '/franchisor/marketplace',      icon: '▪' },
+  { label: 'My Account',     href: '/franchisor/profile',          icon: '▪' },
 ]
 
 function navForRole(role: string): NavItem[] {

@@ -15,10 +15,32 @@ export default async function FranchisorDashboard() {
 
   const firstName = profile?.full_name?.split(' ')[0] ?? 'there'
 
+  // Lead match stats — per franchisor_status on lead_matches
+  const [
+    { count: newLeads },
+    { count: activeLeads },
+    { count: wonLeads },
+    { count: lostLeads },
+  ] = brandProfile
+    ? await Promise.all([
+        supabase.from('lead_matches').select('*', { count: 'exact', head: true }).eq('franchisor_id', brandProfile.id).eq('franchisor_status', 'new'),
+        supabase.from('lead_matches').select('*', { count: 'exact', head: true }).eq('franchisor_id', brandProfile.id).eq('franchisor_status', 'active'),
+        supabase.from('lead_matches').select('*', { count: 'exact', head: true }).eq('franchisor_id', brandProfile.id).eq('franchisor_status', 'won'),
+        supabase.from('lead_matches').select('*', { count: 'exact', head: true }).eq('franchisor_id', brandProfile.id).eq('franchisor_status', 'lost'),
+      ])
+    : [{ count: 0 }, { count: 0 }, { count: 0 }, { count: 0 }]
+
   // Calculate profile completeness
   const fields = ['brand_name', 'category', 'teaser', 'investment_min', 'investment_max', 'operator_model', 'experience_required']
   const filled = fields.filter(f => brandProfile?.[f as keyof typeof brandProfile]).length
   const completeness = Math.round((filled / fields.length) * 100)
+
+  const statCards = [
+    { label: 'New leads',     count: newLeads ?? 0,    colour: 'text-sky-600',     bg: 'bg-sky-50',     border: 'border-sky-200'   },
+    { label: 'Active',        count: activeLeads ?? 0, colour: 'text-amber-600',   bg: 'bg-amber-50',   border: 'border-amber-200' },
+    { label: 'Won',           count: wonLeads ?? 0,    colour: 'text-emerald-600', bg: 'bg-emerald-50', border: 'border-emerald-200'},
+    { label: 'Lost',          count: lostLeads ?? 0,   colour: 'text-slate-500',   bg: 'bg-slate-50',   border: 'border-slate-200' },
+  ]
 
   return (
     <div>
@@ -26,6 +48,20 @@ export default async function FranchisorDashboard() {
         title={`Welcome, ${firstName}`}
         description="Your Franchise Foundry brand portal."
       />
+
+      {/* Lead pipeline stats */}
+      {brandProfile && (
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
+          {statCards.map(s => (
+            <Link key={s.label} href="/franchisor/matches">
+              <div className={`rounded-2xl border ${s.border} ${s.bg} p-5 hover:shadow-sm transition-shadow cursor-pointer`}>
+                <p className={`text-2xl font-bold ${s.colour} mb-1`}>{s.count}</p>
+                <p className="text-xs font-medium text-slate-600">{s.label}</p>
+              </div>
+            </Link>
+          ))}
+        </div>
+      )}
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mb-8">
         <Card className="p-6">

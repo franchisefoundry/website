@@ -13,15 +13,46 @@ export default async function FranchiseeDashboard() {
     supabase.from('franchisee_profiles').select('*').eq('user_id', user!.id).single(),
   ])
 
-  const { data: matches } = await supabase
-    .from('matches')
-    .select('*, franchisor_profiles(brand_name, category, teaser, investment_display, locations_display)')
-    .eq('franchisee_id', franchiseeProfile?.id)
-    .in('status', ['shown', 'interested', 'intro_made'])
-    .order('score', { ascending: false })
-    .limit(3)
+  const profileId = franchiseeProfile?.id
+
+  const [
+    { data: matches },
+    { count: strongMatchCount },
+    { count: activeConversationCount },
+    { count: passedCount },
+  ] = await Promise.all([
+    supabase
+      .from('matches')
+      .select('*, franchisor_profiles(brand_name, category, teaser, investment_display, locations_display)')
+      .eq('franchisee_id', profileId ?? '')
+      .in('status', ['shown', 'interested', 'intro_made'])
+      .order('score', { ascending: false })
+      .limit(3),
+    supabase
+      .from('matches')
+      .select('*', { count: 'exact', head: true })
+      .eq('franchisee_id', profileId ?? '')
+      .gte('score', 85)
+      .neq('status', 'declined'),
+    supabase
+      .from('matches')
+      .select('*', { count: 'exact', head: true })
+      .eq('franchisee_id', profileId ?? '')
+      .in('status', ['interested', 'intro_made']),
+    supabase
+      .from('matches')
+      .select('*', { count: 'exact', head: true })
+      .eq('franchisee_id', profileId ?? '')
+      .eq('status', 'declined'),
+  ])
 
   const firstName = profile?.full_name?.split(' ')[0] ?? 'there'
+
+  const statCards = [
+    { label: '85%+ matches',          count: strongMatchCount ?? 0,        colour: 'text-emerald-600', bg: 'bg-emerald-50', border: 'border-emerald-200' },
+    { label: 'Active conversations',  count: activeConversationCount ?? 0, colour: 'text-sky-600',     bg: 'bg-sky-50',     border: 'border-sky-200'     },
+    { label: 'Passed',                count: passedCount ?? 0,             colour: 'text-slate-500',   bg: 'bg-slate-50',   border: 'border-slate-200'   },
+  ]
 
   return (
     <div>
@@ -29,6 +60,20 @@ export default async function FranchiseeDashboard() {
         title={`Welcome back, ${firstName}`}
         description="Your Franchise Foundry portal — matches, profile, and resources all in one place."
       />
+
+      {/* Match stats */}
+      {profileId && (
+        <div className="grid grid-cols-3 gap-4 mb-6">
+          {statCards.map(s => (
+            <Link key={s.label} href="/franchisee/matches">
+              <div className={`rounded-2xl border ${s.border} ${s.bg} p-5 hover:shadow-sm transition-shadow cursor-pointer`}>
+                <p className={`text-2xl font-bold ${s.colour} mb-1`}>{s.count}</p>
+                <p className="text-xs font-medium text-slate-600">{s.label}</p>
+              </div>
+            </Link>
+          ))}
+        </div>
+      )}
 
       {/* Matches preview */}
       <div className="mb-8">

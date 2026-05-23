@@ -5,6 +5,7 @@ import { formatDate, formatInvestmentRange } from '@/lib/utils'
 import Link from 'next/link'
 import InviteFranchisorButton from './invite-button'
 import SeedFranchisorsButton from './seed-button'
+import DeleteUserButton from '../DeleteUserButton'
 
 export default async function FranchisorsPage() {
   const supabase = await createClient()
@@ -67,9 +68,16 @@ export default async function FranchisorsPage() {
                   <td className="px-6 py-3">{statusBadge(f.status)}</td>
                   <td className="px-6 py-3 text-slate-500">{formatDate(f.created_at)}</td>
                   <td className="px-6 py-3">
-                    <Link href={`/admin/franchisors/${f.id}`} className="text-brand-green text-xs hover:underline">
-                      View →
-                    </Link>
+                    <div className="flex items-center gap-3">
+                      <Link href={`/admin/franchisors/${f.id}`} className="text-brand-green text-xs hover:underline">
+                        View →
+                      </Link>
+                      <DeleteUserButton
+                        id={f.id}
+                        name={f.brand_name || p?.email || 'franchisor'}
+                        endpoint="/api/admin/franchisors/[id]"
+                      />
+                    </div>
                   </td>
                 </tr>
               )

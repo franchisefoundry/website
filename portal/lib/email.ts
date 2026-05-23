@@ -214,3 +214,49 @@ export async function sendFranchisorMatchNotification({
     throw err // re-throw so the API can return an error to the UI
   }
 }
+
+// ── 4. Marketplace intro request notification — sent to admin when a new intro is requested ──
+
+export async function sendIntroRequestNotification({
+  requesterName,
+  requesterEmail,
+  partnerName,
+  message,
+}: {
+  requesterName: string
+  requesterEmail: string
+  partnerName: string
+  message?: string | null
+}) {
+  try {
+    await resend.emails.send({
+      from: FROM,
+      to: ADMIN_EMAIL,
+      subject: `New intro request — ${requesterName} → ${partnerName}`,
+      html: `
+        <div style="font-family:'Sora',sans-serif;max-width:580px;margin:0 auto;color:#333;">
+          <div style="background:#3a4a3a;padding:24px 28px;border-radius:10px 10px 0 0;">
+            <p style="color:rgba(255,255,255,0.6);font-size:12px;margin:0 0 4px;text-transform:uppercase;letter-spacing:.08em;">Franchise Foundry</p>
+            <h1 style="color:white;margin:0;font-size:20px;font-weight:700;">New Marketplace Intro Request</h1>
+          </div>
+          <div style="background:white;padding:28px;border:1px solid #e5e7eb;border-top:none;border-radius:0 0 10px 10px;">
+            <table style="width:100%;border-collapse:collapse;">
+              <tr><td style="padding:7px 0;color:#6b7280;width:140px;font-size:14px;">From</td><td style="padding:7px 0;font-weight:600;font-size:14px;">${requesterName}</td></tr>
+              <tr><td style="padding:7px 0;color:#6b7280;font-size:14px;">Email</td><td style="padding:7px 0;font-size:14px;">${requesterEmail}</td></tr>
+              <tr><td style="padding:7px 0;color:#6b7280;font-size:14px;">Partner</td><td style="padding:7px 0;font-weight:600;font-size:14px;">${partnerName}</td></tr>
+              ${message ? `<tr><td style="padding:7px 0;color:#6b7280;font-size:14px;vertical-align:top;">Message</td><td style="padding:7px 0;font-size:14px;">${message}</td></tr>` : ''}
+            </table>
+            <div style="margin-top:24px;">
+              <a href="${PORTAL_URL}/admin/intro-requests"
+                 style="background:#3a4a3a;color:white;padding:12px 22px;border-radius:8px;text-decoration:none;font-weight:600;font-size:14px;display:inline-block;">
+                View in Portal →
+              </a>
+            </div>
+          </div>
+        </div>
+      `,
+    })
+  } catch (err) {
+    console.error('Failed to send intro request notification email:', err)
+  }
+}

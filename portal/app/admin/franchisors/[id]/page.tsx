@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 import { notFound } from 'next/navigation'
 import { PageHeader } from '@/components/page-header'
 import { Card, CardBody, CardHeader, CardTitle } from '@/components/ui/card'
@@ -9,6 +10,25 @@ import Link from 'next/link'
 
 interface Props {
   params: Promise<{ id: string }>
+}
+
+function QField({ label, value }: { label: string; value: string | string[] | boolean | number | null | undefined }) {
+  if (value === null || value === undefined || value === '') return null
+  let display: string
+  if (Array.isArray(value)) {
+    if (value.length === 0) return null
+    display = value.join(', ')
+  } else if (typeof value === 'boolean') {
+    display = value ? 'Yes' : 'No'
+  } else {
+    display = String(value)
+  }
+  return (
+    <div className="py-3 border-b border-slate-100 last:border-0">
+      <p className="text-xs font-medium text-slate-500 mb-1">{label}</p>
+      <p className="text-sm text-slate-800 leading-relaxed whitespace-pre-line">{display}</p>
+    </div>
+  )
 }
 
 export default async function FranchisorDetailPage({ params }: Props) {
@@ -22,6 +42,13 @@ export default async function FranchisorDetailPage({ params }: Props) {
     .single()
 
   if (!franchisor) notFound()
+
+  const admin = createAdminClient()
+  const { data: questionnaire } = await admin
+    .from('franchisor_questionnaires')
+    .select('*')
+    .eq('franchisor_id', id)
+    .single()
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const profile = franchisor.profiles as any
@@ -43,6 +70,7 @@ export default async function FranchisorDetailPage({ params }: Props) {
 
       <div className="grid grid-cols-3 gap-6">
         <div className="col-span-2 space-y-6">
+          {/* Brand profile */}
           <Card>
             <CardHeader>
               <div className="flex items-center justify-between">
@@ -104,6 +132,98 @@ export default async function FranchisorDetailPage({ params }: Props) {
               )}
             </CardBody>
           </Card>
+
+          {/* Onboarding questionnaire */}
+          {questionnaire ? (
+            <Card>
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <CardTitle>Onboarding questionnaire</CardTitle>
+                  {questionnaire.completed_at && (
+                    <span className="text-xs text-slate-400">
+                      Completed {new Date(questionnaire.completed_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
+                    </span>
+                  )}
+                </div>
+              </CardHeader>
+              <CardBody className="p-0">
+                {/* Section 1 */}
+                <div className="px-6 py-3 bg-slate-50 border-b border-slate-100">
+                  <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">The Business</p>
+                </div>
+                <div className="px-6">
+                  <QField label="Core business model & day-to-day operations" value={questionnaire.core_model} />
+                  <QField label="Competitive advantage" value={questionnaire.competitive_advantage} />
+                  <QField label="Revenue streams" value={questionnaire.revenue_streams} />
+                  <QField label="High-performing unit (metrics)" value={questionnaire.high_performing_unit} />
+                  <QField label="Common reasons for underperformance" value={questionnaire.underperformance_reasons} />
+                </div>
+
+                {/* Section 2 */}
+                <div className="px-6 py-3 bg-slate-50 border-b border-slate-100 border-t mt-2">
+                  <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Financials</p>
+                </div>
+                <div className="px-6">
+                  <QField label="Total investment range & breakdown" value={questionnaire.investment_range_raw} />
+                  <QField label="Commercial terms (fee, royalty, levy)" value={questionnaire.commercial_rates} />
+                  <QField label="Financial data shared with prospects" value={questionnaire.financial_metrics_shared} />
+                  <QField label="Break-even timeline" value={questionnaire.break_even_timeline} />
+                  <QField label="Most underestimated costs" value={questionnaire.underestimated_costs} />
+                  <QField label="Common financial objections" value={questionnaire.common_objections} />
+                </div>
+
+                {/* Section 3 */}
+                <div className="px-6 py-3 bg-slate-50 border-b border-slate-100 border-t mt-2">
+                  <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Ideal Franchisee</p>
+                </div>
+                <div className="px-6">
+                  <QField label="Ideal franchisee profile" value={questionnaire.ideal_franchisee_profile} />
+                  <QField label="Required / preferred experience" value={questionnaire.background_experience} />
+                  <QField label="Top approval factors" value={questionnaire.approval_factors} />
+                  <QField label="Single-location licences granted" value={questionnaire.single_franchise_licenses} />
+                  <QField label="Operating model requirement" value={questionnaire.operating_model_raw} />
+                  <QField label="Common decline reasons" value={questionnaire.decline_reasons} />
+                  <QField label="Franchisee types that haven't worked" value={questionnaire.problematic_behaviours} />
+                  <QField label="Definition of franchisee success" value={questionnaire.success_definition} />
+                </div>
+
+                {/* Section 4 */}
+                <div className="px-6 py-3 bg-slate-50 border-b border-slate-100 border-t mt-2">
+                  <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Growth & Territory</p>
+                </div>
+                <div className="px-6">
+                  <QField label="Annual growth targets" value={questionnaire.annual_growth_targets} />
+                  <QField label="Priority UK territories" value={questionnaire.priority_territories} />
+                  <QField label="Growth speed vs. quality balance" value={questionnaire.growth_speed_vs_quality} />
+                  <QField label="Biggest scaling concern" value={questionnaire.scaling_concerns} />
+                </div>
+
+                {/* Section 5 */}
+                <div className="px-6 py-3 bg-slate-50 border-b border-slate-100 border-t mt-2">
+                  <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Recruitment Process</p>
+                </div>
+                <div className="px-6 pb-2">
+                  <QField label="Where enquiries come from" value={questionnaire.inquiry_channels} />
+                  <QField label="Screening process" value={questionnaire.screening_method} />
+                  <QField label="When approval decision is made" value={questionnaire.approval_timing} />
+                  <QField label="Final sign-off authority" value={questionnaire.approval_authority} />
+                  <QField label="Timeline: enquiry to contract" value={questionnaire.timeline_inquiry_to_contract} />
+                  <QField label="Post-signing onboarding activities" value={questionnaire.post_signing_activities} />
+                  <QField label="Timeline: signing to opening" value={questionnaire.timeline_signing_to_launch} />
+                  <QField label="Biggest recruitment bottlenecks" value={questionnaire.process_bottlenecks} />
+                  <QField label="Recruitment process self-rating (1–10)" value={questionnaire.recruitment_process_rating} />
+                </div>
+              </CardBody>
+            </Card>
+          ) : (
+            <Card>
+              <CardBody>
+                <p className="text-sm text-slate-400 text-center py-4">
+                  No onboarding questionnaire submitted yet.
+                </p>
+              </CardBody>
+            </Card>
+          )}
         </div>
 
         <div>

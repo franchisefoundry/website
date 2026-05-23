@@ -68,9 +68,9 @@ export default async function AdminDashboard() {
       icon: '🎯',
     },
     {
-      title: 'Intro requests',
+      title: 'Marketplace Intros',
       href: '/admin/intro-requests',
-      description: 'Partner introduction requests from franchisees.',
+      description: 'Partner introduction requests from franchisees and franchisors.',
       count: pendingIntroCount ?? 0,
       alert: pendingIntroCount ? `${pendingIntroCount} pending` : null,
       alertColour: 'text-purple-700 bg-purple-50',
