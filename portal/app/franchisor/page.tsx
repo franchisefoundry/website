@@ -27,7 +27,7 @@ export default async function FranchisorDashboard() {
         description="Your Franchise Foundry brand portal."
       />
 
-      <div className="grid grid-cols-2 gap-6 mb-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mb-8">
         <Card className="p-6">
           <p className="text-sm text-slate-500 mb-1">Profile status</p>
           <div className="flex items-center gap-3 mb-3">

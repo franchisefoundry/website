@@ -70,7 +70,7 @@ export default function ProfileForm({ profile, franchiseeProfile }: Props) {
       {/* Personal details */}
       <Card>
         <CardHeader><CardTitle>Personal details</CardTitle></CardHeader>
-        <CardBody className="grid grid-cols-2 gap-4">
+        <CardBody className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium text-slate-700 mb-1">Full name</label>
             <input
@@ -95,7 +95,7 @@ export default function ProfileForm({ profile, franchiseeProfile }: Props) {
       {/* Investment */}
       <Card>
         <CardHeader><CardTitle>Investment budget</CardTitle></CardHeader>
-        <CardBody className="grid grid-cols-2 gap-4">
+        <CardBody className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium text-slate-700 mb-1">Minimum (£)</label>
             <input
@@ -125,7 +125,7 @@ export default function ProfileForm({ profile, franchiseeProfile }: Props) {
         <CardBody className="space-y-5">
           <div>
             <label className="block text-sm font-medium text-slate-700 mb-2">How do you want to operate?</label>
-            <div className="flex gap-3">
+            <div className="flex flex-col sm:flex-row gap-2">
               {[
                 { value: 'owner-operator', label: 'Hands-on (owner-operator)' },
                 { value: 'hire-manager', label: 'Semi-passive (hire a manager)' },
@@ -171,7 +171,7 @@ export default function ProfileForm({ profile, franchiseeProfile }: Props) {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-2">Full-time commitment available?</label>
               <div className="flex gap-3">

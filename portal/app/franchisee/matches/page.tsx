@@ -73,7 +73,7 @@ export default async function FranchiseeMatchesPage() {
                 <p className="text-sm text-slate-600 mb-5">{fr?.teaser}</p>
 
                 {/* Key facts */}
-                <div className="grid grid-cols-2 gap-x-8 gap-y-3 text-sm mb-5">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-3 text-sm mb-5">
                   <div>
                     <p className="text-slate-400 text-xs mb-0.5">Investment required</p>
                     <p className="font-medium text-slate-800">

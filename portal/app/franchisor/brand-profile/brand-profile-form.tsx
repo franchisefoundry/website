@@ -106,7 +106,7 @@ export default function BrandProfileForm({ brandProfile, userId }: Props) {
       <Card>
         <CardHeader><CardTitle>Brand details</CardTitle></CardHeader>
         <CardBody className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-1">Brand name</label>
               <input
@@ -166,7 +166,7 @@ export default function BrandProfileForm({ brandProfile, userId }: Props) {
       {/* Investment */}
       <Card>
         <CardHeader><CardTitle>Investment</CardTitle></CardHeader>
-        <CardBody className="grid grid-cols-3 gap-4">
+        <CardBody className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div>
             <label className="block text-sm font-medium text-slate-700 mb-1">Minimum (£)</label>
             <input
@@ -208,7 +208,7 @@ export default function BrandProfileForm({ brandProfile, userId }: Props) {
         <CardBody className="space-y-5">
           <div>
             <label className="block text-sm font-medium text-slate-700 mb-2">Operator model</label>
-            <div className="flex gap-3">
+            <div className="flex flex-col sm:flex-row gap-2">
               {[
                 { value: 'owner-operator', label: 'Owner-operator (hands-on)' },
                 { value: 'hire-manager', label: 'Hire a manager (semi-passive)' },
@@ -232,7 +232,7 @@ export default function BrandProfileForm({ brandProfile, userId }: Props) {
 
           <div>
             <label className="block text-sm font-medium text-slate-700 mb-2">Experience required</label>
-            <div className="flex gap-3">
+            <div className="flex flex-col sm:flex-row gap-2">
               {[
                 { value: 'none', label: 'None — welcomes first-timers' },
                 { value: 'management', label: 'Some management experience' },
@@ -279,7 +279,7 @@ export default function BrandProfileForm({ brandProfile, userId }: Props) {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-2">Full-time required?</label>
               <div className="flex gap-3">
