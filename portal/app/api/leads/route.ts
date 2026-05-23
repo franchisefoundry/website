@@ -108,9 +108,10 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Send emails — fire-and-forget via Promise.allSettled so failures don't
-    // block the response or surface as errors to the user
-    void Promise.allSettled([
+    // Send emails — await both so the serverless function doesn't terminate
+    // before Resend has accepted them. Failures are logged but don't affect
+    // the response to the user.
+    const emailResults = await Promise.allSettled([
       sendLeadNotificationToTeam({
         leadId: lead.id,
         fullName: full_name,
@@ -127,6 +128,9 @@ export async function POST(request: NextRequest) {
         email,
       }),
     ])
+    emailResults.forEach((r, i) => {
+      if (r.status === 'rejected') console.error(`Email ${i} failed:`, r.reason)
+    })
 
     return NextResponse.json({ id: lead.id })
 

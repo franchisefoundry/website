@@ -82,9 +82,6 @@
 
         .nav-links a:hover, .nav-links a.active { color: white; }
 
-        .nav-sep { width: 1px; height: 20px; background: rgba(255,255,255,0.15); }
-        .nav-sep-sm { display: none; }
-
         .nav-links .nav-cta {
             background: var(--gold);
             color: white !important;
@@ -96,6 +93,21 @@
         }
 
         .nav-links .nav-cta:hover { background: #b07830; transform: translateY(-1px); }
+
+        .nav-links .nav-login {
+            border: 1px solid rgba(255,255,255,0.35);
+            color: rgba(255,255,255,0.8) !important;
+            padding: 9px 18px;
+            border-radius: 6px;
+            font-weight: 500;
+            font-size: 0.85rem;
+            transition: border-color 0.2s, background 0.2s, color 0.2s;
+        }
+        .nav-links .nav-login:hover {
+            border-color: rgba(255,255,255,0.65);
+            background: rgba(255,255,255,0.08);
+            color: white !important;
+        }
 
         .nav-hamburger {
             display: none;
@@ -485,15 +497,12 @@
         <div class="nav-container">
             <a href="index.html"><img src="/images/copy-of-franchise-foundry-logo-final-2.png" alt="Franchise Foundry" class="navbar-logo"></a>
             <ul class="nav-links">
-                <li><a href="index.html">Home</a></li>
                 <li><a href="about.html">About Us</a></li>
-                <li><a href="https://portal.franchisefoundry.co.uk/get-matched" class="nav-cta">Get Your Match</a></li>
-                <li class="nav-sep"></li>
                 <li><a href="for-brands.html" class="nav-brands">For Franchise Brands</a></li>
-                <li class="nav-sep-sm"></li>
+                <li><a href="blog.html">Blog</a></li>
                 <li><a href="contact.html">Contact</a></li>
-                <li class="nav-sep-sm"></li>
-                <li><a href="blog.html" class="nav-blog">Blog &amp; Insights</a></li>
+                <li><a href="https://portal.franchisefoundry.co.uk/get-matched" class="nav-cta">Find Your Match</a></li>
+                <li><a href="https://portal.franchisefoundry.co.uk/login" class="nav-login">Portal Login</a></li>
             </ul>
             <button class="nav-hamburger" id="nav-hamburger" aria-label="Open menu" aria-expanded="false">
                 <span></span><span></span><span></span>
@@ -505,9 +514,10 @@
         <ul class="nav-mobile-links">
             <li><a href="index.html">Home</a></li>
             <li><a href="about.html">About Us</a></li>
-            <li><a href="for-brands.html">For Franchise Brands</a></li>
+            <li><a href="for-brands.html" class="nav-mobile-brands">For Franchise Brands</a></li>
             <li><a href="contact.html">Contact</a></li>
             <li><a href="blog.html">Blog &amp; Insights</a></li>
+            <li><a href="https://portal.franchisefoundry.co.uk/login" style="color:rgba(255,255,255,0.55);font-size:0.85rem;">Portal Login</a></li>
         </ul>
         <div class="nav-mobile-cta-wrap">
             <a href="https://portal.franchisefoundry.co.uk/get-matched" class="nav-mobile-cta-btn">Find Your Match →</a>

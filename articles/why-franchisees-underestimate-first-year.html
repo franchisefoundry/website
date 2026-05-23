@@ -45,13 +45,23 @@
         .nav-links a { color: rgba(255,255,255,0.75); text-decoration: none; font-size: 0.9rem; font-weight: 500; transition: color 0.2s; }
         .nav-links a:hover, .nav-links a.active { color: white; }
         .nav-links a.active { font-weight: 600; }
-        .nav-sep { width: 1px; height: 20px; background: rgba(255,255,255,0.2); }
-        .nav-sep-sm { width: 1px; height: 14px; background: rgba(255,255,255,0.12); }
         .nav-brands { color: var(--gold-light) !important; }
         .nav-cta { background: var(--gold); color: white !important; padding: 10px 22px; border-radius: var(--radius-sm); font-weight: 600 !important; font-size: 0.88rem !important; transition: background 0.2s, transform 0.15s; }
         .nav-cta:hover { background: #b07830 !important; transform: translateY(-1px); }
-        .nav-blog { font-size: 0.82rem !important; opacity: 0.65; }
-        .nav-blog:hover, .nav-blog.active { opacity: 1; }
+        .nav-links .nav-login {
+            border: 1px solid rgba(255,255,255,0.35);
+            color: rgba(255,255,255,0.8) !important;
+            padding: 9px 18px;
+            border-radius: 6px;
+            font-weight: 500;
+            font-size: 0.85rem;
+            transition: border-color 0.2s, background 0.2s, color 0.2s;
+        }
+        .nav-links .nav-login:hover {
+            border-color: rgba(255,255,255,0.65);
+            background: rgba(255,255,255,0.08);
+            color: white !important;
+        }
         @media (max-width: 900px) { .nav-links { display: none; } .navbar-logo { height: 38px; } }
 
         .nav-hamburger { display: none; flex-direction: column; justify-content: center; gap: 5px; background: none; border: none; cursor: pointer; padding: 8px; flex-shrink: 0; position: relative; z-index: 201; }
@@ -135,15 +145,12 @@
         <div class="nav-container">
             <a href="/index.html"><img src="/images/copy-of-franchise-foundry-logo-final-2.png" alt="Franchise Foundry" class="navbar-logo"></a>
             <ul class="nav-links">
-                <li><a href="/index.html">Home</a></li>
                 <li><a href="/about.html">About Us</a></li>
-                <li><a href="https://portal.franchisefoundry.co.uk/get-matched" class="nav-cta">Find Your Match</a></li>
-                <li class="nav-sep"></li>
                 <li><a href="/for-brands.html" class="nav-brands">For Franchise Brands</a></li>
-                <li class="nav-sep-sm"></li>
+                <li><a href="/blog.html">Blog</a></li>
                 <li><a href="/contact.html">Contact</a></li>
-                <li class="nav-sep-sm"></li>
-                <li><a href="/blog.html" class="nav-blog active">Blog &amp; Insights</a></li>
+                <li><a href="https://portal.franchisefoundry.co.uk/get-matched" class="nav-cta">Find Your Match</a></li>
+                <li><a href="https://portal.franchisefoundry.co.uk/login" class="nav-login">Portal Login</a></li>
             </ul>
             <button class="nav-hamburger" id="nav-hamburger" aria-label="Open menu" aria-expanded="false">
                 <span></span><span></span><span></span>
@@ -157,7 +164,8 @@
             <li><a href="/about.html">About Us</a></li>
             <li><a href="/for-brands.html" class="nav-mobile-brands">For Franchise Brands</a></li>
             <li><a href="/contact.html">Contact</a></li>
-            <li><a href="/blog.html" class="active">Blog &amp; Insights</a></li>
+            <li><a href="/blog.html">Blog &amp; Insights</a></li>
+            <li><a href="https://portal.franchisefoundry.co.uk/login" style="color:rgba(255,255,255,0.55);font-size:0.85rem;">Portal Login</a></li>
         </ul>
         <div class="nav-mobile-cta-wrap">
             <a href="https://portal.franchisefoundry.co.uk/get-matched" class="nav-mobile-cta-btn">Find Your Match &#8594;</a>
