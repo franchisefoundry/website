@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
@@ -87,6 +87,11 @@ function NavGroupItem({
     c => pathname === c.href || pathname.startsWith(c.href + '/')
   )
   const [open, setOpen] = useState(anyChildActive)
+
+  // Auto-expand when navigating to a child page (sidebar persists across navigations)
+  useEffect(() => {
+    if (anyChildActive) setOpen(true)
+  }, [anyChildActive])
 
   return (
     <div>
