@@ -2,42 +2,68 @@ import { NextResponse, type NextRequest } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 
-export async function DELETE(
+async function verifyAdmin(supabase: Awaited<ReturnType<typeof createClient>>, userId: string) {
+  const { data } = await supabase.from('profiles').select('role').eq('id', userId).single()
+  return data?.role === 'admin'
+}
+
+// Unlink (remove portal access) — keeps franchisor profile, deletes auth user + profiles row
+export async function PATCH(
   _request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params
-
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: 'Unauthorised' }, { status: 401 })
-
-  const { data: caller } = await supabase.from('profiles').select('role').eq('id', user.id).single()
-  if (caller?.role !== 'admin') return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+  if (!await verifyAdmin(supabase, user.id)) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
 
   const admin = createAdminClient()
 
-  // Get the franchisor profile to find user_id
-  const { data: profile } = await admin
+  const { data: fp } = await admin
     .from('franchisor_profiles')
     .select('user_id')
     .eq('id', id)
     .single()
 
-  // Delete franchisor profile
-  const { error: profileError } = await admin
+  if (!fp?.user_id) return NextResponse.json({ error: 'No linked user' }, { status: 404 })
+
+  // Remove auth user + profiles row, but keep franchisor_profiles with user_id = null
+  await Promise.allSettled([
+    admin.auth.admin.deleteUser(fp.user_id),
+    admin.from('profiles').delete().eq('id', fp.user_id),
+  ])
+
+  await admin.from('franchisor_profiles').update({ user_id: null }).eq('id', id)
+
+  return NextResponse.json({ success: true })
+}
+
+// Full delete — removes franchisor profile + auth user
+export async function DELETE(
+  _request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const { id } = await params
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return NextResponse.json({ error: 'Unauthorised' }, { status: 401 })
+  if (!await verifyAdmin(supabase, user.id)) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+
+  const admin = createAdminClient()
+
+  const { data: fp } = await admin
     .from('franchisor_profiles')
-    .delete()
+    .select('user_id')
     .eq('id', id)
+    .single()
 
-  if (profileError) {
-    return NextResponse.json({ error: profileError.message }, { status: 500 })
-  }
+  const { error } = await admin.from('franchisor_profiles').delete().eq('id', id)
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
 
-  // Delete auth user and profiles row if present
-  if (profile?.user_id) {
-    await admin.auth.admin.deleteUser(profile.user_id)
-    await admin.from('profiles').delete().eq('id', profile.user_id)
+  if (fp?.user_id) {
+    await admin.auth.admin.deleteUser(fp.user_id)
+    await admin.from('profiles').delete().eq('id', fp.user_id)
   }
 
   return NextResponse.json({ success: true })

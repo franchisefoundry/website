@@ -124,22 +124,18 @@ export default async function FranchisorDetailPage({ params }: Props) {
                     : 'Not yet submitted'}
                 </p>
               </div>
-              {questionnaire ? (
-                <Link
-                  href={`/admin/franchisors/${id}/questionnaire`}
-                  className="text-sm font-medium text-brand-green hover:underline"
-                >
-                  View answers →
-                </Link>
-              ) : (
-                <span className="text-xs text-slate-400 italic">No answers yet</span>
-              )}
+              <Link
+                href={`/admin/franchisors/${id}/questionnaire`}
+                className="text-sm font-medium text-brand-green hover:underline"
+              >
+                {questionnaire ? 'View / edit →' : 'Add answers →'}
+              </Link>
             </div>
           </Card>
         </div>
 
         <div>
-          <FranchisorStatusActions franchisor={franchisor} />
+          <FranchisorStatusActions franchisor={franchisor} linkedUser={profile ?? null} />
         </div>
       </div>
     </div>

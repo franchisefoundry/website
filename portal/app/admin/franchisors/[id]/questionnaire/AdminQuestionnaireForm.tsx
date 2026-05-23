@@ -173,7 +173,7 @@ export default function AdminQuestionnaireForm({ franchisorId, existing }: { fra
     section: number
     onSave: () => void
   }) {
-    const [open, setOpen] = useState(false)
+    const [open, setOpen] = useState(true)
     return (
       <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
         <button
