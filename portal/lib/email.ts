@@ -96,7 +96,7 @@ export async function sendLeadConfirmationToFranchisee({
       from: FROM,
       to: email,
       replyTo: ADMIN_EMAIL,
-      subject: 'We're reviewing your matches — Franchise Foundry',
+      subject: "We're reviewing your matches — Franchise Foundry",
       html: `
         <div style="font-family:'Sora',sans-serif;max-width:580px;margin:0 auto;color:#333;">
           <div style="background:#3a4a3a;padding:24px 28px;border-radius:10px 10px 0 0;">
