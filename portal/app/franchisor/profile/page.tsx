@@ -1,24 +1,26 @@
 import { createClient } from '@/lib/supabase/server'
 import { PageHeader } from '@/components/page-header'
-import ProfileForm from './profile-form'
 import AccountSettingsCard from '@/components/AccountSettingsCard'
+import { Card, CardBody, CardHeader, CardTitle } from '@/components/ui/card'
+import FranchisorPersonalForm from './personal-form'
 
-export default async function FranchiseeProfilePage() {
+export default async function FranchisorProfilePage() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
 
-  const [{ data: profile }, { data: franchiseeProfile }] = await Promise.all([
-    supabase.from('profiles').select('*').eq('id', user!.id).single(),
-    supabase.from('franchisee_profiles').select('*').eq('user_id', user!.id).single(),
-  ])
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('*')
+    .eq('id', user!.id)
+    .single()
 
   return (
     <div className="space-y-8">
       <PageHeader
-        title="My profile"
-        description="Keep this up to date so your matches stay relevant."
+        title="My account"
+        description="Update your personal details and account settings."
       />
-      <ProfileForm profile={profile} franchiseeProfile={franchiseeProfile} />
+      <FranchisorPersonalForm profile={profile} />
       <div>
         <h2 className="text-base font-bold text-slate-900 mb-4">Account settings</h2>
         <AccountSettingsCard
