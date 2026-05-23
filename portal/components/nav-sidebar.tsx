@@ -120,14 +120,16 @@ export function NavSidebar({ profile }: NavSidebarProps) {
       )}>
         {/* Logo + close */}
         <div className="px-6 py-5 border-b border-white/10 flex items-center justify-between flex-shrink-0">
-          <Image
-            src="/logo-white.png"
-            alt="Franchise Foundry"
-            width={160}
-            height={42}
-            className="object-contain"
-            priority
-          />
+          <Link href={`/${profile.role}`} onClick={() => setMobileOpen(false)}>
+            <Image
+              src="/logo-white.png"
+              alt="Franchise Foundry"
+              width={160}
+              height={42}
+              className="object-contain"
+              priority
+            />
+          </Link>
           <button
             onClick={() => setMobileOpen(false)}
             aria-label="Close menu"
