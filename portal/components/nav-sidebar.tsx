@@ -8,35 +8,55 @@ import { createClient } from '@/lib/supabase/client'
 import { cn, initials } from '@/lib/utils'
 import type { Profile } from '@/lib/supabase/types'
 
-interface NavItem {
-  label: string
-  href: string
-  icon: string
+// A leaf is a direct link; a group is a collapsible section with children
+type NavLeaf = { label: string; href: string }
+type NavGroup = { label: string; children: NavLeaf[] }
+type NavItem = NavLeaf | NavGroup
+
+function isGroup(item: NavItem): item is NavGroup {
+  return 'children' in item
 }
 
 const adminNav: NavItem[] = [
-  { label: 'Dashboard',               href: '/admin',                 icon: '▪' },
-  { label: 'Leads',                   href: '/admin/leads',           icon: '▪' },
-  { label: 'Franchisees',             href: '/admin/franchisees',     icon: '▪' },
-  { label: 'Franchisors',             href: '/admin/franchisors',     icon: '▪' },
-  { label: 'Matches',                 href: '/admin/matches',         icon: '▪' },
-  { label: 'Marketplace Partners',    href: '/admin/partners',        icon: '▪' },
-  { label: 'Marketplace Intros',      href: '/admin/intro-requests',  icon: '▪' },
+  { label: 'Dashboard',   href: '/admin' },
+  { label: 'Leads',       href: '/admin/leads' },
+  { label: 'Franchisees', href: '/admin/franchisees' },
+  {
+    label: 'Franchisors',
+    children: [
+      { label: 'Franchisors',    href: '/admin/franchisors' },
+      { label: 'Questionnaires', href: '/admin/questionnaires' },
+    ],
+  },
+  { label: 'Matches', href: '/admin/matches' },
+  {
+    label: 'Marketplace',
+    children: [
+      { label: 'Partners',  href: '/admin/partners' },
+      { label: 'Intros',    href: '/admin/intro-requests' },
+    ],
+  },
 ]
 
 const franchiseeNav: NavItem[] = [
-  { label: 'Dashboard',   href: '/franchisee',             icon: '▪' },
-  { label: 'My Matches',  href: '/franchisee/matches',     icon: '▪' },
-  { label: 'Marketplace', href: '/franchisee/marketplace', icon: '▪' },
-  { label: 'My Profile',  href: '/franchisee/profile',     icon: '▪' },
+  { label: 'Dashboard',   href: '/franchisee' },
+  { label: 'My Matches',  href: '/franchisee/matches' },
+  { label: 'Marketplace', href: '/franchisee/marketplace' },
+  { label: 'My Profile',  href: '/franchisee/profile' },
 ]
 
 const franchisorNav: NavItem[] = [
-  { label: 'Dashboard',      href: '/franchisor',                  icon: '▪' },
-  { label: 'Brand Profile',  href: '/franchisor/brand-profile',    icon: '▪' },
-  { label: 'My Matches',     href: '/franchisor/matches',          icon: '▪' },
-  { label: 'Marketplace',    href: '/franchisor/marketplace',      icon: '▪' },
-  { label: 'My Account',     href: '/franchisor/profile',          icon: '▪' },
+  { label: 'Dashboard',  href: '/franchisor' },
+  {
+    label: 'Brand Profile',
+    children: [
+      { label: 'Brand Profile',  href: '/franchisor/brand-profile' },
+      { label: 'Questionnaire',  href: '/franchisor/questionnaire' },
+    ],
+  },
+  { label: 'My Matches',  href: '/franchisor/matches' },
+  { label: 'Marketplace', href: '/franchisor/marketplace' },
+  { label: 'My Account',  href: '/franchisor/profile' },
 ]
 
 function navForRole(role: string): NavItem[] {
@@ -50,6 +70,71 @@ function profileHrefForRole(role: string): string {
   if (role === 'admin')      return '/admin/profile'
   if (role === 'franchisor') return '/franchisor/profile'
   return '/franchisee/profile'
+}
+
+function NavGroupItem({
+  group,
+  pathname,
+  role,
+  onClose,
+}: {
+  group: NavGroup
+  pathname: string
+  role: string
+  onClose: () => void
+}) {
+  const anyChildActive = group.children.some(
+    c => pathname === c.href || pathname.startsWith(c.href + '/')
+  )
+  const [open, setOpen] = useState(anyChildActive)
+
+  return (
+    <div>
+      <button
+        onClick={() => setOpen(o => !o)}
+        className={cn(
+          'w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium transition-colors',
+          anyChildActive
+            ? 'text-white bg-white/10'
+            : 'text-white/70 hover:text-white hover:bg-white/10'
+        )}
+      >
+        <div className="flex items-center gap-3">
+          <span className="w-1.5 h-1.5 rounded-full bg-current opacity-60 flex-shrink-0" />
+          {group.label}
+        </div>
+        <svg
+          className={cn('w-3.5 h-3.5 opacity-60 transition-transform', open ? 'rotate-180' : '')}
+          fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+        </svg>
+      </button>
+
+      {open && (
+        <div className="ml-4 mt-0.5 space-y-0.5 border-l border-white/10 pl-3">
+          {group.children.map(child => {
+            const active = pathname === child.href || pathname.startsWith(child.href + '/')
+            return (
+              <Link
+                key={child.href}
+                href={child.href}
+                onClick={onClose}
+                className={cn(
+                  'flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-colors',
+                  active
+                    ? 'bg-white/20 text-white font-medium'
+                    : 'text-white/60 hover:text-white hover:bg-white/10'
+                )}
+              >
+                {child.label}
+              </Link>
+            )
+          })}
+        </div>
+      )}
+    </div>
+  )
 }
 
 interface NavSidebarProps {
@@ -68,12 +153,6 @@ export function NavSidebar({ profile }: NavSidebarProps) {
     router.push('/login')
     router.refresh()
   }
-
-  const roleLabel = profile.role === 'admin'
-    ? 'Admin'
-    : profile.role === 'franchisor'
-    ? 'Franchisor'
-    : 'Franchisee'
 
   const profileHref = profileHrefForRole(profile.role)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -96,7 +175,6 @@ export function NavSidebar({ profile }: NavSidebarProps) {
           aria-label="Open menu"
           className="text-white p-2 rounded-lg hover:bg-white/10 transition-colors"
         >
-          {/* Hamburger */}
           <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
             <line x1="3" y1="5"  x2="17" y2="5" />
             <line x1="3" y1="10" x2="17" y2="10" />
@@ -119,7 +197,7 @@ export function NavSidebar({ profile }: NavSidebarProps) {
         'md:static md:w-60 md:min-h-screen md:translate-x-0 md:z-auto md:transition-none',
         mobileOpen ? 'translate-x-0' : '-translate-x-full'
       )}>
-        {/* Logo + close */}
+        {/* Logo */}
         <div className="px-6 py-5 border-b border-white/10 flex items-center justify-between flex-shrink-0">
           <Link href={`/${profile.role}`} onClick={() => setMobileOpen(false)}>
             <Image
@@ -142,8 +220,20 @@ export function NavSidebar({ profile }: NavSidebarProps) {
 
         {/* Nav */}
         <nav className="flex-1 px-3 py-4 space-y-0.5 overflow-y-auto">
-          {nav.map(item => {
-            const active = pathname === item.href || (item.href !== `/${profile.role}` && pathname.startsWith(item.href))
+          {nav.map((item, i) => {
+            if (isGroup(item)) {
+              return (
+                <NavGroupItem
+                  key={i}
+                  group={item}
+                  pathname={pathname}
+                  role={profile.role}
+                  onClose={() => setMobileOpen(false)}
+                />
+              )
+            }
+
+            const active = pathname === item.href || (item.href !== `/${profile.role}` && pathname.startsWith(item.href + '/'))
             return (
               <Link
                 key={item.href}
