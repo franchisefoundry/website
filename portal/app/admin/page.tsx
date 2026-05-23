@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 import { PageHeader } from '@/components/page-header'
 import { statusBadge } from '@/components/ui/badge'
 import { formatDate } from '@/lib/utils'
@@ -7,6 +8,7 @@ import InviteUserButton from './invite-user-button'
 
 export default async function AdminDashboard() {
   const supabase = await createClient()
+  const admin = createAdminClient()
 
   const [
     { count: franchiseeCount },
@@ -19,15 +21,16 @@ export default async function AdminDashboard() {
     { data: recentLeads },
     { data: pendingReviews },
   ] = await Promise.all([
-    supabase.from('franchisee_profiles').select('*', { count: 'exact', head: true }),
-    supabase.from('franchisor_profiles').select('*', { count: 'exact', head: true }),
-    supabase.from('leads').select('*', { count: 'exact', head: true }),
-    supabase.from('leads').select('*', { count: 'exact', head: true }).eq('status', 'meeting_requested'),
-    supabase.from('franchisor_profiles').select('*', { count: 'exact', head: true }).eq('status', 'pending_review'),
-    supabase.from('matches').select('*', { count: 'exact', head: true }).eq('status', 'suggested'),
-    supabase.from('intro_requests').select('*', { count: 'exact', head: true }).eq('status', 'pending'),
-    supabase.from('leads').select('*').in('status', ['new', 'meeting_requested']).order('created_at', { ascending: false }).limit(5),
-    supabase.from('franchisor_profiles').select('*, profiles(full_name, email)').eq('status', 'pending_review').order('created_at', { ascending: false }).limit(5),
+    // Count only real franchisees (role = 'franchisee'), not admin users with franchisee profiles
+    admin.from('profiles').select('*', { count: 'exact', head: true }).eq('role', 'franchisee'),
+    admin.from('franchisor_profiles').select('*', { count: 'exact', head: true }),
+    admin.from('leads').select('*', { count: 'exact', head: true }),
+    admin.from('leads').select('*', { count: 'exact', head: true }).eq('status', 'meeting_requested'),
+    admin.from('franchisor_profiles').select('*', { count: 'exact', head: true }).eq('status', 'pending_review'),
+    admin.from('matches').select('*', { count: 'exact', head: true }).eq('status', 'suggested'),
+    admin.from('intro_requests').select('*', { count: 'exact', head: true }).eq('status', 'pending'),
+    admin.from('leads').select('*').in('status', ['new', 'meeting_requested']).order('created_at', { ascending: false }).limit(5),
+    admin.from('franchisor_profiles').select('*, profiles(full_name, email)').eq('status', 'pending_review').order('created_at', { ascending: false }).limit(5),
   ])
 
   const sections = [

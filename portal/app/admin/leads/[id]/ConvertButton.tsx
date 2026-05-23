@@ -17,8 +17,10 @@ export default function ConvertButton({ leadId }: { leadId: string }) {
       const data = await res.json()
       if (!res.ok) {
         setError(data.error ?? 'Something went wrong.')
+      } else if (data.franchiseeId) {
+        router.push(`/admin/franchisees/${data.franchiseeId}`)
       } else {
-        router.refresh()
+        router.push('/admin/franchisees')
       }
     } catch {
       setError('Something went wrong.')

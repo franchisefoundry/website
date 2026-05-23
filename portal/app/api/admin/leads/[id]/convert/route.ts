@@ -96,5 +96,5 @@ export async function POST(
   const linkErr = await sendMagicLink(typedLead.email, typedLead.full_name, null)
   if (linkErr) console.error('[convert] sendMagicLink failed:', linkErr)
 
-  return NextResponse.json({ success: true })
+  return NextResponse.json({ success: true, franchiseeId: franchiseeProfile.id })
 }

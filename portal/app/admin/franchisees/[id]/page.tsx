@@ -19,8 +19,8 @@ export default async function FranchiseeDetailPage({ params }: Props) {
   const supabase = await createClient()
   const admin = createAdminClient()
 
-  const [{ data: franchisee }, { data: franchisors }] = await Promise.all([
-    supabase
+  const [{ data: franchisee }, { data: franchisors }, { data: matches }] = await Promise.all([
+    admin
       .from('franchisee_profiles')
       .select('*, profiles(full_name, email, phone)')
       .eq('id', id)
@@ -30,15 +30,14 @@ export default async function FranchiseeDetailPage({ params }: Props) {
       .select('id, brand_name, category')
       .in('status', ['active', 'pending_review'])
       .order('brand_name'),
+    admin
+      .from('matches')
+      .select('*, franchisor_profiles(brand_name, category, status)')
+      .eq('franchisee_id', id)
+      .order('score', { ascending: false }),
   ])
 
   if (!franchisee) notFound()
-
-  const { data: matches } = await supabase
-    .from('matches')
-    .select('*, franchisor_profiles(brand_name, category, status)')
-    .eq('franchisee_id', id)
-    .order('score', { ascending: false })
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const profile = franchisee.profiles as any

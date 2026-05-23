@@ -1,4 +1,4 @@
-import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 import { PageHeader } from '@/components/page-header'
 import Link from 'next/link'
 import type { Lead } from '@/lib/supabase/types'
@@ -19,9 +19,9 @@ const STATUS_LABELS: Record<string, string> = {
 }
 
 export default async function AdminLeadsPage() {
-  const supabase = await createClient()
+  const admin = createAdminClient()
 
-  const { data: leads } = await supabase
+  const { data: leads } = await admin
     .from('leads')
     .select('*')
     .order('created_at', { ascending: false })

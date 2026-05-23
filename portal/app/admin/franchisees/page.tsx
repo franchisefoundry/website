@@ -1,4 +1,4 @@
-import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 import { PageHeader } from '@/components/page-header'
 import { statusBadge } from '@/components/ui/badge'
 import { formatDate, formatInvestmentRange } from '@/lib/utils'
@@ -7,12 +7,19 @@ import InviteFranchiseeButton from './invite-button'
 import DeleteUserButton from '../DeleteUserButton'
 
 export default async function FranchiseesPage() {
-  const supabase = await createClient()
+  const admin = createAdminClient()
 
-  const { data: franchisees } = await supabase
+  const { data: allFranchisees } = await admin
     .from('franchisee_profiles')
-    .select('*, profiles(full_name, email, phone)')
+    .select('*, profiles(full_name, email, phone, role)')
     .order('created_at', { ascending: false })
+
+  // Only show users whose profile role is 'franchisee' — filters out admin accounts
+  // that may have franchisee_profiles rows from testing
+  const franchisees = (allFranchisees ?? []).filter(f => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return (f.profiles as any)?.role === 'franchisee'
+  })
 
   return (
     <div>

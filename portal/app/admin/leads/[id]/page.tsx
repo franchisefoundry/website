@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation'
-import { createClient } from '@/lib/supabase/server'
+import Link from 'next/link'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { PageHeader } from '@/components/page-header'
 import { scoreLabel, scoreColour } from '@/lib/matching'
@@ -22,16 +22,30 @@ const EXPERIENCE_LABELS: Record<string, string> = {
 
 export default async function LeadDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
-  const supabase = await createClient()
-
-  // Verify admin
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) notFound()
-
   const admin = createAdminClient()
 
   const { data: lead } = await admin.from('leads').select('*').eq('id', id).single()
   if (!lead) notFound()
+
+  const typedLead = lead as Lead
+
+  // If the lead was converted, look up their franchisee profile via email
+  let convertedFranchiseeId: string | null = null
+  if (typedLead.status === 'converted') {
+    const { data: profileRow } = await admin
+      .from('profiles')
+      .select('id')
+      .eq('email', typedLead.email)
+      .single()
+    if (profileRow) {
+      const { data: fp } = await admin
+        .from('franchisee_profiles')
+        .select('id')
+        .eq('user_id', profileRow.id)
+        .single()
+      convertedFranchiseeId = fp?.id ?? null
+    }
+  }
 
   const { data: matches } = await admin
     .from('lead_matches')
@@ -39,7 +53,6 @@ export default async function LeadDetailPage({ params }: { params: Promise<{ id:
     .eq('lead_id', id)
     .order('score', { ascending: false })
 
-  const typedLead = lead as Lead
   const typedMatches = (matches ?? []) as LeadMatch[]
 
   return (
@@ -152,8 +165,16 @@ export default async function LeadDetailPage({ params }: { params: Promise<{ id:
             </div>
           )}
           {typedLead.status === 'converted' && (
-            <div className="bg-emerald-50 border border-emerald-200 rounded-2xl p-4 text-sm text-emerald-700 font-medium text-center">
-              ✓ Converted to franchisee
+            <div className="bg-emerald-50 border border-emerald-200 rounded-2xl p-4 text-sm text-emerald-700 font-medium text-center space-y-2">
+              <p>✓ Converted to franchisee</p>
+              {convertedFranchiseeId && (
+                <Link
+                  href={`/admin/franchisees/${convertedFranchiseeId}`}
+                  className="block text-xs underline underline-offset-2 hover:text-emerald-900 transition-colors"
+                >
+                  View franchisee profile →
+                </Link>
+              )}
             </div>
           )}
         </div>

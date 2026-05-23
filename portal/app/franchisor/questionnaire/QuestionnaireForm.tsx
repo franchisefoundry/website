@@ -1,6 +1,12 @@
 'use client'
 
 import { useState } from 'react'
+import { DualRangeSlider, INVESTMENT_STEPS } from '@/components/questionnaire/DualRangeSlider'
+import { SingleSlider } from '@/components/questionnaire/SingleSlider'
+import { SpectrumSlider } from '@/components/questionnaire/SpectrumSlider'
+import { GradientRating } from '@/components/questionnaire/GradientRating'
+import { StepBuilder } from '@/components/questionnaire/StepBuilder'
+import { OperatingModelCards } from '@/components/questionnaire/OperatingModelCards'
 
 interface Props {
   franchisorId: string
@@ -91,6 +97,18 @@ function MultiSelect({ label, options, selected, onChange }: {
   )
 }
 
+function SliderField({ label, hint, children }: { label: string; hint?: string; children: React.ReactNode }) {
+  return (
+    <div>
+      <label className="block text-sm font-medium text-slate-700 mb-1">{label}</label>
+      {hint && <p className="text-xs text-slate-400 mb-3">{hint}</p>}
+      <div className="bg-slate-50 rounded-xl border border-slate-200 p-4">
+        {children}
+      </div>
+    </div>
+  )
+}
+
 function SectionCard({ title, children, onSave, saving, saved }: {
   title: string
   children: React.ReactNode
@@ -136,6 +154,13 @@ function SectionCard({ title, children, onSave, saving, saved }: {
   )
 }
 
+function nearestStep(val: number) {
+  const exact = INVESTMENT_STEPS.indexOf(val)
+  if (exact >= 0) return val
+  return INVESTMENT_STEPS.reduce((best, s) =>
+    Math.abs(s - val) < Math.abs(best - val) ? s : best, INVESTMENT_STEPS[0])
+}
+
 export default function QuestionnaireForm({ franchisorId, existing }: Props) {
   const e = existing ?? {}
 
@@ -146,15 +171,18 @@ export default function QuestionnaireForm({ franchisorId, existing }: Props) {
   const [highPerforming, setHighPerforming] = useState<string>(e.high_performing_unit ?? '')
   const [underperformance, setUnderperformance] = useState<string>(e.underperformance_reasons ?? '')
 
-  // Section 2
-  const [investmentRaw, setInvestmentRaw] = useState<string>(e.investment_range_raw ?? '')
+  // Section 2 — investment slider + text notes + remaining fields
+  const [investmentMin, setInvestmentMin] = useState<number>(nearestStep(e.investment_min ?? 20_000))
+  const [investmentMax, setInvestmentMax] = useState<number>(nearestStep(e.investment_max ?? 100_000))
+  const [investmentNotes, setInvestmentNotes] = useState<string>(e.investment_range_raw ?? '')
   const [commercialRates, setCommercialRates] = useState<string>(e.commercial_rates ?? '')
   const [financialMetrics, setFinancialMetrics] = useState<string>(e.financial_metrics_shared ?? '')
-  const [breakEven, setBreakEven] = useState<string>(e.break_even_timeline ?? '')
+  const [breakEvenMonths, setBreakEvenMonths] = useState<number>(e.break_even_months ?? 18)
+  const [breakEvenNotes, setBreakEvenNotes] = useState<string>(e.break_even_timeline ?? '')
   const [underestimatedCosts, setUnderestimatedCosts] = useState<string>(e.underestimated_costs ?? '')
   const [commonObjections, setCommonObjections] = useState<string>(e.common_objections ?? '')
 
-  // Section 3 (excluding operator model and single licence — those live in Brand Profile)
+  // Section 3
   const [idealFranchisee, setIdealFranchisee] = useState<string>(e.ideal_franchisee_profile ?? '')
   const [backgroundExp, setBackgroundExp] = useState<string>(e.background_experience ?? '')
   const [approvalFactors, setApprovalFactors] = useState<string[]>(e.approval_factors ?? [])
@@ -162,21 +190,30 @@ export default function QuestionnaireForm({ franchisorId, existing }: Props) {
   const [problematicBehaviours, setProblematicBehaviours] = useState<string>(e.problematic_behaviours ?? '')
   const [successDef, setSuccessDef] = useState<string>(e.success_definition ?? '')
 
-  // Section 4
-  const [growthTargets, setGrowthTargets] = useState<string>(e.annual_growth_targets ?? '')
+  // Section 4 — growth slider + territory + spectrum
+  const [growthTargetUnits, setGrowthTargetUnits] = useState<number>(e.growth_target_units ?? 5)
+  const [growthContext, setGrowthContext] = useState<string>(e.annual_growth_targets ?? '')
   const [territories, setTerritories] = useState<string>(e.priority_territories ?? '')
-  const [growthSpeed, setGrowthSpeed] = useState<string>(e.growth_speed_vs_quality ?? '')
+  const [growthQualityScore, setGrowthQualityScore] = useState<number>(e.growth_quality_score ?? 50)
   const [scalingConcerns, setScalingConcerns] = useState<string>(e.scaling_concerns ?? '')
 
   // Section 5
   const [inquiryChannels, setInquiryChannels] = useState<string[]>(e.inquiry_channels ?? [])
-  const [screeningMethod, setScreeningMethod] = useState<string>(e.screening_method ?? '')
+  const rawSteps = e.screening_steps
+  const [screeningSteps, setScreeningSteps] = useState<string[]>(
+    Array.isArray(rawSteps) && rawSteps.length
+      ? rawSteps
+      : e.screening_method
+        ? [e.screening_method]
+        : ['Initial enquiry call', 'Application form', 'Discovery day']
+  )
   const [approvalTiming, setApprovalTiming] = useState<string>(e.approval_timing ?? '')
   const [approvalAuthority, setApprovalAuthority] = useState<string>(e.approval_authority ?? '')
   const [timelineContract, setTimelineContract] = useState<string>(e.timeline_inquiry_to_contract ?? '')
   const [postSigning, setPostSigning] = useState<string>(e.post_signing_activities ?? '')
   const [timelineLaunch, setTimelineLaunch] = useState<string>(e.timeline_signing_to_launch ?? '')
   const [bottlenecks, setBottlenecks] = useState<string>(e.process_bottlenecks ?? '')
+  const [rating, setRating] = useState<number>(e.recruitment_process_rating ?? 0)
 
   const [savingSection, setSavingSection] = useState<number | null>(null)
   const [savedSection, setSavedSection] = useState<number | null>(null)
@@ -206,6 +243,7 @@ export default function QuestionnaireForm({ franchisorId, existing }: Props) {
 
   return (
     <div className="space-y-3 max-w-3xl">
+      {/* 1 · The Business */}
       <SectionCard
         title="1 · The Business"
         onSave={() => saveSection(1, {
@@ -225,27 +263,58 @@ export default function QuestionnaireForm({ franchisorId, existing }: Props) {
         <Textarea label="Common reasons for underperformance" value={underperformance} onChange={setUnderperformance} placeholder="Location, franchisee engagement..." />
       </SectionCard>
 
+      {/* 2 · Financials */}
       <SectionCard
         title="2 · Financials"
         onSave={() => saveSection(2, {
-          investment_range_raw: investmentRaw,
+          investment_min: investmentMin,
+          investment_max: investmentMax,
+          investment_range_raw: investmentNotes || null,
           commercial_rates: commercialRates,
           financial_metrics_shared: financialMetrics,
-          break_even_timeline: breakEven,
+          break_even_months: breakEvenMonths,
+          break_even_timeline: breakEvenNotes || null,
           underestimated_costs: underestimatedCosts,
           common_objections: commonObjections,
         })}
         saving={savingSection === 2}
         saved={savedSection === 2}
       >
-        <Textarea label="Total investment range & breakdown" value={investmentRaw} onChange={setInvestmentRaw} placeholder="Franchise fee, fit-out, working capital..." />
+        <SliderField
+          label="Total investment range"
+          hint="Drag the handles to set your minimum and maximum investment levels"
+        >
+          <DualRangeSlider
+            min={investmentMin}
+            max={investmentMax}
+            onChange={(mn, mx) => { setInvestmentMin(mn); setInvestmentMax(mx) }}
+            variant="light"
+          />
+        </SliderField>
+        <Textarea label="Investment breakdown notes" value={investmentNotes} onChange={setInvestmentNotes} placeholder="e.g. Franchise fee £25k, fit-out £40k, working capital £15k..." rows={2} />
         <Textarea label="Commercial terms (fee, royalty, levy)" value={commercialRates} onChange={setCommercialRates} placeholder="e.g. Franchise fee: £25k, Royalty: 7%..." rows={2} />
         <Textarea label="Financial data shared with prospects" value={financialMetrics} onChange={setFinancialMetrics} placeholder="P&L, average unit revenue, margins..." />
-        <Textarea label="Break-even timeline" value={breakEven} onChange={setBreakEven} placeholder="e.g. 18–24 months for most franchisees..." rows={2} />
+        <SliderField
+          label="Typical break-even timeline"
+          hint="Slide to select the average number of months to break even"
+        >
+          <SingleSlider
+            value={breakEvenMonths}
+            min={1}
+            max={48}
+            format={v => v === 48 ? '48+ months' : `${v} month${v === 1 ? '' : 's'}`}
+            lowLabel="1 month"
+            highLabel="48+ months"
+            onChange={setBreakEvenMonths}
+            variant="light"
+          />
+        </SliderField>
+        <Textarea label="Break-even context / caveats" value={breakEvenNotes} onChange={setBreakEvenNotes} placeholder="Depends on location, prior experience..." rows={2} />
         <Textarea label="Most underestimated costs" value={underestimatedCosts} onChange={setUnderestimatedCosts} placeholder="Staffing, working capital buffer, rates..." />
         <Textarea label="Common financial objections" value={commonObjections} onChange={setCommonObjections} placeholder="'The fee is too high', 'Payback is too long'..." />
       </SectionCard>
 
+      {/* 3 · Ideal Franchisee */}
       <SectionCard
         title="3 · Ideal Franchisee"
         onSave={() => saveSection(3, {
@@ -270,46 +339,84 @@ export default function QuestionnaireForm({ franchisorId, existing }: Props) {
         <Textarea label="How you define franchisee success" value={successDef} onChange={setSuccessDef} placeholder="Beyond revenue — culture, brand, growth..." />
       </SectionCard>
 
+      {/* 4 · Growth & Territory */}
       <SectionCard
         title="4 · Growth & Territory"
         onSave={() => saveSection(4, {
-          annual_growth_targets: growthTargets,
+          growth_target_units: growthTargetUnits,
+          annual_growth_targets: growthContext || null,
           priority_territories: territories,
-          growth_speed_vs_quality: growthSpeed,
+          growth_quality_score: growthQualityScore,
+          growth_speed_vs_quality: null, // replaced by slider
           scaling_concerns: scalingConcerns,
         })}
         saving={savingSection === 4}
         saved={savedSection === 4}
       >
-        <Textarea label="Annual growth targets" value={growthTargets} onChange={setGrowthTargets} placeholder="e.g. 5–8 units/year, 25 total by 2027..." rows={2} />
+        <SliderField
+          label="Annual unit target"
+          hint="How many new franchise units are you aiming to open per year?"
+        >
+          <SingleSlider
+            value={growthTargetUnits}
+            min={1}
+            max={50}
+            format={v => v === 50 ? '50+ units/year' : `${v} unit${v === 1 ? '' : 's'}/year`}
+            lowLabel="1 unit"
+            highLabel="50+ units"
+            onChange={setGrowthTargetUnits}
+            variant="light"
+          />
+        </SliderField>
+        <Textarea label="Growth context & timeframe" value={growthContext} onChange={setGrowthContext} placeholder="e.g. 5–8 units/year, 25 total by 2027..." rows={2} />
         <Textarea label="Priority UK territories" value={territories} onChange={setTerritories} placeholder="Manchester, West Yorkshire, Glasgow..." rows={2} />
-        <Textarea label="Balancing growth speed vs. quality" value={growthSpeed} onChange={setGrowthSpeed} placeholder="We never compromise on X, even if it means..." />
+        <SliderField
+          label="Growth philosophy — speed vs. quality"
+          hint="Where does your approach sit on the spectrum?"
+        >
+          <SpectrumSlider
+            value={growthQualityScore}
+            onChange={setGrowthQualityScore}
+            variant="light"
+          />
+        </SliderField>
         <Textarea label="Biggest scaling concern" value={scalingConcerns} onChange={setScalingConcerns} placeholder="Quality control, operational support, brand consistency..." />
       </SectionCard>
 
+      {/* 5 · Recruitment Process */}
       <SectionCard
         title="5 · Recruitment Process"
         onSave={() => saveSection(5, {
           inquiry_channels: inquiryChannels,
-          screening_method: screeningMethod,
+          screening_steps: screeningSteps,
+          screening_method: screeningSteps.join('\n'), // backward compat
           approval_timing: approvalTiming,
           approval_authority: approvalAuthority,
           timeline_inquiry_to_contract: timelineContract,
           post_signing_activities: postSigning,
           timeline_signing_to_launch: timelineLaunch,
           process_bottlenecks: bottlenecks,
+          recruitment_process_rating: rating || null,
         })}
         saving={savingSection === 5}
         saved={savedSection === 5}
       >
         <MultiSelect label="Where enquiries come from" options={INQUIRY_CHANNEL_OPTIONS} selected={inquiryChannels} onChange={setInquiryChannels} />
-        <Textarea label="Screening process (step by step)" value={screeningMethod} onChange={setScreeningMethod} placeholder="Step 1: Initial call. Step 2: Application. Step 3: Discovery day..." rows={4} />
-        <Textarea label="When you know you want to approve someone" value={approvalTiming} onChange={setApprovalTiming} placeholder="Usually after the discovery day..." rows={2} />
+        <div>
+          <label className="block text-sm font-medium text-slate-700 mb-2">Screening process steps</label>
+          <p className="text-xs text-slate-400 mb-3">Add each stage — hover a step to reorder or remove it</p>
+          <StepBuilder steps={screeningSteps} onChange={setScreeningSteps} placeholder="Describe this step…" variant="light" />
+        </div>
+        <Textarea label="When approval decision is typically made" value={approvalTiming} onChange={setApprovalTiming} placeholder="Usually after the discovery day..." rows={2} />
         <Textarea label="Who has final sign-off" value={approvalAuthority} onChange={setApprovalAuthority} placeholder="Franchise Director, MD, approval committee..." rows={2} />
         <Textarea label="Timeline: enquiry to signed contract" value={timelineContract} onChange={setTimelineContract} placeholder="e.g. 6–12 weeks for motivated applicants..." rows={2} />
         <Textarea label="Post-signing onboarding activities" value={postSigning} onChange={setPostSigning} placeholder="Training, site selection, fit-out, pre-launch marketing..." />
         <Textarea label="Timeline: signing to opening day" value={timelineLaunch} onChange={setTimelineLaunch} placeholder="e.g. 4–6 months..." rows={2} />
         <Textarea label="Biggest recruitment bottlenecks" value={bottlenecks} onChange={setBottlenecks} placeholder="Too many unqualified leads, slow decision stages..." />
+        <div>
+          <label className="block text-sm font-medium text-slate-700 mb-3">Self-rating: recruitment process (1–10)</label>
+          <GradientRating value={rating} onChange={setRating} />
+        </div>
       </SectionCard>
     </div>
   )

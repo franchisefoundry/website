@@ -41,10 +41,8 @@ export async function POST(request: NextRequest) {
           revenue_streams: answers.revenue_streams || null,
           high_performing_unit: answers.high_performing_unit || null,
           underperformance_reasons: answers.underperformance_reasons || null,
-          investment_range_raw: answers.investment_range_raw || null,
           commercial_rates: answers.commercial_rates || null,
           financial_metrics_shared: answers.financial_metrics_shared || null,
-          break_even_timeline: answers.break_even_timeline || null,
           underestimated_costs: answers.underestimated_costs || null,
           common_objections: answers.common_objections || null,
           ideal_franchisee_profile: answers.ideal_franchisee_profile || null,
@@ -57,10 +55,12 @@ export async function POST(request: NextRequest) {
           success_definition: answers.success_definition || null,
           annual_growth_targets: answers.annual_growth_targets || null,
           priority_territories: answers.priority_territories || null,
-          growth_speed_vs_quality: answers.growth_speed_vs_quality || null,
+          growth_speed_vs_quality: null,   // replaced by growth_quality_score slider
           scaling_concerns: answers.scaling_concerns || null,
           inquiry_channels: answers.inquiry_channels ?? [],
-          screening_method: answers.screening_method || null,
+          screening_method: answers.screening_steps?.length
+            ? answers.screening_steps.join('\n')
+            : answers.screening_method || null,
           approval_timing: answers.approval_timing || null,
           approval_authority: answers.approval_authority || null,
           timeline_inquiry_to_contract: answers.timeline_inquiry_to_contract || null,
@@ -68,6 +68,15 @@ export async function POST(request: NextRequest) {
           timeline_signing_to_launch: answers.timeline_signing_to_launch || null,
           process_bottlenecks: answers.process_bottlenecks || null,
           recruitment_process_rating: answers.recruitment_process_rating || null,
+          // Gamified / numeric fields
+          investment_min: answers.investment_min ?? null,
+          investment_max: answers.investment_max ?? null,
+          investment_range_raw: answers.investment_notes || null,
+          break_even_months: answers.break_even_months ?? null,
+          break_even_timeline: answers.break_even_notes || null,
+          growth_target_units: answers.growth_target_units ?? null,
+          growth_quality_score: answers.growth_quality_score ?? null,
+          screening_steps: answers.screening_steps?.length ? answers.screening_steps : null,
           completed_at: new Date().toISOString(),
         },
         { onConflict: 'franchisor_id' }

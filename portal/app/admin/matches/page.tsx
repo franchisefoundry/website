@@ -1,4 +1,4 @@
-import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 import { PageHeader } from '@/components/page-header'
 import { statusBadge } from '@/components/ui/badge'
 import { scoreColour, scoreLabel } from '@/lib/matching'
@@ -7,9 +7,9 @@ import MatchStatusSelect from './match-status-select'
 import MatchPipelineSelect from './match-pipeline-select'
 
 export default async function MatchesPage() {
-  const supabase = await createClient()
+  const admin = createAdminClient()
 
-  const { data: matches } = await supabase
+  const { data: matches } = await admin
     .from('matches')
     .select(`
       *,

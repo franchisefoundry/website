@@ -2,6 +2,12 @@
 
 import { useState } from 'react'
 import type { SectionRow, QuestionRow } from '@/app/admin/questionnaire-template/page'
+import { DualRangeSlider, INVESTMENT_STEPS } from '@/components/questionnaire/DualRangeSlider'
+import { SingleSlider } from '@/components/questionnaire/SingleSlider'
+import { SpectrumSlider } from '@/components/questionnaire/SpectrumSlider'
+import { GradientRating } from '@/components/questionnaire/GradientRating'
+import { StepBuilder } from '@/components/questionnaire/StepBuilder'
+import { OperatingModelCards } from '@/components/questionnaire/OperatingModelCards'
 
 // Fallback options in case the template DB row is missing options
 const FALLBACK_APPROVAL_FACTORS = [
@@ -25,6 +31,13 @@ interface Props {
   sections: SectionRow[]
 }
 
+function nearestStep(val: number) {
+  const exact = INVESTMENT_STEPS.indexOf(val)
+  if (exact >= 0) return val
+  return INVESTMENT_STEPS.reduce((best, s) =>
+    Math.abs(s - val) < Math.abs(best - val) ? s : best, INVESTMENT_STEPS[0])
+}
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default function AdminQuestionnaireForm({ franchisorId, existing, sections }: Props) {
   const e = existing ?? {}
@@ -37,18 +50,25 @@ export default function AdminQuestionnaireForm({ franchisorId, existing, section
   )
   const customQuestions = allQuestions.filter(q => q.field_key.startsWith('custom_'))
 
-  // Standard answers (specific columns)
+  // Section 1
   const [coreModel, setCoreModel] = useState<string>(e.core_model ?? '')
   const [compAdvantage, setCompAdvantage] = useState<string>(e.competitive_advantage ?? '')
   const [revenueStreams, setRevenueStreams] = useState<string>(e.revenue_streams ?? '')
   const [highPerforming, setHighPerforming] = useState<string>(e.high_performing_unit ?? '')
   const [underperformance, setUnderperformance] = useState<string>(e.underperformance_reasons ?? '')
-  const [investmentRaw, setInvestmentRaw] = useState<string>(e.investment_range_raw ?? '')
+
+  // Section 2 — investment slider
+  const [investmentMin, setInvestmentMin] = useState<number>(nearestStep(e.investment_min ?? 20_000))
+  const [investmentMax, setInvestmentMax] = useState<number>(nearestStep(e.investment_max ?? 100_000))
+  const [investmentNotes, setInvestmentNotes] = useState<string>(e.investment_range_raw ?? '')
   const [commercialRates, setCommercialRates] = useState<string>(e.commercial_rates ?? '')
   const [financialMetrics, setFinancialMetrics] = useState<string>(e.financial_metrics_shared ?? '')
-  const [breakEven, setBreakEven] = useState<string>(e.break_even_timeline ?? '')
+  const [breakEvenMonths, setBreakEvenMonths] = useState<number>(e.break_even_months ?? 18)
+  const [breakEvenNotes, setBreakEvenNotes] = useState<string>(e.break_even_timeline ?? '')
   const [underestimatedCosts, setUnderestimatedCosts] = useState<string>(e.underestimated_costs ?? '')
   const [commonObjections, setCommonObjections] = useState<string>(e.common_objections ?? '')
+
+  // Section 3
   const [idealFranchisee, setIdealFranchisee] = useState<string>(e.ideal_franchisee_profile ?? '')
   const [backgroundExp, setBackgroundExp] = useState<string>(e.background_experience ?? '')
   const [approvalFactors, setApprovalFactors] = useState<string[]>(e.approval_factors ?? [])
@@ -57,12 +77,24 @@ export default function AdminQuestionnaireForm({ franchisorId, existing, section
   const [declineReasons, setDeclineReasons] = useState<string[]>(e.decline_reasons ?? [])
   const [problematicBehaviours, setProblematicBehaviours] = useState<string>(e.problematic_behaviours ?? '')
   const [successDef, setSuccessDef] = useState<string>(e.success_definition ?? '')
-  const [growthTargets, setGrowthTargets] = useState<string>(e.annual_growth_targets ?? '')
+
+  // Section 4 — growth sliders
+  const [growthTargetUnits, setGrowthTargetUnits] = useState<number>(e.growth_target_units ?? 5)
+  const [growthContext, setGrowthContext] = useState<string>(e.annual_growth_targets ?? '')
   const [territories, setTerritories] = useState<string>(e.priority_territories ?? '')
-  const [growthSpeed, setGrowthSpeed] = useState<string>(e.growth_speed_vs_quality ?? '')
+  const [growthQualityScore, setGrowthQualityScore] = useState<number>(e.growth_quality_score ?? 50)
   const [scalingConcerns, setScalingConcerns] = useState<string>(e.scaling_concerns ?? '')
+
+  // Section 5
   const [inquiryChannels, setInquiryChannels] = useState<string[]>(e.inquiry_channels ?? [])
-  const [screeningMethod, setScreeningMethod] = useState<string>(e.screening_method ?? '')
+  const rawSteps = e.screening_steps
+  const [screeningSteps, setScreeningSteps] = useState<string[]>(
+    Array.isArray(rawSteps) && rawSteps.length
+      ? rawSteps
+      : e.screening_method
+        ? [e.screening_method]
+        : ['Initial enquiry call', 'Application form', 'Discovery day']
+  )
   const [approvalTiming, setApprovalTiming] = useState<string>(e.approval_timing ?? '')
   const [approvalAuthority, setApprovalAuthority] = useState<string>(e.approval_authority ?? '')
   const [timelineContract, setTimelineContract] = useState<string>(e.timeline_inquiry_to_contract ?? '')
@@ -124,6 +156,18 @@ export default function AdminQuestionnaireForm({ franchisorId, existing, section
     )
   }
 
+  function sliderWrap(label: string, hint: string, children: React.ReactNode) {
+    return (
+      <div>
+        <label className="block text-xs font-medium text-slate-600 mb-1">{label}</label>
+        <p className="text-xs text-slate-400 mb-2">{hint}</p>
+        <div className="bg-slate-50 rounded-xl border border-slate-200 p-4">
+          {children}
+        </div>
+      </div>
+    )
+  }
+
   function multiChips(label: string, options: string[], selected: string[], onChange: (v: string[]) => void) {
     function toggle(opt: string) {
       onChange(selected.includes(opt) ? selected.filter(o => o !== opt) : [...selected, opt])
@@ -178,16 +222,7 @@ export default function AdminQuestionnaireForm({ franchisorId, existing, section
       return (
         <div key={cq.field_key}>
           <label className="block text-xs font-medium text-slate-600 mb-2">{cq.question_text} (1–10)</label>
-          <div className="flex gap-1.5">
-            {[1,2,3,4,5,6,7,8,9,10].map(n => (
-              <button key={n} type="button" onClick={() => setCustomAnswer(cq.field_key, n)}
-                className={`w-8 h-8 rounded-lg text-xs font-semibold border transition-colors ${
-                  numVal === n ? 'bg-brand-green text-white border-brand-green' : 'border-slate-300 text-slate-600 hover:bg-slate-50'
-                }`}>
-                {n}
-              </button>
-            ))}
-          </div>
+          <GradientRating value={numVal} onChange={v => setCustomAnswer(cq.field_key, v)} />
         </div>
       )
     }
@@ -236,6 +271,7 @@ export default function AdminQuestionnaireForm({ franchisorId, existing, section
   return (
     <div className="space-y-3">
 
+      {/* 1 · The Business */}
       <SectionCard title="1 · The Business" section={1} onSave={() => saveSection(1, {
         core_model: coreModel, competitive_advantage: compAdvantage,
         revenue_streams: revenueStreams, high_performing_unit: highPerforming,
@@ -248,19 +284,51 @@ export default function AdminQuestionnaireForm({ franchisorId, existing, section
         {ta(q('underperformance_reasons', 'Common reasons for underperformance'), underperformance, setUnderperformance)}
       </SectionCard>
 
+      {/* 2 · Financials */}
       <SectionCard title="2 · Financials" section={2} onSave={() => saveSection(2, {
-        investment_range_raw: investmentRaw, commercial_rates: commercialRates,
-        financial_metrics_shared: financialMetrics, break_even_timeline: breakEven,
-        underestimated_costs: underestimatedCosts, common_objections: commonObjections,
+        investment_min: investmentMin,
+        investment_max: investmentMax,
+        investment_range_raw: investmentNotes || null,
+        commercial_rates: commercialRates,
+        financial_metrics_shared: financialMetrics,
+        break_even_months: breakEvenMonths,
+        break_even_timeline: breakEvenNotes || null,
+        underestimated_costs: underestimatedCosts,
+        common_objections: commonObjections,
       })}>
-        {ta(q('investment_range_raw', 'Total investment range & breakdown'), investmentRaw, setInvestmentRaw)}
+        {sliderWrap(
+          q('investment_range_raw', 'Total investment range'),
+          'Drag the handles to set the minimum and maximum investment',
+          <DualRangeSlider
+            min={investmentMin}
+            max={investmentMax}
+            onChange={(mn, mx) => { setInvestmentMin(mn); setInvestmentMax(mx) }}
+            variant="light"
+          />
+        )}
+        {ta('Investment breakdown notes', investmentNotes, setInvestmentNotes, 2)}
         {ta(q('commercial_rates', 'Commercial terms (fee, royalty, levy)'), commercialRates, setCommercialRates, 2)}
         {ta(q('financial_metrics_shared', 'Financial data shared with prospects'), financialMetrics, setFinancialMetrics)}
-        {ta(q('break_even_timeline', 'Break-even timeline'), breakEven, setBreakEven, 2)}
+        {sliderWrap(
+          q('break_even_timeline', 'Typical break-even timeline'),
+          'Drag to set average months to break even',
+          <SingleSlider
+            value={breakEvenMonths}
+            min={1}
+            max={48}
+            format={v => v === 48 ? '48+ months' : `${v} month${v === 1 ? '' : 's'}`}
+            lowLabel="1 month"
+            highLabel="48+ months"
+            onChange={setBreakEvenMonths}
+            variant="light"
+          />
+        )}
+        {ta('Break-even context / caveats', breakEvenNotes, setBreakEvenNotes, 2)}
         {ta(q('underestimated_costs', 'Most underestimated costs'), underestimatedCosts, setUnderestimatedCosts)}
         {ta(q('common_objections', 'Common financial objections'), commonObjections, setCommonObjections)}
       </SectionCard>
 
+      {/* 3 · Ideal Franchisee */}
       <SectionCard title="3 · Ideal Franchisee" section={3} onSave={() => saveSection(3, {
         ideal_franchisee_profile: idealFranchisee, background_experience: backgroundExp,
         approval_factors: approvalFactors, single_franchise_licenses: singleLicence,
@@ -270,8 +338,9 @@ export default function AdminQuestionnaireForm({ franchisorId, existing, section
         {ta(q('ideal_franchisee_profile', 'Ideal franchisee profile'), idealFranchisee, setIdealFranchisee)}
         {ta(q('background_experience', 'Required / preferred experience'), backgroundExp, setBackgroundExp, 2)}
         {multiChips(q('approval_factors', 'Top approval factors'), opts('approval_factors', FALLBACK_APPROVAL_FACTORS), approvalFactors, setApprovalFactors)}
+
         {/* Profile-linked fields — locked */}
-        <div className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 space-y-3">
+        <div className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 space-y-4">
           <p className="text-xs text-amber-700 font-medium">
             🔒 These fields are linked to the brand profile — edit them via{' '}
             <a href="../edit" className="underline hover:text-amber-900">Brand Profile → Edit</a>
@@ -288,39 +357,68 @@ export default function AdminQuestionnaireForm({ franchisorId, existing, section
           </div>
           <div>
             <label className="block text-xs font-medium text-slate-500 mb-2">{q('operating_model_raw', 'Operating model')}</label>
-            <div className="flex flex-col gap-1.5">
-              {(opts('operating_model_raw', ['owner-operator','hire-manager','either'])).map(opt => (
-                <div key={opt} className={`px-3 py-2 rounded-lg text-xs border cursor-not-allowed select-none ${operatingModel === opt ? 'bg-slate-200 border-slate-300 text-slate-600 font-semibold' : 'border-slate-200 text-slate-400'}`}>
-                  {opt === 'owner-operator' ? 'Must be owner-operator' : opt === 'hire-manager' ? 'Can hire a manager' : 'Either is acceptable'}
-                </div>
-              ))}
-            </div>
+            <OperatingModelCards value={operatingModel} onChange={() => {}} readOnly variant="light" />
           </div>
         </div>
+
         {multiChips(q('decline_reasons', 'Common decline reasons'), opts('decline_reasons', FALLBACK_DECLINE_REASONS), declineReasons, setDeclineReasons)}
         {ta(q('problematic_behaviours', "Franchisee types that haven't worked"), problematicBehaviours, setProblematicBehaviours)}
         {ta(q('success_definition', 'Definition of franchisee success'), successDef, setSuccessDef)}
       </SectionCard>
 
+      {/* 4 · Growth & Territory */}
       <SectionCard title="4 · Growth & Territory" section={4} onSave={() => saveSection(4, {
-        annual_growth_targets: growthTargets, priority_territories: territories,
-        growth_speed_vs_quality: growthSpeed, scaling_concerns: scalingConcerns,
+        growth_target_units: growthTargetUnits,
+        annual_growth_targets: growthContext || null,
+        priority_territories: territories,
+        growth_quality_score: growthQualityScore,
+        growth_speed_vs_quality: null,
+        scaling_concerns: scalingConcerns,
       })}>
-        {ta(q('annual_growth_targets', 'Annual growth targets'), growthTargets, setGrowthTargets, 2)}
+        {sliderWrap(
+          q('annual_growth_targets', 'Annual unit target'),
+          'How many new franchise units per year?',
+          <SingleSlider
+            value={growthTargetUnits}
+            min={1}
+            max={50}
+            format={v => v === 50 ? '50+ units/year' : `${v} unit${v === 1 ? '' : 's'}/year`}
+            lowLabel="1 unit"
+            highLabel="50+ units"
+            onChange={setGrowthTargetUnits}
+            variant="light"
+          />
+        )}
+        {ta('Growth context & timeframe', growthContext, setGrowthContext, 2)}
         {ta(q('priority_territories', 'Priority UK territories'), territories, setTerritories, 2)}
-        {ta(q('growth_speed_vs_quality', 'Balancing growth speed vs. quality'), growthSpeed, setGrowthSpeed)}
+        {sliderWrap(
+          q('growth_speed_vs_quality', 'Growth philosophy — speed vs. quality'),
+          'Where does their approach sit on the spectrum?',
+          <SpectrumSlider
+            value={growthQualityScore}
+            onChange={setGrowthQualityScore}
+            variant="light"
+          />
+        )}
         {ta(q('scaling_concerns', 'Biggest scaling concern'), scalingConcerns, setScalingConcerns)}
       </SectionCard>
 
+      {/* 5 · Recruitment Process */}
       <SectionCard title="5 · Recruitment Process" section={5} onSave={() => saveSection(5, {
-        inquiry_channels: inquiryChannels, screening_method: screeningMethod,
+        inquiry_channels: inquiryChannels,
+        screening_steps: screeningSteps,
+        screening_method: screeningSteps.join('\n'),
         approval_timing: approvalTiming, approval_authority: approvalAuthority,
         timeline_inquiry_to_contract: timelineContract, post_signing_activities: postSigning,
         timeline_signing_to_launch: timelineLaunch, process_bottlenecks: bottlenecks,
         recruitment_process_rating: rating || null,
       })}>
         {multiChips(q('inquiry_channels', 'Where enquiries come from'), opts('inquiry_channels', FALLBACK_INQUIRY_CHANNELS), inquiryChannels, setInquiryChannels)}
-        {ta(q('screening_method', 'Screening process (step by step)'), screeningMethod, setScreeningMethod, 4)}
+        <div>
+          <label className="block text-xs font-medium text-slate-600 mb-1">{q('screening_method', 'Screening process steps')}</label>
+          <p className="text-xs text-slate-400 mb-2">Hover a step to reorder or remove it</p>
+          <StepBuilder steps={screeningSteps} onChange={setScreeningSteps} placeholder="Describe this step…" variant="light" />
+        </div>
         {ta(q('approval_timing', 'When approval decision is made'), approvalTiming, setApprovalTiming, 2)}
         {ta(q('approval_authority', 'Final sign-off authority'), approvalAuthority, setApprovalAuthority, 2)}
         {ta(q('timeline_inquiry_to_contract', 'Timeline: enquiry to contract'), timelineContract, setTimelineContract, 2)}
@@ -329,14 +427,7 @@ export default function AdminQuestionnaireForm({ franchisorId, existing, section
         {ta(q('process_bottlenecks', 'Biggest recruitment bottlenecks'), bottlenecks, setBottlenecks)}
         <div>
           <label className="block text-xs font-medium text-slate-600 mb-2">{q('recruitment_process_rating', 'Recruitment process self-rating (1–10)')}</label>
-          <div className="flex gap-1.5">
-            {[1,2,3,4,5,6,7,8,9,10].map(n => (
-              <button key={n} type="button" onClick={() => setRating(n)}
-                className={`w-8 h-8 rounded-lg text-xs font-semibold border transition-colors ${rating === n ? 'bg-brand-green text-white border-brand-green' : 'border-slate-300 text-slate-600 hover:bg-slate-50'}`}>
-                {n}
-              </button>
-            ))}
-          </div>
+          <GradientRating value={rating} onChange={setRating} />
         </div>
       </SectionCard>
 

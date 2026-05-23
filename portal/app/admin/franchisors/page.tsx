@@ -1,4 +1,4 @@
-import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 import { PageHeader } from '@/components/page-header'
 import { statusBadge } from '@/components/ui/badge'
 import { formatDate, formatInvestmentRange } from '@/lib/utils'
@@ -8,9 +8,9 @@ import SeedFranchisorsButton from './seed-button'
 import DeleteUserButton from '../DeleteUserButton'
 
 export default async function FranchisorsPage() {
-  const supabase = await createClient()
+  const admin = createAdminClient()
 
-  const { data: franchisors } = await supabase
+  const { data: franchisors } = await admin
     .from('franchisor_profiles')
     .select('*, profiles(full_name, email)')
     .order('created_at', { ascending: false })
