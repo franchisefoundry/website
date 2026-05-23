@@ -1,0 +1,2 @@
+/find-match    https://portal.franchisefoundry.co.uk/get-matched    301
+/find-match/*  https://portal.franchisefoundry.co.uk/get-matched    301
