@@ -26,6 +26,7 @@ const adminNav: NavItem[] = [
     children: [
       { label: 'Franchisors',    href: '/admin/franchisors' },
       { label: 'Questionnaires', href: '/admin/questionnaires' },
+      { label: 'Questions',      href: '/admin/questionnaire-template' },
     ],
   },
   { label: 'Matches', href: '/admin/matches' },
