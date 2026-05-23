@@ -1,7 +1,8 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { useRouter } from 'next/navigation'
+import { createClient } from '@/lib/supabase/client'
 import type { Partner, PartnerFeature, PartnerSector, PartnerAudience } from '@/lib/supabase/types'
 
 const SECTORS: { value: PartnerSector; label: string }[] = [
@@ -67,6 +68,9 @@ export default function PartnersClient({ partners }: Props) {
   const [form, setForm] = useState<FormState>(emptyForm())
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [logoUploading, setLogoUploading] = useState(false)
+  const [logoError, setLogoError] = useState<string | null>(null)
+  const logoInputRef = useRef<HTMLInputElement>(null)
 
   function openNew() {
     setForm(emptyForm())
@@ -104,6 +108,23 @@ export default function PartnersClient({ partners }: Props) {
 
   function autoSlug(name: string) {
     return name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
+  }
+
+  async function handleLogoUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    if (!file) return
+    if (file.size > 5 * 1024 * 1024) { setLogoError('File must be under 5MB'); return }
+    setLogoUploading(true)
+    setLogoError(null)
+    const supabase = createClient()
+    const ext = file.name.split('.').pop()
+    const slug = form.slug || autoSlug(form.name) || `partner-${Date.now()}`
+    const path = `${slug}.${ext}`
+    const { error: uploadErr } = await supabase.storage.from('partner-logos').upload(path, file, { upsert: true })
+    if (uploadErr) { setLogoError(uploadErr.message); setLogoUploading(false); return }
+    const { data: { publicUrl } } = supabase.storage.from('partner-logos').getPublicUrl(path)
+    setField('logo_url', publicUrl + `?t=${Date.now()}`)
+    setLogoUploading(false)
   }
 
   async function save() {
@@ -251,10 +272,46 @@ export default function PartnersClient({ partners }: Props) {
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1.5 uppercase tracking-wide">Logo URL</label>
-                <input value={form.logo_url} onChange={e => setField('logo_url', e.target.value)}
-                  className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-green"
-                  placeholder="https://…/logo.png" />
+                <label className="block text-xs font-semibold text-slate-700 mb-1.5 uppercase tracking-wide">Logo</label>
+                <div className="flex items-center gap-4">
+                  {/* Preview */}
+                  <div className="w-14 h-14 rounded-xl border border-slate-200 bg-slate-50 flex items-center justify-center flex-shrink-0 overflow-hidden">
+                    {form.logo_url
+                      ? <img src={form.logo_url} alt="Logo" className="w-full h-full object-contain p-1" />
+                      : <span className="text-slate-300 text-xs">No logo</span>
+                    }
+                  </div>
+                  <div className="flex-1">
+                    <input
+                      ref={logoInputRef}
+                      type="file"
+                      accept="image/jpeg,image/png,image/gif,image/webp,image/svg+xml"
+                      onChange={handleLogoUpload}
+                      className="hidden"
+                    />
+                    <div className="flex gap-2">
+                      <button
+                        type="button"
+                        onClick={() => logoInputRef.current?.click()}
+                        disabled={logoUploading}
+                        className="px-4 py-2 text-sm border border-slate-300 rounded-lg hover:bg-slate-50 transition-colors disabled:opacity-60"
+                      >
+                        {logoUploading ? 'Uploading…' : form.logo_url ? 'Replace logo' : 'Upload logo'}
+                      </button>
+                      {form.logo_url && (
+                        <button
+                          type="button"
+                          onClick={() => setField('logo_url', '')}
+                          className="px-3 py-2 text-sm text-red-500 border border-red-200 rounded-lg hover:bg-red-50 transition-colors"
+                        >
+                          Remove
+                        </button>
+                      )}
+                    </div>
+                    <p className="text-xs text-slate-400 mt-1">JPG, PNG, GIF, SVG · max 5 MB</p>
+                    {logoError && <p className="text-xs text-red-500 mt-1">{logoError}</p>}
+                  </div>
+                </div>
               </div>
 
               <div>
