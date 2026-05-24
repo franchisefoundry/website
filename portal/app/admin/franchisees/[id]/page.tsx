@@ -5,12 +5,11 @@ import { PageHeader } from '@/components/page-header'
 import { Card, CardBody, CardHeader, CardTitle } from '@/components/ui/card'
 import { statusBadge } from '@/components/ui/badge'
 import { formatInvestmentRange, formatDate } from '@/lib/utils'
-import { scoreLabel, scoreColour } from '@/lib/matching'
+import { scoreColour } from '@/lib/matching'
 import FranchiseeActions from './actions'
 import MeetingNotes from './MeetingNotes'
 import DocumentsPanel from './DocumentsPanel'
 import { FRANCHISEE_PIPELINE_STAGES, MATCH_PIPELINE_STAGES } from '@/lib/supabase/types'
-import MatchPipelineSelect from '@/app/admin/matches/match-pipeline-select'
 import { ImpersonateButton } from '@/components/admin/ImpersonateButton'
 
 interface Props {
@@ -198,40 +197,52 @@ export default async function FranchiseeDetailPage({ params }: Props) {
             </CardBody>
           </Card>
 
-          {/* Matches */}
+          {/* Assigned brands */}
           <Card>
             <CardHeader>
-              <CardTitle>Matches ({matches?.length ?? 0})</CardTitle>
+              <CardTitle>Assigned brands</CardTitle>
             </CardHeader>
             <div className="divide-y divide-slate-100">
-              {matches?.length === 0 && (
-                <p className="px-6 py-6 text-sm text-slate-400">No matches assigned yet.</p>
+              {!assignedFranchisor && !backupFranchisor1 && !backupFranchisor2 && (
+                <p className="px-6 py-6 text-sm text-slate-400">No brands assigned yet. Use the panel on the right to assign a primary brand and backups.</p>
               )}
-              {matches?.map(m => {
+              {[
+                { franchisor: assignedFranchisor, franchisorId: franchisee.assigned_franchisor_id, rank: 'Primary' },
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                const fr = m.franchisor_profiles as any
+                { franchisor: backupFranchisor1,  franchisorId: (franchisee as any).backup_franchisor_1_id, rank: 'Backup 1' },
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                const pipelineInfo = MATCH_PIPELINE_STAGES.find(s => s.value === (m as any).pipeline_stage)
+                { franchisor: backupFranchisor2,  franchisorId: (franchisee as any).backup_franchisor_2_id, rank: 'Backup 2' },
+              ].filter(item => item.franchisor != null).map(({ franchisor, franchisorId, rank }) => {
+                const match = (matches ?? []).find(m => m.franchisor_id === franchisorId)
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                const pipelineStage = MATCH_PIPELINE_STAGES.find(s => s.value === (match as any)?.pipeline_stage)
                 return (
-                  <div key={m.id} className="px-6 py-4">
-                    <div className="flex items-center justify-between mb-2">
-                      <div>
-                        <p className="text-sm font-medium text-slate-900">{fr?.brand_name || 'Unnamed brand'}</p>
-                        <p className="text-xs text-slate-400">{fr?.category}</p>
+                  <div key={franchisorId} className="px-6 py-4 flex items-center justify-between gap-4">
+                    <div>
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${
+                          rank === 'Primary'
+                            ? 'bg-brand-green/10 text-brand-green'
+                            : 'bg-slate-100 text-slate-500'
+                        }`}>
+                          {rank === 'Primary' ? '⭐ Primary' : rank}
+                        </span>
                       </div>
-                      <div className="flex items-center gap-3">
-                        {m.score > 0 && (
-                          <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${scoreColour(m.score)}`}>
-                            {m.score}% — {scoreLabel(m.score)}
-                          </span>
-                        )}
-                        {statusBadge(m.status)}
-                      </div>
+                      <p className="text-sm font-medium text-slate-900">{franchisor!.brand_name}</p>
+                      <p className="text-xs text-slate-400">{franchisor!.category}</p>
                     </div>
-                    {/* Pipeline stage for this match */}
-                    <div className="mt-1">
-                      {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-                      <MatchPipelineSelect matchId={m.id} currentStage={(m as any).pipeline_stage ?? null} />
+                    <div className="text-right shrink-0">
+                      {pipelineStage && (
+                        <p className="text-xs text-slate-500 flex items-center gap-1 justify-end">
+                          <span>{pipelineStage.emoji}</span>
+                          <span>{pipelineStage.label}</span>
+                        </p>
+                      )}
+                      {match && match.score > 0 && (
+                        <span className={`text-xs font-semibold px-2 py-0.5 rounded-full mt-1 inline-block ${scoreColour(match.score)}`}>
+                          {match.score}%
+                        </span>
+                      )}
                     </div>
                   </div>
                 )
