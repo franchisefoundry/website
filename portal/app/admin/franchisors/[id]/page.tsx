@@ -33,7 +33,7 @@ export default async function FranchisorDetailPage({ params }: Props) {
     admin.from('franchisor_questionnaires').select('completed_at').eq('franchisor_id', id).single(),
     admin
       .from('matches')
-      .select('id, status, pipeline_stage, score, franchisee_profiles(id, profiles!franchisee_profiles_user_id_fkey(full_name))')
+      .select('id, status, pipeline_stage, score, franchisee_profiles(id, profiles!franchisee_profiles_user_id_fkey(full_name, role))')
       .eq('franchisor_id', id)
       .order('created_at', { ascending: false }),
   ])
@@ -127,12 +127,18 @@ export default async function FranchisorDetailPage({ params }: Props) {
             </CardBody>
           </Card>
 
-          {/* Candidate pipeline */}
-          {(matches?.length ?? 0) > 0 && (
+          {/* Candidate pipeline — only real franchisee accounts */}
+          {(() => {
+            const candidateMatches = (matches ?? []).filter(m => {
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              return (m as any).franchisee_profiles?.profiles?.role === 'franchisee'
+            })
+            if (candidateMatches.length === 0) return null
+            return (
             <Card>
-              <CardHeader><CardTitle>Candidates ({matches!.length})</CardTitle></CardHeader>
+              <CardHeader><CardTitle>Candidates ({candidateMatches.length})</CardTitle></CardHeader>
               <div className="divide-y divide-slate-100">
-                {matches!.map(m => {
+                {candidateMatches.map(m => {
                   // eslint-disable-next-line @typescript-eslint/no-explicit-any
                   const franchisee = (m as any).franchisee_profiles as any
                   const name = franchisee?.profiles?.full_name || 'Unknown'
@@ -158,7 +164,8 @@ export default async function FranchisorDetailPage({ params }: Props) {
                 })}
               </div>
             </Card>
-          )}
+            )
+          })()}
 
           {/* Questionnaire link card */}
           <Card className="p-5">
