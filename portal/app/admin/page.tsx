@@ -24,7 +24,7 @@ export default async function AdminDashboard() {
     // Count only real franchisees (role = 'franchisee'), not admin users with franchisee profiles
     admin.from('profiles').select('*', { count: 'exact', head: true }).eq('role', 'franchisee'),
     admin.from('franchisor_profiles').select('*', { count: 'exact', head: true }),
-    admin.from('leads').select('*', { count: 'exact', head: true }),
+    admin.from('leads').select('*', { count: 'exact', head: true }).in('status', ['new', 'meeting_requested']),
     admin.from('leads').select('*', { count: 'exact', head: true }).eq('status', 'meeting_requested'),
     admin.from('franchisor_profiles').select('*', { count: 'exact', head: true }).eq('status', 'pending_review'),
     // Only count matches that an admin has deliberately assigned (not auto-suggested)
