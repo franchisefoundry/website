@@ -17,11 +17,9 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next()
   }
 
-  // Build request headers with x-pathname injected BEFORE creating the Supabase client.
-  // We must use NextResponse.next({ request: { headers } }) — NOT response.headers.set() —
-  // because headers() in Server Components reads REQUEST headers, not response headers.
-  // We also capture this in a variable so the setAll() closure can reuse it when
-  // Supabase needs to rotate the session cookie (which replaces supabaseResponse).
+  // Inject x-pathname into request headers so Server Component layouts can
+  // read it via headers(). Must use NextResponse.next({ request: { headers } })
+  // because headers() reads REQUEST headers, not response headers.
   const requestHeaders = new Headers(request.headers)
   requestHeaders.set('x-pathname', pathname)
 
@@ -38,9 +36,8 @@ export async function middleware(request: NextRequest) {
           return request.cookies.getAll()
         },
         setAll(cookiesToSet: { name: string; value: string; options?: object }[]) {
-          // Supabase calls this when it refreshes the session token.
-          // We must recreate supabaseResponse here, but we preserve the
-          // x-pathname in requestHeaders so it survives the replacement.
+          // Supabase replaces supabaseResponse when rotating session cookies.
+          // Rebuild with the same requestHeaders so x-pathname is preserved.
           cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value))
           supabaseResponse = NextResponse.next({
             request: { headers: requestHeaders },
@@ -64,39 +61,31 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(loginUrl)
   }
 
-  // Look up role
+  // Look up role + setup status
   const { data: profile } = await supabase
     .from('profiles')
     .select('role, setup_complete')
     .eq('id', user.id)
     .single()
 
-  // No profile row yet (trigger may not have fired) — send to setup
+  // No profile yet — send to setup
   if (!profile) {
-    const setupUrl = request.nextUrl.clone()
-    setupUrl.pathname = '/setup-account'
-    return NextResponse.redirect(setupUrl)
+    return NextResponse.redirect(new URL('/setup-account', request.url))
   }
 
-  // setup_complete gate — only portal paths, not API routes
-  if (
-    !profile.setup_complete &&
-    !pathname.startsWith('/api/') &&
-    pathname !== '/setup-account'
-  ) {
-    const setupUrl = request.nextUrl.clone()
-    setupUrl.pathname = '/setup-account'
-    return NextResponse.redirect(setupUrl)
+  // setup_complete gate
+  if (!profile.setup_complete && !pathname.startsWith('/api/')) {
+    return NextResponse.redirect(new URL('/setup-account', request.url))
   }
 
   const role = profile.role
 
-  // Root path — redirect to their portal
+  // Root — send to their portal
   if (pathname === '/') {
     return NextResponse.redirect(new URL(`/${role}`, request.url))
   }
 
-  // Enforce portal boundaries (admins may visit any section for preview)
+  // Portal boundary enforcement (admins can preview any portal)
   if (pathname.startsWith('/admin') && role !== 'admin') {
     return NextResponse.redirect(new URL(`/${role}`, request.url))
   }
@@ -105,6 +94,27 @@ export async function middleware(request: NextRequest) {
   }
   if (pathname.startsWith('/franchisor') && role !== 'franchisor' && role !== 'admin') {
     return NextResponse.redirect(new URL(`/${role}`, request.url))
+  }
+
+  // ── Franchisor quiz gate ─────────────────────────────────────────────────────
+  // Middleware knows the pathname directly — no x-pathname header needed.
+  // The layout's quiz gate caused a self-redirect loop (/franchisor/onboarding →
+  // redirect → /franchisor/onboarding) when x-pathname wasn't forwarded correctly.
+  // Handling it here is safe because we explicitly exclude /franchisor/onboarding.
+  if (
+    role === 'franchisor' &&
+    pathname.startsWith('/franchisor') &&
+    !pathname.startsWith('/franchisor/onboarding')
+  ) {
+    const { data: fp } = await supabase
+      .from('franchisor_profiles')
+      .select('quiz_completed_at')
+      .eq('user_id', user.id)
+      .single()
+
+    if (fp && !fp.quiz_completed_at) {
+      return NextResponse.redirect(new URL('/franchisor/onboarding', request.url))
+    }
   }
 
   return supabaseResponse

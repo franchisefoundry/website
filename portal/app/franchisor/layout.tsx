@@ -15,35 +15,19 @@ export default async function FranchisorLayout({ children }: { children: React.R
     .eq('id', user.id)
     .single()
 
-  // Allow admins to preview this portal section
   if (profile?.role !== 'franchisor' && profile?.role !== 'admin') {
     redirect(`/${profile?.role ?? 'login'}`)
   }
 
   const isPreview = profile?.role === 'admin'
 
-  // x-pathname is injected as a REQUEST header by middleware using the
-  // NextResponse.next({ request: { headers: requestHeaders } }) pattern.
-  // headers() in a Server Component reads request headers, not response headers.
+  // Use x-pathname (set by middleware) only to decide full-screen vs sidebar.
+  // The quiz gate redirect has been moved to middleware to prevent the self-redirect
+  // loop that happened when this header wasn't forwarded correctly.
   const headersList = await headers()
   const pathname = headersList.get('x-pathname') ?? ''
   const isOnboarding = pathname.startsWith('/franchisor/onboarding')
 
-  // Quiz gate — only for real franchisors, not admin previews, not the onboarding page itself
-  if (!isPreview && !isOnboarding) {
-    const { data: franchisorProfile } = await supabase
-      .from('franchisor_profiles')
-      .select('quiz_completed_at')
-      .eq('user_id', user.id)
-      .single()
-
-    // Profile exists but quiz not done → send them to onboarding
-    if (franchisorProfile && !franchisorProfile.quiz_completed_at) {
-      redirect('/franchisor/onboarding')
-    }
-  }
-
-  // Onboarding — full-screen, no sidebar
   if (isOnboarding) {
     return (
       <div className="min-h-screen bg-slate-50">
