@@ -11,6 +11,7 @@ import MeetingNotes from './MeetingNotes'
 import DocumentsPanel from './DocumentsPanel'
 import { FRANCHISEE_PIPELINE_STAGES, MATCH_PIPELINE_STAGES } from '@/lib/supabase/types'
 import MatchPipelineSelect from '@/app/admin/matches/match-pipeline-select'
+import { ImpersonateButton } from '@/components/admin/ImpersonateButton'
 
 interface Props {
   params: Promise<{ id: string }>
@@ -66,10 +67,19 @@ export default async function FranchiseeDetailPage({ params }: Props) {
 
   return (
     <div>
-      <PageHeader
-        title={profile?.full_name || 'Franchisee detail'}
-        description={profile?.email}
-      />
+      <div className="flex items-start justify-between gap-4 mb-6">
+        <PageHeader
+          title={profile?.full_name || 'Franchisee detail'}
+          description={profile?.email}
+        />
+        <div className="shrink-0 pt-1">
+          <ImpersonateButton
+            userId={franchisee.user_id}
+            redirectTo={`${process.env.NEXT_PUBLIC_SITE_URL ?? ''}/franchisee/dashboard`}
+            label="View as franchisee →"
+          />
+        </div>
+      </div>
 
       {/* Pipeline progress bar */}
       <div className="mb-6 bg-white rounded-xl border border-slate-200 p-4">
