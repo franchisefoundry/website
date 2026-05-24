@@ -12,7 +12,7 @@ export default async function MatchesPage() {
     .from('matches')
     .select(`
       *,
-      franchisee_profiles(id, profiles(full_name)),
+      franchisee_profiles(id, profiles!franchisee_profiles_user_id_fkey(full_name)),
       franchisor_profiles(id, brand_name, category, logo_url)
     `)
     .in('status', ['suggested', 'shown', 'interested', 'intro_made'])

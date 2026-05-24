@@ -33,7 +33,7 @@ export default async function FranchisorDetailPage({ params }: Props) {
     admin.from('franchisor_questionnaires').select('completed_at').eq('franchisor_id', id).single(),
     admin
       .from('matches')
-      .select('id, status, pipeline_stage, score, franchisee_profiles(id, profiles(full_name))')
+      .select('id, status, pipeline_stage, score, franchisee_profiles(id, profiles!franchisee_profiles_user_id_fkey(full_name))')
       .eq('franchisor_id', id)
       .order('created_at', { ascending: false }),
   ])
