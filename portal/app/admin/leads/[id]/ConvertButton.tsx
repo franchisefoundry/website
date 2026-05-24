@@ -17,10 +17,15 @@ export default function ConvertButton({ leadId }: { leadId: string }) {
       const data = await res.json()
       if (!res.ok) {
         setError(data.error ?? 'Something went wrong.')
-      } else if (data.franchiseeId) {
-        router.push(`/admin/franchisees/${data.franchiseeId}`)
       } else {
-        router.push('/admin/franchisees')
+        // Refresh clears the Next.js router cache so leads/franchisees
+        // pages always show fresh data when navigated to
+        router.refresh()
+        if (data.franchiseeId) {
+          router.push(`/admin/franchisees/${data.franchiseeId}`)
+        } else {
+          router.push('/admin/franchisees')
+        }
       }
     } catch {
       setError('Something went wrong.')

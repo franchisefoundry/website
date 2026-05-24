@@ -19,7 +19,9 @@ interface Props {
 export default function FranchisorStatusActions({ franchisor, linkedUser }: Props) {
   const router = useRouter()
   const [loading, setLoading] = useState<string | null>(null)
+  const [status, setStatus] = useState(franchisor.status)
   const [notes, setNotes] = useState(franchisor.admin_notes ?? '')
+  const [notesSaved, setNotesSaved] = useState(false)
   const [marketplaceUnlocked, setMarketplaceUnlocked] = useState(franchisor.marketplace_unlocked ?? false)
   const [inviteEmail, setInviteEmail] = useState(franchisor.contact_email ?? '')
   const [inviteName, setInviteName] = useState(franchisor.contact_name ?? '')
@@ -27,12 +29,13 @@ export default function FranchisorStatusActions({ franchisor, linkedUser }: Prop
   const [inviteSent, setInviteSent] = useState(false)
   const [unlinkConfirm, setUnlinkConfirm] = useState(false)
 
-  async function updateStatus(status: string) {
-    setLoading(status)
+  async function updateStatus(next: string) {
+    setStatus(next as typeof status)  // instant visual update
+    setLoading(next)
     const supabase = createClient()
-    await supabase.from('franchisor_profiles').update({ status }).eq('id', franchisor.id)
+    await supabase.from('franchisor_profiles').update({ status: next }).eq('id', franchisor.id)
     setLoading(null)
-    router.refresh()
+    // no router.refresh() — local state already shows the change
   }
 
   async function sendInvite() {
@@ -52,13 +55,13 @@ export default function FranchisorStatusActions({ franchisor, linkedUser }: Prop
   }
 
   async function toggleMarketplace() {
+    const next = !marketplaceUnlocked
+    setMarketplaceUnlocked(next)   // instant visual update
     setLoading('marketplace')
     const supabase = createClient()
-    const next = !marketplaceUnlocked
     await supabase.from('franchisor_profiles').update({ marketplace_unlocked: next }).eq('id', franchisor.id)
-    setMarketplaceUnlocked(next)
     setLoading(null)
-    router.refresh()
+    // no router.refresh() — local state already shows the change
   }
 
   async function saveNotes() {
@@ -66,7 +69,9 @@ export default function FranchisorStatusActions({ franchisor, linkedUser }: Prop
     const supabase = createClient()
     await supabase.from('franchisor_profiles').update({ admin_notes: notes }).eq('id', franchisor.id)
     setLoading(null)
-    router.refresh()
+    setNotesSaved(true)
+    setTimeout(() => setNotesSaved(false), 3000)
+    // no router.refresh() — notes aren't displayed elsewhere on the page
   }
 
   async function unlinkUser() {
@@ -168,10 +173,10 @@ export default function FranchisorStatusActions({ franchisor, linkedUser }: Prop
             <button
               key={s}
               onClick={() => updateStatus(s)}
-              disabled={franchisor.status === s || loading !== null}
+              disabled={status === s || loading !== null}
               className="w-full text-left px-3 py-2 rounded-lg text-sm border transition-colors disabled:opacity-50 disabled:cursor-not-allowed
                 border-slate-200 text-slate-700 hover:bg-slate-50 data-[active=true]:bg-brand-green data-[active=true]:text-white data-[active=true]:border-brand-green"
-              data-active={franchisor.status === s}
+              data-active={status === s}
             >
               {loading === s ? 'Saving…' : <span className="capitalize">{s.replace('_', ' ')}</span>}
             </button>
@@ -214,13 +219,16 @@ export default function FranchisorStatusActions({ franchisor, linkedUser }: Prop
             placeholder="Internal notes about this brand or relationship…"
             className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-green focus:border-transparent resize-none"
           />
-          <button
-            onClick={saveNotes}
-            disabled={loading === 'notes'}
-            className="mt-2 w-full bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-medium py-2 rounded-lg transition-colors disabled:opacity-60"
-          >
-            {loading === 'notes' ? 'Saving…' : 'Save notes'}
-          </button>
+          <div className="mt-2 flex items-center gap-3">
+            <button
+              onClick={saveNotes}
+              disabled={loading === 'notes'}
+              className="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-medium py-2 rounded-lg transition-colors disabled:opacity-60"
+            >
+              {loading === 'notes' ? 'Saving…' : 'Save notes'}
+            </button>
+            {notesSaved && <span className="text-xs text-emerald-600 font-medium">✓ Saved</span>}
+          </div>
         </CardBody>
       </Card>
     </div>

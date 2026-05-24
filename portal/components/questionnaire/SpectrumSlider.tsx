@@ -1,5 +1,7 @@
 'use client'
 
+import { useState } from 'react'
+
 interface Props {
   /** 0 = fully Speed-first, 100 = fully Quality-first */
   value: number
@@ -14,7 +16,7 @@ function describe(v: number) {
   if (v < 35) return 'Lean toward speed, with quality guardrails'
   if (v < 65) return 'Balanced — neither is compromised'
   if (v < 85) return 'Quality leads, but growth is still a priority'
-  return 'Quality above all — we won\'t rush for the sake of numbers'
+  return "Quality above all — we won't rush for the sake of numbers"
 }
 
 export function SpectrumSlider({
@@ -24,15 +26,16 @@ export function SpectrumSlider({
   highLabel = '🏆 Quality first',
   variant = 'light',
 }: Props) {
-  const pct = value
+  // Local state drives visuals on every drag tick — parent notified only on release
+  const [local, setLocal] = useState(value)
   const accent = variant === 'dark' ? '#3a4a3a' : 'var(--color-brand-green, #3a4a3a)'
 
   return (
     <div className="space-y-4">
       {/* Description */}
       <div className="text-center px-4">
-        <p className="text-sm font-semibold text-slate-700">{describe(value)}</p>
-        <p className="text-xs text-slate-400 mt-1">{value}% quality-weighted</p>
+        <p className="text-sm font-semibold text-slate-700">{describe(local)}</p>
+        <p className="text-xs text-slate-400 mt-1">{local}% quality-weighted</p>
       </div>
 
       {/* Slider */}
@@ -47,18 +50,20 @@ export function SpectrumSlider({
 
         {/* Thumb */}
         <div
-          className="absolute w-6 h-6 bg-white rounded-full shadow-lg border-2 pointer-events-none -translate-x-1/2 transition-all"
-          style={{ left: `${pct}%`, borderColor: accent }}
+          className="absolute w-6 h-6 bg-white rounded-full shadow-lg border-2 pointer-events-none -translate-x-1/2"
+          style={{ left: `${local}%`, borderColor: accent }}
         />
 
-        {/* Range input */}
+        {/* Range input — updates visuals instantly, notifies parent only on release */}
         <input
           type="range"
           min={0}
           max={100}
           step={5}
-          value={value}
-          onChange={e => onChange(+e.target.value)}
+          value={local}
+          onChange={e => setLocal(+e.target.value)}
+          onPointerUp={e => onChange(+(e.target as HTMLInputElement).value)}
+          onKeyUp={e => onChange(+(e.target as HTMLInputElement).value)}
           className="absolute inset-0 w-full opacity-0 cursor-pointer"
         />
       </div>

@@ -1,5 +1,7 @@
 'use client'
 
+import { useState } from 'react'
+
 interface Props {
   value: number
   min: number
@@ -15,14 +17,16 @@ interface Props {
 export function SingleSlider({
   value, min, max, step = 1, format, lowLabel, highLabel, onChange, variant = 'light',
 }: Props) {
-  const pct = ((value - min) / (max - min)) * 100
+  // Local state drives visuals on every drag tick — parent is only notified on release
+  const [local, setLocal] = useState(value)
+  const pct = ((local - min) / (max - min)) * 100
   const accent = variant === 'dark' ? '#3a4a3a' : 'var(--color-brand-green, #3a4a3a)'
 
   return (
     <div className="space-y-3">
       {/* Value display */}
       <div className="text-center">
-        <p className="text-3xl font-bold" style={{ color: accent }}>{format(value)}</p>
+        <p className="text-3xl font-bold" style={{ color: accent }}>{format(local)}</p>
       </div>
 
       {/* Slider */}
@@ -31,25 +35,27 @@ export function SingleSlider({
         <div className="absolute left-0 right-0 h-2 bg-slate-200 rounded-full">
           {/* Fill */}
           <div
-            className="absolute h-full rounded-full transition-all"
+            className="absolute h-full rounded-full"
             style={{ width: `${pct}%`, backgroundColor: accent }}
           />
         </div>
 
         {/* Thumb */}
         <div
-          className="absolute w-5 h-5 bg-white rounded-full shadow-md border-2 pointer-events-none -translate-x-1/2 transition-all"
+          className="absolute w-5 h-5 bg-white rounded-full shadow-md border-2 pointer-events-none -translate-x-1/2"
           style={{ left: `${pct}%`, borderColor: accent }}
         />
 
-        {/* Range input */}
+        {/* Range input — updates visuals instantly, notifies parent only on release */}
         <input
           type="range"
           min={min}
           max={max}
           step={step}
-          value={value}
-          onChange={e => onChange(+e.target.value)}
+          value={local}
+          onChange={e => setLocal(+e.target.value)}
+          onPointerUp={e => onChange(+(e.target as HTMLInputElement).value)}
+          onKeyUp={e => onChange(+(e.target as HTMLInputElement).value)}
           className="absolute inset-0 w-full opacity-0 cursor-pointer"
         />
       </div>

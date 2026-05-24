@@ -21,6 +21,8 @@ export default function ProfileForm({ profile, franchiseeProfile }: Props) {
   const [phone, setPhone] = useState(profile?.phone ?? '')
   const [investmentMin, setInvestmentMin] = useState(franchiseeProfile?.investment_min?.toString() ?? '')
   const [investmentMax, setInvestmentMax] = useState(franchiseeProfile?.investment_max?.toString() ?? '')
+  const [liquidCapital, setLiquidCapital] = useState(franchiseeProfile?.liquid_capital?.toString() ?? '')
+  const [formatTypes, setFormatTypes] = useState<string[]>(franchiseeProfile?.format_types ?? [])
   const [locations, setLocations] = useState<string[]>(franchiseeProfile?.preferred_locations ?? [])
   const [operatorModel, setOperatorModel] = useState(franchiseeProfile?.operator_model ?? '')
   const [experience, setExperience] = useState(franchiseeProfile?.experience ?? '')
@@ -29,6 +31,10 @@ export default function ProfileForm({ profile, franchiseeProfile }: Props) {
   const [timeline, setTimeline] = useState(franchiseeProfile?.timeline_months?.toString() ?? '')
   const [sectors, setSectors] = useState<string[]>(franchiseeProfile?.sectors ?? [])
   const [goals, setGoals] = useState(franchiseeProfile?.goals ?? '')
+
+  function toggleFormatType(val: string) {
+    setFormatTypes(prev => prev.includes(val) ? prev.filter(f => f !== val) : [...prev, val])
+  }
 
   function toggleLocation(val: string) {
     setLocations(prev => prev.includes(val) ? prev.filter(l => l !== val) : [...prev, val])
@@ -48,6 +54,8 @@ export default function ProfileForm({ profile, franchiseeProfile }: Props) {
       supabase.from('franchisee_profiles').update({
         investment_min: investmentMin ? parseInt(investmentMin) : null,
         investment_max: investmentMax ? parseInt(investmentMax) : null,
+        liquid_capital: liquidCapital ? parseInt(liquidCapital) : null,
+        format_types: formatTypes,
         preferred_locations: locations,
         operator_model: operatorModel || null,
         experience: experience || null,
@@ -95,7 +103,7 @@ export default function ProfileForm({ profile, franchiseeProfile }: Props) {
       {/* Investment */}
       <Card>
         <CardHeader><CardTitle>Investment budget</CardTitle></CardHeader>
-        <CardBody className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <CardBody className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div>
             <label className="block text-sm font-medium text-slate-700 mb-1">Minimum (£)</label>
             <input
@@ -115,6 +123,17 @@ export default function ProfileForm({ profile, franchiseeProfile }: Props) {
               placeholder="e.g. 200000"
               className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-green focus:border-transparent"
             />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-slate-700 mb-1">Liquid capital available (£)</label>
+            <input
+              type="number"
+              value={liquidCapital}
+              onChange={e => setLiquidCapital(e.target.value)}
+              placeholder="e.g. 30000"
+              className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-green focus:border-transparent"
+            />
+            <p className="text-xs text-slate-400 mt-1">Cash you can deploy now without borrowing</p>
           </div>
         </CardBody>
       </Card>
@@ -245,6 +264,36 @@ export default function ProfileForm({ profile, franchiseeProfile }: Props) {
                 }`}
               >
                 {city.label}
+              </button>
+            ))}
+          </div>
+        </CardBody>
+      </Card>
+
+      {/* Format types */}
+      <Card>
+        <CardHeader><CardTitle>Franchise format preferences</CardTitle></CardHeader>
+        <CardBody>
+          <p className="text-sm text-slate-500 mb-3">What format of franchise are you open to?</p>
+          <div className="flex flex-wrap gap-2">
+            {[
+              { value: 'brick-and-mortar', label: '🏪 Brick & mortar' },
+              { value: 'mobile', label: '🚐 Mobile / van-based' },
+              { value: 'kiosk', label: '🛒 Kiosk / concession' },
+              { value: 'home-based', label: '🏠 Home-based' },
+              { value: 'online', label: '💻 Online / digital' },
+            ].map(opt => (
+              <button
+                type="button"
+                key={opt.value}
+                onClick={() => toggleFormatType(opt.value)}
+                className={`py-1.5 px-3 rounded-full text-sm border transition-colors ${
+                  formatTypes.includes(opt.value)
+                    ? 'bg-brand-green text-white border-brand-green'
+                    : 'border-slate-300 text-slate-700 hover:bg-slate-50'
+                }`}
+              >
+                {opt.label}
               </button>
             ))}
           </div>

@@ -1,4 +1,5 @@
 import { NextResponse, type NextRequest } from 'next/server'
+import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { sendMagicLink } from '@/lib/supabase/send-magic-link'
@@ -38,8 +39,13 @@ export async function POST(
   }
 
   if (!authUserId) {
-    const { data: { users } } = await admin.auth.admin.listUsers()
-    authUserId = users.find(u => u.email === typedLead.email)?.id
+    // listUsers() is paginated — look up by email in profiles table instead (no pagination issue)
+    const { data: existingProfile } = await admin
+      .from('profiles')
+      .select('id')
+      .eq('email', typedLead.email)
+      .single()
+    authUserId = existingProfile?.id
   }
 
   if (!authUserId) return NextResponse.json({ error: 'Could not find or create user.' }, { status: 500 })
@@ -58,6 +64,7 @@ export async function POST(
       user_id: authUserId,
       investment_min: typedLead.investment_min,
       investment_max: typedLead.investment_max,
+      liquid_capital: typedLead.liquid_capital,
       preferred_locations: typedLead.preferred_locations,
       operator_model: typedLead.operator_model,
       experience: typedLead.experience,
@@ -65,6 +72,7 @@ export async function POST(
       multi_site_interest: typedLead.multi_site_interest,
       timeline_months: typedLead.timeline_months,
       sectors: typedLead.sectors,
+      format_types: typedLead.format_types,
       goals: typedLead.goals,
       status: 'active',
       assigned_admin: user.id,
@@ -76,10 +84,11 @@ export async function POST(
     return NextResponse.json({ error: 'Could not create franchisee profile.' }, { status: 500 })
   }
 
+  // Transfer lead matches → franchisee matches
   const { data: leadMatches } = await admin.from('lead_matches').select('franchisor_id, score').eq('lead_id', id)
 
   if (leadMatches?.length) {
-    await admin.from('matches').upsert(
+    const { error: matchErr } = await admin.from('matches').upsert(
       leadMatches.map(m => ({
         franchisee_id: franchiseeProfile.id,
         franchisor_id: m.franchisor_id,
@@ -88,13 +97,27 @@ export async function POST(
       })),
       { onConflict: 'franchisee_id,franchisor_id', ignoreDuplicates: false }
     )
+    if (matchErr) console.error('[convert] match transfer error:', matchErr)
   }
 
-  await admin.from('leads').update({ status: 'converted' }).eq('id', id)
-  await admin.from('invites').insert({ email: typedLead.email, role: 'franchisee', full_name: typedLead.full_name, invited_by: user.id })
+  // Mark lead converted
+  const { error: leadUpdateErr } = await admin.from('leads').update({ status: 'converted' }).eq('id', id)
+  if (leadUpdateErr) console.error('[convert] lead status update error:', leadUpdateErr)
 
+  // Record invite (ignore duplicate — idempotent)
+  await admin.from('invites')
+    .upsert(
+      { email: typedLead.email, role: 'franchisee', full_name: typedLead.full_name, invited_by: user.id },
+      { onConflict: 'email', ignoreDuplicates: true }
+    )
+
+  // Send magic link
   const linkErr = await sendMagicLink(typedLead.email, typedLead.full_name, null)
   if (linkErr) console.error('[convert] sendMagicLink failed:', linkErr)
+
+  // Bust Next.js page cache so leads list and franchisees list show fresh data immediately
+  revalidatePath('/admin/leads')
+  revalidatePath('/admin/franchisees')
 
   return NextResponse.json({ success: true, franchiseeId: franchiseeProfile.id })
 }

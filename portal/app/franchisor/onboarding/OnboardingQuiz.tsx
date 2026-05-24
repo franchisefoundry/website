@@ -23,10 +23,12 @@ type Answers = {
   revenue_streams: string
   high_performing_unit: string
   underperformance_reasons: string
+  format_types: string[]            // ← profile-linked: franchise formats
   // Section 2 — Financials
   investment_min: number
   investment_max: number
   investment_notes: string          // extra breakdown/notes
+  liquid_capital_min: number        // ← profile-linked: minimum liquid capital required
   commercial_rates: string
   financial_metrics_shared: string
   break_even_months: number
@@ -36,6 +38,8 @@ type Answers = {
   // Section 3 — Ideal Franchisee
   ideal_franchisee_profile: string
   background_experience: string
+  experience_required: string       // ← profile-linked: none / management / food-beverage
+  full_time_required: boolean | null // ← profile-linked
   approval_factors: string[]
   single_franchise_licenses: boolean | null
   operating_model_raw: string
@@ -43,11 +47,13 @@ type Answers = {
   problematic_behaviours: string
   success_definition: string
   // Section 4 — Growth & Territory
+  locations_available: string[]     // ← profile-linked: UK cities open for franchisees
   growth_target_units: number
   annual_growth_targets: string     // context / timeline
   priority_territories: string
   growth_quality_score: number      // 0 = speed, 100 = quality
   scaling_concerns: string
+  timeline_months: number           // ← profile-linked: months from inquiry to open
   // Section 5 — Recruitment Process
   inquiry_channels: string[]
   screening_steps: string[]
@@ -93,15 +99,29 @@ const INQUIRY_CHANNEL_OPTIONS = [
   'Website / organic search',
 ]
 
+const FORMAT_OPTIONS = ['dine-in', 'takeaway', 'kiosk', 'delivery', 'flexible']
+
+const UK_CITY_OPTIONS = [
+  'london', 'manchester', 'birmingham', 'leeds', 'liverpool',
+  'glasgow', 'edinburgh', 'bristol', 'sheffield', 'nottingham',
+  'cardiff', 'leicester', 'coventry', 'bradford', 'belfast',
+]
+
+const EXPERIENCE_OPTIONS = [
+  { value: 'none',          label: 'No prior experience required',    icon: '✅' },
+  { value: 'management',   label: 'Management experience preferred',  icon: '📋' },
+  { value: 'food-beverage', label: 'Food & beverage background needed', icon: '🍽️' },
+]
+
 const SECTIONS = [
-  { title: 'The Business', subtitle: 'Help us understand your concept and what franchisees actually do.', count: 5 },
-  { title: 'Financials', subtitle: 'Investment, returns, and what prospects need to know financially.', count: 6 },
-  { title: 'Ideal Franchisee', subtitle: "Who you're looking for and why some applications succeed or fail.", count: 8 },
-  { title: 'Growth & Territory', subtitle: 'Your expansion plans and priorities across the UK.', count: 5 },
+  { title: 'The Business', subtitle: 'Help us understand your concept and what franchisees actually do.', count: 6 },
+  { title: 'Financials', subtitle: 'Investment, returns, and what prospects need to know financially.', count: 7 },
+  { title: 'Ideal Franchisee', subtitle: "Who you're looking for and why some applications succeed or fail.", count: 10 },
+  { title: 'Growth & Territory', subtitle: 'Your expansion plans and priorities across the UK.', count: 7 },
   { title: 'Recruitment Process', subtitle: 'Walk us through how you find, screen, and onboard new franchisees.', count: 9 },
 ]
 
-const TOTAL_QUESTIONS = 33
+const TOTAL_QUESTIONS = 39
 
 function Textarea({
   value,
@@ -114,10 +134,14 @@ function Textarea({
   placeholder?: string
   rows?: number
 }) {
+  // Local state so every keystroke doesn't re-render the whole quiz.
+  // Parent is notified on blur — safe because blur fires before save/next clicks.
+  const [local, setLocal] = useState(value)
   return (
     <textarea
-      value={value}
-      onChange={e => onChange(e.target.value)}
+      value={local}
+      onChange={e => setLocal(e.target.value)}
+      onBlur={e => onChange(e.target.value)}
       placeholder={placeholder}
       rows={rows}
       className="w-full px-4 py-3 border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#3a4a3a] focus:border-transparent resize-none text-slate-800 placeholder:text-slate-400"
@@ -212,9 +236,11 @@ const EMPTY: Answers = {
   revenue_streams: '',
   high_performing_unit: '',
   underperformance_reasons: '',
+  format_types: [],
   investment_min: INVESTMENT_STEPS[2],   // £20k
   investment_max: INVESTMENT_STEPS[6],   // £100k
   investment_notes: '',
+  liquid_capital_min: 20000,
   commercial_rates: '',
   financial_metrics_shared: '',
   break_even_months: 18,
@@ -223,17 +249,21 @@ const EMPTY: Answers = {
   common_objections: '',
   ideal_franchisee_profile: '',
   background_experience: '',
+  experience_required: '',
+  full_time_required: null,
   approval_factors: [],
   single_franchise_licenses: null,
   operating_model_raw: '',
   decline_reasons: [],
   problematic_behaviours: '',
   success_definition: '',
+  locations_available: [],
   growth_target_units: 5,
   annual_growth_targets: '',
   priority_territories: '',
   growth_quality_score: 50,
   scaling_concerns: '',
+  timeline_months: 6,
   inquiry_channels: [],
   screening_steps: ['Initial enquiry call', 'Application form', 'Discovery day'],
   approval_timing: '',
@@ -258,10 +288,10 @@ export default function OnboardingQuiz({ franchisorId, userId, firstName }: Prop
 
   const questionsAnsweredSoFar = (() => {
     let count = 0
-    if (step >= 2) count += 5 // section 1
-    if (step >= 3) count += 6 // section 2
-    if (step >= 4) count += 8 // section 3
-    if (step >= 5) count += 5 // section 4
+    if (step >= 2) count += 6  // section 1
+    if (step >= 3) count += 7  // section 2
+    if (step >= 4) count += 10 // section 3
+    if (step >= 5) count += 7  // section 4
     return count
   })()
 
@@ -300,7 +330,7 @@ export default function OnboardingQuiz({ franchisorId, userId, firstName }: Prop
           <div className="bg-slate-50 border border-slate-200 rounded-2xl p-5 mb-8 text-left space-y-3">
             <p className="text-sm font-semibold text-slate-800">What to expect</p>
             {[
-              '5 sections · 33 questions',
+              '5 sections · 39 questions',
               'Takes around 15–20 minutes',
               'Your answers are only seen by the Franchise Foundry team',
               'You can come back and update these at any time',
@@ -391,6 +421,24 @@ export default function OnboardingQuiz({ franchisorId, userId, firstName }: Prop
               <QuestionBlock number={5} question="What are the most common reasons a franchise unit underperforms?">
                 <Textarea value={answers.underperformance_reasons} onChange={v => set('underperformance_reasons', v)} placeholder="Location, franchisee engagement, local competition, operational issues..." />
               </QuestionBlock>
+              <QuestionBlock
+                number={6}
+                question="What formats does your franchise operate in?"
+                hint="Select all that apply — this helps us match candidates who fit your model"
+              >
+                <div className="flex flex-wrap gap-2">
+                  {FORMAT_OPTIONS.map(fmt => (
+                    <button
+                      key={fmt}
+                      type="button"
+                      onClick={() => set('format_types', answers.format_types.includes(fmt) ? answers.format_types.filter(f => f !== fmt) : [...answers.format_types, fmt])}
+                      className={`px-3 py-2 rounded-lg text-sm border capitalize transition-colors ${answers.format_types.includes(fmt) ? 'bg-[#3a4a3a] text-white border-[#3a4a3a]' : 'border-slate-300 text-slate-700 hover:bg-slate-50'}`}
+                    >
+                      {fmt === 'dine-in' ? '🍽️ Dine-in' : fmt === 'takeaway' ? '🥡 Takeaway' : fmt === 'kiosk' ? '🏪 Kiosk' : fmt === 'delivery' ? '🚴 Delivery' : '🔄 Flexible'}
+                    </button>
+                  ))}
+                </div>
+              </QuestionBlock>
             </>
           )}
 
@@ -421,15 +469,35 @@ export default function OnboardingQuiz({ franchisorId, userId, firstName }: Prop
                 </div>
               </QuestionBlock>
 
-              <QuestionBlock number={7} question="What are your commercial terms? Include franchise fee, royalty %, and any marketing levy.">
+              <QuestionBlock
+                number={7}
+                question="What is the minimum liquid capital a franchisee must have available on day one?"
+                hint="This is cash in hand — separate from financed investment. Drag to set the minimum."
+              >
+                <div className="bg-slate-50 rounded-2xl p-5 border border-slate-200">
+                  <SingleSlider
+                    value={answers.liquid_capital_min}
+                    min={5000}
+                    max={200000}
+                    step={5000}
+                    format={v => `£${v.toLocaleString()}`}
+                    lowLabel="£5k"
+                    highLabel="£200k+"
+                    onChange={v => set('liquid_capital_min', v)}
+                    variant="dark"
+                  />
+                </div>
+              </QuestionBlock>
+
+              <QuestionBlock number={8} question="What are your commercial terms? Include franchise fee, royalty %, and any marketing levy.">
                 <Textarea value={answers.commercial_rates} onChange={v => set('commercial_rates', v)} rows={3} placeholder="e.g. Franchise fee: £25,000. Royalty: 7% of net sales. Marketing levy: 2%..." />
               </QuestionBlock>
-              <QuestionBlock number={8} question="What financial metrics or P&L data do you share with prospective franchisees during the recruitment process?">
+              <QuestionBlock number={9} question="What financial metrics or P&L data do you share with prospective franchisees during the recruitment process?">
                 <Textarea value={answers.financial_metrics_shared} onChange={v => set('financial_metrics_shared', v)} placeholder="Average unit revenue, EBITDA, margins, FDD disclosure..." />
               </QuestionBlock>
 
               <QuestionBlock
-                number={9}
+                number={10}
                 question="What is a realistic break-even timeline for a new franchisee?"
                 hint="Slide to select the typical number of months to break even"
               >
@@ -456,10 +524,10 @@ export default function OnboardingQuiz({ franchisorId, userId, firstName }: Prop
                 </div>
               </QuestionBlock>
 
-              <QuestionBlock number={10} question="What costs are most commonly underestimated by new franchisees?">
+              <QuestionBlock number={11} question="What costs are most commonly underestimated by new franchisees?">
                 <Textarea value={answers.underestimated_costs} onChange={v => set('underestimated_costs', v)} rows={3} placeholder="Staffing, initial marketing, working capital buffer, rates, fit-out overruns..." />
               </QuestionBlock>
-              <QuestionBlock number={11} question="What are the most common financial objections you encounter from prospective franchisees?">
+              <QuestionBlock number={12} question="What are the most common financial objections you encounter from prospective franchisees?">
                 <Textarea value={answers.common_objections} onChange={v => set('common_objections', v)} rows={3} placeholder="'The fee is too high', 'I don't have enough liquid capital', 'The payback is too long'..." />
               </QuestionBlock>
             </>
@@ -468,28 +536,58 @@ export default function OnboardingQuiz({ franchisorId, userId, firstName }: Prop
           {/* ── Section 3 — Ideal Franchisee ────────────────────────────────── */}
           {step === 3 && (
             <>
-              <QuestionBlock number={12} question="Describe your ideal franchisee. What does their background typically look like?">
+              <QuestionBlock number={13} question="Describe your ideal franchisee. What does their background typically look like?">
                 <Textarea value={answers.ideal_franchisee_profile} onChange={v => set('ideal_franchisee_profile', v)} placeholder="Age range, professional background, personality type, lifestyle, motivations..." />
               </QuestionBlock>
-              <QuestionBlock number={13} question="What specific background or experience do you require — or strongly prefer?">
+              <QuestionBlock number={14} question="What specific background or experience do you require — or strongly prefer?">
                 <Textarea value={answers.background_experience} onChange={v => set('background_experience', v)} rows={3} placeholder="Management experience, food & beverage background, business ownership, sales..." />
               </QuestionBlock>
-              <QuestionBlock number={14} question="What are your top factors when approving a franchisee application? Select all that apply.">
+              <QuestionBlock
+                number={15}
+                question="What is the minimum experience level required from a franchisee?"
+                hint="This feeds directly into matching — be honest so we surface the right candidates"
+              >
+                <div className="space-y-2">
+                  {EXPERIENCE_OPTIONS.map(opt => (
+                    <button
+                      key={opt.value}
+                      type="button"
+                      onClick={() => set('experience_required', opt.value)}
+                      className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl border text-left text-sm transition-colors ${
+                        answers.experience_required === opt.value
+                          ? 'bg-[#3a4a3a] text-white border-[#3a4a3a]'
+                          : 'border-slate-300 text-slate-700 hover:bg-slate-50'
+                      }`}
+                    >
+                      <span className="text-xl">{opt.icon}</span>
+                      <span className="font-medium">{opt.label}</span>
+                    </button>
+                  ))}
+                </div>
+              </QuestionBlock>
+              <QuestionBlock
+                number={16}
+                question="Is full-time commitment required from the franchisee?"
+                hint="Some franchisees prefer semi-passive ownership — be clear about your expectation"
+              >
+                <YesNo value={answers.full_time_required} onChange={v => set('full_time_required', v)} />
+              </QuestionBlock>
+              <QuestionBlock number={17} question="What are your top factors when approving a franchisee application? Select all that apply.">
                 <MultiSelect options={APPROVAL_FACTOR_OPTIONS} selected={answers.approval_factors} onChange={v => set('approval_factors', v)} />
               </QuestionBlock>
-              <QuestionBlock number={15} question="Do you grant single-location franchise licences?">
+              <QuestionBlock number={18} question="Do you grant single-location franchise licences?">
                 <YesNo value={answers.single_franchise_licenses} onChange={v => set('single_franchise_licenses', v)} />
               </QuestionBlock>
-              <QuestionBlock number={16} question="Do you require the franchisee to be hands-on (owner-operator), or can they hire a manager to run the business?">
+              <QuestionBlock number={19} question="Do you require the franchisee to be hands-on (owner-operator), or can they hire a manager to run the business?">
                 <OperatingModelCards value={answers.operating_model_raw} onChange={v => set('operating_model_raw', v)} variant="dark" />
               </QuestionBlock>
-              <QuestionBlock number={17} question="What are the most common reasons you decline a franchisee application? Select all that apply.">
+              <QuestionBlock number={20} question="What are the most common reasons you decline a franchisee application? Select all that apply.">
                 <MultiSelect options={DECLINE_REASON_OPTIONS} selected={answers.decline_reasons} onChange={v => set('decline_reasons', v)} />
               </QuestionBlock>
-              <QuestionBlock number={18} question="Describe a type of franchisee that historically hasn't worked well for your brand.">
+              <QuestionBlock number={21} question="Describe a type of franchisee that historically hasn't worked well for your brand.">
                 <Textarea value={answers.problematic_behaviours} onChange={v => set('problematic_behaviours', v)} placeholder="What behaviours, backgrounds, or mindsets tend to lead to poor outcomes?..." />
               </QuestionBlock>
-              <QuestionBlock number={19} question="How do you define franchisee success beyond revenue? What does a great franchisee relationship look like to you?">
+              <QuestionBlock number={22} question="How do you define franchisee success beyond revenue? What does a great franchisee relationship look like to you?">
                 <Textarea value={answers.success_definition} onChange={v => set('success_definition', v)} placeholder="Brand ambassadorship, team culture, growth ambition, community engagement..." />
               </QuestionBlock>
             </>
@@ -499,7 +597,26 @@ export default function OnboardingQuiz({ franchisorId, userId, firstName }: Prop
           {step === 4 && (
             <>
               <QuestionBlock
-                number={20}
+                number={23}
+                question="Which UK cities or regions are you actively seeking franchisees in?"
+                hint="Select all current target areas — this is a hard filter in our matching algorithm"
+              >
+                <div className="flex flex-wrap gap-2">
+                  {UK_CITY_OPTIONS.map(city => (
+                    <button
+                      key={city}
+                      type="button"
+                      onClick={() => set('locations_available', answers.locations_available.includes(city) ? answers.locations_available.filter(c => c !== city) : [...answers.locations_available, city])}
+                      className={`px-3 py-1.5 rounded-full text-sm border capitalize transition-colors ${answers.locations_available.includes(city) ? 'bg-[#3a4a3a] text-white border-[#3a4a3a]' : 'border-slate-300 text-slate-700 hover:bg-slate-50'}`}
+                    >
+                      {city.charAt(0).toUpperCase() + city.slice(1)}
+                    </button>
+                  ))}
+                </div>
+              </QuestionBlock>
+
+              <QuestionBlock
+                number={24}
                 question="How many new franchise units are you targeting to open per year?"
                 hint="Slide to set your annual unit target"
               >
@@ -526,12 +643,12 @@ export default function OnboardingQuiz({ franchisorId, userId, firstName }: Prop
                 </div>
               </QuestionBlock>
 
-              <QuestionBlock number={21} question="Which UK cities or regions are your priority territories right now?">
+              <QuestionBlock number={25} question="Which UK cities or regions are your priority territories right now?">
                 <Textarea value={answers.priority_territories} onChange={v => set('priority_territories', v)} rows={2} placeholder="e.g. Greater Manchester, West Yorkshire, Glasgow, Birmingham — avoiding Central London for now..." />
               </QuestionBlock>
 
               <QuestionBlock
-                number={22}
+                number={26}
                 question="How do you balance growth speed vs. franchisee quality?"
                 hint="Drag the slider to show where your philosophy sits"
               >
@@ -544,11 +661,30 @@ export default function OnboardingQuiz({ franchisorId, userId, firstName }: Prop
                 </div>
               </QuestionBlock>
 
-              <QuestionBlock number={23} question="What is your biggest concern about scaling your franchise network over the next 2–3 years?">
+              <QuestionBlock number={27} question="What is your biggest concern about scaling your franchise network over the next 2–3 years?">
                 <Textarea value={answers.scaling_concerns} onChange={v => set('scaling_concerns', v)} placeholder="Maintaining quality, finding the right people, operational support capacity, brand consistency..." />
               </QuestionBlock>
 
-              <QuestionBlock number={24} question="Where do your franchise enquiries currently come from? Select all that apply.">
+              <QuestionBlock
+                number={28}
+                question="How many months does it typically take from first inquiry to a franchisee opening?"
+                hint="Include training, fit-out, and launch preparation in your estimate"
+              >
+                <div className="bg-slate-50 rounded-2xl p-5 border border-slate-200">
+                  <SingleSlider
+                    value={answers.timeline_months}
+                    min={1}
+                    max={36}
+                    format={v => v === 36 ? '36+ months' : `${v} month${v === 1 ? '' : 's'}`}
+                    lowLabel="1 month"
+                    highLabel="36+ months"
+                    onChange={v => set('timeline_months', v)}
+                    variant="dark"
+                  />
+                </div>
+              </QuestionBlock>
+
+              <QuestionBlock number={29} question="Where do your franchise enquiries currently come from? Select all that apply.">
                 <MultiSelect options={INQUIRY_CHANNEL_OPTIONS} selected={answers.inquiry_channels} onChange={v => set('inquiry_channels', v)} />
               </QuestionBlock>
             </>
@@ -558,7 +694,7 @@ export default function OnboardingQuiz({ franchisorId, userId, firstName }: Prop
           {step === 5 && (
             <>
               <QuestionBlock
-                number={25}
+                number={30}
                 question="Walk us through your screening process — from initial enquiry to approval decision."
                 hint="Add each step below. Drag ↑↓ to reorder."
               >
@@ -570,27 +706,27 @@ export default function OnboardingQuiz({ franchisorId, userId, firstName }: Prop
                 />
               </QuestionBlock>
 
-              <QuestionBlock number={26} question="At what stage of the process do you typically know whether you want to approve someone?">
+              <QuestionBlock number={31} question="At what stage of the process do you typically know whether you want to approve someone?">
                 <Textarea value={answers.approval_timing} onChange={v => set('approval_timing', v)} rows={2} placeholder="Usually after the discovery day, or once we've seen the financial evidence..." />
               </QuestionBlock>
-              <QuestionBlock number={27} question="Who has final sign-off on approving a new franchisee?">
+              <QuestionBlock number={32} question="Who has final sign-off on approving a new franchisee?">
                 <Textarea value={answers.approval_authority} onChange={v => set('approval_authority', v)} rows={2} placeholder="e.g. Franchise Director, MD, approval committee, founder..." />
               </QuestionBlock>
-              <QuestionBlock number={28} question="What is your typical timeline from initial enquiry to signed franchise agreement?">
+              <QuestionBlock number={33} question="What is your typical timeline from initial enquiry to signed franchise agreement?">
                 <Textarea value={answers.timeline_inquiry_to_contract} onChange={v => set('timeline_inquiry_to_contract', v)} rows={2} placeholder="e.g. 6–12 weeks for motivated applicants, longer if finance is needed..." />
               </QuestionBlock>
-              <QuestionBlock number={29} question="What happens after the contract is signed? Describe your onboarding and pre-launch activities.">
+              <QuestionBlock number={34} question="What happens after the contract is signed? Describe your onboarding and pre-launch activities.">
                 <Textarea value={answers.post_signing_activities} onChange={v => set('post_signing_activities', v)} placeholder="Training programme, site selection, fit-out process, pre-opening marketing, launch support..." />
               </QuestionBlock>
-              <QuestionBlock number={30} question="What is the typical timeline from signed contract to opening day?">
+              <QuestionBlock number={35} question="What is the typical timeline from signed contract to opening day?">
                 <Textarea value={answers.timeline_signing_to_launch} onChange={v => set('timeline_signing_to_launch', v)} rows={2} placeholder="e.g. 4–6 months, depending on site availability and fit-out..." />
               </QuestionBlock>
-              <QuestionBlock number={31} question="What are the biggest bottlenecks or frustrations in your current recruitment process?">
+              <QuestionBlock number={36} question="What are the biggest bottlenecks or frustrations in your current recruitment process?">
                 <Textarea value={answers.process_bottlenecks} onChange={v => set('process_bottlenecks', v)} placeholder="Too many unqualified leads, long delays between stages, difficulty accessing decision-makers..." />
               </QuestionBlock>
 
               <QuestionBlock
-                number={32}
+                number={37}
                 question="On a scale of 1–10, how would you rate your current franchise recruitment process?"
               >
                 <GradientRating value={answers.recruitment_process_rating} onChange={v => set('recruitment_process_rating', v)} />

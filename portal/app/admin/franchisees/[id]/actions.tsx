@@ -23,6 +23,8 @@ export default function FranchiseeActions({ franchisee, franchisors, assignedFra
   const router = useRouter()
   const [loading, setLoading] = useState<string | null>(null)
   const [pipelineStage, setPipelineStage] = useState(franchisee.pipeline_stage ?? 'new_enquiry')
+  const [franchiseeStatus, setFranchiseeStatus] = useState(franchisee.status)
+  const [tier2Unlocked, setTier2Unlocked] = useState(franchisee.tier_2_unlocked ?? false)
   const [selectedFranchisorId, setSelectedFranchisorId] = useState(franchisee.assigned_franchisor_id ?? '')
   const [assignConfirm, setAssignConfirm] = useState(false)
   const [assignSuccess, setAssignSuccess] = useState(false)
@@ -30,15 +32,16 @@ export default function FranchiseeActions({ franchisee, franchisors, assignedFra
   const currentStageIndex = FRANCHISEE_PIPELINE_STAGES.findIndex(s => s.value === pipelineStage)
 
   async function updatePipelineStage(stage: string) {
+    setPipelineStage(stage as typeof pipelineStage)  // instant visual update
     setLoading(`stage-${stage}`)
     const supabase = createClient()
     await supabase.from('franchisee_profiles').update({ pipeline_stage: stage }).eq('id', franchisee.id)
-    setPipelineStage(stage as typeof pipelineStage)
     setLoading(null)
-    router.refresh()
+    // no router.refresh() — local state already shows the change
   }
 
   async function updateStatus(status: string) {
+    setFranchiseeStatus(status as typeof franchiseeStatus)  // instant visual update
     setLoading(`status-${status}`)
     const supabase = createClient()
     await supabase
@@ -46,18 +49,17 @@ export default function FranchiseeActions({ franchisee, franchisors, assignedFra
       .update({ status, ...(status === 'signed' ? { signed_at: new Date().toISOString() } : {}) })
       .eq('id', franchisee.id)
     setLoading(null)
-    router.refresh()
+    // no router.refresh() — local state already shows the change
   }
 
   async function toggleTier2() {
+    const next = !tier2Unlocked
+    setTier2Unlocked(next)           // instant visual update
     setLoading('tier2')
     const supabase = createClient()
-    await supabase
-      .from('franchisee_profiles')
-      .update({ tier_2_unlocked: !franchisee.tier_2_unlocked })
-      .eq('id', franchisee.id)
+    await supabase.from('franchisee_profiles').update({ tier_2_unlocked: next }).eq('id', franchisee.id)
     setLoading(null)
-    router.refresh()
+    // no router.refresh() — local state already shows the change
   }
 
   async function assignBrand() {
@@ -192,10 +194,10 @@ export default function FranchiseeActions({ franchisee, franchisors, assignedFra
             <button
               key={s}
               onClick={() => updateStatus(s)}
-              disabled={franchisee.status === s || loading !== null}
+              disabled={franchiseeStatus === s || loading !== null}
               className="w-full text-left px-3 py-2 rounded-lg text-sm border transition-colors disabled:opacity-50 disabled:cursor-not-allowed
                 border-slate-200 text-slate-700 hover:bg-slate-50 data-[active=true]:bg-brand-green data-[active=true]:text-white data-[active=true]:border-brand-green"
-              data-active={franchisee.status === s}
+              data-active={franchiseeStatus === s}
             >
               {loading === `status-${s}` ? 'Saving…' : <span className="capitalize">{s.replace('_', ' ')}</span>}
             </button>
@@ -208,7 +210,7 @@ export default function FranchiseeActions({ franchisee, franchisors, assignedFra
         <CardHeader><CardTitle>Marketplace access</CardTitle></CardHeader>
         <CardBody>
           <p className="text-xs text-slate-500 mb-3">
-            {franchisee.tier_2_unlocked
+            {tier2Unlocked
               ? 'Marketplace is unlocked — franchisee can browse partners and request intros.'
               : 'Unlock to give this franchisee access to the partner marketplace.'}
           </p>
@@ -216,12 +218,12 @@ export default function FranchiseeActions({ franchisee, franchisors, assignedFra
             onClick={toggleTier2}
             disabled={loading === 'tier2'}
             className={`w-full py-2 px-3 rounded-lg text-sm font-medium transition-colors ${
-              franchisee.tier_2_unlocked
+              tier2Unlocked
                 ? 'bg-slate-100 text-slate-700 hover:bg-slate-200'
                 : 'bg-brand-green text-white hover:bg-brand-green-dark'
             }`}
           >
-            {loading === 'tier2' ? 'Saving…' : franchisee.tier_2_unlocked ? '🔒 Lock marketplace' : '🔓 Unlock marketplace'}
+            {loading === 'tier2' ? 'Saving…' : tier2Unlocked ? '🔒 Lock marketplace' : '🔓 Unlock marketplace'}
           </button>
         </CardBody>
       </Card>

@@ -77,6 +77,13 @@ export async function POST(request: NextRequest) {
           growth_target_units: answers.growth_target_units ?? null,
           growth_quality_score: answers.growth_quality_score ?? null,
           screening_steps: answers.screening_steps?.length ? answers.screening_steps : null,
+          // Matching-critical profile-linked fields
+          liquid_capital_min: answers.liquid_capital_min ?? null,
+          experience_required: answers.experience_required || null,
+          full_time_required: answers.full_time_required ?? null,
+          timeline_months: answers.timeline_months ?? null,
+          format_types: answers.format_types?.length ? answers.format_types : null,
+          locations_available: answers.locations_available?.length ? answers.locations_available : null,
           completed_at: new Date().toISOString(),
         },
         { onConflict: 'franchisor_id' }
@@ -87,12 +94,16 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: `Could not save quiz: ${quizError.message}` }, { status: 500 })
     }
 
-    // Update franchisor profile: mark quiz complete + apply answers to profile fields
+    // Update franchisor profile: mark quiz complete + sync all matching-critical fields
     const profileUpdates: Record<string, unknown> = {
       quiz_completed_at: new Date().toISOString(),
     }
 
-    // Map operating model to profile field
+    // investment range
+    if (answers.investment_min != null) profileUpdates.investment_min = answers.investment_min
+    if (answers.investment_max != null) profileUpdates.investment_max = answers.investment_max
+
+    // Operating model
     if (answers.operating_model_raw) {
       const modelMap: Record<string, string> = {
         'owner-operator': 'owner-operator',
@@ -104,10 +115,18 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Map single_franchise_licenses → multi_site_ready (inverse)
-    if (answers.single_franchise_licenses !== null) {
+    // Multi-site (inverse of single_franchise_licenses)
+    if (answers.single_franchise_licenses !== null && answers.single_franchise_licenses !== undefined) {
       profileUpdates.multi_site_ready = !answers.single_franchise_licenses
     }
+
+    // New matching-critical fields
+    if (answers.liquid_capital_min != null) profileUpdates.liquid_capital_min = answers.liquid_capital_min
+    if (answers.experience_required)        profileUpdates.experience_required = answers.experience_required
+    if (answers.full_time_required != null) profileUpdates.full_time_required = answers.full_time_required
+    if (answers.timeline_months != null)    profileUpdates.timeline_months = answers.timeline_months
+    if (answers.format_types?.length)       profileUpdates.format = answers.format_types
+    if (answers.locations_available?.length) profileUpdates.locations_available = answers.locations_available
 
     await admin
       .from('franchisor_profiles')

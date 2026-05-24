@@ -9,6 +9,21 @@ import { GradientRating } from '@/components/questionnaire/GradientRating'
 import { StepBuilder } from '@/components/questionnaire/StepBuilder'
 import { OperatingModelCards } from '@/components/questionnaire/OperatingModelCards'
 
+const FORMAT_OPTIONS = ['dine-in', 'takeaway', 'kiosk', 'delivery', 'flexible']
+const FORMAT_LABELS: Record<string, string> = { 'dine-in': '🍽️ Dine-in', takeaway: '🥡 Takeaway', kiosk: '🏪 Kiosk', delivery: '🚴 Delivery', flexible: '🔄 Flexible' }
+
+const UK_CITY_OPTIONS = [
+  'london', 'manchester', 'birmingham', 'leeds', 'liverpool',
+  'glasgow', 'edinburgh', 'bristol', 'sheffield', 'nottingham',
+  'cardiff', 'leicester', 'coventry', 'bradford', 'belfast',
+]
+
+const EXPERIENCE_OPTIONS = [
+  { value: 'none',           label: 'No prior experience required' },
+  { value: 'management',    label: 'Management experience preferred' },
+  { value: 'food-beverage', label: 'Food & beverage background needed' },
+]
+
 // Fallback options in case the template DB row is missing options
 const FALLBACK_APPROVAL_FACTORS = [
   'Financial strength / liquidity','Relevant business or management experience','Alignment with brand values',
@@ -29,6 +44,21 @@ interface Props {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   existing: Record<string, any> | null
   sections: SectionRow[]
+}
+
+// Textarea that keeps keystrokes local — notifies parent only on blur so
+// a single keystroke never re-renders the entire 500-line admin form.
+function LazyTextarea({ value, onChange, rows = 3 }: { value: string; onChange: (v: string) => void; rows?: number }) {
+  const [local, setLocal] = useState(value)
+  return (
+    <textarea
+      value={local}
+      onChange={e => setLocal(e.target.value)}
+      onBlur={e => onChange(e.target.value)}
+      rows={rows}
+      className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-green focus:border-transparent resize-none"
+    />
+  )
 }
 
 function nearestStep(val: number) {
@@ -61,6 +91,7 @@ export default function AdminQuestionnaireForm({ franchisorId, existing, section
   const [investmentMin, setInvestmentMin] = useState<number>(nearestStep(e.investment_min ?? 20_000))
   const [investmentMax, setInvestmentMax] = useState<number>(nearestStep(e.investment_max ?? 100_000))
   const [investmentNotes, setInvestmentNotes] = useState<string>(e.investment_range_raw ?? '')
+  const [liquidCapitalMin, setLiquidCapitalMin] = useState<number>(e.liquid_capital_min ?? 20_000)
   const [commercialRates, setCommercialRates] = useState<string>(e.commercial_rates ?? '')
   const [financialMetrics, setFinancialMetrics] = useState<string>(e.financial_metrics_shared ?? '')
   const [breakEvenMonths, setBreakEvenMonths] = useState<number>(e.break_even_months ?? 18)
@@ -71,6 +102,8 @@ export default function AdminQuestionnaireForm({ franchisorId, existing, section
   // Section 3
   const [idealFranchisee, setIdealFranchisee] = useState<string>(e.ideal_franchisee_profile ?? '')
   const [backgroundExp, setBackgroundExp] = useState<string>(e.background_experience ?? '')
+  const [experienceRequired, setExperienceRequired] = useState<string>(e.experience_required ?? '')
+  const [fullTimeRequired, setFullTimeRequired] = useState<boolean | null>(e.full_time_required ?? null)
   const [approvalFactors, setApprovalFactors] = useState<string[]>(e.approval_factors ?? [])
   const [singleLicence, setSingleLicence] = useState<boolean | null>(e.single_franchise_licenses ?? null)
   const [operatingModel, setOperatingModel] = useState<string>(e.operating_model_raw ?? '')
@@ -78,12 +111,15 @@ export default function AdminQuestionnaireForm({ franchisorId, existing, section
   const [problematicBehaviours, setProblematicBehaviours] = useState<string>(e.problematic_behaviours ?? '')
   const [successDef, setSuccessDef] = useState<string>(e.success_definition ?? '')
 
-  // Section 4 — growth sliders
+  // Section 4 — growth sliders + new matching fields
+  const [formatTypes, setFormatTypes] = useState<string[]>(e.format_types ?? [])
+  const [locationsAvailable, setLocationsAvailable] = useState<string[]>(e.locations_available ?? [])
   const [growthTargetUnits, setGrowthTargetUnits] = useState<number>(e.growth_target_units ?? 5)
   const [growthContext, setGrowthContext] = useState<string>(e.annual_growth_targets ?? '')
   const [territories, setTerritories] = useState<string>(e.priority_territories ?? '')
   const [growthQualityScore, setGrowthQualityScore] = useState<number>(e.growth_quality_score ?? 50)
   const [scalingConcerns, setScalingConcerns] = useState<string>(e.scaling_concerns ?? '')
+  const [timelineMonths, setTimelineMonths] = useState<number>(e.timeline_months ?? 6)
 
   // Section 5
   const [inquiryChannels, setInquiryChannels] = useState<string[]>(e.inquiry_channels ?? [])
@@ -150,8 +186,8 @@ export default function AdminQuestionnaireForm({ franchisorId, existing, section
     return (
       <div>
         <label className="block text-xs font-medium text-slate-600 mb-1">{label}</label>
-        <textarea value={value} onChange={e => onChange(e.target.value)} rows={rows}
-          className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-green focus:border-transparent resize-none" />
+        {/* LazyTextarea keeps keystrokes local — notifies parent only on blur */}
+        <LazyTextarea value={value} onChange={onChange} rows={rows} />
       </div>
     )
   }
@@ -289,6 +325,7 @@ export default function AdminQuestionnaireForm({ franchisorId, existing, section
         investment_min: investmentMin,
         investment_max: investmentMax,
         investment_range_raw: investmentNotes || null,
+        liquid_capital_min: liquidCapitalMin,
         commercial_rates: commercialRates,
         financial_metrics_shared: financialMetrics,
         break_even_months: breakEvenMonths,
@@ -307,6 +344,21 @@ export default function AdminQuestionnaireForm({ franchisorId, existing, section
           />
         )}
         {ta('Investment breakdown notes', investmentNotes, setInvestmentNotes, 2)}
+        {sliderWrap(
+          q('liquid_capital_min', 'Minimum liquid capital required'),
+          'Cash the franchisee must have on day one — separate from financed investment',
+          <SingleSlider
+            value={liquidCapitalMin}
+            min={5000}
+            max={200000}
+            step={5000}
+            format={v => `£${v.toLocaleString()}`}
+            lowLabel="£5k"
+            highLabel="£200k+"
+            onChange={setLiquidCapitalMin}
+            variant="light"
+          />
+        )}
         {ta(q('commercial_rates', 'Commercial terms (fee, royalty, levy)'), commercialRates, setCommercialRates, 2)}
         {ta(q('financial_metrics_shared', 'Financial data shared with prospects'), financialMetrics, setFinancialMetrics)}
         {sliderWrap(
@@ -330,37 +382,59 @@ export default function AdminQuestionnaireForm({ franchisorId, existing, section
 
       {/* 3 · Ideal Franchisee */}
       <SectionCard title="3 · Ideal Franchisee" section={3} onSave={() => saveSection(3, {
-        ideal_franchisee_profile: idealFranchisee, background_experience: backgroundExp,
-        approval_factors: approvalFactors, single_franchise_licenses: singleLicence,
-        operating_model_raw: operatingModel, decline_reasons: declineReasons,
-        problematic_behaviours: problematicBehaviours, success_definition: successDef,
+        ideal_franchisee_profile: idealFranchisee,
+        background_experience: backgroundExp,
+        experience_required: experienceRequired || null,
+        full_time_required: fullTimeRequired,
+        approval_factors: approvalFactors,
+        single_franchise_licenses: singleLicence,
+        operating_model_raw: operatingModel || null,
+        decline_reasons: declineReasons,
+        problematic_behaviours: problematicBehaviours,
+        success_definition: successDef,
       })}>
         {ta(q('ideal_franchisee_profile', 'Ideal franchisee profile'), idealFranchisee, setIdealFranchisee)}
         {ta(q('background_experience', 'Required / preferred experience'), backgroundExp, setBackgroundExp, 2)}
-        {multiChips(q('approval_factors', 'Top approval factors'), opts('approval_factors', FALLBACK_APPROVAL_FACTORS), approvalFactors, setApprovalFactors)}
-
-        {/* Profile-linked fields — locked */}
-        <div className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 space-y-4">
-          <p className="text-xs text-amber-700 font-medium">
-            🔒 These fields are linked to the brand profile — edit them via{' '}
-            <a href="../edit" className="underline hover:text-amber-900">Brand Profile → Edit</a>
-          </p>
-          <div>
-            <label className="block text-xs font-medium text-slate-500 mb-2">{q('single_franchise_licenses', 'Single-location licences granted')}</label>
-            <div className="flex gap-2">
-              {([true, false] as const).map(val => (
-                <div key={String(val)} className={`px-4 py-1.5 rounded-lg text-xs border cursor-not-allowed select-none ${singleLicence === val ? 'bg-slate-200 border-slate-300 text-slate-600 font-semibold' : 'border-slate-200 text-slate-400'}`}>
-                  {val ? 'Yes' : 'No'}
-                </div>
-              ))}
-            </div>
-          </div>
-          <div>
-            <label className="block text-xs font-medium text-slate-500 mb-2">{q('operating_model_raw', 'Operating model')}</label>
-            <OperatingModelCards value={operatingModel} onChange={() => {}} readOnly variant="light" />
+        <div>
+          <label className="block text-xs font-medium text-slate-600 mb-2">{q('experience_required', 'Minimum experience level required')}</label>
+          <div className="space-y-1.5">
+            {EXPERIENCE_OPTIONS.map(opt => (
+              <button key={opt.value} type="button" onClick={() => setExperienceRequired(opt.value)}
+                className={`w-full text-left px-3 py-2 rounded-lg border text-xs transition-colors ${
+                  experienceRequired === opt.value ? 'bg-brand-green text-white border-brand-green' : 'border-slate-300 text-slate-700 hover:bg-slate-50'
+                }`}>
+                {opt.label}
+              </button>
+            ))}
           </div>
         </div>
-
+        <div>
+          <label className="block text-xs font-medium text-slate-600 mb-2">{q('full_time_required', 'Is full-time commitment required?')}</label>
+          <div className="flex gap-2">
+            {([true, false] as const).map(val => (
+              <button key={String(val)} type="button" onClick={() => setFullTimeRequired(val)}
+                className={`flex-1 py-1.5 px-3 rounded-lg text-xs border transition-colors ${fullTimeRequired === val ? 'bg-brand-green text-white border-brand-green' : 'border-slate-300 text-slate-700 hover:bg-slate-50'}`}>
+                {val ? 'Yes' : 'No'}
+              </button>
+            ))}
+          </div>
+        </div>
+        {multiChips(q('approval_factors', 'Top approval factors'), opts('approval_factors', FALLBACK_APPROVAL_FACTORS), approvalFactors, setApprovalFactors)}
+        <div>
+          <label className="block text-xs font-medium text-slate-600 mb-2">{q('single_franchise_licenses', 'Single-location licences granted?')}</label>
+          <div className="flex gap-2">
+            {([true, false] as const).map(val => (
+              <button key={String(val)} type="button" onClick={() => setSingleLicence(val)}
+                className={`flex-1 py-1.5 px-3 rounded-lg text-xs border transition-colors ${singleLicence === val ? 'bg-brand-green text-white border-brand-green' : 'border-slate-300 text-slate-700 hover:bg-slate-50'}`}>
+                {val ? 'Yes' : 'No'}
+              </button>
+            ))}
+          </div>
+        </div>
+        <div>
+          <label className="block text-xs font-medium text-slate-600 mb-2">{q('operating_model_raw', 'Operating model')}</label>
+          <OperatingModelCards value={operatingModel} onChange={setOperatingModel} variant="light" />
+        </div>
         {multiChips(q('decline_reasons', 'Common decline reasons'), opts('decline_reasons', FALLBACK_DECLINE_REASONS), declineReasons, setDeclineReasons)}
         {ta(q('problematic_behaviours', "Franchisee types that haven't worked"), problematicBehaviours, setProblematicBehaviours)}
         {ta(q('success_definition', 'Definition of franchisee success'), successDef, setSuccessDef)}
@@ -368,13 +442,41 @@ export default function AdminQuestionnaireForm({ franchisorId, existing, section
 
       {/* 4 · Growth & Territory */}
       <SectionCard title="4 · Growth & Territory" section={4} onSave={() => saveSection(4, {
+        format_types: formatTypes.length ? formatTypes : null,
+        locations_available: locationsAvailable.length ? locationsAvailable : null,
         growth_target_units: growthTargetUnits,
         annual_growth_targets: growthContext || null,
         priority_territories: territories,
         growth_quality_score: growthQualityScore,
         growth_speed_vs_quality: null,
         scaling_concerns: scalingConcerns,
+        timeline_months: timelineMonths,
       })}>
+        <div>
+          <label className="block text-xs font-medium text-slate-600 mb-2">{q('format_types', 'Franchise formats')}</label>
+          <div className="flex flex-wrap gap-2">
+            {FORMAT_OPTIONS.map(fmt => (
+              <button key={fmt} type="button"
+                onClick={() => setFormatTypes(formatTypes.includes(fmt) ? formatTypes.filter(f => f !== fmt) : [...formatTypes, fmt])}
+                className={`px-3 py-1.5 rounded-lg text-xs border transition-colors ${formatTypes.includes(fmt) ? 'bg-brand-green text-white border-brand-green' : 'border-slate-300 text-slate-700 hover:bg-slate-50'}`}>
+                {FORMAT_LABELS[fmt]}
+              </button>
+            ))}
+          </div>
+        </div>
+        <div>
+          <label className="block text-xs font-medium text-slate-600 mb-2">{q('locations_available', 'Active UK territories')}</label>
+          <p className="text-xs text-slate-400 mb-2">Cities actively seeking franchisees — hard filter in matching</p>
+          <div className="flex flex-wrap gap-2">
+            {UK_CITY_OPTIONS.map(city => (
+              <button key={city} type="button"
+                onClick={() => setLocationsAvailable(locationsAvailable.includes(city) ? locationsAvailable.filter(c => c !== city) : [...locationsAvailable, city])}
+                className={`px-3 py-1 rounded-full text-xs border capitalize transition-colors ${locationsAvailable.includes(city) ? 'bg-brand-green text-white border-brand-green' : 'border-slate-300 text-slate-700 hover:bg-slate-50'}`}>
+                {city.charAt(0).toUpperCase() + city.slice(1)}
+              </button>
+            ))}
+          </div>
+        </div>
         {sliderWrap(
           q('annual_growth_targets', 'Annual unit target'),
           'How many new franchise units per year?',
@@ -390,7 +492,7 @@ export default function AdminQuestionnaireForm({ franchisorId, existing, section
           />
         )}
         {ta('Growth context & timeframe', growthContext, setGrowthContext, 2)}
-        {ta(q('priority_territories', 'Priority UK territories'), territories, setTerritories, 2)}
+        {ta(q('priority_territories', 'Priority UK territories (detail)'), territories, setTerritories, 2)}
         {sliderWrap(
           q('growth_speed_vs_quality', 'Growth philosophy — speed vs. quality'),
           'Where does their approach sit on the spectrum?',
@@ -401,6 +503,20 @@ export default function AdminQuestionnaireForm({ franchisorId, existing, section
           />
         )}
         {ta(q('scaling_concerns', 'Biggest scaling concern'), scalingConcerns, setScalingConcerns)}
+        {sliderWrap(
+          q('timeline_months', 'Months from inquiry to opening'),
+          'Include training, fit-out and launch preparation',
+          <SingleSlider
+            value={timelineMonths}
+            min={1}
+            max={36}
+            format={v => v === 36 ? '36+ months' : `${v} month${v === 1 ? '' : 's'}`}
+            lowLabel="1 month"
+            highLabel="36+ months"
+            onChange={setTimelineMonths}
+            variant="light"
+          />
+        )}
       </SectionCard>
 
       {/* 5 · Recruitment Process */}

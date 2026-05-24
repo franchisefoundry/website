@@ -94,6 +94,10 @@ export default async function FranchiseeDetailPage({ params }: Props) {
                   <dd className="font-medium">{formatInvestmentRange(franchisee.investment_min, franchisee.investment_max)}</dd>
                 </div>
                 <div>
+                  <dt className="text-slate-500 mb-0.5">Liquid capital</dt>
+                  <dd className="font-medium">{franchisee.liquid_capital != null ? `£${franchisee.liquid_capital.toLocaleString()}` : '—'}</dd>
+                </div>
+                <div>
                   <dt className="text-slate-500 mb-0.5">Preferred locations</dt>
                   <dd className="font-medium">{franchisee.preferred_locations?.join(', ') || '—'}</dd>
                 </div>
@@ -120,6 +124,10 @@ export default async function FranchiseeDetailPage({ params }: Props) {
                 <div>
                   <dt className="text-slate-500 mb-0.5">Sectors</dt>
                   <dd className="font-medium">{franchisee.sectors?.join(', ') || '—'}</dd>
+                </div>
+                <div>
+                  <dt className="text-slate-500 mb-0.5">Format preferences</dt>
+                  <dd className="font-medium">{franchisee.format_types?.join(', ') || '—'}</dd>
                 </div>
                 {franchisee.goals && (
                   <div className="col-span-2">

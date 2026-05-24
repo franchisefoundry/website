@@ -1,5 +1,7 @@
 'use client'
 
+import { useState } from 'react'
+
 export const INVESTMENT_STEPS = [
   5_000, 10_000, 20_000, 30_000, 50_000, 75_000,
   100_000, 150_000, 200_000, 300_000, 400_000, 500_000,
@@ -32,11 +34,23 @@ interface Props {
 }
 
 export function DualRangeSlider({ min, max, onChange, variant = 'light' }: Props) {
-  const minIdx = nearestIdx(min)
-  const maxIdx = nearestIdx(max)
-  const leftPct = (minIdx / N) * 100
-  const rightPct = (maxIdx / N) * 100
+  // Local indices drive visuals on every drag tick — parent notified only on release
+  const [localMinIdx, setLocalMinIdx] = useState(() => nearestIdx(min))
+  const [localMaxIdx, setLocalMaxIdx] = useState(() => nearestIdx(max))
+
+  const leftPct = (localMinIdx / N) * 100
+  const rightPct = (localMaxIdx / N) * 100
   const accent = variant === 'dark' ? '#3a4a3a' : 'var(--color-brand-green, #3a4a3a)'
+
+  function commitMin(rawIdx: number) {
+    const idx = Math.min(rawIdx, localMaxIdx - 1)
+    onChange(INVESTMENT_STEPS[idx], INVESTMENT_STEPS[localMaxIdx])
+  }
+
+  function commitMax(rawIdx: number) {
+    const idx = Math.max(rawIdx, localMinIdx + 1)
+    onChange(INVESTMENT_STEPS[localMinIdx], INVESTMENT_STEPS[idx])
+  }
 
   return (
     <div className="space-y-4">
@@ -44,7 +58,7 @@ export function DualRangeSlider({ min, max, onChange, variant = 'light' }: Props
       <div className="flex items-center justify-center gap-4">
         <div className="text-center">
           <p className="text-xs text-slate-500 mb-0.5">Minimum</p>
-          <p className="text-2xl font-bold" style={{ color: accent }}>{fmt(INVESTMENT_STEPS[minIdx])}</p>
+          <p className="text-2xl font-bold" style={{ color: accent }}>{fmt(INVESTMENT_STEPS[localMinIdx])}</p>
         </div>
         <div className="flex flex-col items-center gap-1">
           <div className="w-8 h-px bg-slate-300" />
@@ -53,7 +67,7 @@ export function DualRangeSlider({ min, max, onChange, variant = 'light' }: Props
         </div>
         <div className="text-center">
           <p className="text-xs text-slate-500 mb-0.5">Maximum</p>
-          <p className="text-2xl font-bold" style={{ color: accent }}>{fmt(INVESTMENT_STEPS[maxIdx])}</p>
+          <p className="text-2xl font-bold" style={{ color: accent }}>{fmt(INVESTMENT_STEPS[localMaxIdx])}</p>
         </div>
       </div>
 
@@ -88,24 +102,28 @@ export function DualRangeSlider({ min, max, onChange, variant = 'light' }: Props
           type="range"
           min={0}
           max={N}
-          value={minIdx}
+          value={localMinIdx}
           onChange={e => {
             const v = +e.target.value
-            onChange(INVESTMENT_STEPS[Math.min(v, maxIdx - 1)], INVESTMENT_STEPS[maxIdx])
+            setLocalMinIdx(Math.min(v, localMaxIdx - 1))
           }}
+          onPointerUp={e => commitMin(+(e.target as HTMLInputElement).value)}
+          onKeyUp={e => commitMin(+(e.target as HTMLInputElement).value)}
           className="absolute inset-0 w-full opacity-0 cursor-pointer"
-          style={{ zIndex: minIdx >= maxIdx - 1 ? 5 : 3 }}
+          style={{ zIndex: localMinIdx >= localMaxIdx - 1 ? 5 : 3 }}
         />
         {/* Max range input */}
         <input
           type="range"
           min={0}
           max={N}
-          value={maxIdx}
+          value={localMaxIdx}
           onChange={e => {
             const v = +e.target.value
-            onChange(INVESTMENT_STEPS[minIdx], INVESTMENT_STEPS[Math.max(v, minIdx + 1)])
+            setLocalMaxIdx(Math.max(v, localMinIdx + 1))
           }}
+          onPointerUp={e => commitMax(+(e.target as HTMLInputElement).value)}
+          onKeyUp={e => commitMax(+(e.target as HTMLInputElement).value)}
           className="absolute inset-0 w-full opacity-0 cursor-pointer"
           style={{ zIndex: 4 }}
         />
