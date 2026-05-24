@@ -143,7 +143,7 @@ export async function sendFranchisorMatchNotification({
   franchisorName: string
   brandName: string
   matches: Array<{
-    score: number
+    score?: number | null
     budget: string
     timeline: string
     operatorModel: string
@@ -156,7 +156,7 @@ export async function sendFranchisorMatchNotification({
     .map(
       m => `
       <tr style="border-bottom:1px solid #f3f4f6;">
-        <td style="padding:10px 4px;font-weight:600;color:#3a4a3a;font-size:14px;">${m.score}%</td>
+        <td style="padding:10px 4px;font-weight:600;color:#3a4a3a;font-size:14px;">${m.score ? m.score + '%' : 'Manual'}</td>
         <td style="padding:10px 4px;color:#374151;font-size:14px;">${m.budget}</td>
         <td style="padding:10px 4px;color:#374151;font-size:14px;">${m.timeline}</td>
         <td style="padding:10px 4px;color:#374151;font-size:14px;">${m.operatorModel}</td>

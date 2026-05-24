@@ -27,11 +27,12 @@ export default async function FranchisorMatchesPage() {
           )
         `)
         .eq('franchisor_id', brandProfile.id)
-        .in('status', ['shown', 'interested', 'intro_made'])
+        .in('status', ['suggested', 'shown', 'interested', 'intro_made'])
         .order('score', { ascending: false })
     : { data: [] }
 
   const statusLabel: Record<string, string> = {
+    suggested:  'Incoming',
     shown:      'New',
     interested: 'Interested',
     intro_made: 'Intro arranged',

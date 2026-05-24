@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 
 export const INVESTMENT_STEPS = [
   5_000, 10_000, 20_000, 30_000, 50_000, 75_000,
@@ -38,6 +38,9 @@ export function DualRangeSlider({ min, max, onChange, variant = 'light' }: Props
   // Live drag positions — stored in refs so changes don't trigger re-renders
   const liveMin = useRef(nearestIdx(min))
   const liveMax = useRef(nearestIdx(max))
+
+  // Which thumb is on top (z-index swap so min can always be grabbed)
+  const [minOnTop, setMinOnTop] = useState(false)
 
   // DOM refs — updated directly for zero-lag visual feedback
   const trackFillRef = useRef<HTMLDivElement>(null)
@@ -118,6 +121,7 @@ export function DualRangeSlider({ min, max, onChange, variant = 'light' }: Props
         <input
           type="range" min={0} max={N}
           defaultValue={liveMin.current}
+          onPointerDown={() => setMinOnTop(true)}
           onChange={e => {
             const v = Math.min(+e.target.value, liveMax.current - 1)
             liveMin.current = v
@@ -126,12 +130,13 @@ export function DualRangeSlider({ min, max, onChange, variant = 'light' }: Props
           onPointerUp={commit}
           onKeyUp={commit}
           className="absolute inset-0 w-full opacity-0 cursor-pointer"
-          style={{ zIndex: 3 }}
+          style={{ zIndex: minOnTop ? 5 : 3 }}
         />
         {/* Invisible max input — drives the max thumb */}
         <input
           type="range" min={0} max={N}
           defaultValue={liveMax.current}
+          onPointerDown={() => setMinOnTop(false)}
           onChange={e => {
             const v = Math.max(+e.target.value, liveMin.current + 1)
             liveMax.current = v
@@ -140,7 +145,7 @@ export function DualRangeSlider({ min, max, onChange, variant = 'light' }: Props
           onPointerUp={commit}
           onKeyUp={commit}
           className="absolute inset-0 w-full opacity-0 cursor-pointer"
-          style={{ zIndex: 4 }}
+          style={{ zIndex: minOnTop ? 3 : 5 }}
         />
       </div>
 

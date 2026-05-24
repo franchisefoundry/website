@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { Card, CardBody, CardHeader, CardTitle } from '@/components/ui/card'
-import { UK_CITIES, SECTORS } from '@/lib/supabase/types'
+import { UK_CITIES, SECTORS, FORMAT_TYPES } from '@/lib/supabase/types'
 import type { Profile, FranchiseeProfile } from '@/lib/supabase/types'
 
 interface Props {
@@ -293,13 +293,7 @@ export default function ProfileForm({ profile, franchiseeProfile }: Props) {
         <CardBody>
           <p className="text-sm text-slate-500 mb-3">What format of franchise are you open to?</p>
           <div className="flex flex-wrap gap-2">
-            {[
-              { value: 'brick-and-mortar', label: '🏪 Brick & mortar' },
-              { value: 'mobile', label: '🚐 Mobile / van-based' },
-              { value: 'kiosk', label: '🛒 Kiosk / concession' },
-              { value: 'home-based', label: '🏠 Home-based' },
-              { value: 'online', label: '💻 Online / digital' },
-            ].map(opt => (
+            {FORMAT_TYPES.map(opt => (
               <button
                 type="button"
                 key={opt.value}

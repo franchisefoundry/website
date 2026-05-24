@@ -88,7 +88,7 @@ export async function POST(
             franchisorName: franchisorProfile?.full_name ?? franchisor.brand_name ?? 'there',
             brandName: franchisor.brand_name ?? 'your brand',
             matches: [{
-              score: 0,
+              score: null,
               budget: franchisee.investment_min && franchisee.investment_max
                 ? `£${Math.round(franchisee.investment_min / 1000)}k – £${Math.round(franchisee.investment_max / 1000)}k`
                 : 'Not specified',
