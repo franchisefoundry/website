@@ -5,7 +5,7 @@ import { PageHeader } from '@/components/page-header'
 import { Card, CardBody, CardHeader, CardTitle } from '@/components/ui/card'
 import { statusBadge } from '@/components/ui/badge'
 import { formatInvestmentRange, formatDate } from '@/lib/utils'
-import { scoreColour } from '@/lib/matching'
+import { scoreColour, scoreLabel } from '@/lib/matching'
 import FranchiseeActions from './actions'
 import MeetingNotes from './MeetingNotes'
 import DocumentsPanel from './DocumentsPanel'
@@ -36,7 +36,6 @@ export default async function FranchiseeDetailPage({ params }: Props) {
       .from('matches')
       .select('*, franchisor_profiles(id, brand_name, category, status)')
       .eq('franchisee_id', id)
-      .not('admin_notes', 'is', null)
       .order('score', { ascending: false }),
 
     admin
@@ -205,46 +204,34 @@ export default async function FranchiseeDetailPage({ params }: Props) {
             </CardHeader>
             <div className="divide-y divide-slate-100">
               {matches?.length === 0 && (
-                <p className="px-6 py-6 text-sm text-slate-400">No brands assigned yet.</p>
+                <p className="px-6 py-6 text-sm text-slate-400">No matches yet. Run matching to generate scores.</p>
               )}
               {matches?.map(m => {
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 const fr = m.franchisor_profiles as any
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                const notes = (m as any).admin_notes as string | null
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 const pipelineStage = MATCH_PIPELINE_STAGES.find(s => s.value === (m as any).pipeline_stage)
-                const rankLabel = notes === 'Primary assignment' ? '⭐ Primary'
-                  : notes === 'Backup 1 assignment' ? 'Backup 1'
-                  : notes === 'Backup 2 assignment' ? 'Backup 2'
-                  : null
                 return (
-                  <div key={m.id} className="px-6 py-4 flex items-center justify-between gap-4">
-                    <div className="min-w-0">
-                      {rankLabel && (
-                        <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full mb-1 inline-block ${
-                          rankLabel.includes('Primary')
-                            ? 'bg-brand-green/10 text-brand-green'
-                            : 'bg-slate-100 text-slate-500'
-                        }`}>
-                          {rankLabel}
-                        </span>
-                      )}
-                      <p className="text-sm font-medium text-slate-900">{fr?.brand_name || 'Unnamed brand'}</p>
-                      <p className="text-xs text-slate-400">{fr?.category}</p>
-                    </div>
-                    <div className="text-right shrink-0 space-y-1">
-                      {pipelineStage && (
-                        <p className="text-xs text-slate-500 flex items-center gap-1 justify-end">
-                          <span>{pipelineStage.emoji}</span>
-                          <span>{pipelineStage.label}</span>
-                        </p>
-                      )}
-                      {m.score > 0 && (
-                        <span className={`text-xs font-semibold px-2 py-0.5 rounded-full inline-block ${scoreColour(m.score)}`}>
-                          {m.score}%
-                        </span>
-                      )}
+                  <div key={m.id} className="px-6 py-4">
+                    <div className="flex items-center justify-between gap-3">
+                      <div className="min-w-0">
+                        <p className="text-sm font-medium text-slate-900">{fr?.brand_name || 'Unnamed brand'}</p>
+                        <p className="text-xs text-slate-400">{fr?.category}</p>
+                      </div>
+                      <div className="flex items-center gap-2 shrink-0">
+                        {pipelineStage && (
+                          <span className="text-xs text-slate-500 flex items-center gap-1">
+                            <span>{pipelineStage.emoji}</span>
+                            <span>{pipelineStage.label}</span>
+                          </span>
+                        )}
+                        {m.score > 0 && (
+                          <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${scoreColour(m.score)}`}>
+                            {m.score}% — {scoreLabel(m.score)}
+                          </span>
+                        )}
+                        {statusBadge(m.status)}
+                      </div>
                     </div>
                   </div>
                 )

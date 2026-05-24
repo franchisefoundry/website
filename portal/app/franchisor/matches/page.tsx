@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 import { PageHeader } from '@/components/page-header'
 import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -14,8 +15,11 @@ export default async function FranchisorMatchesPage() {
     .eq('user_id', user!.id)
     .single()
 
-  const { data: matches } = brandProfile
-    ? await supabase
+  // Use admin client scoped to this brand so we can join profiles and filter
+  // out admin/test accounts. Brand ownership already verified above via supabase client.
+  const adminClient = createAdminClient()
+  const { data: rawMatches } = brandProfile
+    ? await adminClient
         .from('matches')
         .select(`
           *,
@@ -23,13 +27,18 @@ export default async function FranchisorMatchesPage() {
             investment_min, investment_max,
             preferred_locations, operator_model, experience,
             full_time_available, multi_site_interest,
-            timeline_months, sectors, goals
+            timeline_months, sectors, goals,
+            profiles!franchisee_profiles_user_id_fkey(role)
           )
         `)
         .eq('franchisor_id', brandProfile.id)
         .in('status', ['suggested', 'shown', 'interested', 'intro_made'])
         .order('score', { ascending: false })
     : { data: [] }
+
+  // Filter out admin/test accounts — only show genuine franchisee profiles
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const matches = (rawMatches ?? []).filter(m => (m.franchisee_profiles as any)?.profiles?.role === 'franchisee')
 
   const statusLabel: Record<string, string> = {
     suggested:  'Incoming',
