@@ -12,24 +12,37 @@ export default async function MatchesPage() {
     .from('matches')
     .select(`
       *,
-      franchisee_profiles(id, profiles!franchisee_profiles_user_id_fkey(full_name)),
+      franchisee_profiles(id, profiles!franchisee_profiles_user_id_fkey(full_name, role)),
       franchisor_profiles(id, brand_name, category, logo_url)
     `)
     .in('status', ['suggested', 'shown', 'interested', 'intro_made'])
     .order('created_at', { ascending: false })
 
-  // Group by franchisor
+  // Filter out admin users and old algorithmic matches (no admin_notes)
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const activeMatches = (matches ?? []).filter(m => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const profile = (m.franchisee_profiles as any)?.profiles
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const notes = (m as any).admin_notes as string | null
+    return profile?.role === 'franchisee' && notes !== null
+  })
+
+  // Group by franchisor, splitting primary vs backup per group
   const byFranchisor = new Map<string, {
     franchisorId: string
     brandName: string
     category: string | null
     logoUrl: string | null
-    matches: typeof matches
+    primary: typeof activeMatches
+    backups: typeof activeMatches
   }>()
 
-  for (const m of matches ?? []) {
+  for (const m of activeMatches) {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const fr = m.franchisor_profiles as any
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const notes = (m as any).admin_notes as string
     const fid = fr?.id ?? 'unknown'
     if (!byFranchisor.has(fid)) {
       byFranchisor.set(fid, {
@@ -37,15 +50,71 @@ export default async function MatchesPage() {
         brandName: fr?.brand_name ?? 'Unnamed brand',
         category: fr?.category ?? null,
         logoUrl: fr?.logo_url ?? null,
-        matches: [],
+        primary: [],
+        backups: [],
       })
     }
-    byFranchisor.get(fid)!.matches!.push(m)
+    const group = byFranchisor.get(fid)!
+    if (notes === 'Primary assignment') {
+      group.primary.push(m)
+    } else {
+      group.backups.push(m)
+    }
   }
 
-  const groups = [...byFranchisor.values()].sort((a, b) =>
-    a.brandName.localeCompare(b.brandName)
-  )
+  const groups = [...byFranchisor.values()]
+    .filter(g => g.primary.length > 0 || g.backups.length > 0)
+    .sort((a, b) => a.brandName.localeCompare(b.brandName))
+
+  function MatchRow({ m, dim = false }: { m: (typeof activeMatches)[number]; dim?: boolean }) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const franchisee = m.franchisee_profiles as any
+    const name = franchisee?.profiles?.full_name ?? 'Unknown'
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const notes = (m as any).admin_notes as string
+    const isBackup2 = notes === 'Backup 2 assignment'
+
+    return (
+      <div className={`px-6 py-4 ${dim ? 'bg-slate-50/50' : ''}`}>
+        <div className="flex items-start gap-4">
+          <div className="min-w-0 flex-1">
+            <div className="flex items-center gap-2 mb-1">
+              {dim && (
+                <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded bg-slate-200 text-slate-500">
+                  {isBackup2 ? 'Backup 2' : 'Backup 1'}
+                </span>
+              )}
+              <Link
+                href={`/admin/franchisees/${franchisee?.id}`}
+                className={`text-sm font-medium hover:text-brand-green transition-colors ${dim ? 'text-slate-600' : 'text-slate-900'}`}
+              >
+                {name}
+              </Link>
+              {m.score > 0 && (
+                <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${scoreColour(m.score)}`}>
+                  {m.score}% — {scoreLabel(m.score)}
+                </span>
+              )}
+            </div>
+            <MatchPipelineSelect
+              matchId={m.id}
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              currentStage={(m as any).pipeline_stage ?? null}
+            />
+          </div>
+          <div className="shrink-0 w-72">
+            <MatchNotesInline
+              matchId={m.id}
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              initialInternal={(m as any).internal_notes ?? ''}
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              initialFranchisor={(m as any).franchisor_notes ?? ''}
+            />
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div>
@@ -81,58 +150,43 @@ export default async function MatchesPage() {
                 <p className="text-sm font-semibold text-slate-900">{group.brandName}</p>
                 {group.category && <p className="text-xs text-slate-400">{group.category}</p>}
               </div>
-              <span className="ml-auto text-xs text-slate-400 bg-slate-100 rounded-full px-2.5 py-1 font-medium">
-                {group.matches?.length} {group.matches?.length === 1 ? 'match' : 'matches'}
-              </span>
+              <div className="ml-auto flex items-center gap-2">
+                <span className="text-xs text-slate-500 bg-slate-100 rounded-full px-2.5 py-1 font-medium">
+                  {group.primary.length} primary
+                </span>
+                {group.backups.length > 0 && (
+                  <span className="text-xs text-slate-400 bg-slate-50 border border-slate-200 rounded-full px-2.5 py-1">
+                    +{group.backups.length} backup
+                  </span>
+                )}
+              </div>
             </div>
 
-            {/* Match rows */}
-            <div className="divide-y divide-slate-50">
-              {group.matches?.map(m => {
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                const franchisee = m.franchisee_profiles as any
-                const name = franchisee?.profiles?.full_name ?? 'Unknown'
-                return (
-                  <div key={m.id} className="px-6 py-4">
-                    <div className="flex items-start gap-4">
-                      {/* Franchisee info */}
-                      <div className="min-w-0 flex-1">
-                        <div className="flex items-center gap-2 mb-1">
-                          <Link
-                            href={`/admin/franchisees/${franchisee?.id}`}
-                            className="text-sm font-medium text-slate-900 hover:text-brand-green transition-colors"
-                          >
-                            {name}
-                          </Link>
-                          {m.score > 0 && (
-                            <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${scoreColour(m.score)}`}>
-                              {m.score}% — {scoreLabel(m.score)}
-                            </span>
-                          )}
-                        </div>
-                        {/* Pipeline stage dropdown */}
-                        <MatchPipelineSelect
-                          matchId={m.id}
-                          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                          currentStage={(m as any).pipeline_stage ?? null}
-                        />
-                      </div>
+            {/* Primary match rows */}
+            {group.primary.length === 0 ? (
+              <p className="px-6 py-4 text-xs text-slate-400 italic">No primary assignments yet.</p>
+            ) : (
+              <div className="divide-y divide-slate-50">
+                {group.primary.map(m => (
+                  <MatchRow key={m.id} m={m} />
+                ))}
+              </div>
+            )}
 
-                      {/* Notes toggle */}
-                      <div className="shrink-0 w-80">
-                        <MatchNotesInline
-                          matchId={m.id}
-                          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                          initialInternal={(m as any).internal_notes ?? ''}
-                          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                          initialFranchisor={(m as any).franchisor_notes ?? ''}
-                        />
-                      </div>
-                    </div>
-                  </div>
-                )
-              })}
-            </div>
+            {/* Backup matches — collapsible */}
+            {group.backups.length > 0 && (
+              <details className="group border-t border-slate-100">
+                <summary className="px-6 py-3 text-xs font-medium text-slate-400 cursor-pointer hover:text-slate-600 hover:bg-slate-50 transition-colors list-none flex items-center gap-1.5 select-none">
+                  <span className="group-open:rotate-90 transition-transform inline-block">▶</span>
+                  {group.backups.length} franchisee{group.backups.length !== 1 ? 's' : ''} have this as a backup option
+                </summary>
+                <div className="divide-y divide-slate-100">
+                  {group.backups.map(m => (
+                    <MatchRow key={m.id} m={m} dim />
+                  ))}
+                </div>
+              </details>
+            )}
           </div>
         ))}
       </div>
