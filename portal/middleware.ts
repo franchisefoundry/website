@@ -33,9 +33,6 @@ export async function middleware(request: NextRequest) {
   }
 
   // Check auth
-  // Inject current pathname so server-component layouts can read it
-  supabaseResponse.headers.set('x-pathname', pathname)
-
   const { data: { user }, error } = await supabase.auth.getUser()
 
   if (error || !user) {
@@ -79,6 +76,9 @@ export async function middleware(request: NextRequest) {
   if (pathname.startsWith('/franchisor') && role !== 'franchisor' && role !== 'admin') {
     return NextResponse.redirect(new URL(`/${role}`, request.url))
   }
+
+  // Inject pathname AFTER all cookie mutations so it's always on the final response object
+  supabaseResponse.headers.set('x-pathname', pathname)
 
   return supabaseResponse
 }
