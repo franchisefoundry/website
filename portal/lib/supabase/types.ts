@@ -37,10 +37,10 @@ export const MATCH_PIPELINE_STAGES: { value: MatchPipelineStage; label: string; 
 
 export const FRANCHISEE_PIPELINE_STAGES: { value: FranchiseePipelineStage; label: string; emoji: string }[] = [
   { value: 'new_enquiry',       label: 'New Enquiry',        emoji: '📥' },
+  { value: 'meeting_booked',    label: 'Meeting Booked',     emoji: '📅' },
   { value: 'profile_complete',  label: 'Profile Complete',   emoji: '✅' },
   { value: 'matches_sent',      label: 'Matches Sent',       emoji: '📋' },
   { value: 'brand_shortlisted', label: 'Brand Shortlisted',  emoji: '⭐' },
-  { value: 'meeting_booked',    label: 'Meeting Booked',     emoji: '📅' },
   { value: 'intro_made',        label: 'Intro Made',         emoji: '🤝' },
   { value: 'agreement_sent',    label: 'Agreement Sent',     emoji: '📄' },
   { value: 'signed',            label: 'Signed Up',          emoji: '🎉' },
