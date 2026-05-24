@@ -1,10 +1,9 @@
 import { notFound } from 'next/navigation'
-import Link from 'next/link'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { PageHeader } from '@/components/page-header'
 import { scoreLabel, scoreColour } from '@/lib/matching'
 import type { Lead, LeadMatch } from '@/lib/supabase/types'
-import ConvertButton from './ConvertButton'
+import LeadActions from './LeadActions'
 import DeleteLeadButton from '../DeleteLeadButton'
 import NotifyFranchisorButton from './NotifyFranchisorButton'
 
@@ -154,29 +153,12 @@ export default async function LeadDetailPage({ params }: { params: Promise<{ id:
             </div>
           )}
 
-          {/* Convert action */}
-          {typedLead.status !== 'converted' && (
-            <div className="bg-brand-green/5 border border-brand-green/20 rounded-2xl p-5">
-              <h3 className="text-sm font-semibold text-slate-800 mb-1">Convert to franchisee</h3>
-              <p className="text-xs text-slate-500 mb-4">
-                Sends a portal invite, creates their franchisee profile pre-filled with this data, and transfers their matches.
-              </p>
-              <ConvertButton leadId={id} />
-            </div>
-          )}
-          {typedLead.status === 'converted' && (
-            <div className="bg-emerald-50 border border-emerald-200 rounded-2xl p-4 text-sm text-emerald-700 font-medium text-center space-y-2">
-              <p>✓ Converted to franchisee</p>
-              {convertedFranchiseeId && (
-                <Link
-                  href={`/admin/franchisees/${convertedFranchiseeId}`}
-                  className="block text-xs underline underline-offset-2 hover:text-emerald-900 transition-colors"
-                >
-                  View franchisee profile →
-                </Link>
-              )}
-            </div>
-          )}
+          {/* Approve / Reject */}
+          <LeadActions
+            leadId={id}
+            status={typedLead.status}
+            convertedFranchiseeId={convertedFranchiseeId}
+          />
         </div>
 
         {/* Right — matches */}

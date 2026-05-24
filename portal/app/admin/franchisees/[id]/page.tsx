@@ -7,6 +7,8 @@ import { statusBadge } from '@/components/ui/badge'
 import { formatInvestmentRange, formatDate } from '@/lib/utils'
 import { scoreLabel, scoreColour } from '@/lib/matching'
 import FranchiseeActions from './actions'
+import MeetingNotes from './MeetingNotes'
+import DocumentsPanel from './DocumentsPanel'
 import { FRANCHISEE_PIPELINE_STAGES, MATCH_PIPELINE_STAGES } from '@/lib/supabase/types'
 import MatchPipelineSelect from '@/app/admin/matches/match-pipeline-select'
 
@@ -19,7 +21,7 @@ export default async function FranchiseeDetailPage({ params }: Props) {
   const supabase = await createClient()
   const admin = createAdminClient()
 
-  const [{ data: franchisee }, { data: franchisors }, { data: matches }] = await Promise.all([
+  const [{ data: franchisee }, { data: franchisors }, { data: matches }, { data: documents }] = await Promise.all([
     admin
       .from('franchisee_profiles')
       .select('*, profiles!franchisee_profiles_user_id_fkey(full_name, email, phone)')
@@ -35,6 +37,11 @@ export default async function FranchiseeDetailPage({ params }: Props) {
       .select('*, franchisor_profiles(brand_name, category, status)')
       .eq('franchisee_id', id)
       .order('score', { ascending: false }),
+    admin
+      .from('franchisee_documents')
+      .select('*')
+      .eq('franchisee_profile_id', id)
+      .order('created_at', { ascending: false }),
   ])
 
   if (!franchisee) notFound()
@@ -136,6 +143,41 @@ export default async function FranchiseeDetailPage({ params }: Props) {
                   </div>
                 )}
               </dl>
+            </CardBody>
+          </Card>
+
+          {/* Meeting Notes */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Meeting notes</CardTitle>
+            </CardHeader>
+            <CardBody>
+              <MeetingNotes
+                franchiseeId={id}
+                initialNotes={franchisee.meeting_notes ?? null}
+                initialRating={franchisee.internal_rating ?? null}
+              />
+            </CardBody>
+          </Card>
+
+          {/* Documents */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Documents</CardTitle>
+            </CardHeader>
+            <CardBody>
+              <DocumentsPanel
+                franchiseeId={id}
+                initialDocs={(documents ?? []) as {
+                  id: string
+                  name: string
+                  file_path: string
+                  file_size: number | null
+                  mime_type: string | null
+                  shared_with_franchisor: boolean
+                  created_at: string
+                }[]}
+              />
             </CardBody>
           </Card>
 

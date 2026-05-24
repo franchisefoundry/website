@@ -85,6 +85,8 @@ export interface FranchiseeProfile {
   activated_at: string | null
   signed_at: string | null
   assigned_admin: string | null
+  meeting_notes: string | null
+  internal_rating: number | null
   created_at: string
   updated_at: string
   // joined

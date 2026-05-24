@@ -67,6 +67,7 @@ export default async function ResultsPage({ searchParams }: Props) {
     status: 'active',
     tier_2_unlocked: false,
     invited_at: null, activated_at: null, signed_at: null, assigned_admin: null,
+    meeting_notes: null, internal_rating: null,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
   }
