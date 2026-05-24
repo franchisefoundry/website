@@ -16,7 +16,6 @@ export async function POST(request: NextRequest) {
     let profileId = franchisorId as string | null
 
     if (!profileId) {
-      // Create a minimal franchisor profile
       const { data: newProfile, error: profileError } = await admin
         .from('franchisor_profiles')
         .insert({ user_id: user.id, status: 'draft' })
@@ -30,37 +29,53 @@ export async function POST(request: NextRequest) {
       profileId = newProfile.id
     }
 
+    // Parse commercial term numerics safely
+    const franchiseFee   = answers.franchise_fee    ? parseFloat(answers.franchise_fee)    : null
+    const royaltyPct     = answers.royalty_pct      ? parseFloat(answers.royalty_pct)      : null
+    const marketingLevy  = answers.marketing_levy_pct ? parseFloat(answers.marketing_levy_pct) : null
+
     // Save questionnaire answers
     const { error: quizError } = await admin
       .from('franchisor_questionnaires')
       .upsert(
         {
           franchisor_id: profileId,
+          // Section 1 — Your Business
           core_model: answers.core_model || null,
-          competitive_advantage: answers.competitive_advantage || null,
-          revenue_streams: answers.revenue_streams || null,
           high_performing_unit: answers.high_performing_unit || null,
-          underperformance_reasons: answers.underperformance_reasons || null,
-          commercial_rates: answers.commercial_rates || null,
-          financial_metrics_shared: answers.financial_metrics_shared || null,
-          underestimated_costs: answers.underestimated_costs || null,
-          common_objections: answers.common_objections || null,
-          ideal_franchisee_profile: answers.ideal_franchisee_profile || null,
-          background_experience: answers.background_experience || null,
-          approval_factors: answers.approval_factors ?? [],
-          single_franchise_licenses: answers.single_franchise_licenses ?? null,
+          format_types: answers.format_types?.length ? answers.format_types : null,
           operating_model_raw: answers.operating_model_raw || null,
+          // Section 2 — Investment & Commercials
+          investment_min: answers.investment_min ?? null,
+          investment_max: answers.investment_max ?? null,
+          liquid_capital_min: answers.liquid_capital_min ?? null,
+          franchise_fee: franchiseFee,
+          royalty_pct: royaltyPct,
+          marketing_levy_pct: marketingLevy,
+          break_even_months: answers.break_even_months ?? null,
+          // Section 3 — Ideal Franchisee
+          ideal_franchisee_profile: answers.ideal_franchisee_profile || null,
+          experience_required: answers.experience_required || null,
+          full_time_required: answers.full_time_required ?? null,
+          single_franchise_licenses: answers.single_franchise_licenses ?? null,
           decline_reasons: answers.decline_reasons ?? [],
-          problematic_behaviours: answers.problematic_behaviours || null,
-          success_definition: answers.success_definition || null,
-          annual_growth_targets: answers.annual_growth_targets || null,
+          // Section 2 — additional
+          common_objections: answers.common_objections || null,
+          // Section 3 — Ideal Franchisee (additional)
+          approval_factors: answers.approval_factors ?? [],
+          // Section 4 — Growth & Territory
+          locations_available: answers.locations_available?.length ? answers.locations_available : null,
           priority_territories: answers.priority_territories || null,
-          growth_speed_vs_quality: null,   // replaced by growth_quality_score slider
+          growth_target_units: answers.growth_target_units ?? null,
+          annual_growth_targets: answers.annual_growth_targets || null,
           scaling_concerns: answers.scaling_concerns || null,
+          timeline_months: answers.timeline_months ?? null,
           inquiry_channels: answers.inquiry_channels ?? [],
+          // Section 5 — Recruitment Process
+          screening_steps: answers.screening_steps?.length ? answers.screening_steps : null,
           screening_method: answers.screening_steps?.length
             ? answers.screening_steps.join('\n')
-            : answers.screening_method || null,
+            : null,
           approval_timing: answers.approval_timing || null,
           approval_authority: answers.approval_authority || null,
           timeline_inquiry_to_contract: answers.timeline_inquiry_to_contract || null,
@@ -68,22 +83,6 @@ export async function POST(request: NextRequest) {
           timeline_signing_to_launch: answers.timeline_signing_to_launch || null,
           process_bottlenecks: answers.process_bottlenecks || null,
           recruitment_process_rating: answers.recruitment_process_rating || null,
-          // Gamified / numeric fields
-          investment_min: answers.investment_min ?? null,
-          investment_max: answers.investment_max ?? null,
-          investment_range_raw: answers.investment_notes || null,
-          break_even_months: answers.break_even_months ?? null,
-          break_even_timeline: answers.break_even_notes || null,
-          growth_target_units: answers.growth_target_units ?? null,
-          growth_quality_score: answers.growth_quality_score ?? null,
-          screening_steps: answers.screening_steps?.length ? answers.screening_steps : null,
-          // Matching-critical profile-linked fields
-          liquid_capital_min: answers.liquid_capital_min ?? null,
-          experience_required: answers.experience_required || null,
-          full_time_required: answers.full_time_required ?? null,
-          timeline_months: answers.timeline_months ?? null,
-          format_types: answers.format_types?.length ? answers.format_types : null,
-          locations_available: answers.locations_available?.length ? answers.locations_available : null,
           completed_at: new Date().toISOString(),
         },
         { onConflict: 'franchisor_id' }
@@ -94,21 +93,26 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: `Could not save quiz: ${quizError.message}` }, { status: 500 })
     }
 
-    // Update franchisor profile: mark quiz complete + sync all matching-critical fields
+    // Update franchisor profile: mark quiz complete + sync matching-critical fields
     const profileUpdates: Record<string, unknown> = {
       quiz_completed_at: new Date().toISOString(),
     }
 
-    // investment range
+    // Investment range
     if (answers.investment_min != null) profileUpdates.investment_min = answers.investment_min
     if (answers.investment_max != null) profileUpdates.investment_max = answers.investment_max
+
+    // Commercial terms
+    if (franchiseFee  != null) profileUpdates.franchise_fee       = franchiseFee
+    if (royaltyPct    != null) profileUpdates.royalty_pct         = royaltyPct
+    if (marketingLevy != null) profileUpdates.marketing_levy_pct  = marketingLevy
 
     // Operating model
     if (answers.operating_model_raw) {
       const modelMap: Record<string, string> = {
         'owner-operator': 'owner-operator',
-        'hire-manager': 'hire-manager',
-        'either': 'either',
+        'hire-manager':   'hire-manager',
+        'either':         'either',
       }
       if (modelMap[answers.operating_model_raw]) {
         profileUpdates.operator_model = modelMap[answers.operating_model_raw]
@@ -120,18 +124,23 @@ export async function POST(request: NextRequest) {
       profileUpdates.multi_site_ready = !answers.single_franchise_licenses
     }
 
-    // New matching-critical fields
-    if (answers.liquid_capital_min != null) profileUpdates.liquid_capital_min = answers.liquid_capital_min
-    if (answers.experience_required)        profileUpdates.experience_required = answers.experience_required
-    if (answers.full_time_required != null) profileUpdates.full_time_required = answers.full_time_required
-    if (answers.timeline_months != null)    profileUpdates.timeline_months = answers.timeline_months
-    if (answers.format_types?.length)       profileUpdates.format = answers.format_types
+    // Matching-critical fields
+    if (answers.liquid_capital_min != null) profileUpdates.liquid_capital_min  = answers.liquid_capital_min
+    if (answers.experience_required)        profileUpdates.experience_required  = answers.experience_required
+    if (answers.full_time_required != null) profileUpdates.full_time_required   = answers.full_time_required
+    if (answers.timeline_months    != null) profileUpdates.timeline_months      = answers.timeline_months
+    if (answers.format_types?.length)       profileUpdates.format               = answers.format_types
     if (answers.locations_available?.length) profileUpdates.locations_available = answers.locations_available
 
-    await admin
+    const { error: profileError } = await admin
       .from('franchisor_profiles')
       .update(profileUpdates)
       .eq('id', profileId)
+
+    if (profileError) {
+      console.error('Profile update error:', profileError)
+      return NextResponse.json({ error: `Could not update profile: ${profileError.message}` }, { status: 500 })
+    }
 
     return NextResponse.json({ success: true })
   } catch (err) {

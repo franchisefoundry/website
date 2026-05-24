@@ -115,6 +115,9 @@ export interface FranchisorProfile {
   multi_site_ready: boolean
   min_sites_required: number | null
   full_time_required: boolean
+  franchise_fee: number | null
+  royalty_pct: number | null
+  marketing_levy_pct: number | null
   marketplace_unlocked: boolean
   status: FranchisorStatus
   admin_notes: string | null
