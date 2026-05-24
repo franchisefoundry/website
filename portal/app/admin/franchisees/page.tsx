@@ -9,9 +9,11 @@ import DeleteUserButton from '../DeleteUserButton'
 export default async function FranchiseesPage() {
   const admin = createAdminClient()
 
+  // Use explicit FK hint — franchisee_profiles has two FKs to profiles
+  // (user_id and assigned_admin) so without the hint Supabase returns profiles: null
   const { data: allFranchisees } = await admin
     .from('franchisee_profiles')
-    .select('*, profiles(full_name, email, phone, role)')
+    .select('*, profiles!franchisee_profiles_user_id_fkey(full_name, email, phone, role)')
     .order('created_at', { ascending: false })
 
   // Only show users whose profile role is 'franchisee' — filters out admin accounts

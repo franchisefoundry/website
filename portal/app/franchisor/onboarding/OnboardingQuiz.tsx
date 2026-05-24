@@ -601,7 +601,7 @@ export default function OnboardingQuiz({ franchisorId, userId, firstName }: Prop
                 question="Which UK cities or regions are you actively seeking franchisees in?"
                 hint="Select all current target areas — this is a hard filter in our matching algorithm"
               >
-                <div className="flex flex-wrap gap-2">
+                <div className="flex flex-wrap gap-2 mb-3">
                   {UK_CITY_OPTIONS.map(city => (
                     <button
                       key={city}
@@ -612,6 +612,20 @@ export default function OnboardingQuiz({ franchisorId, userId, firstName }: Prop
                       {city.charAt(0).toUpperCase() + city.slice(1)}
                     </button>
                   ))}
+                </div>
+                <div>
+                  <p className="text-xs text-slate-500 mb-1.5">Other locations (comma-separated)</p>
+                  <input
+                    type="text"
+                    placeholder="e.g. Cambridge, Oxford, Brighton"
+                    defaultValue={answers.locations_available.filter(l => !UK_CITY_OPTIONS.includes(l)).join(', ')}
+                    onBlur={e => {
+                      const custom = e.target.value.split(',').map(l => l.trim().toLowerCase()).filter(Boolean)
+                      const presets = answers.locations_available.filter(l => UK_CITY_OPTIONS.includes(l))
+                      set('locations_available', [...presets, ...custom])
+                    }}
+                    className="w-full px-3 py-2 border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#3a4a3a] focus:border-transparent"
+                  />
                 </div>
               </QuestionBlock>
 

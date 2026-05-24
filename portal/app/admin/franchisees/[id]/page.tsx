@@ -22,7 +22,7 @@ export default async function FranchiseeDetailPage({ params }: Props) {
   const [{ data: franchisee }, { data: franchisors }, { data: matches }] = await Promise.all([
     admin
       .from('franchisee_profiles')
-      .select('*, profiles(full_name, email, phone)')
+      .select('*, profiles!franchisee_profiles_user_id_fkey(full_name, email, phone)')
       .eq('id', id)
       .single(),
     admin

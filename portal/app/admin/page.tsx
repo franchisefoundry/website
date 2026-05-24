@@ -27,7 +27,8 @@ export default async function AdminDashboard() {
     admin.from('leads').select('*', { count: 'exact', head: true }),
     admin.from('leads').select('*', { count: 'exact', head: true }).eq('status', 'meeting_requested'),
     admin.from('franchisor_profiles').select('*', { count: 'exact', head: true }).eq('status', 'pending_review'),
-    admin.from('matches').select('*', { count: 'exact', head: true }).eq('status', 'suggested'),
+    // Only count matches that an admin has deliberately assigned (not auto-suggested)
+    admin.from('franchisee_profiles').select('*', { count: 'exact', head: true }).not('assigned_franchisor_id', 'is', null),
     admin.from('intro_requests').select('*', { count: 'exact', head: true }).eq('status', 'pending'),
     admin.from('leads').select('*').in('status', ['new', 'meeting_requested']).order('created_at', { ascending: false }).limit(5),
     admin.from('franchisor_profiles').select('*, profiles(full_name, email)').eq('status', 'pending_review').order('created_at', { ascending: false }).limit(5),
@@ -64,10 +65,10 @@ export default async function AdminDashboard() {
     {
       title: 'Matches',
       href: '/admin/matches',
-      description: 'Franchisee ↔ brand match suggestions.',
+      description: 'Franchisees assigned to a specific brand.',
       count: suggestedMatchCount ?? 0,
-      alert: suggestedMatchCount ? `${suggestedMatchCount} unreviewed` : null,
-      alertColour: 'text-brand-green bg-green-50',
+      alert: null,
+      alertColour: '',
       icon: '🎯',
     },
     {

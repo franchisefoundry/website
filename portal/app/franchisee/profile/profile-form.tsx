@@ -23,7 +23,11 @@ export default function ProfileForm({ profile, franchiseeProfile }: Props) {
   const [investmentMax, setInvestmentMax] = useState(franchiseeProfile?.investment_max?.toString() ?? '')
   const [liquidCapital, setLiquidCapital] = useState(franchiseeProfile?.liquid_capital?.toString() ?? '')
   const [formatTypes, setFormatTypes] = useState<string[]>(franchiseeProfile?.format_types ?? [])
-  const [locations, setLocations] = useState<string[]>(franchiseeProfile?.preferred_locations ?? [])
+  const PRESET_CITIES = UK_CITIES.map(c => c.value)
+  const initialLocations = (franchiseeProfile?.preferred_locations ?? []).filter(l => PRESET_CITIES.includes(l))
+  const initialOther = (franchiseeProfile?.preferred_locations ?? []).filter(l => !PRESET_CITIES.includes(l)).join(', ')
+  const [locations, setLocations] = useState<string[]>(initialLocations)
+  const [otherLocation, setOtherLocation] = useState(initialOther)
   const [operatorModel, setOperatorModel] = useState(franchiseeProfile?.operator_model ?? '')
   const [experience, setExperience] = useState(franchiseeProfile?.experience ?? '')
   const [fullTime, setFullTime] = useState(franchiseeProfile?.full_time_available ?? null as boolean | null)
@@ -56,7 +60,10 @@ export default function ProfileForm({ profile, franchiseeProfile }: Props) {
         investment_max: investmentMax ? parseInt(investmentMax) : null,
         liquid_capital: liquidCapital ? parseInt(liquidCapital) : null,
         format_types: formatTypes,
-        preferred_locations: locations,
+        preferred_locations: [
+          ...locations,
+          ...otherLocation.split(',').map(l => l.trim()).filter(Boolean),
+        ],
         operator_model: operatorModel || null,
         experience: experience || null,
         full_time_available: fullTime,
@@ -250,7 +257,7 @@ export default function ProfileForm({ profile, franchiseeProfile }: Props) {
       {/* Locations */}
       <Card>
         <CardHeader><CardTitle>Preferred locations</CardTitle></CardHeader>
-        <CardBody>
+        <CardBody className="space-y-3">
           <div className="flex flex-wrap gap-2">
             {UK_CITIES.map(city => (
               <button
@@ -266,6 +273,16 @@ export default function ProfileForm({ profile, franchiseeProfile }: Props) {
                 {city.label}
               </button>
             ))}
+          </div>
+          <div>
+            <label className="block text-xs font-medium text-slate-500 mb-1">Other locations (comma-separated)</label>
+            <input
+              type="text"
+              value={otherLocation}
+              onChange={e => setOtherLocation(e.target.value)}
+              placeholder="e.g. Brighton, Oxford, Bath"
+              className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-green focus:border-transparent"
+            />
           </div>
         </CardBody>
       </Card>

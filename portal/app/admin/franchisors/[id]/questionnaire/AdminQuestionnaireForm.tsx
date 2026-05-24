@@ -467,7 +467,7 @@ export default function AdminQuestionnaireForm({ franchisorId, existing, section
         <div>
           <label className="block text-xs font-medium text-slate-600 mb-2">{q('locations_available', 'Active UK territories')}</label>
           <p className="text-xs text-slate-400 mb-2">Cities actively seeking franchisees — hard filter in matching</p>
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-2 mb-3">
             {UK_CITY_OPTIONS.map(city => (
               <button key={city} type="button"
                 onClick={() => setLocationsAvailable(locationsAvailable.includes(city) ? locationsAvailable.filter(c => c !== city) : [...locationsAvailable, city])}
@@ -475,6 +475,20 @@ export default function AdminQuestionnaireForm({ franchisorId, existing, section
                 {city.charAt(0).toUpperCase() + city.slice(1)}
               </button>
             ))}
+          </div>
+          <div>
+            <label className="block text-xs font-medium text-slate-500 mb-1">Other locations (comma-separated)</label>
+            <input
+              type="text"
+              placeholder="e.g. Cambridge, Oxford, Brighton"
+              defaultValue={locationsAvailable.filter(l => !UK_CITY_OPTIONS.includes(l)).join(', ')}
+              onBlur={e => {
+                const custom = e.target.value.split(',').map(l => l.trim().toLowerCase()).filter(Boolean)
+                const presets = locationsAvailable.filter(l => UK_CITY_OPTIONS.includes(l))
+                setLocationsAvailable([...presets, ...custom])
+              }}
+              className="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-brand-green focus:border-transparent"
+            />
           </div>
         </div>
         {sliderWrap(
