@@ -80,6 +80,8 @@ export interface FranchiseeProfile {
   status: FranchiseeStatus
   pipeline_stage?: FranchiseePipelineStage
   assigned_franchisor_id?: string | null
+  backup_franchisor_1_id?: string | null
+  backup_franchisor_2_id?: string | null
   tier_2_unlocked: boolean
   invited_at: string | null
   activated_at: string | null
@@ -120,6 +122,7 @@ export interface FranchisorProfile {
   marketing_levy_pct: number | null
   marketplace_unlocked: boolean
   status: FranchisorStatus
+  logo_url: string | null
   admin_notes: string | null
   contact_email: string | null
   contact_name: string | null
@@ -136,6 +139,8 @@ export interface Match {
   score: number
   status: MatchStatus
   pipeline_stage?: MatchPipelineStage | null
+  internal_notes: string | null
+  franchisor_notes: string | null
   admin_notes: string | null
   created_at: string
   updated_at: string

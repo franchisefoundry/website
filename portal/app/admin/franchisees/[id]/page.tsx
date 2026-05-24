@@ -37,6 +37,7 @@ export default async function FranchiseeDetailPage({ params }: Props) {
       .select('*, franchisor_profiles(brand_name, category, status)')
       .eq('franchisee_id', id)
       .order('score', { ascending: false }),
+
     admin
       .from('franchisee_documents')
       .select('*')
@@ -49,8 +50,14 @@ export default async function FranchiseeDetailPage({ params }: Props) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const profile = franchisee.profiles as any
 
-  const assignedFranchisor = franchisee.assigned_franchisor_id
+  const assignedFranchisor  = franchisee.assigned_franchisor_id
     ? (franchisors ?? []).find(f => f.id === franchisee.assigned_franchisor_id) ?? null
+    : null
+  const backupFranchisor1 = (franchisee as any).backup_franchisor_1_id
+    ? (franchisors ?? []).find(f => f.id === (franchisee as any).backup_franchisor_1_id) ?? null
+    : null
+  const backupFranchisor2 = (franchisee as any).backup_franchisor_2_id
+    ? (franchisors ?? []).find(f => f.id === (franchisee as any).backup_franchisor_2_id) ?? null
     : null
 
   const currentStageIndex = FRANCHISEE_PIPELINE_STAGES.findIndex(s => s.value === (franchisee.pipeline_stage ?? 'new_enquiry'))
@@ -229,6 +236,8 @@ export default async function FranchiseeDetailPage({ params }: Props) {
             franchisee={franchisee}
             franchisors={franchisors ?? []}
             assignedFranchisor={assignedFranchisor}
+            backupFranchisor1={backupFranchisor1}
+            backupFranchisor2={backupFranchisor2}
           />
         </div>
       </div>

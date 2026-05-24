@@ -1,10 +1,22 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { Card, CardBody, CardHeader, CardTitle } from '@/components/ui/card'
-import { UK_CITIES, SECTORS, FORMAT_TYPES, type FranchisorProfile } from '@/lib/supabase/types'
+import { UK_CITIES, FORMAT_TYPES, type FranchisorProfile } from '@/lib/supabase/types'
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { createClient } from '@/lib/supabase/client'
+
+const BRAND_CATEGORIES = [
+  'QSR (Quick Service Restaurant)',
+  'Fast Casual',
+  'Casual Dining',
+  'Coffee & Bakery',
+  'Delivery / Ghost Kitchen',
+  'Health & Wellness',
+  'Retail',
+  'Other',
+]
 
 function toggle(arr: string[], val: string) {
   return arr.includes(val) ? arr.filter(v => v !== val) : [...arr, val]
@@ -57,6 +69,9 @@ export default function EditBrandForm({ franchisor }: Props) {
   const router = useRouter()
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [logoUploading, setLogoUploading] = useState(false)
+  const [logoUrl, setLogoUrl] = useState<string | null>((franchisor as any).logo_url ?? null)
+  const logoInputRef = useRef<HTMLInputElement>(null)
 
   const [form, setForm] = useState({
     brand_name: franchisor.brand_name ?? '',
@@ -82,6 +97,23 @@ export default function EditBrandForm({ franchisor }: Props) {
     contact_email: franchisor.contact_email ?? '',
     contact_name: franchisor.contact_name ?? '',
   })
+
+  async function handleLogoUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    if (!file) return
+    setLogoUploading(true)
+    const supabase = createClient()
+    const ext = file.name.split('.').pop()
+    const path = `${franchisor.id}/logo.${ext}`
+    const { error: uploadError } = await supabase.storage
+      .from('brand-logos')
+      .upload(path, file, { upsert: true })
+    if (uploadError) { setError(uploadError.message); setLogoUploading(false); return }
+    const { data: { publicUrl } } = supabase.storage.from('brand-logos').getPublicUrl(path)
+    await supabase.from('franchisor_profiles').update({ logo_url: publicUrl }).eq('id', franchisor.id)
+    setLogoUrl(publicUrl)
+    setLogoUploading(false)
+  }
 
   function set<K extends keyof typeof form>(key: K, value: typeof form[K]) {
     setForm(prev => ({ ...prev, [key]: value }))
@@ -151,6 +183,36 @@ export default function EditBrandForm({ franchisor }: Props) {
       </Card>
 
       {/* Brand details */}
+      {/* Logo */}
+      <Card>
+        <CardHeader><CardTitle>Brand logo</CardTitle></CardHeader>
+        <CardBody className="flex items-center gap-5">
+          <div className="w-20 h-20 rounded-xl border-2 border-dashed border-slate-200 flex items-center justify-center bg-slate-50 overflow-hidden flex-shrink-0">
+            {logoUrl ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={logoUrl} alt="Logo" className="w-full h-full object-contain p-1" />
+            ) : (
+              <span className="text-2xl">🏷️</span>
+            )}
+          </div>
+          <div>
+            <p className="text-sm font-medium text-slate-700 mb-1">
+              {logoUrl ? 'Replace logo' : 'Upload logo'}
+            </p>
+            <p className="text-xs text-slate-400 mb-3">PNG or SVG recommended. Shown on match cards once brand is revealed.</p>
+            <input ref={logoInputRef} type="file" accept="image/*" onChange={handleLogoUpload} className="hidden" />
+            <button
+              type="button"
+              onClick={() => logoInputRef.current?.click()}
+              disabled={logoUploading}
+              className="text-sm px-4 py-2 border border-slate-300 rounded-lg text-slate-700 hover:bg-slate-50 transition-colors disabled:opacity-60"
+            >
+              {logoUploading ? 'Uploading…' : 'Choose file'}
+            </button>
+          </div>
+        </CardBody>
+      </Card>
+
       <Card>
         <CardHeader><CardTitle>Brand details</CardTitle></CardHeader>
         <CardBody className="space-y-4">
@@ -163,9 +225,11 @@ export default function EditBrandForm({ franchisor }: Props) {
             </div>
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-1">Category</label>
-              <input type="text" value={form.category} onChange={e => set('category', e.target.value)}
-                className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-green focus:border-transparent"
-                placeholder="e.g. Quick Service Restaurant" />
+              <select value={form.category} onChange={e => set('category', e.target.value)}
+                className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-green focus:border-transparent bg-white">
+                <option value="">— Select category —</option>
+                {BRAND_CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
+              </select>
             </div>
           </div>
           <div>
@@ -317,11 +381,10 @@ export default function EditBrandForm({ franchisor }: Props) {
         <CardHeader><CardTitle>Sector tags</CardTitle></CardHeader>
         <CardBody>
           <div className="flex flex-wrap gap-2">
-            {SECTORS.map(s => (
-              <Pill key={s.value} label={s.label} active={form.sectors.includes(s.value)}
-                onClick={() => set('sectors', toggle(form.sectors, s.value))} />
-            ))}
+            <Pill label="Hospitality" active={form.sectors.includes('hospitality')}
+              onClick={() => set('sectors', toggle(form.sectors, 'hospitality'))} />
           </div>
+          <p className="text-xs text-slate-400 mt-3">More sectors coming soon.</p>
         </CardBody>
       </Card>
 

@@ -17,31 +17,161 @@ interface Props {
   franchisee: FranchiseeProfile
   franchisors: FranchisorOption[]
   assignedFranchisor?: FranchisorOption | null
+  backupFranchisor1?: FranchisorOption | null
+  backupFranchisor2?: FranchisorOption | null
 }
 
-export default function FranchiseeActions({ franchisee, franchisors, assignedFranchisor }: Props) {
+function BrandSelector({
+  label,
+  rank,
+  franchiseeId,
+  current,
+  franchisors,
+  onSuccess,
+}: {
+  label: string
+  rank: 1 | 2 | 3
+  franchiseeId: string
+  current: FranchisorOption | null
+  franchisors: FranchisorOption[]
+  onSuccess: () => void
+}) {
+  const [selected, setSelected] = useState(current?.id ?? '')
+  const [confirming, setConfirming] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [removing, setRemoving] = useState(false)
+
+  const isPrimary = rank === 1
+
+  async function assign() {
+    if (!selected) return
+    setLoading(true)
+    const res = await fetch(`/api/admin/franchisees/${franchiseeId}/assign-brand`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ franchisor_id: selected, rank }),
+    })
+    setLoading(false)
+    if (res.ok) { setConfirming(false); onSuccess() }
+  }
+
+  async function remove() {
+    setRemoving(true)
+    await fetch(`/api/admin/franchisees/${franchiseeId}/assign-brand`, {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ rank }),
+    })
+    setRemoving(false)
+    setSelected('')
+    onSuccess()
+  }
+
+  const pendingBrand = franchisors.find(f => f.id === selected)
+  const changed = selected && selected !== (current?.id ?? '')
+
+  return (
+    <div className="space-y-2">
+      <div className="flex items-center justify-between">
+        <p className="text-xs font-semibold text-slate-600 uppercase tracking-wide">{label}</p>
+        {current && (
+          <button
+            onClick={remove}
+            disabled={removing}
+            className="text-xs text-slate-400 hover:text-red-500 transition-colors disabled:opacity-50"
+          >
+            {removing ? 'Removing…' : 'Remove'}
+          </button>
+        )}
+      </div>
+
+      {current && (
+        <div className={`rounded-lg px-3 py-2.5 border ${isPrimary ? 'bg-brand-green/5 border-brand-green/20' : 'bg-slate-50 border-slate-200'}`}>
+          <p className="text-xs font-semibold text-slate-800">{current.brand_name || 'Unnamed brand'}</p>
+          <p className="text-xs text-slate-400">{current.category || '—'}</p>
+          {isPrimary && (
+            <p className="text-[10px] text-brand-green font-medium mt-0.5">
+              🔔 Franchisor notified on assignment
+            </p>
+          )}
+        </div>
+      )}
+
+      {!confirming ? (
+        <>
+          <select
+            value={selected}
+            onChange={e => setSelected(e.target.value)}
+            className="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-brand-green focus:border-transparent"
+          >
+            <option value="">— {current ? 'Change brand' : 'Select a brand'} —</option>
+            {franchisors.map(f => (
+              <option key={f.id} value={f.id}>
+                {f.brand_name || 'Unnamed'}{f.category ? ` (${f.category})` : ''}
+              </option>
+            ))}
+          </select>
+          {changed && (
+            <button
+              onClick={() => setConfirming(true)}
+              className="w-full bg-brand-green hover:bg-brand-green-dark text-white text-xs font-medium py-2 rounded-lg transition-colors"
+            >
+              {current ? 'Change brand' : `Assign ${label.toLowerCase()}`}
+            </button>
+          )}
+        </>
+      ) : (
+        <div className="space-y-2">
+          <p className="text-xs text-slate-700">
+            Assign <strong>{pendingBrand?.brand_name}</strong> as {label.toLowerCase()}?
+            {isPrimary && ' The franchisor will receive an email notification.'}
+          </p>
+          <div className="flex gap-2">
+            <button
+              onClick={assign}
+              disabled={loading}
+              className="flex-1 py-1.5 text-xs font-medium bg-brand-green hover:bg-brand-green-dark text-white rounded-lg transition-colors disabled:opacity-60"
+            >
+              {loading ? 'Assigning…' : 'Confirm'}
+            </button>
+            <button
+              onClick={() => setConfirming(false)}
+              className="flex-1 py-1.5 text-xs font-medium border border-slate-300 text-slate-600 hover:bg-slate-50 rounded-lg transition-colors"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
+
+export default function FranchiseeActions({
+  franchisee,
+  franchisors,
+  assignedFranchisor,
+  backupFranchisor1,
+  backupFranchisor2,
+}: Props) {
   const router = useRouter()
   const [loading, setLoading] = useState<string | null>(null)
   const [pipelineStage, setPipelineStage] = useState(franchisee.pipeline_stage ?? 'new_enquiry')
   const [franchiseeStatus, setFranchiseeStatus] = useState(franchisee.status)
   const [tier2Unlocked, setTier2Unlocked] = useState(franchisee.tier_2_unlocked ?? false)
-  const [selectedFranchisorId, setSelectedFranchisorId] = useState(franchisee.assigned_franchisor_id ?? '')
-  const [assignConfirm, setAssignConfirm] = useState(false)
-  const [assignSuccess, setAssignSuccess] = useState(false)
 
   const currentStageIndex = FRANCHISEE_PIPELINE_STAGES.findIndex(s => s.value === pipelineStage)
 
   async function updatePipelineStage(stage: string) {
-    setPipelineStage(stage as typeof pipelineStage)  // instant visual update
+    setPipelineStage(stage as typeof pipelineStage)
     setLoading(`stage-${stage}`)
     const supabase = createClient()
     await supabase.from('franchisee_profiles').update({ pipeline_stage: stage }).eq('id', franchisee.id)
     setLoading(null)
-    // no router.refresh() — local state already shows the change
   }
 
   async function updateStatus(status: string) {
-    setFranchiseeStatus(status as typeof franchiseeStatus)  // instant visual update
+    setFranchiseeStatus(status as typeof franchiseeStatus)
     setLoading(`status-${status}`)
     const supabase = createClient()
     await supabase
@@ -49,36 +179,16 @@ export default function FranchiseeActions({ franchisee, franchisors, assignedFra
       .update({ status, ...(status === 'signed' ? { signed_at: new Date().toISOString() } : {}) })
       .eq('id', franchisee.id)
     setLoading(null)
-    // no router.refresh() — local state already shows the change
   }
 
   async function toggleTier2() {
     const next = !tier2Unlocked
-    setTier2Unlocked(next)           // instant visual update
+    setTier2Unlocked(next)
     setLoading('tier2')
     const supabase = createClient()
     await supabase.from('franchisee_profiles').update({ tier_2_unlocked: next }).eq('id', franchisee.id)
     setLoading(null)
-    // no router.refresh() — local state already shows the change
   }
-
-  async function assignBrand() {
-    if (!selectedFranchisorId) return
-    setLoading('assign')
-    const res = await fetch(`/api/admin/franchisees/${franchisee.id}/assign-brand`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ franchisor_id: selectedFranchisorId }),
-    })
-    setLoading(null)
-    if (res.ok) {
-      setAssignConfirm(false)
-      setAssignSuccess(true)
-      router.refresh()
-    }
-  }
-
-  const currentAssigned = assignedFranchisor ?? franchisors.find(f => f.id === selectedFranchisorId) ?? null
 
   return (
     <div className="space-y-4">
@@ -87,14 +197,11 @@ export default function FranchiseeActions({ franchisee, franchisors, assignedFra
       <Card>
         <CardHeader><CardTitle>Pipeline stage</CardTitle></CardHeader>
         <CardBody className="space-y-1.5">
-          {/* Progress bar */}
           <div className="flex gap-0.5 mb-3">
             {FRANCHISEE_PIPELINE_STAGES.map((s, i) => (
               <div
                 key={s.value}
-                className={`h-1.5 flex-1 rounded-full transition-colors ${
-                  i <= currentStageIndex ? 'bg-brand-green' : 'bg-slate-200'
-                }`}
+                className={`h-1.5 flex-1 rounded-full transition-colors ${i <= currentStageIndex ? 'bg-brand-green' : 'bg-slate-200'}`}
               />
             ))}
           </div>
@@ -122,67 +229,40 @@ export default function FranchiseeActions({ franchisee, franchisors, assignedFra
         </CardBody>
       </Card>
 
-      {/* Assign brand */}
+      {/* Brand assignments — primary + 2 backups */}
       <Card>
-        <CardHeader><CardTitle>Assigned brand</CardTitle></CardHeader>
-        <CardBody className="space-y-3">
-          {assignSuccess && franchisee.assigned_franchisor_id && (
-            <p className="text-xs text-emerald-600 bg-emerald-50 border border-emerald-200 rounded-lg px-3 py-2">
-              ✓ Brand assigned and added to matches.
-            </p>
-          )}
-          {currentAssigned && !assignSuccess && (
-            <div className="bg-slate-50 rounded-lg px-3 py-2.5 border border-slate-200">
-              <p className="text-xs font-semibold text-slate-800">{currentAssigned.brand_name || 'Unnamed brand'}</p>
-              <p className="text-xs text-slate-400">{currentAssigned.category || '—'}</p>
-            </div>
-          )}
-          {!assignConfirm ? (
-            <>
-              <p className="text-xs text-slate-500">
-                {currentAssigned ? 'Change the brand this franchisee is pursuing:' : 'Select the brand this franchisee wants to pursue:'}
-              </p>
-              <select
-                value={selectedFranchisorId}
-                onChange={e => setSelectedFranchisorId(e.target.value)}
-                className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-green focus:border-transparent"
-              >
-                <option value="">— Select a brand —</option>
-                {franchisors.map(f => (
-                  <option key={f.id} value={f.id}>{f.brand_name || 'Unnamed'} {f.category ? `(${f.category})` : ''}</option>
-                ))}
-              </select>
-              {selectedFranchisorId && selectedFranchisorId !== franchisee.assigned_franchisor_id && (
-                <button
-                  onClick={() => setAssignConfirm(true)}
-                  className="w-full bg-brand-green hover:bg-brand-green-dark text-white text-xs font-medium py-2 rounded-lg transition-colors"
-                >
-                  Assign brand
-                </button>
-              )}
-            </>
-          ) : (
-            <div className="space-y-2">
-              <p className="text-xs text-slate-700">
-                This will assign <strong>{franchisors.find(f => f.id === selectedFranchisorId)?.brand_name}</strong> and create a match record. The brand will see this franchisee on their matches page.
-              </p>
-              <div className="flex gap-2">
-                <button
-                  onClick={assignBrand}
-                  disabled={loading === 'assign'}
-                  className="flex-1 py-1.5 text-xs font-medium bg-brand-green hover:bg-brand-green-dark text-white rounded-lg transition-colors disabled:opacity-60"
-                >
-                  {loading === 'assign' ? 'Assigning…' : 'Confirm'}
-                </button>
-                <button
-                  onClick={() => setAssignConfirm(false)}
-                  className="flex-1 py-1.5 text-xs font-medium border border-slate-300 text-slate-600 hover:bg-slate-50 rounded-lg transition-colors"
-                >
-                  Cancel
-                </button>
-              </div>
-            </div>
-          )}
+        <CardHeader>
+          <CardTitle>Brand assignments</CardTitle>
+        </CardHeader>
+        <CardBody className="space-y-5 divide-y divide-slate-100">
+          <BrandSelector
+            label="Primary brand"
+            rank={1}
+            franchiseeId={franchisee.id}
+            current={assignedFranchisor ?? null}
+            franchisors={franchisors}
+            onSuccess={() => router.refresh()}
+          />
+          <div className="pt-4">
+            <BrandSelector
+              label="Backup 1"
+              rank={2}
+              franchiseeId={franchisee.id}
+              current={backupFranchisor1 ?? null}
+              franchisors={franchisors}
+              onSuccess={() => router.refresh()}
+            />
+          </div>
+          <div className="pt-4">
+            <BrandSelector
+              label="Backup 2"
+              rank={3}
+              franchiseeId={franchisee.id}
+              current={backupFranchisor2 ?? null}
+              franchisors={franchisors}
+              onSuccess={() => router.refresh()}
+            />
+          </div>
         </CardBody>
       </Card>
 
@@ -236,6 +316,7 @@ export default function FranchiseeActions({ franchisee, franchisors, assignedFra
           <CardBody className="text-sm space-y-2">
             {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
             {(franchisee as any).profiles?.email && (
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
               <a href={`mailto:${(franchisee as any).profiles.email}`} className="block text-brand-green hover:underline truncate">
                 {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                 {(franchisee as any).profiles.email}

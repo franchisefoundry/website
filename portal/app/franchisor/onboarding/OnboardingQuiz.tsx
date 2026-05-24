@@ -845,7 +845,7 @@ export default function OnboardingQuiz({ franchisorId, firstName }: Props) {
                       rows={2} placeholder="Usually after the discovery day, or once we've seen the financial evidence…" />
                   </div>
                   <div>
-                    <SubLabel>Typical time from initial enquiry to signed franchise agreement?</SubLabel>
+                    <SubLabel>Typical time from first meeting to signed franchise agreement?</SubLabel>
                     <ShortInput value={answers.timeline_inquiry_to_contract}
                       onChange={v => set('timeline_inquiry_to_contract', v)}
                       placeholder="e.g. 6–12 weeks for motivated applicants, longer if finance is needed…" />

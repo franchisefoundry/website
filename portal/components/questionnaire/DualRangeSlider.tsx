@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useRef } from 'react'
 
 export const INVESTMENT_STEPS = [
   5_000, 10_000, 20_000, 30_000, 50_000, 75_000,
@@ -29,36 +29,52 @@ interface Props {
   min: number
   max: number
   onChange: (min: number, max: number) => void
-  /** 'dark' = onboarding (bg dark green), 'light' = admin/update form */
   variant?: 'dark' | 'light'
 }
 
 export function DualRangeSlider({ min, max, onChange, variant = 'light' }: Props) {
-  // Local indices drive visuals on every drag tick — parent notified only on release
-  const [localMinIdx, setLocalMinIdx] = useState(() => nearestIdx(min))
-  const [localMaxIdx, setLocalMaxIdx] = useState(() => nearestIdx(max))
-
-  const leftPct = (localMinIdx / N) * 100
-  const rightPct = (localMaxIdx / N) * 100
   const accent = variant === 'dark' ? '#3a4a3a' : 'var(--color-brand-green, #3a4a3a)'
 
-  function commitMin(rawIdx: number) {
-    const idx = Math.min(rawIdx, localMaxIdx - 1)
-    onChange(INVESTMENT_STEPS[idx], INVESTMENT_STEPS[localMaxIdx])
+  // Live drag positions — stored in refs so changes don't trigger re-renders
+  const liveMin = useRef(nearestIdx(min))
+  const liveMax = useRef(nearestIdx(max))
+
+  // DOM refs — updated directly for zero-lag visual feedback
+  const trackFillRef = useRef<HTMLDivElement>(null)
+  const minThumbRef  = useRef<HTMLDivElement>(null)
+  const maxThumbRef  = useRef<HTMLDivElement>(null)
+  const minLabelRef  = useRef<HTMLParagraphElement>(null)
+  const maxLabelRef  = useRef<HTMLParagraphElement>(null)
+
+  function setDOM(minIdx: number, maxIdx: number) {
+    const l = (minIdx / N) * 100
+    const r = (maxIdx / N) * 100
+    if (trackFillRef.current) {
+      trackFillRef.current.style.left  = `${l}%`
+      trackFillRef.current.style.width = `${r - l}%`
+    }
+    if (minThumbRef.current) minThumbRef.current.style.left = `${l}%`
+    if (maxThumbRef.current) maxThumbRef.current.style.left = `${r}%`
+    if (minLabelRef.current) minLabelRef.current.textContent = fmt(INVESTMENT_STEPS[minIdx])
+    if (maxLabelRef.current) maxLabelRef.current.textContent = fmt(INVESTMENT_STEPS[maxIdx])
   }
 
-  function commitMax(rawIdx: number) {
-    const idx = Math.max(rawIdx, localMinIdx + 1)
-    onChange(INVESTMENT_STEPS[localMinIdx], INVESTMENT_STEPS[idx])
+  function commit() {
+    onChange(INVESTMENT_STEPS[liveMin.current], INVESTMENT_STEPS[liveMax.current])
   }
+
+  const initL = (liveMin.current / N) * 100
+  const initR = (liveMax.current / N) * 100
 
   return (
     <div className="space-y-4">
-      {/* Value display */}
+      {/* Value display — updated via DOM refs, not React state */}
       <div className="flex items-center justify-center gap-4">
         <div className="text-center">
           <p className="text-xs text-slate-500 mb-0.5">Minimum</p>
-          <p className="text-2xl font-bold" style={{ color: accent }}>{fmt(INVESTMENT_STEPS[localMinIdx])}</p>
+          <p ref={minLabelRef} className="text-2xl font-bold" style={{ color: accent }}>
+            {fmt(INVESTMENT_STEPS[liveMin.current])}
+          </p>
         </div>
         <div className="flex flex-col items-center gap-1">
           <div className="w-8 h-px bg-slate-300" />
@@ -67,63 +83,62 @@ export function DualRangeSlider({ min, max, onChange, variant = 'light' }: Props
         </div>
         <div className="text-center">
           <p className="text-xs text-slate-500 mb-0.5">Maximum</p>
-          <p className="text-2xl font-bold" style={{ color: accent }}>{fmt(INVESTMENT_STEPS[localMaxIdx])}</p>
+          <p ref={maxLabelRef} className="text-2xl font-bold" style={{ color: accent }}>
+            {fmt(INVESTMENT_STEPS[liveMax.current])}
+          </p>
         </div>
       </div>
 
       {/* Slider track */}
       <div className="relative h-10 flex items-center">
-        {/* Track */}
+        {/* Base track */}
         <div className="absolute left-0 right-0 h-2 bg-slate-200 rounded-full">
-          {/* Active fill */}
+          {/* Active fill — moved via DOM ref */}
           <div
+            ref={trackFillRef}
             className="absolute h-full rounded-full"
-            style={{
-              left: `${leftPct}%`,
-              width: `${rightPct - leftPct}%`,
-              backgroundColor: accent,
-            }}
+            style={{ left: `${initL}%`, width: `${initR - initL}%`, backgroundColor: accent }}
           />
         </div>
 
-        {/* Visual thumb — min */}
+        {/* Min thumb — pointer-events-none, positioned via DOM ref */}
         <div
+          ref={minThumbRef}
           className="absolute w-5 h-5 bg-white rounded-full shadow-md border-2 pointer-events-none -translate-x-1/2"
-          style={{ left: `${leftPct}%`, borderColor: accent }}
+          style={{ left: `${initL}%`, borderColor: accent }}
         />
-        {/* Visual thumb — max */}
+        {/* Max thumb */}
         <div
+          ref={maxThumbRef}
           className="absolute w-5 h-5 bg-white rounded-full shadow-md border-2 pointer-events-none -translate-x-1/2"
-          style={{ left: `${rightPct}%`, borderColor: accent }}
+          style={{ left: `${initR}%`, borderColor: accent }}
         />
 
-        {/* Min range input */}
+        {/* Invisible min input — drives the min thumb */}
         <input
-          type="range"
-          min={0}
-          max={N}
-          value={localMinIdx}
+          type="range" min={0} max={N}
+          defaultValue={liveMin.current}
           onChange={e => {
-            const v = +e.target.value
-            setLocalMinIdx(Math.min(v, localMaxIdx - 1))
+            const v = Math.min(+e.target.value, liveMax.current - 1)
+            liveMin.current = v
+            setDOM(v, liveMax.current)
           }}
-          onPointerUp={e => commitMin(+(e.target as HTMLInputElement).value)}
-          onKeyUp={e => commitMin(+(e.target as HTMLInputElement).value)}
+          onPointerUp={commit}
+          onKeyUp={commit}
           className="absolute inset-0 w-full opacity-0 cursor-pointer"
-          style={{ zIndex: localMinIdx >= localMaxIdx - 1 ? 5 : 3 }}
+          style={{ zIndex: 3 }}
         />
-        {/* Max range input */}
+        {/* Invisible max input — drives the max thumb */}
         <input
-          type="range"
-          min={0}
-          max={N}
-          value={localMaxIdx}
+          type="range" min={0} max={N}
+          defaultValue={liveMax.current}
           onChange={e => {
-            const v = +e.target.value
-            setLocalMaxIdx(Math.max(v, localMinIdx + 1))
+            const v = Math.max(+e.target.value, liveMin.current + 1)
+            liveMax.current = v
+            setDOM(liveMin.current, v)
           }}
-          onPointerUp={e => commitMax(+(e.target as HTMLInputElement).value)}
-          onKeyUp={e => commitMax(+(e.target as HTMLInputElement).value)}
+          onPointerUp={commit}
+          onKeyUp={commit}
           className="absolute inset-0 w-full opacity-0 cursor-pointer"
           style={{ zIndex: 4 }}
         />
