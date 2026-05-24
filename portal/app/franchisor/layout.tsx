@@ -22,12 +22,14 @@ export default async function FranchisorLayout({ children }: { children: React.R
 
   const isPreview = profile?.role === 'admin'
 
-  // Read current pathname from middleware-injected header
+  // x-pathname is injected as a REQUEST header by middleware using the
+  // NextResponse.next({ request: { headers: requestHeaders } }) pattern.
+  // headers() in a Server Component reads request headers, not response headers.
   const headersList = await headers()
   const pathname = headersList.get('x-pathname') ?? ''
   const isOnboarding = pathname.startsWith('/franchisor/onboarding')
 
-  // Quiz gate — only for real franchisors (not admin previews)
+  // Quiz gate — only for real franchisors, not admin previews, not the onboarding page itself
   if (!isPreview && !isOnboarding) {
     const { data: franchisorProfile } = await supabase
       .from('franchisor_profiles')
@@ -35,12 +37,13 @@ export default async function FranchisorLayout({ children }: { children: React.R
       .eq('user_id', user.id)
       .single()
 
+    // Profile exists but quiz not done → send them to onboarding
     if (franchisorProfile && !franchisorProfile.quiz_completed_at) {
       redirect('/franchisor/onboarding')
     }
   }
 
-  // Onboarding page — full-screen, no sidebar
+  // Onboarding — full-screen, no sidebar
   if (isOnboarding) {
     return (
       <div className="min-h-screen bg-slate-50">

@@ -1,11 +1,11 @@
 'use client'
 
-import { useEffect } from 'react'
-import { useRouter } from 'next/navigation'
+import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 
 export default function AuthConfirmPage() {
-  const router = useRouter()
+  const [status, setStatus] = useState<'loading' | 'error'>('loading')
+  const [errorMsg, setErrorMsg] = useState('')
 
   useEffect(() => {
     const url = new URL(window.location.href)
@@ -16,55 +16,106 @@ export default function AuthConfirmPage() {
     const supabase = createClient()
 
     async function handleAuth() {
-      if (token_hash && type) {
-        // Our sendMagicLink flow — direct token_hash, no PKCE needed
-        const { error } = await supabase.auth.verifyOtp({ token_hash, type })
-        if (error) { router.replace(`/login?error=${encodeURIComponent(error.message)}`); return }
+      try {
+        if (token_hash && type) {
+          // Our sendMagicLink flow — direct token_hash, no PKCE needed
+          const { error } = await supabase.auth.verifyOtp({ token_hash, type })
+          if (error) { setErrorMsg(error.message); setStatus('error'); return }
 
-      } else if (code) {
-        // Supabase invite email flow — PKCE code exchange
-        const { error } = await supabase.auth.exchangeCodeForSession(code)
-        if (error) { router.replace(`/login?error=${encodeURIComponent(error.message)}`); return }
+        } else if (code) {
+          // Supabase invite email flow — PKCE code exchange
+          const { error } = await supabase.auth.exchangeCodeForSession(code)
+          if (error) { setErrorMsg(error.message); setStatus('error'); return }
 
-      } else {
-        // Implicit flow — access token in hash fragment
-        const hash = window.location.hash.substring(1)
-        const hashParams = new URLSearchParams(hash)
-        const access_token = hashParams.get('access_token')
-        const refresh_token = hashParams.get('refresh_token')
-
-        if (access_token && refresh_token) {
-          const { error } = await supabase.auth.setSession({ access_token, refresh_token })
-          if (error) { router.replace(`/login?error=${encodeURIComponent(error.message)}`); return }
         } else {
-          router.replace('/login?error=missing_token')
+          // Implicit flow — access token in hash fragment
+          const hash = window.location.hash.substring(1)
+          const hashParams = new URLSearchParams(hash)
+          const access_token = hashParams.get('access_token')
+          const refresh_token = hashParams.get('refresh_token')
+
+          if (access_token && refresh_token) {
+            const { error } = await supabase.auth.setSession({ access_token, refresh_token })
+            if (error) { setErrorMsg(error.message); setStatus('error'); return }
+          } else {
+            setErrorMsg('Missing authentication token. Please try the link again or request a new one.')
+            setStatus('error')
+            return
+          }
+        }
+
+        // Session established — read profile to decide where to send them
+        const { data: { user } } = await supabase.auth.getUser()
+        if (!user) {
+          setErrorMsg('Could not establish session. Please try logging in again.')
+          setStatus('error')
           return
         }
+
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('role, setup_complete')
+          .eq('id', user.id)
+          .single()
+
+        // Determine destination
+        let destination: string
+        if (!profile || !profile.setup_complete) {
+          destination = '/setup-account'
+        } else if (profile.role === 'admin') {
+          destination = '/admin'
+        } else if (profile.role === 'franchisor') {
+          destination = '/franchisor'
+        } else {
+          destination = '/franchisee'
+        }
+
+        // Hard navigate so the session cookies are sent with the next server request.
+        // router.replace() can race with cookie propagation after verifyOtp/setSession.
+        window.location.href = destination
+
+      } catch (err) {
+        setErrorMsg(err instanceof Error ? err.message : 'An unexpected error occurred.')
+        setStatus('error')
       }
-
-      // Session established — route by role
-      const { data: { user } } = await supabase.auth.getUser()
-      if (!user) { router.replace('/login?error=no_session'); return }
-
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('role, setup_complete')
-        .eq('id', user.id)
-        .single()
-
-      // No profile yet, or setup not completed — send to setup
-      if (!profile || !profile.setup_complete) {
-        router.replace('/setup-account')
-        return
-      }
-
-      if (profile.role === 'admin') router.replace('/admin')
-      else if (profile.role === 'franchisor') router.replace('/franchisor')
-      else router.replace('/franchisee')
     }
 
     handleAuth()
-  }, [router])
+  }, [])
+
+  if (status === 'error') {
+    return (
+      <div style={{
+        minHeight: '100vh', background: '#f8fafc',
+        display: 'flex', flexDirection: 'column',
+        alignItems: 'center', justifyContent: 'center', gap: 16, padding: 24,
+        fontFamily: "'Sora', system-ui, sans-serif",
+      }}>
+        <div style={{
+          background: '#fff', border: '1px solid #e2e8f0', borderRadius: 16,
+          padding: '32px 40px', maxWidth: 400, width: '100%', textAlign: 'center',
+        }}>
+          <div style={{ fontSize: 32, marginBottom: 12 }}>⚠️</div>
+          <h1 style={{ margin: '0 0 8px', fontSize: '1.1rem', fontWeight: 600, color: '#0f172a' }}>
+            Sign-in failed
+          </h1>
+          <p style={{ margin: '0 0 24px', fontSize: '0.875rem', color: '#64748b', lineHeight: 1.6 }}>
+            {errorMsg}
+          </p>
+          <a
+            href="/login"
+            style={{
+              display: 'inline-block', padding: '10px 24px',
+              background: '#3a4a3a', color: '#fff', borderRadius: 8,
+              fontSize: '0.875rem', fontWeight: 600, textDecoration: 'none',
+            }}
+          >
+            Back to login
+          </a>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <>

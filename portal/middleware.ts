@@ -2,7 +2,32 @@ import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
 export async function middleware(request: NextRequest) {
-  let supabaseResponse = NextResponse.next({ request })
+  const { pathname } = request.nextUrl
+
+  // Public routes — always allow through without auth checks
+  const publicPaths = [
+    '/login',
+    '/setup-account',
+    '/auth/callback',
+    '/auth/confirm',
+    '/get-matched',
+    '/api/leads',
+  ]
+  if (publicPaths.some(p => pathname.startsWith(p))) {
+    return NextResponse.next()
+  }
+
+  // Build request headers with x-pathname injected BEFORE creating the Supabase client.
+  // We must use NextResponse.next({ request: { headers } }) — NOT response.headers.set() —
+  // because headers() in Server Components reads REQUEST headers, not response headers.
+  // We also capture this in a variable so the setAll() closure can reuse it when
+  // Supabase needs to rotate the session cookie (which replaces supabaseResponse).
+  const requestHeaders = new Headers(request.headers)
+  requestHeaders.set('x-pathname', pathname)
+
+  let supabaseResponse = NextResponse.next({
+    request: { headers: requestHeaders },
+  })
 
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -13,8 +38,13 @@ export async function middleware(request: NextRequest) {
           return request.cookies.getAll()
         },
         setAll(cookiesToSet: { name: string; value: string; options?: object }[]) {
+          // Supabase calls this when it refreshes the session token.
+          // We must recreate supabaseResponse here, but we preserve the
+          // x-pathname in requestHeaders so it survives the replacement.
           cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value))
-          supabaseResponse = NextResponse.next({ request })
+          supabaseResponse = NextResponse.next({
+            request: { headers: requestHeaders },
+          })
           cookiesToSet.forEach(({ name, value, options }) =>
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             supabaseResponse.cookies.set(name, value, options as any)
@@ -24,15 +54,7 @@ export async function middleware(request: NextRequest) {
     }
   )
 
-  const { pathname } = request.nextUrl
-
-  // Public routes — always allow through
-  const publicPaths = ['/login', '/setup-account', '/auth/callback', '/auth/confirm', '/get-matched', '/api/leads']
-  if (publicPaths.some(p => pathname.startsWith(p))) {
-    return supabaseResponse
-  }
-
-  // Check auth
+  // Validate session
   const { data: { user }, error } = await supabase.auth.getUser()
 
   if (error || !user) {
@@ -42,17 +64,26 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(loginUrl)
   }
 
-  // Fetch role using service-role-level access via a direct header lookup
-  // We use the anon client here — the user is authenticated so RLS allows them to read their own profile
+  // Look up role
   const { data: profile } = await supabase
     .from('profiles')
-    .select('role')
+    .select('role, setup_complete')
     .eq('id', user.id)
     .single()
 
-  // If no profile yet (e.g. trigger hasn't fired), send to setup
+  // No profile row yet (trigger may not have fired) — send to setup
   if (!profile) {
-    if (pathname.startsWith('/setup-account')) return supabaseResponse
+    const setupUrl = request.nextUrl.clone()
+    setupUrl.pathname = '/setup-account'
+    return NextResponse.redirect(setupUrl)
+  }
+
+  // setup_complete gate — only portal paths, not API routes
+  if (
+    !profile.setup_complete &&
+    !pathname.startsWith('/api/') &&
+    pathname !== '/setup-account'
+  ) {
     const setupUrl = request.nextUrl.clone()
     setupUrl.pathname = '/setup-account'
     return NextResponse.redirect(setupUrl)
@@ -65,8 +96,7 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL(`/${role}`, request.url))
   }
 
-  // Enforce portal boundaries
-  // Admins can visit any portal section (preview mode)
+  // Enforce portal boundaries (admins may visit any section for preview)
   if (pathname.startsWith('/admin') && role !== 'admin') {
     return NextResponse.redirect(new URL(`/${role}`, request.url))
   }
@@ -76,9 +106,6 @@ export async function middleware(request: NextRequest) {
   if (pathname.startsWith('/franchisor') && role !== 'franchisor' && role !== 'admin') {
     return NextResponse.redirect(new URL(`/${role}`, request.url))
   }
-
-  // Inject pathname AFTER all cookie mutations so it's always on the final response object
-  supabaseResponse.headers.set('x-pathname', pathname)
 
   return supabaseResponse
 }
