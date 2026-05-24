@@ -48,12 +48,12 @@ export default function AuthConfirmPage() {
 
       const { data: profile } = await supabase
         .from('profiles')
-        .select('role, activated_at')
+        .select('role, setup_complete')
         .eq('id', user.id)
         .single()
 
-      // No profile yet or first login — send to setup
-      if (!profile || !profile.activated_at) {
+      // No profile yet, or setup not completed — send to setup
+      if (!profile || !profile.setup_complete) {
         router.replace('/setup-account')
         return
       }

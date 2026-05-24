@@ -71,7 +71,7 @@ export default function SetupAccountForm() {
       // Save profile and mark setup complete
       const { error: updateError } = await supabase
         .from('profiles')
-        .update({ full_name: fullName, phone: phone || null })
+        .update({ full_name: fullName, phone: phone || null, setup_complete: true })
         .eq('id', user.id)
 
       if (updateError) {
@@ -86,7 +86,9 @@ export default function SetupAccountForm() {
         .eq('id', user.id)
         .single()
 
-      router.push(`/${profile?.role ?? 'franchisee'}`)
+      // Hard navigate so the fresh session cookie from updateUser() is sent
+      // with the next request — router.push() can race with the rotated token
+      window.location.href = `/${profile?.role ?? 'franchisee'}`
     } catch (err) {
       setError(`Unexpected error: ${err instanceof Error ? err.message : String(err)}`)
       setLoading(false)

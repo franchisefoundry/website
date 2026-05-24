@@ -29,7 +29,7 @@ export async function POST(
   const { data: created, error: createError } = await admin.auth.admin.createUser({
     email: typedLead.email,
     email_confirm: true,
-    user_metadata: { full_name: typedLead.full_name },
+    user_metadata: { full_name: typedLead.full_name, role: 'franchisee' },
   })
 
   let authUserId = created?.user?.id
