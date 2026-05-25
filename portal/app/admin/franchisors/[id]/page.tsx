@@ -146,18 +146,29 @@ export default async function FranchisorDetailPage({ params }: Props) {
                   const stage = MATCH_PIPELINE_STAGES.find(s => s.value === (m as any).pipeline_stage)
                   return (
                     <div key={m.id} className="px-6 py-4">
-                      <div className="flex items-center justify-between mb-2">
-                        <p className="text-sm font-medium text-slate-900">{name}</p>
+                      <div className="flex items-center justify-between mb-3">
+                        <Link
+                          href={`/admin/franchisees/${(m as any).franchisee_profiles?.id}`}
+                          className="text-sm font-medium text-slate-900 hover:text-brand-green transition-colors"
+                        >
+                          {name}
+                        </Link>
                         {stage && (
                           <span className="text-xs text-slate-500 flex items-center gap-1">
                             {stage.emoji} {stage.label}
                           </span>
                         )}
                       </div>
-                      <div className="flex items-center gap-2">
-                        <MatchStatusSelect matchId={m.id} currentStatus={m.status} />
-                        {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-                        <MatchPipelineSelect matchId={m.id} currentStage={(m as any).pipeline_stage ?? null} />
+                      <div className="grid grid-cols-2 gap-3">
+                        <div>
+                          <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-wide mb-1">Franchisor status</p>
+                          <MatchStatusSelect matchId={m.id} currentStatus={m.status} />
+                        </div>
+                        <div>
+                          <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-wide mb-1">Pipeline stage</p>
+                          {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+                          <MatchPipelineSelect matchId={m.id} currentStage={(m as any).pipeline_stage ?? null} />
+                        </div>
                       </div>
                     </div>
                   )

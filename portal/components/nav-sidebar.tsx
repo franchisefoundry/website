@@ -41,7 +41,7 @@ const adminNav: NavItem[] = [
 
 const franchiseeNav: NavItem[] = [
   { label: 'Dashboard',   href: '/franchisee' },
-  { label: 'My Matches',  href: '/franchisee/matches' },
+  { label: 'My Journey',  href: '/franchisee/matches' },
   { label: 'Marketplace', href: '/franchisee/marketplace' },
   { label: 'My Profile',  href: '/franchisee/profile' },
 ]
@@ -55,7 +55,7 @@ const franchisorNav: NavItem[] = [
       { label: 'Questionnaire',  href: '/franchisor/questionnaire' },
     ],
   },
-  { label: 'My Matches',  href: '/franchisor/matches' },
+  { label: 'Candidates',  href: '/franchisor/matches' },
   { label: 'Marketplace', href: '/franchisor/marketplace' },
   { label: 'My Account',  href: '/franchisor/profile' },
 ]

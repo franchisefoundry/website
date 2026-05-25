@@ -6,6 +6,32 @@ import { formatInvestmentRange } from '@/lib/utils'
 // Ordered pipeline stages for progress display
 const JOURNEY_STAGES = MATCH_PIPELINE_STAGES
 
+// What the franchisee should expect at each stage
+const STAGE_GUIDANCE: Record<string, { title: string; body: string; cta?: string }> = {
+  match_assigned: {
+    title: 'Match identified — your consultant is preparing a briefing',
+    body: 'Your Franchise Foundry consultant has identified this brand as a strong fit based on your profile. They\'ll reach out shortly to walk you through the details and answer any initial questions.',
+  },
+  match_approved: {
+    title: 'Match confirmed — introduction being arranged',
+    body: 'Your consultant has confirmed this is a great fit and is now arranging a warm introduction with the brand. Expect a call or email from us very soon to lock in a time.',
+  },
+  meeting_booked: {
+    title: 'Introduction meeting booked — time to prepare',
+    body: 'Your introduction meeting is booked. This is your chance to learn more about the brand, ask questions about the opportunity, and see if it feels right. Think about your goals, timeline, and any concerns you\'d like to raise.',
+    cta: 'Prepare your questions for the meeting',
+  },
+  agreement_sent: {
+    title: 'Franchise agreement sent — review carefully',
+    body: 'A franchise agreement has been sent for your review. Take your time — this is an important document. Your consultant can help clarify anything, and we recommend having a solicitor review it before signing.',
+    cta: 'Speak to your consultant about next steps',
+  },
+  agreement_signed: {
+    title: '🎉 Agreement signed — welcome to the network!',
+    body: 'Congratulations — you\'ve signed your franchise agreement and are officially part of the network. Your franchisor will be in touch with onboarding details. Exciting times ahead!',
+  },
+}
+
 function PipelineProgress({ stage }: { stage: string | null }) {
   const currentIdx = JOURNEY_STAGES.findIndex(s => s.value === stage)
   return (
@@ -127,6 +153,23 @@ function BrandCard({ rank, match, placeholder }: BrandCardProps) {
           <div className="pt-4 border-t border-slate-100">
             <p className="text-xs font-medium text-slate-500 mb-2">Your journey with this brand</p>
             <PipelineProgress stage={match.pipeline_stage} />
+          </div>
+        )}
+
+        {/* Stage-aware guidance */}
+        {isPrimary && match.pipeline_stage && STAGE_GUIDANCE[match.pipeline_stage] && (
+          <div className="mt-4 bg-brand-green/5 border border-brand-green/20 rounded-xl p-4">
+            <p className="text-xs font-semibold text-brand-green mb-1">
+              {STAGE_GUIDANCE[match.pipeline_stage].title}
+            </p>
+            <p className="text-xs text-slate-600 leading-relaxed">
+              {STAGE_GUIDANCE[match.pipeline_stage].body}
+            </p>
+            {STAGE_GUIDANCE[match.pipeline_stage].cta && (
+              <p className="mt-2 text-xs font-medium text-brand-green">
+                → {STAGE_GUIDANCE[match.pipeline_stage].cta}
+              </p>
+            )}
           </div>
         )}
 

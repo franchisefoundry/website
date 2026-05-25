@@ -1,6 +1,8 @@
 import { createAdminClient } from '@/lib/supabase/admin'
 import { PageHeader } from '@/components/page-header'
 import { scoreColour, scoreLabel } from '@/lib/matching'
+import { statusBadge } from '@/components/ui/badge'
+import { MATCH_PIPELINE_STAGES } from '@/lib/supabase/types'
 import Link from 'next/link'
 import MatchPipelineSelect from './match-pipeline-select'
 import MatchNotesInline from './match-notes-inline'
@@ -187,9 +189,11 @@ export default async function MatchesPage() {
                     const fp = m.franchisee_profiles as any
                     const name = franchisee?.profiles?.full_name ?? 'Unknown'
                     const isBackup2 = fp?.backup_franchisor_2_id === m.franchisor_id
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                    const pipelineStage = MATCH_PIPELINE_STAGES.find(s => s.value === (m as any).pipeline_stage)
                     return (
                       <div key={m.id} className="px-6 py-3">
-                        <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-2 flex-wrap">
                           <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded bg-slate-200 text-slate-500 shrink-0">
                             {isBackup2 ? 'Backup 2' : 'Backup 1'}
                           </span>
@@ -199,11 +203,19 @@ export default async function MatchesPage() {
                           >
                             {name}
                           </Link>
-                          {m.score > 0 && (
-                            <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ml-auto ${scoreColour(m.score)}`}>
-                              {m.score}%
-                            </span>
-                          )}
+                          <div className="ml-auto flex items-center gap-2 shrink-0">
+                            {pipelineStage && (
+                              <span className="text-xs text-slate-400 flex items-center gap-1">
+                                {pipelineStage.emoji} {pipelineStage.label}
+                              </span>
+                            )}
+                            {statusBadge(m.status)}
+                            {m.score > 0 && (
+                              <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${scoreColour(m.score)}`}>
+                                {m.score}%
+                              </span>
+                            )}
+                          </div>
                         </div>
                       </div>
                     )

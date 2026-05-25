@@ -90,9 +90,9 @@ export default async function AdminDashboard() {
         action={<InviteUserButton />}
       />
 
-      {/* Section navigation cards */}
-      <div className="grid grid-cols-5 gap-4 mb-8">
-        {sections.map(s => (
+      {/* Section navigation cards — 3 primary (pipeline) + 2 secondary */}
+      <div className="grid grid-cols-3 gap-4 mb-4">
+        {sections.slice(0, 3).map(s => (
           <Link
             key={s.href}
             href={s.href}
@@ -100,7 +100,7 @@ export default async function AdminDashboard() {
           >
             <div className="flex items-start justify-between mb-3">
               <span className="text-2xl">{s.icon}</span>
-              <span className="text-2xl font-bold text-slate-900 group-hover:text-brand-green transition-colors">
+              <span className="text-3xl font-bold text-slate-900 group-hover:text-brand-green transition-colors">
                 {s.count}
               </span>
             </div>
@@ -111,6 +111,31 @@ export default async function AdminDashboard() {
                 {s.alert}
               </p>
             )}
+          </Link>
+        ))}
+      </div>
+      <div className="grid grid-cols-2 gap-4 mb-8">
+        {sections.slice(3).map(s => (
+          <Link
+            key={s.href}
+            href={s.href}
+            className="bg-white rounded-2xl border border-slate-200 p-4 hover:border-brand-green hover:shadow-sm transition-all group flex items-center gap-4"
+          >
+            <div className="shrink-0">
+              <span className="text-xl">{s.icon}</span>
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-semibold text-slate-800 mb-0.5">{s.title}</p>
+              <p className="text-xs text-slate-400 leading-snug">{s.description}</p>
+              {s.alert && (
+                <p className={`mt-1 text-xs font-medium px-2 py-0.5 rounded-full inline-block ${s.alertColour}`}>
+                  {s.alert}
+                </p>
+              )}
+            </div>
+            <span className="text-2xl font-bold text-slate-900 group-hover:text-brand-green transition-colors shrink-0">
+              {s.count}
+            </span>
           </Link>
         ))}
       </div>

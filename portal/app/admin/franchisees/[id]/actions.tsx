@@ -40,8 +40,16 @@ function BrandSelector({
   const [confirming, setConfirming] = useState(false)
   const [loading, setLoading] = useState(false)
   const [removing, setRemoving] = useState(false)
+  const [search, setSearch] = useState('')
 
   const isPrimary = rank === 1
+
+  const filteredFranchisors = search.trim()
+    ? franchisors.filter(f =>
+        (f.brand_name ?? '').toLowerCase().includes(search.toLowerCase()) ||
+        (f.category ?? '').toLowerCase().includes(search.toLowerCase())
+      )
+    : franchisors
 
   async function assign() {
     if (!selected) return
@@ -52,7 +60,7 @@ function BrandSelector({
       body: JSON.stringify({ franchisor_id: selected, rank }),
     })
     setLoading(false)
-    if (res.ok) { setConfirming(false); onSuccess() }
+    if (res.ok) { setConfirming(false); setSearch(''); onSuccess() }
   }
 
   async function remove() {
@@ -99,18 +107,30 @@ function BrandSelector({
 
       {!confirming ? (
         <>
+          {/* Search filter */}
+          <input
+            type="text"
+            placeholder="Search brands…"
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+            className="w-full px-3 py-1.5 border border-slate-200 rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-brand-green focus:border-transparent placeholder:text-slate-400"
+          />
           <select
             value={selected}
             onChange={e => setSelected(e.target.value)}
-            className="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-brand-green focus:border-transparent"
+            size={Math.min(filteredFranchisors.length + 1, 6)}
+            className="w-full px-3 py-1.5 border border-slate-300 rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-brand-green focus:border-transparent"
           >
-            <option value="">— {current ? 'Change brand' : 'Select a brand'} —</option>
-            {franchisors.map(f => (
+            <option value="">— {current ? 'change brand' : 'select a brand'} —</option>
+            {filteredFranchisors.map(f => (
               <option key={f.id} value={f.id}>
-                {f.brand_name || 'Unnamed'}{f.category ? ` (${f.category})` : ''}
+                {f.brand_name || 'Unnamed'}{f.category ? ` · ${f.category}` : ''}
               </option>
             ))}
           </select>
+          {filteredFranchisors.length === 0 && search && (
+            <p className="text-xs text-slate-400 text-center py-1">No brands match &ldquo;{search}&rdquo;</p>
+          )}
           {changed && (
             <button
               onClick={() => setConfirming(true)}
@@ -192,6 +212,29 @@ export default function FranchiseeActions({
 
   return (
     <div className="space-y-4">
+
+      {/* Contact — first thing you want when opening a person's profile */}
+      {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+      {((franchisee as any).profiles?.email || (franchisee as any).profiles?.phone) && (
+        <Card>
+          <CardHeader><CardTitle>Contact</CardTitle></CardHeader>
+          <CardBody className="text-sm space-y-2">
+            {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+            {(franchisee as any).profiles?.email && (
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              <a href={`mailto:${(franchisee as any).profiles.email}`} className="block text-brand-green hover:underline truncate">
+                {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+                {(franchisee as any).profiles.email}
+              </a>
+            )}
+            {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+            {(franchisee as any).profiles?.phone && (
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              <p className="text-slate-600">{(franchisee as any).profiles.phone}</p>
+            )}
+          </CardBody>
+        </Card>
+      )}
 
       {/* Pipeline stage */}
       <Card>
@@ -308,28 +351,6 @@ export default function FranchiseeActions({
         </CardBody>
       </Card>
 
-      {/* Contact */}
-      {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-      {((franchisee as any).profiles?.email || (franchisee as any).profiles?.phone) && (
-        <Card>
-          <CardHeader><CardTitle>Contact</CardTitle></CardHeader>
-          <CardBody className="text-sm space-y-2">
-            {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-            {(franchisee as any).profiles?.email && (
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              <a href={`mailto:${(franchisee as any).profiles.email}`} className="block text-brand-green hover:underline truncate">
-                {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-                {(franchisee as any).profiles.email}
-              </a>
-            )}
-            {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-            {(franchisee as any).profiles?.phone && (
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              <p className="text-slate-600">{(franchisee as any).profiles.phone}</p>
-            )}
-          </CardBody>
-        </Card>
-      )}
     </div>
   )
 }

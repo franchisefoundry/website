@@ -80,25 +80,6 @@ export default async function FranchiseeDetailPage({ params }: Props) {
         </div>
       </div>
 
-      {/* Pipeline progress bar */}
-      <div className="mb-6 bg-white rounded-xl border border-slate-200 p-4">
-        <div className="flex items-center gap-2 mb-3">
-          <span className="text-base">{currentStage?.emoji}</span>
-          <span className="text-sm font-semibold text-slate-800">{currentStage?.label ?? 'Unknown'}</span>
-          <span className="text-xs text-slate-400 ml-1">— step {currentStageIndex + 1} of {FRANCHISEE_PIPELINE_STAGES.length}</span>
-        </div>
-        <div className="flex gap-1">
-          {FRANCHISEE_PIPELINE_STAGES.map((s, i) => (
-            <div key={s.value} className="flex-1 flex flex-col items-center gap-1">
-              <div className={`h-2 w-full rounded-full transition-colors ${i <= currentStageIndex ? 'bg-brand-green' : 'bg-slate-200'}`} />
-              <span className={`text-[10px] leading-tight text-center hidden sm:block ${i === currentStageIndex ? 'text-brand-green font-semibold' : 'text-slate-400'}`}>
-                {s.label}
-              </span>
-            </div>
-          ))}
-        </div>
-      </div>
-
       <div className="grid grid-cols-3 gap-6">
         {/* Left column */}
         <div className="col-span-2 space-y-6">
