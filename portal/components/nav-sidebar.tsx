@@ -102,11 +102,10 @@ function NavGroupItem({
           'w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium transition-colors',
           anyChildActive
             ? 'text-white bg-white/10'
-            : 'text-white/70 hover:text-white hover:bg-white/10'
+            : 'text-white/60 hover:text-white hover:bg-white/10'
         )}
       >
-        <div className="flex items-center gap-3">
-          <span className="w-1.5 h-1.5 rounded-full bg-current opacity-60 flex-shrink-0" />
+        <div className="flex items-center gap-2">
           {group.label}
         </div>
         <svg
@@ -118,7 +117,7 @@ function NavGroupItem({
       </button>
 
       {open && (
-        <div className="ml-4 mt-0.5 space-y-0.5 border-l border-white/10 pl-3">
+        <div className="ml-3 mt-0.5 space-y-0.5 border-l border-white/10 pl-3">
           {group.children.map(child => {
             const active = pathname === child.href || pathname.startsWith(child.href + '/')
             return (
@@ -127,9 +126,9 @@ function NavGroupItem({
                 href={child.href}
                 onClick={onClose}
                 className={cn(
-                  'flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-colors',
+                  'flex items-center px-3 py-2 rounded-lg text-xs font-medium transition-all',
                   active
-                    ? 'bg-white/20 text-white font-medium'
+                    ? 'bg-white text-brand-green shadow-sm'
                     : 'text-white/60 hover:text-white hover:bg-white/10'
                 )}
               >
@@ -246,13 +245,12 @@ export function NavSidebar({ profile }: NavSidebarProps) {
                 href={item.href}
                 onClick={() => setMobileOpen(false)}
                 className={cn(
-                  'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors',
+                  'flex items-center px-3 py-2.5 rounded-lg text-sm font-medium transition-all',
                   active
-                    ? 'bg-white/20 text-white'
+                    ? 'bg-white text-brand-green shadow-sm'
                     : 'text-white/70 hover:text-white hover:bg-white/10'
                 )}
               >
-                <span className="w-1.5 h-1.5 rounded-full bg-current opacity-60 flex-shrink-0" />
                 {item.label}
               </Link>
             )

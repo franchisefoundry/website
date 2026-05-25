@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
+import { toast } from '@/lib/toast'
 
 interface Props {
   matchId: string
@@ -21,6 +22,7 @@ export default function MatchStatusSelect({ matchId, currentStatus }: Props) {
     const supabase = createClient()
     await supabase.from('matches').update({ status: next }).eq('id', matchId)
     setSaving(false)
+    toast(`Status → ${next.replace('_', ' ')}`)
   }
 
   return (

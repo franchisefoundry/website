@@ -6,6 +6,7 @@ import { Card, CardBody, CardHeader, CardTitle } from '@/components/ui/card'
 import type { FranchiseeProfile } from '@/lib/supabase/types'
 import { FRANCHISEE_PIPELINE_STAGES } from '@/lib/supabase/types'
 import { createClient } from '@/lib/supabase/client'
+import { toast } from '@/lib/toast'
 
 interface FranchisorOption {
   id: string
@@ -60,7 +61,14 @@ function BrandSelector({
       body: JSON.stringify({ franchisor_id: selected, rank }),
     })
     setLoading(false)
-    if (res.ok) { setConfirming(false); setSearch(''); onSuccess() }
+    if (res.ok) {
+      setConfirming(false)
+      setSearch('')
+      toast(`${pendingBrand?.brand_name ?? 'Brand'} assigned as ${label.toLowerCase()}`)
+      onSuccess()
+    } else {
+      toast('Assignment failed. Please try again.', 'error')
+    }
   }
 
   async function remove() {
@@ -72,6 +80,7 @@ function BrandSelector({
     })
     setRemoving(false)
     setSelected('')
+    toast('Brand removed')
     onSuccess()
   }
 
@@ -188,6 +197,8 @@ export default function FranchiseeActions({
     const supabase = createClient()
     await supabase.from('franchisee_profiles').update({ pipeline_stage: stage }).eq('id', franchisee.id)
     setLoading(null)
+    const label = FRANCHISEE_PIPELINE_STAGES.find(s => s.value === stage)?.label
+    toast(`Stage → ${label ?? stage}`)
   }
 
   async function updateStatus(status: string) {
@@ -199,6 +210,7 @@ export default function FranchiseeActions({
       .update({ status, ...(status === 'signed' ? { signed_at: new Date().toISOString() } : {}) })
       .eq('id', franchisee.id)
     setLoading(null)
+    toast(`Account status → ${status}`)
   }
 
   async function toggleTier2() {
@@ -208,6 +220,7 @@ export default function FranchiseeActions({
     const supabase = createClient()
     await supabase.from('franchisee_profiles').update({ tier_2_unlocked: next }).eq('id', franchisee.id)
     setLoading(null)
+    toast(next ? 'Marketplace unlocked' : 'Marketplace locked')
   }
 
   return (

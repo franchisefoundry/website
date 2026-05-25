@@ -89,11 +89,17 @@ export default async function MatchesPage() {
 
       {groups.length === 0 && (
         <div className="bg-white rounded-xl border border-slate-200 p-12 text-center">
-          <p className="text-slate-400 text-sm">No active matches yet.</p>
-          <p className="text-xs text-slate-300 mt-1">
-            Assign brands to franchisees from the{' '}
-            <Link href="/admin/franchisees" className="underline">franchisees</Link> page.
+          <div className="text-3xl mb-3">🎯</div>
+          <p className="text-slate-800 font-semibold text-sm mb-1">Pipeline is clear</p>
+          <p className="text-slate-400 text-xs max-w-xs mx-auto leading-relaxed">
+            Assign a primary brand to a franchisee and their journey will appear here.
           </p>
+          <Link
+            href="/admin/franchisees"
+            className="mt-4 inline-block text-xs font-semibold text-brand-green hover:underline"
+          >
+            Go to franchisees →
+          </Link>
         </div>
       )}
 

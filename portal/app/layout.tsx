@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { Sora } from 'next/font/google'
 import './globals.css'
 import { DevRoleSwitcher } from '@/components/dev/DevRoleSwitcher'
+import { ToastContainer } from '@/components/ui/ToastContainer'
 
 const sora = Sora({
   subsets: ['latin'],
@@ -18,6 +19,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" className={sora.className}>
       <body>
         {children}
+        <ToastContainer />
         {process.env.NODE_ENV === 'development' && <DevRoleSwitcher />}
       </body>
     </html>

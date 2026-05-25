@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { statusBadge } from '@/components/ui/badge'
+import { Avatar } from '@/components/ui/Avatar'
 import { formatDate, formatInvestmentRange } from '@/lib/utils'
 import DeleteUserButton from '../DeleteUserButton'
 
@@ -72,12 +73,15 @@ export default function FranchisorsTable({ franchisors }: { franchisors: Franchi
                   className={`hover:bg-slate-50 transition-colors cursor-pointer ${isPendingReview ? 'bg-blue-50/40' : ''}`}
                 >
                   <td className="px-6 py-3">
-                    <div className="flex items-center gap-2">
-                      {isPendingReview && (
-                        <span className="w-1.5 h-1.5 rounded-full bg-blue-500 shrink-0" title="Pending review" />
-                      )}
+                    <div className="flex items-center gap-3">
+                      <Avatar name={f.brand_name} size="sm" />
                       <div>
-                        <p className="font-medium text-slate-900">{f.brand_name || 'Incomplete profile'}</p>
+                        <div className="flex items-center gap-2">
+                          <p className="font-medium text-slate-900">{f.brand_name || 'Incomplete profile'}</p>
+                          {isPendingReview && (
+                            <span className="text-[10px] font-semibold text-blue-600 bg-blue-50 border border-blue-200 rounded-full px-2 py-0.5">Review needed</span>
+                          )}
+                        </div>
                         <p className="text-xs text-slate-400">{f.category || p?.email}</p>
                       </div>
                     </div>

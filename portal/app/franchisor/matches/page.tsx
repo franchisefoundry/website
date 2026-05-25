@@ -72,10 +72,11 @@ export default async function FranchisorMatchesPage() {
 
       {matches.length === 0 ? (
         <div className="bg-white rounded-2xl border border-slate-200 p-12 text-center">
-          <div className="text-3xl mb-3">🔍</div>
-          <p className="text-slate-700 font-medium text-sm mb-1">No candidates yet</p>
-          <p className="text-slate-400 text-xs max-w-xs mx-auto leading-relaxed">
-            When the Franchise Foundry team identifies strong candidates for your brand, they&apos;ll appear here for your review.
+          <div className="text-3xl mb-3">👀</div>
+          <p className="text-slate-800 font-semibold text-sm mb-1">We&apos;re looking for your first match</p>
+          <p className="text-slate-400 text-xs max-w-sm mx-auto leading-relaxed">
+            Our team is reviewing your brand and identifying qualified candidates.
+            As soon as we find a strong fit, they&apos;ll appear here for you to review.
           </p>
         </div>
       ) : (

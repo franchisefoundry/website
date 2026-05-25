@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { statusBadge } from '@/components/ui/badge'
+import { Avatar } from '@/components/ui/Avatar'
 import { formatDate, formatInvestmentRange } from '@/lib/utils'
 import DeleteUserButton from '../DeleteUserButton'
 
@@ -70,8 +71,13 @@ export default function FranchiseesListView({ franchisees }: { franchisees: Fran
                   className="hover:bg-slate-50 transition-colors cursor-pointer"
                 >
                   <td className="px-6 py-3">
-                    <p className="font-medium text-slate-900">{p?.full_name || 'Pending setup'}</p>
-                    <p className="text-xs text-slate-400">{p?.email}</p>
+                    <div className="flex items-center gap-3">
+                      <Avatar name={p?.full_name} size="sm" />
+                      <div>
+                        <p className="font-medium text-slate-900">{p?.full_name || 'Pending setup'}</p>
+                        <p className="text-xs text-slate-400">{p?.email}</p>
+                      </div>
+                    </div>
                   </td>
                   <td className="px-6 py-3 text-slate-600">
                     {formatInvestmentRange(f.investment_min, f.investment_max)}

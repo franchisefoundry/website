@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { toast } from '@/lib/toast'
 
 interface Props {
   matchId: string
@@ -22,7 +23,10 @@ export function CandidateActions({ matchId, currentStatus }: Props) {
     })
     if (res.ok) {
       setDone(true)
+      toast(action === 'interested' ? 'Interest noted — your consultant will be in touch' : 'Candidate passed')
       router.refresh()
+    } else {
+      toast('Something went wrong. Please try again.', 'error')
     }
     setLoading(null)
   }

@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { MATCH_PIPELINE_STAGES } from '@/lib/supabase/types'
+import { toast } from '@/lib/toast'
 
 interface Props {
   matchId: string
@@ -20,6 +21,8 @@ export default function MatchPipelineSelect({ matchId, currentStage }: Props) {
     const supabase = createClient()
     await supabase.from('matches').update({ pipeline_stage: next }).eq('id', matchId)
     setSaving(false)
+    const label = MATCH_PIPELINE_STAGES.find(s => s.value === next)?.label
+    toast(label ? `Stage updated → ${label}` : 'Stage cleared')
   }
 
   const current = MATCH_PIPELINE_STAGES.find(s => s.value === stage)

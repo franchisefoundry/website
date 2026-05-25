@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
+import { toast } from '@/lib/toast'
 
 interface Props {
   matchId: string
@@ -23,6 +24,7 @@ export default function MatchNotesInline({ matchId, initialInternal, initialFran
     await supabase.from('matches').update({ [field]: value || null }).eq('id', matchId)
     setSaving(false)
     setSaved(true)
+    toast('Notes saved')
     setTimeout(() => setSaved(false), 2000)
   }
 

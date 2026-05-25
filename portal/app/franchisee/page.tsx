@@ -69,12 +69,58 @@ export default async function FranchiseeDashboard() {
   const filledFields  = profileFields.filter(f => pf?.[f] !== null && pf?.[f] !== undefined && pf?.[f] !== '').length
   const completeness  = Math.round((filledFields / profileFields.length) * 100)
 
+  // Contextual "what needs your attention" banner copy per pipeline stage
+  const ATTENTION: Record<string, { heading: string; body: string; cta: string }> = {
+    match_assigned: {
+      heading: 'Your consultant has found a match',
+      body: 'A brand has been identified as a great fit for you. Head to your journey page to see the details.',
+      cta: 'See your match →',
+    },
+    match_approved: {
+      heading: 'Introduction being arranged',
+      body: "We've confirmed this is a strong fit and are arranging your introduction now. Expect a call soon.",
+      cta: 'View your journey →',
+    },
+    meeting_booked: {
+      heading: 'Your intro meeting is booked — prepare now',
+      body: 'Think about what you want to get out of this meeting. Questions about day-to-day operations, investment returns and support structure are all fair game.',
+      cta: 'View details →',
+    },
+    agreement_sent: {
+      heading: 'Your franchise agreement is ready to review',
+      body: "Take your time — this is an important document. Don't hesitate to ask your consultant for guidance.",
+      cta: 'View your journey →',
+    },
+    agreement_signed: {
+      heading: "🎉 You're in — welcome to the network",
+      body: 'Your agreement is signed. Your franchisor will be in touch with onboarding details very soon.',
+      cta: 'View your journey →',
+    },
+  }
+  const attention = primaryMatch?.pipeline_stage ? ATTENTION[primaryMatch.pipeline_stage] : null
+
   return (
     <div>
       <PageHeader
         title={`Welcome back, ${firstName}`}
         description="Your Franchise Foundry portal — your journey, profile and resources in one place."
       />
+
+      {/* ── WHAT NEEDS ATTENTION ── */}
+      {attention && (
+        <div className="bg-brand-green/5 border border-brand-green/20 rounded-xl px-5 py-4 mb-6 flex items-start justify-between gap-4">
+          <div>
+            <p className="text-sm font-semibold text-brand-green mb-0.5">{attention.heading}</p>
+            <p className="text-xs text-slate-600 leading-relaxed">{attention.body}</p>
+          </div>
+          <Link
+            href="/franchisee/matches"
+            className="shrink-0 text-xs font-semibold text-brand-green hover:underline whitespace-nowrap"
+          >
+            {attention.cta}
+          </Link>
+        </div>
+      )}
 
       {/* ── PRIMARY BRAND HERO (post-assignment) ── */}
       {hasPrimaryBrand && primaryBrand && (
@@ -162,34 +208,36 @@ export default async function FranchiseeDashboard() {
       {!hasPrimaryBrand && (
         <div className="bg-white rounded-2xl border border-slate-200 p-8 mb-6 text-center">
           <div className="w-12 h-12 rounded-full bg-brand-green/10 flex items-center justify-center mx-auto mb-3 text-2xl">🗺️</div>
-          <p className="text-sm font-semibold text-slate-800 mb-1">Your journey is being prepared</p>
-          <p className="text-slate-400 text-xs leading-relaxed max-w-xs mx-auto">
-            Once your Franchise Foundry consultant has reviewed your profile and identified strong matches,
-            your primary brand will appear here.
+          <p className="text-sm font-semibold text-slate-800 mb-1">Your journey starts here</p>
+          <p className="text-slate-400 text-xs leading-relaxed max-w-sm mx-auto">
+            Your consultant is reviewing your profile and identifying the best franchise matches for you.
+            {completeness < 100
+              ? ' A complete profile helps us find a stronger fit — add the missing details below.'
+              : ' We\'ll notify you as soon as your first match is ready.'}
           </p>
           {completeness < 100 && (
             <Link
               href="/franchisee/profile"
               className="mt-4 inline-block bg-brand-green hover:bg-brand-green-dark text-white text-xs font-semibold px-4 py-2 rounded-lg transition-colors"
             >
-              Complete your profile →
+              Complete your profile — {completeness}% done →
             </Link>
           )}
         </div>
       )}
 
-      {/* ── STATS ── */}
-      {profileId && totalMatches > 0 && (
+      {/* ── STATS — always shown when profile exists ── */}
+      {profileId && (
         <div className="grid grid-cols-3 gap-4 mb-6">
           {[
-            { label: 'Brands matched',     count: totalMatches,    colour: 'text-slate-700',   bg: 'bg-slate-50',   border: 'border-slate-200'   },
-            { label: "You're interested",  count: interestedCount, colour: 'text-emerald-600', bg: 'bg-emerald-50', border: 'border-emerald-200' },
-            { label: 'Intros arranged',    count: introCount,      colour: 'text-amber-600',   bg: 'bg-amber-50',   border: 'border-amber-200'   },
+            { label: 'Brands matched',    count: totalMatches,    colour: 'text-slate-700',   bg: 'bg-slate-50',   border: 'border-slate-200'   },
+            { label: "You're interested", count: interestedCount, colour: 'text-emerald-600', bg: 'bg-emerald-50', border: 'border-emerald-200' },
+            { label: 'Intros arranged',   count: introCount,      colour: 'text-amber-600',   bg: 'bg-amber-50',   border: 'border-amber-200'   },
           ].map(s => (
             <Link key={s.label} href="/franchisee/matches">
               <div className={`rounded-2xl border ${s.border} ${s.bg} p-5 hover:shadow-sm transition-shadow cursor-pointer`}>
-                <p className={`text-2xl font-bold ${s.colour} mb-1`}>{s.count}</p>
-                <p className="text-xs font-medium text-slate-600">{s.label}</p>
+                <p className={`text-3xl font-bold ${s.colour} mb-1`}>{s.count}</p>
+                <p className="text-xs font-medium text-slate-500">{s.label}</p>
               </div>
             </Link>
           ))}
