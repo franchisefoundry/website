@@ -158,7 +158,7 @@ export async function PATCH(request: NextRequest) {
       profileId = newProfile.id
     }
 
-    const { quiz, franchiseFee, royaltyPct, marketingLevy } = buildQuizUpsert(profileId, answers)
+    const { quiz, franchiseFee, royaltyPct, marketingLevy } = buildQuizUpsert(profileId!, answers)
 
     const { error: quizError } = await admin
       .from('franchisor_questionnaires')
@@ -214,7 +214,7 @@ export async function POST(request: NextRequest) {
       profileId = newProfile.id
     }
 
-    const { quiz, franchiseFee, royaltyPct, marketingLevy } = buildQuizUpsert(profileId, answers)
+    const { quiz, franchiseFee, royaltyPct, marketingLevy } = buildQuizUpsert(profileId!, answers)
 
     // Save questionnaire with completed_at
     const { error: quizError } = await admin
