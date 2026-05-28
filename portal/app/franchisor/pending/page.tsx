@@ -36,11 +36,11 @@ export default async function FranchisorPendingPage() {
             className="mx-auto mb-6"
           />
           <h1 className="text-2xl font-bold text-slate-900 mb-2">
-            Thanks, {firstName} — we&apos;re reviewing your submission
+            Your portal is being built, {firstName}
           </h1>
           <p className="text-slate-500 text-sm leading-relaxed">
-            Your questionnaire is with the Franchise Foundry team. We&apos;ll be in touch
-            shortly to discuss your brand and grant you access to the portal.
+            Thanks for completing the questionnaire. Our team is now setting up your
+            profile and candidate matching — we&apos;ll have everything ready for you shortly.
           </p>
         </div>
 
@@ -49,25 +49,25 @@ export default async function FranchisorPendingPage() {
             {
               step: '1',
               title: 'Questionnaire received',
-              body: 'Your answers are with our team — nicely done.',
+              body: 'Your brand information is with our team — thank you.',
               done: true,
             },
             {
               step: '2',
-              title: 'Team review',
-              body: "We'll review your brand, commercial terms, and target franchisee profile.",
+              title: 'Profile build & candidate matching',
+              body: "We're building your franchisor profile and configuring your candidate matching criteria.",
               done: false,
             },
             {
               step: '3',
-              title: 'Consultation call',
-              body: "A consultant will reach out within 1–2 business days to introduce themselves.",
+              title: 'Review call',
+              body: "We'll run through your profile with you to make sure everything looks right before going live.",
               done: false,
             },
             {
               step: '4',
-              title: 'Portal access granted',
-              body: "Once approved, you'll get full access to your dashboard and matched candidates.",
+              title: 'Portal goes live',
+              body: "Your portal is activated and you'll start receiving matched candidate introductions.",
               done: false,
             },
           ].map(item => (
