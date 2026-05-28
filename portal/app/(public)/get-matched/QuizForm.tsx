@@ -386,8 +386,30 @@ export default function QuizForm() {
                       />
                     </div>
                   </div>
-                  <div className="flex justify-between text-xs text-slate-300 mt-2">
-                    <span>£0</span><span>£150k</span><span>£300k</span><span>£500k</span><span>£1m</span><span>£1.5m+</span>
+                  {/* Labels positioned at their true scale positions */}
+                  <div className="relative h-5 mt-1">
+                    {[
+                      { label: '£0',     pos: 0 },
+                      { label: '£150k',  pos: (15 / BUDGET_SLIDER_MAX) * 100 },
+                      { label: '£300k',  pos: (30 / BUDGET_SLIDER_MAX) * 100 },
+                      { label: '£500k',  pos: (50 / BUDGET_SLIDER_MAX) * 100 },
+                      { label: '£1.5m+', pos: 100 },
+                    ].map(({ label, pos }, i, arr) => (
+                      <span
+                        key={label}
+                        className="absolute text-xs text-slate-300 whitespace-nowrap"
+                        style={{
+                          left: `${pos}%`,
+                          transform: i === 0
+                            ? 'none'
+                            : i === arr.length - 1
+                              ? 'translateX(-100%)'
+                              : 'translateX(-50%)',
+                        }}
+                      >
+                        {label}
+                      </span>
+                    ))}
                   </div>
                 </div>
 

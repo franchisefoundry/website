@@ -338,7 +338,6 @@ export default function OnboardingQuiz({ franchisorId, firstName }: Props) {
       const data = await res.json()
       if (!res.ok) throw new Error(data.error ?? 'Unexpected error')
       setStep(6)
-      setTimeout(() => { window.location.href = '/franchisor' }, 2500)
     } catch (err) {
       setSubmitError(err instanceof Error ? err.message : 'Something went wrong')
       setSubmitting(false)
@@ -381,20 +380,40 @@ export default function OnboardingQuiz({ franchisorId, firstName }: Props) {
     )
   }
 
-  // ── Success ────────────────────────────────────────────────────────────────
+  // ── Submitted — under review ───────────────────────────────────────────────
   if (step === 6) {
     return (
-      <div className="min-h-screen flex items-center justify-center p-6">
-        <div className="max-w-lg w-full text-center">
-          <div className="w-16 h-16 rounded-full bg-emerald-100 flex items-center justify-center mx-auto mb-6">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#16a34a" strokeWidth="2.5">
-              <polyline points="20 6 9 17 4 12" />
-            </svg>
+      <div className="min-h-screen flex items-center justify-center p-6 bg-slate-50">
+        <div className="max-w-lg w-full">
+          <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-8 text-center">
+            <div className="w-16 h-16 rounded-full bg-brand-green/10 flex items-center justify-center mx-auto mb-6 text-3xl">
+              📋
+            </div>
+            <h1 className="text-2xl font-bold text-slate-900 mb-3">Questionnaire submitted</h1>
+            <p className="text-slate-600 leading-relaxed mb-6">
+              Thank you, {firstName} — your answers have been saved. A member of the Franchise Foundry team
+              will review your submission and be in touch shortly to discuss next steps and grant you
+              full access to the portal.
+            </p>
+            <div className="bg-slate-50 border border-slate-200 rounded-xl p-4 text-left space-y-2.5 mb-6">
+              {[
+                "We'll review your brand and questionnaire",
+                "A consultant will reach out within 1–2 business days",
+                "Once approved, you'll get full access to your portal and matched candidates",
+              ].map(item => (
+                <div key={item} className="flex gap-2 text-sm text-slate-600">
+                  <span className="text-brand-green font-bold shrink-0">✓</span>
+                  {item}
+                </div>
+              ))}
+            </div>
+            <p className="text-xs text-slate-400">
+              Questions? Email us at{' '}
+              <a href="mailto:hello@franchisefoundry.co.uk" className="underline hover:text-slate-600">
+                hello@franchisefoundry.co.uk
+              </a>
+            </p>
           </div>
-          <h1 className="text-2xl font-bold text-slate-900 mb-3">All done!</h1>
-          <p className="text-slate-600 leading-relaxed">
-            Thank you — your answers have been saved. Taking you to your portal now…
-          </p>
         </div>
       </div>
     )

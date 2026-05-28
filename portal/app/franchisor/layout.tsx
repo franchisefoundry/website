@@ -27,8 +27,9 @@ export default async function FranchisorLayout({ children }: { children: React.R
   const headersList = await headers()
   const pathname = headersList.get('x-pathname') ?? ''
   const isOnboarding = pathname.startsWith('/franchisor/onboarding')
+  const isPending    = pathname.startsWith('/franchisor/pending')
 
-  if (isOnboarding) {
+  if (isOnboarding || isPending) {
     return (
       <div className="min-h-screen bg-slate-50">
         {children}

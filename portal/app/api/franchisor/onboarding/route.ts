@@ -93,9 +93,10 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: `Could not save quiz: ${quizError.message}` }, { status: 500 })
     }
 
-    // Update franchisor profile: mark quiz complete + sync matching-critical fields
+    // Update franchisor profile: mark quiz complete + move to pending_review + sync matching-critical fields
     const profileUpdates: Record<string, unknown> = {
       quiz_completed_at: new Date().toISOString(),
+      status: 'pending_review',
     }
 
     // Investment range

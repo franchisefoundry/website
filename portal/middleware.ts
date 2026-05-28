@@ -96,24 +96,28 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL(`/${role}`, request.url))
   }
 
-  // ── Franchisor quiz gate ─────────────────────────────────────────────────────
-  // Middleware knows the pathname directly — no x-pathname header needed.
-  // The layout's quiz gate caused a self-redirect loop (/franchisor/onboarding →
-  // redirect → /franchisor/onboarding) when x-pathname wasn't forwarded correctly.
-  // Handling it here is safe because we explicitly exclude /franchisor/onboarding.
+  // ── Franchisor access gates ───────────────────────────────────────────────
+  // Gate 1: quiz not completed → /franchisor/onboarding
+  // Gate 2: quiz done but pending review → /franchisor/pending
+  // Admins bypass both gates (they're previewing).
   if (
     role === 'franchisor' &&
     pathname.startsWith('/franchisor') &&
-    !pathname.startsWith('/franchisor/onboarding')
+    !pathname.startsWith('/franchisor/onboarding') &&
+    !pathname.startsWith('/franchisor/pending')
   ) {
     const { data: fp } = await supabase
       .from('franchisor_profiles')
-      .select('quiz_completed_at')
+      .select('quiz_completed_at, status')
       .eq('user_id', user.id)
       .single()
 
-    if (fp && !fp.quiz_completed_at) {
+    if (!fp || !fp.quiz_completed_at) {
       return NextResponse.redirect(new URL('/franchisor/onboarding', request.url))
+    }
+
+    if (fp.status === 'pending_review') {
+      return NextResponse.redirect(new URL('/franchisor/pending', request.url))
     }
   }
 
