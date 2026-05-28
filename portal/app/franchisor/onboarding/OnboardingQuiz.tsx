@@ -24,6 +24,7 @@ type Answers = {
   // Section 1 — The Business
   core_model: string
   competitive_advantage: string
+  revenue_streams: string
   high_performing_unit: string
   underperformance_reasons: string
   format_types: string[]                // REQUIRED · profile field
@@ -31,6 +32,7 @@ type Answers = {
   // Section 2 — Investment & Commercials
   investment_min: number                // REQUIRED · profile field
   investment_max: number                // REQUIRED · profile field
+  investment_range_raw: string          // breakdown notes
   liquid_capital_min: number            // REQUIRED · profile field
   franchise_fee: string                 // REQUIRED · profile field
   royalty_pct: string                   // REQUIRED · profile field
@@ -38,15 +40,20 @@ type Answers = {
   financial_metrics_shared: string
   common_objections: string
   break_even_months: number
+  break_even_timeline: string           // context / caveats
+  underestimated_costs: string
 
   // Section 3 — Ideal Franchisee
   ideal_franchisee_profile: string
+  background_experience: string         // required / preferred experience (free text)
   experience_required: string           // REQUIRED · profile field
   full_time_required: boolean | null    // REQUIRED · profile field
   single_franchise_licenses: boolean | null // REQUIRED · profile field
   approval_factors: string[]
   operating_model_raw: string           // REQUIRED · profile field
   decline_reasons: string[]
+  problematic_behaviours: string
+  success_definition: string
 
   // Section 4 — Growth & Territory
   locations_available: string[]         // REQUIRED · profile field
@@ -141,11 +148,13 @@ function buildInitialAnswers(brandName?: string | null, existing?: Record<string
     brand_name: brandName ?? '',
     core_model: '',
     competitive_advantage: '',
+    revenue_streams: '',
     high_performing_unit: '',
     underperformance_reasons: '',
     format_types: [],
     investment_min: INVESTMENT_STEPS[1],   // £20k
     investment_max: INVESTMENT_STEPS[9],   // £100k
+    investment_range_raw: '',
     liquid_capital_min: 20000,
     franchise_fee: '',
     royalty_pct: '',
@@ -153,13 +162,18 @@ function buildInitialAnswers(brandName?: string | null, existing?: Record<string
     financial_metrics_shared: '',
     common_objections: '',
     break_even_months: 18,
+    break_even_timeline: '',
+    underestimated_costs: '',
     ideal_franchisee_profile: '',
+    background_experience: '',
     experience_required: '',
     full_time_required: null,
     single_franchise_licenses: null,
     approval_factors: [],
     operating_model_raw: '',
     decline_reasons: [],
+    problematic_behaviours: '',
+    success_definition: '',
     locations_available: [],
     priority_territories: '',
     growth_target_units: 5,
@@ -184,25 +198,32 @@ function buildInitialAnswers(brandName?: string | null, existing?: Record<string
     brand_name:               brandName ?? '',
     core_model:               e.core_model               ?? '',
     competitive_advantage:    e.competitive_advantage    ?? '',
+    revenue_streams:          e.revenue_streams          ?? '',
     high_performing_unit:     e.high_performing_unit     ?? '',
     underperformance_reasons: e.underperformance_reasons ?? '',
     format_types:             e.format_types             ?? [],
     investment_min:           e.investment_min           ?? INVESTMENT_STEPS[1],   // £20k
     investment_max:           e.investment_max           ?? INVESTMENT_STEPS[9],   // £100k
+    investment_range_raw:     e.investment_range_raw     ?? '',
     liquid_capital_min:       e.liquid_capital_min       ?? 20000,
-    franchise_fee:            e.franchise_fee   != null  ? String(e.franchise_fee)          : '',
-    royalty_pct:              e.royalty_pct     != null  ? String(e.royalty_pct)             : '',
-    marketing_levy_pct:       e.marketing_levy_pct != null ? String(e.marketing_levy_pct)   : '',
+    franchise_fee:            e.franchise_fee   != null  ? String(e.franchise_fee)        : '',
+    royalty_pct:              e.royalty_pct     != null  ? String(e.royalty_pct)           : '',
+    marketing_levy_pct:       e.marketing_levy_pct != null ? String(e.marketing_levy_pct) : '',
     financial_metrics_shared: e.financial_metrics_shared ?? '',
     common_objections:        e.common_objections        ?? '',
     break_even_months:        e.break_even_months        ?? 18,
+    break_even_timeline:      e.break_even_timeline      ?? '',
+    underestimated_costs:     e.underestimated_costs     ?? '',
     ideal_franchisee_profile: e.ideal_franchisee_profile ?? '',
+    background_experience:    e.background_experience    ?? '',
     experience_required:      e.experience_required      ?? '',
     full_time_required:       e.full_time_required       ?? null,
     single_franchise_licenses: e.single_franchise_licenses ?? null,
     approval_factors:         e.approval_factors         ?? [],
     operating_model_raw:      e.operating_model_raw      ?? '',
     decline_reasons:          e.decline_reasons          ?? [],
+    problematic_behaviours:   e.problematic_behaviours   ?? '',
+    success_definition:       e.success_definition       ?? '',
     locations_available:      e.locations_available      ?? [],
     priority_territories:     e.priority_territories     ?? '',
     growth_target_units:      e.growth_target_units      ?? 5,
@@ -540,7 +561,8 @@ export default function OnboardingQuiz({ franchisorId, firstName, brandName, exi
   const isLastSection = step === TOTAL_SECTIONS
 
   // Cumulative visible-block offsets per section
-  const Q_OFFSETS = [0, 4, 9, 15, 20]
+  // S1=5, S2=6, S3=8, S4=5, S5=6
+  const Q_OFFSETS = [0, 5, 11, 19, 24]
   const qOffset = Q_OFFSETS[step - 1]
 
   return (
@@ -614,6 +636,14 @@ export default function OnboardingQuiz({ franchisorId, firstName, brandName, exi
 
               <QuestionBlock
                 number={qOffset + 3}
+                question="What are your main revenue streams? How does a franchisee generate income?"
+              >
+                <Textarea value={answers.revenue_streams} onChange={v => set('revenue_streams', v)}
+                  placeholder="Dine-in sales, takeaway, delivery, catering, merchandise, franchise fees…" />
+              </QuestionBlock>
+
+              <QuestionBlock
+                number={qOffset + 4}
                 question="Unit performance"
                 hint="Two quick questions about what good and poor performance looks like"
               >
@@ -632,7 +662,7 @@ export default function OnboardingQuiz({ franchisorId, firstName, brandName, exi
               </QuestionBlock>
 
               <QuestionBlock
-                number={qOffset + 4}
+                number={qOffset + 5}
                 question="What formats does your franchise operate in?"
                 required
                 hint="Select all that apply — this helps us match candidates who fit your model"
@@ -670,6 +700,11 @@ export default function OnboardingQuiz({ franchisorId, firstName, brandName, exi
                     onChange={(mn, mx) => { set('investment_min', mn); set('investment_max', mx) }}
                     variant="dark"
                   />
+                </div>
+                <div className="mt-3">
+                  <SubLabel optional>Investment breakdown notes</SubLabel>
+                  <Textarea value={answers.investment_range_raw} onChange={v => set('investment_range_raw', v)}
+                    rows={2} placeholder="e.g. Includes fit-out £40k, equipment £20k, working capital £15k, franchise fee £25k…" />
                 </div>
               </QuestionBlock>
 
@@ -776,6 +811,19 @@ export default function OnboardingQuiz({ franchisorId, firstName, brandName, exi
                     variant="dark"
                   />
                 </div>
+                <div className="mt-3">
+                  <SubLabel optional>Context / caveats</SubLabel>
+                  <Textarea value={answers.break_even_timeline} onChange={v => set('break_even_timeline', v)}
+                    rows={2} placeholder="e.g. Varies by location — city centres typically 12 months, suburban 18–24 months…" />
+                </div>
+              </QuestionBlock>
+
+              <QuestionBlock
+                number={qOffset + 6}
+                question="What costs do new franchisees most commonly underestimate?"
+              >
+                <Textarea value={answers.underestimated_costs} onChange={v => set('underestimated_costs', v)}
+                  placeholder="Working capital, staffing, local marketing, fit-out overruns, software subscriptions…" />
               </QuestionBlock>
             </>
           )}
@@ -787,8 +835,18 @@ export default function OnboardingQuiz({ franchisorId, firstName, brandName, exi
                 number={qOffset + 1}
                 question="Describe your ideal franchisee — background, personality, experience, and what typically motivates them."
               >
-                <Textarea value={answers.ideal_franchisee_profile} onChange={v => set('ideal_franchisee_profile', v)}
-                  placeholder="Age range, professional background, management experience, lifestyle, motivations…" />
+                <div className="space-y-4">
+                  <div>
+                    <SubLabel>Ideal franchisee profile</SubLabel>
+                    <Textarea value={answers.ideal_franchisee_profile} onChange={v => set('ideal_franchisee_profile', v)}
+                      rows={3} placeholder="Age range, professional background, management experience, lifestyle, motivations…" />
+                  </div>
+                  <div>
+                    <SubLabel optional>Required / preferred background or experience</SubLabel>
+                    <Textarea value={answers.background_experience} onChange={v => set('background_experience', v)}
+                      rows={3} placeholder="e.g. 3+ years in hospitality management, P&L responsibility, team leadership experience…" />
+                  </div>
+                </div>
               </QuestionBlock>
 
               <QuestionBlock
@@ -852,6 +910,24 @@ export default function OnboardingQuiz({ franchisorId, firstName, brandName, exi
               >
                 <MultiSelect options={DECLINE_REASON_OPTIONS} selected={answers.decline_reasons}
                   onChange={v => set('decline_reasons', v)} />
+              </QuestionBlock>
+
+              <QuestionBlock
+                number={qOffset + 7}
+                question="Are there types of franchisee that haven't worked out well for you? What went wrong?"
+                hint="Helps us filter out poor-fit candidates before they reach you"
+              >
+                <Textarea value={answers.problematic_behaviours} onChange={v => set('problematic_behaviours', v)}
+                  placeholder="Over-delegators, absentee owners, those who ignored the system, people who wanted to reinvent rather than follow the model…" />
+              </QuestionBlock>
+
+              <QuestionBlock
+                number={qOffset + 8}
+                question="How do you define success for a franchisee in your network?"
+                hint="Financial targets, lifestyle, brand standards — what does 'winning' look like for your franchisees?"
+              >
+                <Textarea value={answers.success_definition} onChange={v => set('success_definition', v)}
+                  placeholder="Financial targets, customer satisfaction scores, brand standards adherence, community engagement, profitability milestones…" />
               </QuestionBlock>
             </>
           )}
