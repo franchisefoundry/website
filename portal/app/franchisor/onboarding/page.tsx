@@ -1,5 +1,6 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 import OnboardingQuiz from './OnboardingQuiz'
 
 export default async function FranchisorOnboardingPage() {
@@ -7,18 +8,31 @@ export default async function FranchisorOnboardingPage() {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
 
-  const { data: franchisorProfile } = await supabase
+  const admin = createAdminClient()
+
+  const { data: franchisorProfile } = await admin
     .from('franchisor_profiles')
     .select('id, quiz_completed_at, brand_name')
     .eq('user_id', user.id)
     .single()
 
-  // Already completed — go to dashboard
+  // Already fully submitted — send to dashboard
   if (franchisorProfile?.quiz_completed_at) {
     redirect('/franchisor')
   }
 
-  const { data: profile } = await supabase
+  // Load any saved progress
+  let existingQuestionnaire = null
+  if (franchisorProfile?.id) {
+    const { data: q } = await admin
+      .from('franchisor_questionnaires')
+      .select('*')
+      .eq('franchisor_id', franchisorProfile.id)
+      .single()
+    existingQuestionnaire = q
+  }
+
+  const { data: profile } = await admin
     .from('profiles')
     .select('full_name')
     .eq('id', user.id)
@@ -31,6 +45,8 @@ export default async function FranchisorOnboardingPage() {
       franchisorId={franchisorProfile?.id ?? null}
       userId={user.id}
       firstName={firstName}
+      brandName={franchisorProfile?.brand_name ?? null}
+      existingAnswers={existingQuestionnaire}
     />
   )
 }

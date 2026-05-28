@@ -12,50 +12,56 @@ interface Props {
   franchisorId: string | null
   userId: string
   firstName: string
+  brandName?: string | null
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  existingAnswers?: Record<string, any> | null
 }
 
 type Answers = {
+  // Brand identity
+  brand_name: string                    // REQUIRED · profile field
+
   // Section 1 — The Business
   core_model: string
   competitive_advantage: string
-  high_performing_unit: string        // grouped with underperformance_reasons
-  underperformance_reasons: string    // grouped with high_performing_unit
-  format_types: string[]              // REQUIRED · profile field
+  high_performing_unit: string
+  underperformance_reasons: string
+  format_types: string[]                // REQUIRED · profile field
 
   // Section 2 — Investment & Commercials
-  investment_min: number              // REQUIRED · profile field
-  investment_max: number              // REQUIRED · profile field
-  liquid_capital_min: number          // REQUIRED · profile field
-  franchise_fee: string               // REQUIRED · profile field
-  royalty_pct: string                 // REQUIRED · profile field
-  marketing_levy_pct: string          // profile field
-  financial_metrics_shared: string    // grouped with common_objections
-  common_objections: string           // grouped with financial_metrics_shared
+  investment_min: number                // REQUIRED · profile field
+  investment_max: number                // REQUIRED · profile field
+  liquid_capital_min: number            // REQUIRED · profile field
+  franchise_fee: string                 // REQUIRED · profile field
+  royalty_pct: string                   // REQUIRED · profile field
+  marketing_levy_pct: string            // profile field
+  financial_metrics_shared: string
+  common_objections: string
   break_even_months: number
 
   // Section 3 — Ideal Franchisee
   ideal_franchisee_profile: string
-  experience_required: string         // REQUIRED · profile field
-  full_time_required: boolean | null  // REQUIRED · profile field (grouped with single_franchise_licenses)
-  single_franchise_licenses: boolean | null // REQUIRED · profile field (grouped with full_time_required)
+  experience_required: string           // REQUIRED · profile field
+  full_time_required: boolean | null    // REQUIRED · profile field
+  single_franchise_licenses: boolean | null // REQUIRED · profile field
   approval_factors: string[]
-  operating_model_raw: string         // REQUIRED · profile field
+  operating_model_raw: string           // REQUIRED · profile field
   decline_reasons: string[]
 
   // Section 4 — Growth & Territory
-  locations_available: string[]       // REQUIRED · profile field
+  locations_available: string[]         // REQUIRED · profile field
   priority_territories: string
   growth_target_units: number
   annual_growth_targets: string
   scaling_concerns: string
-  timeline_months: number             // REQUIRED · profile field
+  timeline_months: number               // REQUIRED · profile field
   inquiry_channels: string[]
 
   // Section 5 — Recruitment Process
   screening_steps: string[]
-  approval_timing: string             // grouped in approval card
-  approval_authority: string          // grouped in approval card
-  timeline_inquiry_to_contract: string // grouped in approval card
+  approval_timing: string
+  approval_authority: string
+  timeline_inquiry_to_contract: string
   post_signing_activities: string
   timeline_signing_to_launch: string
   process_bottlenecks: string
@@ -127,7 +133,97 @@ const SECTIONS = [
 
 const TOTAL_SECTIONS = 5
 
-// ── Validation ───────────────────────────────────────────────────────────────
+// ── Build initial answers from DB data ────────────────────────────────────────
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function buildInitialAnswers(brandName?: string | null, existing?: Record<string, any> | null): Answers {
+  const DEFAULTS: Answers = {
+    brand_name: brandName ?? '',
+    core_model: '',
+    competitive_advantage: '',
+    high_performing_unit: '',
+    underperformance_reasons: '',
+    format_types: [],
+    investment_min: INVESTMENT_STEPS[2],
+    investment_max: INVESTMENT_STEPS[6],
+    liquid_capital_min: 20000,
+    franchise_fee: '',
+    royalty_pct: '',
+    marketing_levy_pct: '',
+    financial_metrics_shared: '',
+    common_objections: '',
+    break_even_months: 18,
+    ideal_franchisee_profile: '',
+    experience_required: '',
+    full_time_required: null,
+    single_franchise_licenses: null,
+    approval_factors: [],
+    operating_model_raw: '',
+    decline_reasons: [],
+    locations_available: [],
+    priority_territories: '',
+    growth_target_units: 5,
+    annual_growth_targets: '',
+    scaling_concerns: '',
+    timeline_months: 6,
+    inquiry_channels: [],
+    screening_steps: ['Initial enquiry call', 'Application form', 'Discovery day'],
+    approval_timing: '',
+    approval_authority: '',
+    timeline_inquiry_to_contract: '',
+    post_signing_activities: '',
+    timeline_signing_to_launch: '',
+    process_bottlenecks: '',
+    recruitment_process_rating: 0,
+  }
+
+  if (!existing) return DEFAULTS
+
+  const e = existing
+  return {
+    brand_name:               brandName ?? '',
+    core_model:               e.core_model               ?? '',
+    competitive_advantage:    e.competitive_advantage    ?? '',
+    high_performing_unit:     e.high_performing_unit     ?? '',
+    underperformance_reasons: e.underperformance_reasons ?? '',
+    format_types:             e.format_types             ?? [],
+    investment_min:           e.investment_min           ?? INVESTMENT_STEPS[2],
+    investment_max:           e.investment_max           ?? INVESTMENT_STEPS[6],
+    liquid_capital_min:       e.liquid_capital_min       ?? 20000,
+    franchise_fee:            e.franchise_fee   != null  ? String(e.franchise_fee)          : '',
+    royalty_pct:              e.royalty_pct     != null  ? String(e.royalty_pct)             : '',
+    marketing_levy_pct:       e.marketing_levy_pct != null ? String(e.marketing_levy_pct)   : '',
+    financial_metrics_shared: e.financial_metrics_shared ?? '',
+    common_objections:        e.common_objections        ?? '',
+    break_even_months:        e.break_even_months        ?? 18,
+    ideal_franchisee_profile: e.ideal_franchisee_profile ?? '',
+    experience_required:      e.experience_required      ?? '',
+    full_time_required:       e.full_time_required       ?? null,
+    single_franchise_licenses: e.single_franchise_licenses ?? null,
+    approval_factors:         e.approval_factors         ?? [],
+    operating_model_raw:      e.operating_model_raw      ?? '',
+    decline_reasons:          e.decline_reasons          ?? [],
+    locations_available:      e.locations_available      ?? [],
+    priority_territories:     e.priority_territories     ?? '',
+    growth_target_units:      e.growth_target_units      ?? 5,
+    annual_growth_targets:    e.annual_growth_targets    ?? '',
+    scaling_concerns:         e.scaling_concerns         ?? '',
+    timeline_months:          e.timeline_months          ?? 6,
+    inquiry_channels:         e.inquiry_channels         ?? [],
+    screening_steps:          (Array.isArray(e.screening_steps) && e.screening_steps.length)
+                                ? e.screening_steps
+                                : ['Initial enquiry call', 'Application form', 'Discovery day'],
+    approval_timing:          e.approval_timing               ?? '',
+    approval_authority:       e.approval_authority            ?? '',
+    timeline_inquiry_to_contract: e.timeline_inquiry_to_contract ?? '',
+    post_signing_activities:  e.post_signing_activities       ?? '',
+    timeline_signing_to_launch: e.timeline_signing_to_launch  ?? '',
+    process_bottlenecks:      e.process_bottlenecks           ?? '',
+    recruitment_process_rating: e.recruitment_process_rating  ?? 0,
+  }
+}
+
+// ── Validation ────────────────────────────────────────────────────────────────
 
 function validateSection(section: number, a: Answers): string[] {
   const errors: string[] = []
@@ -148,47 +244,6 @@ function validateSection(section: number, a: Answers): string[] {
     if (!a.locations_available.length) errors.push('Please select at least one target location.')
   }
   return errors
-}
-
-// ── Defaults ─────────────────────────────────────────────────────────────────
-
-const EMPTY: Answers = {
-  core_model: '',
-  competitive_advantage: '',
-  high_performing_unit: '',
-  underperformance_reasons: '',
-  format_types: [],
-  investment_min: INVESTMENT_STEPS[2],
-  investment_max: INVESTMENT_STEPS[6],
-  liquid_capital_min: 20000,
-  franchise_fee: '',
-  royalty_pct: '',
-  marketing_levy_pct: '',
-  financial_metrics_shared: '',
-  common_objections: '',
-  break_even_months: 18,
-  ideal_franchisee_profile: '',
-  experience_required: '',
-  full_time_required: null,
-  single_franchise_licenses: null,
-  approval_factors: [],
-  operating_model_raw: '',
-  decline_reasons: [],
-  locations_available: [],
-  priority_territories: '',
-  growth_target_units: 5,
-  annual_growth_targets: '',
-  scaling_concerns: '',
-  timeline_months: 6,
-  inquiry_channels: [],
-  screening_steps: ['Initial enquiry call', 'Application form', 'Discovery day'],
-  approval_timing: '',
-  approval_authority: '',
-  timeline_inquiry_to_contract: '',
-  post_signing_activities: '',
-  timeline_signing_to_launch: '',
-  process_bottlenecks: '',
-  recruitment_process_rating: 0,
 }
 
 // ── UI helpers ────────────────────────────────────────────────────────────────
@@ -302,12 +357,22 @@ function QuestionBlock({ number, question, hint, required, children }: {
 
 // ── Main component ────────────────────────────────────────────────────────────
 
-export default function OnboardingQuiz({ franchisorId, firstName }: Props) {
-  const [step, setStep] = useState(0)
-  const [answers, setAnswers] = useState<Answers>(EMPTY)
+export default function OnboardingQuiz({ franchisorId, firstName, brandName, existingAnswers }: Props) {
+  const hasExisting = !!existingAnswers
+
+  const [answers, setAnswers] = useState<Answers>(() =>
+    buildInitialAnswers(brandName, existingAnswers)
+  )
+  // If they have saved progress, skip the welcome screen and land on section 1
+  const [step, setStep] = useState(() => hasExisting ? 1 : 0)
+  // Track the profile ID — may be created on first PATCH if franchisorId was null
+  const [fid, setFid] = useState(franchisorId)
   const [submitting, setSubmitting] = useState(false)
+  const [saving, setSaving] = useState(false)
+  const [saveError, setSaveError] = useState(false)
   const [submitError, setSubmitError] = useState<string | null>(null)
   const [sectionErrors, setSectionErrors] = useState<string[]>([])
+  const [brandNameError, setBrandNameError] = useState(false)
 
   function set<K extends keyof Answers>(key: K, value: Answers[K]) {
     setAnswers(prev => ({ ...prev, [key]: value }))
@@ -315,10 +380,40 @@ export default function OnboardingQuiz({ franchisorId, firstName }: Props) {
 
   const progressPct = step === 0 ? 0 : Math.min(Math.round(((step - 1) / TOTAL_SECTIONS) * 100), 95)
 
-  function handleNext() {
+  // ── Auto-save current answers to DB (non-blocking for navigation) ──────────
+  async function autoSave(currentFid: string | null, currentAnswers: Answers): Promise<string | null> {
+    setSaving(true)
+    setSaveError(false)
+    try {
+      const res = await fetch('/api/franchisor/onboarding', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ answers: currentAnswers, franchisorId: currentFid }),
+      })
+      const data = await res.json()
+      if (res.ok && data.franchisorId) {
+        if (!currentFid) setFid(data.franchisorId)
+        return data.franchisorId
+      } else {
+        setSaveError(true)
+      }
+    } catch {
+      setSaveError(true)
+    } finally {
+      setSaving(false)
+    }
+    return currentFid
+  }
+
+  async function handleNext() {
     const errors = validateSection(step, answers)
     if (errors.length) { setSectionErrors(errors); window.scrollTo({ top: 0, behavior: 'smooth' }); return }
     setSectionErrors([])
+
+    // Auto-save progress before advancing — creates profile on first save
+    const updatedFid = await autoSave(fid, answers)
+    if (updatedFid && !fid) setFid(updatedFid)
+
     setStep(s => s + 1)
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
@@ -333,7 +428,7 @@ export default function OnboardingQuiz({ franchisorId, firstName }: Props) {
       const res = await fetch('/api/franchisor/onboarding', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ answers, franchisorId }),
+        body: JSON.stringify({ answers, franchisorId: fid }),
       })
       const data = await res.json()
       if (!res.ok) throw new Error(data.error ?? 'Unexpected error')
@@ -355,13 +450,32 @@ export default function OnboardingQuiz({ franchisorId, firstName }: Props) {
             Before you access the portal, we&apos;d like to learn more about your franchise. This helps us match you
             with the right candidates and brief our team properly.
           </p>
+
+          {/* Brand name — collected upfront so we can identify them immediately */}
+          <div className="bg-white border border-slate-200 rounded-2xl p-5 mb-5 text-left">
+            <label className="block text-sm font-semibold text-slate-800 mb-1">
+              What is your franchise brand name? <span className="text-red-400">*</span>
+            </label>
+            <p className="text-xs text-slate-400 mb-3">This is how your brand will appear throughout the portal</p>
+            <input
+              type="text"
+              value={answers.brand_name}
+              onChange={e => { set('brand_name', e.target.value); if (e.target.value.trim()) setBrandNameError(false) }}
+              placeholder="e.g. Pizza Palace"
+              className={`w-full px-4 py-3 border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#3a4a3a] focus:border-transparent text-slate-800 placeholder:text-slate-400 ${brandNameError ? 'border-red-400 bg-red-50' : 'border-slate-300'}`}
+            />
+            {brandNameError && (
+              <p className="text-xs text-red-500 mt-1.5">Please enter your brand name to continue</p>
+            )}
+          </div>
+
           <div className="bg-slate-50 border border-slate-200 rounded-2xl p-5 mb-8 text-left space-y-3">
             <p className="text-sm font-semibold text-slate-800">What to expect</p>
             {[
               '5 sections · takes around 15 minutes',
+              'Your progress saves automatically — pick up where you left off any time',
               'Your answers are only seen by the Franchise Foundry team',
               'Fields marked "Profile field" feed directly into your profile and matching',
-              'You can come back and update your answers at any time',
             ].map(item => (
               <div key={item} className="flex gap-2 text-sm text-slate-600">
                 <span className="text-[#3a4a3a] font-bold shrink-0">✓</span>
@@ -370,7 +484,10 @@ export default function OnboardingQuiz({ franchisorId, firstName }: Props) {
             ))}
           </div>
           <button
-            onClick={() => setStep(1)}
+            onClick={() => {
+              if (!answers.brand_name.trim()) { setBrandNameError(true); return }
+              setStep(1)
+            }}
             className="w-full bg-[#3a4a3a] hover:bg-[#2d3b2d] text-white font-semibold py-3.5 px-6 rounded-xl transition-colors text-sm"
           >
             Let&apos;s get started →
@@ -423,7 +540,6 @@ export default function OnboardingQuiz({ franchisorId, firstName }: Props) {
   const isLastSection = step === TOTAL_SECTIONS
 
   // Cumulative visible-block offsets per section
-  // S1: 4 blocks, S2: 5 blocks, S3: 6 blocks, S4: 5 blocks, S5: 6 blocks
   const Q_OFFSETS = [0, 4, 9, 15, 20]
   const qOffset = Q_OFFSETS[step - 1]
 
@@ -441,13 +557,29 @@ export default function OnboardingQuiz({ franchisorId, firstName }: Props) {
           <div>
             <p className="text-xs text-slate-400 uppercase tracking-wider font-medium">
               Section {step} of {TOTAL_SECTIONS}
+              {answers.brand_name && (
+                <span className="ml-2 text-slate-500 normal-case tracking-normal font-semibold">
+                  · {answers.brand_name}
+                </span>
+              )}
             </p>
             <h2 className="text-lg font-bold text-slate-900">{currentSection.title}</h2>
           </div>
           <div className="ml-auto text-right">
             <p className="text-xs text-slate-400">{progressPct}% complete</p>
+            {saving && <p className="text-xs text-slate-400 mt-0.5">Saving…</p>}
+            {saveError && <p className="text-xs text-amber-500 mt-0.5">Save failed — will retry</p>}
           </div>
         </div>
+
+        {/* Resume banner */}
+        {hasExisting && step === 1 && (
+          <div className="flex items-center gap-2 bg-[#3a4a3a]/5 border border-[#3a4a3a]/20 rounded-xl px-4 py-2.5 mb-6 ml-11">
+            <span className="text-[#3a4a3a]">📂</span>
+            <p className="text-xs text-[#3a4a3a] font-medium">Progress restored — your previous answers are pre-filled</p>
+          </div>
+        )}
+
         <p className="text-sm text-slate-500 mb-8 leading-relaxed pl-11">{currentSection.subtitle}</p>
 
         {/* Validation errors */}
@@ -480,7 +612,6 @@ export default function OnboardingQuiz({ franchisorId, firstName }: Props) {
                   placeholder="Product differentiation, price point, brand, experience, technology…" />
               </QuestionBlock>
 
-              {/* Grouped: high-performing unit + underperformance — two questions, one block */}
               <QuestionBlock
                 number={qOffset + 3}
                 question="Unit performance"
@@ -611,7 +742,6 @@ export default function OnboardingQuiz({ franchisorId, firstName }: Props) {
                 </div>
               </QuestionBlock>
 
-              {/* Grouped: financial transparency + common objections */}
               <QuestionBlock
                 number={qOffset + 4}
                 question="Financials with prospective franchisees"
@@ -681,7 +811,6 @@ export default function OnboardingQuiz({ franchisorId, firstName }: Props) {
                 </div>
               </QuestionBlock>
 
-              {/* Grouped: full_time_required + single_franchise_licenses — two yes/no taps, one block */}
               <QuestionBlock
                 number={qOffset + 3}
                 question="A couple of quick ones"
@@ -846,7 +975,6 @@ export default function OnboardingQuiz({ franchisorId, firstName }: Props) {
                 />
               </QuestionBlock>
 
-              {/* Grouped: approval timing + authority + inquiry-to-contract timeline */}
               <QuestionBlock
                 number={qOffset + 2}
                 question="Approval &amp; timelines"
@@ -926,21 +1054,27 @@ export default function OnboardingQuiz({ franchisorId, firstName }: Props) {
             </button>
           ) : <div />}
 
-          {isLastSection ? (
-            <button
-              type="button" onClick={handleSubmit} disabled={submitting}
-              className="bg-[#3a4a3a] hover:bg-[#2d3b2d] text-white font-semibold py-3 px-8 rounded-xl transition-colors text-sm disabled:opacity-60"
-            >
-              {submitting ? 'Submitting…' : 'Submit & go to portal →'}
-            </button>
-          ) : (
-            <button
-              type="button" onClick={handleNext}
-              className="bg-[#3a4a3a] hover:bg-[#2d3b2d] text-white font-semibold py-3 px-8 rounded-xl transition-colors text-sm"
-            >
-              Next section →
-            </button>
-          )}
+          <div className="flex items-center gap-3">
+            {/* Inline save indicator */}
+            {saving && <span className="text-xs text-slate-400">Saving…</span>}
+            {saveError && !saving && <span className="text-xs text-amber-500">Save failed</span>}
+
+            {isLastSection ? (
+              <button
+                type="button" onClick={handleSubmit} disabled={submitting || saving}
+                className="bg-[#3a4a3a] hover:bg-[#2d3b2d] text-white font-semibold py-3 px-8 rounded-xl transition-colors text-sm disabled:opacity-60"
+              >
+                {submitting ? 'Submitting…' : 'Submit questionnaire →'}
+              </button>
+            ) : (
+              <button
+                type="button" onClick={handleNext} disabled={saving}
+                className="bg-[#3a4a3a] hover:bg-[#2d3b2d] text-white font-semibold py-3 px-8 rounded-xl transition-colors text-sm disabled:opacity-60"
+              >
+                {saving ? 'Saving…' : 'Save & continue →'}
+              </button>
+            )}
+          </div>
         </div>
       </div>
     </div>
