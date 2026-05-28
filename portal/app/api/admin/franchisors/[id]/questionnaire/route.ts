@@ -32,16 +32,19 @@ export async function PATCH(
 
   // Sync matching-critical fields to franchisor_profiles
   const profileSyncs: Record<string, unknown> = {}
-  if (updates.investment_min !== undefined)          profileSyncs.investment_min = updates.investment_min
-  if (updates.investment_max !== undefined)          profileSyncs.investment_max = updates.investment_max
-  if (updates.operating_model_raw !== undefined)     profileSyncs.operator_model = updates.operating_model_raw
-  if (updates.single_franchise_licenses !== undefined) profileSyncs.multi_site_ready = !updates.single_franchise_licenses
-  if (updates.liquid_capital_min !== undefined)      profileSyncs.liquid_capital_min = updates.liquid_capital_min
-  if (updates.experience_required !== undefined)     profileSyncs.experience_required = updates.experience_required
-  if (updates.full_time_required !== undefined)      profileSyncs.full_time_required = updates.full_time_required
-  if (updates.timeline_months !== undefined)         profileSyncs.timeline_months = updates.timeline_months
-  if (updates.format_types !== undefined)            profileSyncs.format = updates.format_types
-  if (updates.locations_available !== undefined)     profileSyncs.locations_available = updates.locations_available
+  if (updates.investment_min !== undefined)            profileSyncs.investment_min       = updates.investment_min
+  if (updates.investment_max !== undefined)            profileSyncs.investment_max       = updates.investment_max
+  if (updates.franchise_fee !== undefined)             profileSyncs.franchise_fee        = updates.franchise_fee
+  if (updates.royalty_pct !== undefined)               profileSyncs.royalty_pct          = updates.royalty_pct
+  if (updates.marketing_levy_pct !== undefined)        profileSyncs.marketing_levy_pct   = updates.marketing_levy_pct
+  if (updates.operating_model_raw !== undefined)       profileSyncs.operator_model       = updates.operating_model_raw
+  if (updates.single_franchise_licenses !== undefined) profileSyncs.multi_site_ready     = !updates.single_franchise_licenses
+  if (updates.liquid_capital_min !== undefined)        profileSyncs.liquid_capital_min   = updates.liquid_capital_min
+  if (updates.experience_required !== undefined)       profileSyncs.experience_required  = updates.experience_required
+  if (updates.full_time_required !== undefined)        profileSyncs.full_time_required   = updates.full_time_required
+  if (updates.timeline_months !== undefined)           profileSyncs.timeline_months      = updates.timeline_months
+  if (updates.format_types !== undefined)              profileSyncs.format               = updates.format_types
+  if (updates.locations_available !== undefined)       profileSyncs.locations_available  = updates.locations_available
 
   if (Object.keys(profileSyncs).length > 0) {
     await admin.from('franchisor_profiles').update(profileSyncs).eq('id', franchisorId)

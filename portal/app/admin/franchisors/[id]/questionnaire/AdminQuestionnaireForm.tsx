@@ -92,7 +92,10 @@ export default function AdminQuestionnaireForm({ franchisorId, existing, section
   const [investmentMax, setInvestmentMax] = useState<number>(nearestStep(e.investment_max ?? 100_000))
   const [investmentNotes, setInvestmentNotes] = useState<string>(e.investment_range_raw ?? '')
   const [liquidCapitalMin, setLiquidCapitalMin] = useState<number>(e.liquid_capital_min ?? 20_000)
-  const [commercialRates, setCommercialRates] = useState<string>(e.commercial_rates ?? '')
+  // Structured commercial terms — these are what the franchisor quiz saves (NOT the legacy commercial_rates text column)
+  const [franchiseFeeVal, setFranchiseFeeVal] = useState<string>(e.franchise_fee != null ? String(e.franchise_fee) : '')
+  const [royaltyPctVal, setRoyaltyPctVal] = useState<string>(e.royalty_pct != null ? String(e.royalty_pct) : '')
+  const [marketingLevyVal, setMarketingLevyVal] = useState<string>(e.marketing_levy_pct != null ? String(e.marketing_levy_pct) : '')
   const [financialMetrics, setFinancialMetrics] = useState<string>(e.financial_metrics_shared ?? '')
   const [breakEvenMonths, setBreakEvenMonths] = useState<number>(e.break_even_months ?? 18)
   const [breakEvenNotes, setBreakEvenNotes] = useState<string>(e.break_even_timeline ?? '')
@@ -326,7 +329,9 @@ export default function AdminQuestionnaireForm({ franchisorId, existing, section
         investment_max: investmentMax,
         investment_range_raw: investmentNotes || null,
         liquid_capital_min: liquidCapitalMin,
-        commercial_rates: commercialRates,
+        franchise_fee:      franchiseFeeVal   ? parseFloat(franchiseFeeVal)   : null,
+        royalty_pct:        royaltyPctVal      ? parseFloat(royaltyPctVal)     : null,
+        marketing_levy_pct: marketingLevyVal   ? parseFloat(marketingLevyVal)  : null,
         financial_metrics_shared: financialMetrics,
         break_even_months: breakEvenMonths,
         break_even_timeline: breakEvenNotes || null,
@@ -359,7 +364,41 @@ export default function AdminQuestionnaireForm({ franchisorId, existing, section
             variant="light"
           />
         )}
-        {ta(q('commercial_rates', 'Commercial terms (fee, royalty, levy)'), commercialRates, setCommercialRates, 2)}
+        <div>
+          <label className="block text-xs font-medium text-slate-600 mb-2">Commercial terms</label>
+          <div className="grid grid-cols-3 gap-3">
+            <div>
+              <label className="block text-xs text-slate-500 mb-1">Franchise fee (£)</label>
+              <input
+                type="number" min="0" step="500"
+                value={franchiseFeeVal}
+                onChange={e => setFranchiseFeeVal(e.target.value)}
+                placeholder="e.g. 25000"
+                className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-green focus:border-transparent"
+              />
+            </div>
+            <div>
+              <label className="block text-xs text-slate-500 mb-1">Royalty (%)</label>
+              <input
+                type="number" min="0" max="100" step="0.5"
+                value={royaltyPctVal}
+                onChange={e => setRoyaltyPctVal(e.target.value)}
+                placeholder="e.g. 7"
+                className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-green focus:border-transparent"
+              />
+            </div>
+            <div>
+              <label className="block text-xs text-slate-500 mb-1">Marketing levy (%)</label>
+              <input
+                type="number" min="0" max="100" step="0.5"
+                value={marketingLevyVal}
+                onChange={e => setMarketingLevyVal(e.target.value)}
+                placeholder="e.g. 2"
+                className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-green focus:border-transparent"
+              />
+            </div>
+          </div>
+        </div>
         {ta(q('financial_metrics_shared', 'Financial data shared with prospects'), financialMetrics, setFinancialMetrics)}
         {sliderWrap(
           q('break_even_timeline', 'Typical break-even timeline'),
