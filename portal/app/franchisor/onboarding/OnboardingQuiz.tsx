@@ -144,8 +144,8 @@ function buildInitialAnswers(brandName?: string | null, existing?: Record<string
     high_performing_unit: '',
     underperformance_reasons: '',
     format_types: [],
-    investment_min: INVESTMENT_STEPS[2],
-    investment_max: INVESTMENT_STEPS[6],
+    investment_min: INVESTMENT_STEPS[1],   // £20k
+    investment_max: INVESTMENT_STEPS[9],   // £100k
     liquid_capital_min: 20000,
     franchise_fee: '',
     royalty_pct: '',
@@ -187,8 +187,8 @@ function buildInitialAnswers(brandName?: string | null, existing?: Record<string
     high_performing_unit:     e.high_performing_unit     ?? '',
     underperformance_reasons: e.underperformance_reasons ?? '',
     format_types:             e.format_types             ?? [],
-    investment_min:           e.investment_min           ?? INVESTMENT_STEPS[2],
-    investment_max:           e.investment_max           ?? INVESTMENT_STEPS[6],
+    investment_min:           e.investment_min           ?? INVESTMENT_STEPS[1],   // £20k
+    investment_max:           e.investment_max           ?? INVESTMENT_STEPS[9],   // £100k
     liquid_capital_min:       e.liquid_capital_min       ?? 20000,
     franchise_fee:            e.franchise_fee   != null  ? String(e.franchise_fee)          : '',
     royalty_pct:              e.royalty_pct     != null  ? String(e.royalty_pct)             : '',

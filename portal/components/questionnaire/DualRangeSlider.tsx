@@ -2,12 +2,17 @@
 
 import { useRef } from 'react'
 
+// £10k steps from £10k → £250k, then £50k steps from £300k → £500k
 export const INVESTMENT_STEPS = [
-  5_000, 10_000, 20_000, 30_000, 50_000, 75_000,
-  100_000, 150_000, 200_000, 300_000, 400_000, 500_000,
+   10_000,  20_000,  30_000,  40_000,  50_000,
+   60_000,  70_000,  80_000,  90_000, 100_000,
+  110_000, 120_000, 130_000, 140_000, 150_000,
+  160_000, 170_000, 180_000, 190_000, 200_000,
+  210_000, 220_000, 230_000, 240_000, 250_000,
+  300_000, 350_000, 400_000, 450_000, 500_000,
 ]
 
-const N = INVESTMENT_STEPS.length - 1
+const N = INVESTMENT_STEPS.length - 1   // 29
 
 function fmt(v: number) {
   if (v >= 500_000) return '£500k+'
@@ -27,11 +32,11 @@ function nearestIdx(val: number) {
 
 // Axis tick marks — positioned at their true percentage on the scale
 const AXIS_TICKS = [
-  { label: '£5k',    idx: 0  },
+  { label: '£10k',   idx: 0  },
   { label: '£50k',   idx: 4  },
-  { label: '£100k',  idx: 6  },
-  { label: '£200k',  idx: 8  },
-  { label: '£500k+', idx: 11 },
+  { label: '£100k',  idx: 9  },
+  { label: '£250k',  idx: 24 },
+  { label: '£500k+', idx: 29 },
 ]
 
 interface Props {
