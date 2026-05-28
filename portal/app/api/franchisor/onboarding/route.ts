@@ -42,7 +42,9 @@ export async function POST(request: NextRequest) {
           franchisor_id: profileId,
           // Section 1 — Your Business
           core_model: answers.core_model || null,
+          competitive_advantage: answers.competitive_advantage || null,
           high_performing_unit: answers.high_performing_unit || null,
+          underperformance_reasons: answers.underperformance_reasons || null,
           format_types: answers.format_types?.length ? answers.format_types : null,
           operating_model_raw: answers.operating_model_raw || null,
           // Section 2 — Investment & Commercials
@@ -60,6 +62,7 @@ export async function POST(request: NextRequest) {
           single_franchise_licenses: answers.single_franchise_licenses ?? null,
           decline_reasons: answers.decline_reasons ?? [],
           // Section 2 — additional
+          financial_metrics_shared: answers.financial_metrics_shared || null,
           common_objections: answers.common_objections || null,
           // Section 3 — Ideal Franchisee (additional)
           approval_factors: answers.approval_factors ?? [],
