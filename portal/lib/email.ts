@@ -1,6 +1,12 @@
 import { Resend } from 'resend'
 
-const resend = new Resend(process.env.RESEND_API_KEY)
+// Lazy singleton — constructed on first use so build-time evaluation
+// (when RESEND_API_KEY is undefined) doesn't throw "Missing API key".
+let _resend: Resend | null = null
+function getResend() {
+  if (!_resend) _resend = new Resend(process.env.RESEND_API_KEY)
+  return _resend
+}
 
 const FROM = process.env.RESEND_FROM_EMAIL ?? 'Franchise Foundry <noreply@franchisefoundry.co.uk>'
 const ADMIN_EMAIL = process.env.ADMIN_NOTIFICATION_EMAIL ?? 'hello@franchisefoundry.co.uk'
@@ -41,7 +47,7 @@ export async function sendLeadNotificationToTeam({
       : 'Not specified'
 
   try {
-    await resend.emails.send({
+    await getResend().emails.send({
       from: FROM,
       to: ADMIN_EMAIL,
       subject: `New match enquiry — ${fullName}`,
@@ -92,7 +98,7 @@ export async function sendLeadConfirmationToFranchisee({
   const firstName = fullName.trim().split(' ')[0]
 
   try {
-    await resend.emails.send({
+    await getResend().emails.send({
       from: FROM,
       to: email,
       replyTo: ADMIN_EMAIL,
@@ -166,7 +172,7 @@ export async function sendFranchisorMatchNotification({
     .join('')
 
   try {
-    await resend.emails.send({
+    await getResend().emails.send({
       from: FROM,
       to: franchisorEmail,
       replyTo: ADMIN_EMAIL,
@@ -229,7 +235,7 @@ export async function sendIntroRequestNotification({
   message?: string | null
 }) {
   try {
-    await resend.emails.send({
+    await getResend().emails.send({
       from: FROM,
       to: ADMIN_EMAIL,
       subject: `New intro request — ${requesterName} → ${partnerName}`,
