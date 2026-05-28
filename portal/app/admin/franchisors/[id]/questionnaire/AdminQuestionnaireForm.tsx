@@ -4,7 +4,6 @@ import { useState } from 'react'
 import type { SectionRow, QuestionRow } from '@/app/admin/questionnaire-template/page'
 import { DualRangeSlider, INVESTMENT_STEPS } from '@/components/questionnaire/DualRangeSlider'
 import { SingleSlider } from '@/components/questionnaire/SingleSlider'
-import { SpectrumSlider } from '@/components/questionnaire/SpectrumSlider'
 import { GradientRating } from '@/components/questionnaire/GradientRating'
 import { StepBuilder } from '@/components/questionnaire/StepBuilder'
 import { OperatingModelCards } from '@/components/questionnaire/OperatingModelCards'
@@ -83,14 +82,12 @@ export default function AdminQuestionnaireForm({ franchisorId, existing, section
   // Section 1
   const [coreModel, setCoreModel] = useState<string>(e.core_model ?? '')
   const [compAdvantage, setCompAdvantage] = useState<string>(e.competitive_advantage ?? '')
-  const [revenueStreams, setRevenueStreams] = useState<string>(e.revenue_streams ?? '')
   const [highPerforming, setHighPerforming] = useState<string>(e.high_performing_unit ?? '')
   const [underperformance, setUnderperformance] = useState<string>(e.underperformance_reasons ?? '')
 
   // Section 2 — investment slider
   const [investmentMin, setInvestmentMin] = useState<number>(nearestStep(e.investment_min ?? 20_000))
   const [investmentMax, setInvestmentMax] = useState<number>(nearestStep(e.investment_max ?? 100_000))
-  const [investmentNotes, setInvestmentNotes] = useState<string>(e.investment_range_raw ?? '')
   const [liquidCapitalMin, setLiquidCapitalMin] = useState<number>(e.liquid_capital_min ?? 20_000)
   // Structured commercial terms — these are what the franchisor quiz saves (NOT the legacy commercial_rates text column)
   const [franchiseFeeVal, setFranchiseFeeVal] = useState<string>(e.franchise_fee != null ? String(e.franchise_fee) : '')
@@ -98,21 +95,16 @@ export default function AdminQuestionnaireForm({ franchisorId, existing, section
   const [marketingLevyVal, setMarketingLevyVal] = useState<string>(e.marketing_levy_pct != null ? String(e.marketing_levy_pct) : '')
   const [financialMetrics, setFinancialMetrics] = useState<string>(e.financial_metrics_shared ?? '')
   const [breakEvenMonths, setBreakEvenMonths] = useState<number>(e.break_even_months ?? 18)
-  const [breakEvenNotes, setBreakEvenNotes] = useState<string>(e.break_even_timeline ?? '')
-  const [underestimatedCosts, setUnderestimatedCosts] = useState<string>(e.underestimated_costs ?? '')
   const [commonObjections, setCommonObjections] = useState<string>(e.common_objections ?? '')
 
   // Section 3
   const [idealFranchisee, setIdealFranchisee] = useState<string>(e.ideal_franchisee_profile ?? '')
-  const [backgroundExp, setBackgroundExp] = useState<string>(e.background_experience ?? '')
   const [experienceRequired, setExperienceRequired] = useState<string>(e.experience_required ?? '')
   const [fullTimeRequired, setFullTimeRequired] = useState<boolean | null>(e.full_time_required ?? null)
   const [approvalFactors, setApprovalFactors] = useState<string[]>(e.approval_factors ?? [])
   const [singleLicence, setSingleLicence] = useState<boolean | null>(e.single_franchise_licenses ?? null)
   const [operatingModel, setOperatingModel] = useState<string>(e.operating_model_raw ?? '')
   const [declineReasons, setDeclineReasons] = useState<string[]>(e.decline_reasons ?? [])
-  const [problematicBehaviours, setProblematicBehaviours] = useState<string>(e.problematic_behaviours ?? '')
-  const [successDef, setSuccessDef] = useState<string>(e.success_definition ?? '')
 
   // Section 4 — growth sliders + new matching fields
   const [formatTypes, setFormatTypes] = useState<string[]>(e.format_types ?? [])
@@ -120,7 +112,6 @@ export default function AdminQuestionnaireForm({ franchisorId, existing, section
   const [growthTargetUnits, setGrowthTargetUnits] = useState<number>(e.growth_target_units ?? 5)
   const [growthContext, setGrowthContext] = useState<string>(e.annual_growth_targets ?? '')
   const [territories, setTerritories] = useState<string>(e.priority_territories ?? '')
-  const [growthQualityScore, setGrowthQualityScore] = useState<number>(e.growth_quality_score ?? 50)
   const [scalingConcerns, setScalingConcerns] = useState<string>(e.scaling_concerns ?? '')
   const [timelineMonths, setTimelineMonths] = useState<number>(e.timeline_months ?? 6)
 
@@ -313,12 +304,10 @@ export default function AdminQuestionnaireForm({ franchisorId, existing, section
       {/* 1 · The Business */}
       <SectionCard title="1 · The Business" section={1} onSave={() => saveSection(1, {
         core_model: coreModel, competitive_advantage: compAdvantage,
-        revenue_streams: revenueStreams, high_performing_unit: highPerforming,
-        underperformance_reasons: underperformance,
+        high_performing_unit: highPerforming, underperformance_reasons: underperformance,
       })}>
         {ta(q('core_model', 'Core business model & day-to-day operations'), coreModel, setCoreModel, 4)}
         {ta(q('competitive_advantage', 'Competitive advantage'), compAdvantage, setCompAdvantage)}
-        {ta(q('revenue_streams', 'Revenue streams'), revenueStreams, setRevenueStreams, 2)}
         {ta(q('high_performing_unit', 'High-performing unit (metrics)'), highPerforming, setHighPerforming)}
         {ta(q('underperformance_reasons', 'Common reasons for underperformance'), underperformance, setUnderperformance)}
       </SectionCard>
@@ -327,15 +316,12 @@ export default function AdminQuestionnaireForm({ franchisorId, existing, section
       <SectionCard title="2 · Financials" section={2} onSave={() => saveSection(2, {
         investment_min: investmentMin,
         investment_max: investmentMax,
-        investment_range_raw: investmentNotes || null,
         liquid_capital_min: liquidCapitalMin,
         franchise_fee:      franchiseFeeVal   ? parseFloat(franchiseFeeVal)   : null,
         royalty_pct:        royaltyPctVal      ? parseFloat(royaltyPctVal)     : null,
         marketing_levy_pct: marketingLevyVal   ? parseFloat(marketingLevyVal)  : null,
         financial_metrics_shared: financialMetrics,
         break_even_months: breakEvenMonths,
-        break_even_timeline: breakEvenNotes || null,
-        underestimated_costs: underestimatedCosts,
         common_objections: commonObjections,
       })}>
         {sliderWrap(
@@ -348,7 +334,6 @@ export default function AdminQuestionnaireForm({ franchisorId, existing, section
             variant="light"
           />
         )}
-        {ta('Investment breakdown notes', investmentNotes, setInvestmentNotes, 2)}
         {sliderWrap(
           q('liquid_capital_min', 'Minimum liquid capital required'),
           'Cash the franchisee must have on day one — separate from financed investment',
@@ -414,26 +399,20 @@ export default function AdminQuestionnaireForm({ franchisorId, existing, section
             variant="light"
           />
         )}
-        {ta('Break-even context / caveats', breakEvenNotes, setBreakEvenNotes, 2)}
-        {ta(q('underestimated_costs', 'Most underestimated costs'), underestimatedCosts, setUnderestimatedCosts)}
         {ta(q('common_objections', 'Common financial objections'), commonObjections, setCommonObjections)}
       </SectionCard>
 
       {/* 3 · Ideal Franchisee */}
       <SectionCard title="3 · Ideal Franchisee" section={3} onSave={() => saveSection(3, {
         ideal_franchisee_profile: idealFranchisee,
-        background_experience: backgroundExp,
         experience_required: experienceRequired || null,
         full_time_required: fullTimeRequired,
         approval_factors: approvalFactors,
         single_franchise_licenses: singleLicence,
         operating_model_raw: operatingModel || null,
         decline_reasons: declineReasons,
-        problematic_behaviours: problematicBehaviours,
-        success_definition: successDef,
       })}>
         {ta(q('ideal_franchisee_profile', 'Ideal franchisee profile'), idealFranchisee, setIdealFranchisee)}
-        {ta(q('background_experience', 'Required / preferred experience'), backgroundExp, setBackgroundExp, 2)}
         <div>
           <label className="block text-xs font-medium text-slate-600 mb-2">{q('experience_required', 'Minimum experience level required')}</label>
           <div className="space-y-1.5">
@@ -475,8 +454,6 @@ export default function AdminQuestionnaireForm({ franchisorId, existing, section
           <OperatingModelCards value={operatingModel} onChange={setOperatingModel} variant="light" />
         </div>
         {multiChips(q('decline_reasons', 'Common decline reasons'), opts('decline_reasons', FALLBACK_DECLINE_REASONS), declineReasons, setDeclineReasons)}
-        {ta(q('problematic_behaviours', "Franchisee types that haven't worked"), problematicBehaviours, setProblematicBehaviours)}
-        {ta(q('success_definition', 'Definition of franchisee success'), successDef, setSuccessDef)}
       </SectionCard>
 
       {/* 4 · Growth & Territory */}
@@ -486,8 +463,6 @@ export default function AdminQuestionnaireForm({ franchisorId, existing, section
         growth_target_units: growthTargetUnits,
         annual_growth_targets: growthContext || null,
         priority_territories: territories,
-        growth_quality_score: growthQualityScore,
-        growth_speed_vs_quality: null,
         scaling_concerns: scalingConcerns,
         timeline_months: timelineMonths,
       })}>
@@ -546,15 +521,6 @@ export default function AdminQuestionnaireForm({ franchisorId, existing, section
         )}
         {ta('Growth context & timeframe', growthContext, setGrowthContext, 2)}
         {ta(q('priority_territories', 'Priority UK territories (detail)'), territories, setTerritories, 2)}
-        {sliderWrap(
-          q('growth_speed_vs_quality', 'Growth philosophy — speed vs. quality'),
-          'Where does their approach sit on the spectrum?',
-          <SpectrumSlider
-            value={growthQualityScore}
-            onChange={setGrowthQualityScore}
-            variant="light"
-          />
-        )}
         {ta(q('scaling_concerns', 'Biggest scaling concern'), scalingConcerns, setScalingConcerns)}
         {sliderWrap(
           q('timeline_months', 'Months from inquiry to opening'),
