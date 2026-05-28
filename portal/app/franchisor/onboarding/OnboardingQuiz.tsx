@@ -526,8 +526,8 @@ export default function OnboardingQuiz({ franchisorId, firstName, brandName, exi
             </div>
             <p className="text-xs text-slate-400">
               Questions? Email us at{' '}
-              <a href="mailto:hello@franchisefoundry.co.uk" className="underline hover:text-slate-600">
-                hello@franchisefoundry.co.uk
+              <a href="mailto:connect@franchisefoundry.co.uk" className="underline hover:text-slate-600">
+                connect@franchisefoundry.co.uk
               </a>
             </p>
           </div>

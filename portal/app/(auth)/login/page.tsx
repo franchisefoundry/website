@@ -88,7 +88,7 @@ function LoginForm() {
 
       <p className="mt-6 text-center text-xs text-slate-400">
         Don&apos;t have access?{' '}
-        <a href="mailto:hello@franchisefoundry.co.uk" className="text-brand-green hover:underline">
+        <a href="mailto:connect@franchisefoundry.co.uk" className="text-brand-green hover:underline">
           Contact Franchise Foundry
         </a>
       </p>

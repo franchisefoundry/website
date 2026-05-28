@@ -92,10 +92,10 @@ export default async function FranchisorPendingPage() {
         <p className="text-center text-xs text-slate-400">
           Questions? Email us at{' '}
           <a
-            href="mailto:hello@franchisefoundry.co.uk"
+            href="mailto:connect@franchisefoundry.co.uk"
             className="underline hover:text-slate-600 transition-colors"
           >
-            hello@franchisefoundry.co.uk
+            connect@franchisefoundry.co.uk
           </a>
         </p>
       </div>
