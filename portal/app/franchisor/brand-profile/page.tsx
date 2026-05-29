@@ -1,17 +1,31 @@
 import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 import { PageHeader } from '@/components/page-header'
 import BrandProfileForm from './brand-profile-form'
 import Link from 'next/link'
+import { cookies } from 'next/headers'
 
 export default async function BrandProfilePage() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
+  const admin = createAdminClient()
 
-  const { data: brandProfile } = await supabase
-    .from('franchisor_profiles')
-    .select('*')
-    .eq('user_id', user!.id)
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('role')
+    .eq('id', user!.id)
     .single()
+
+  const cookieStore = await cookies()
+  const previewAs    = profile?.role === 'admin'      ? cookieStore.get('ff_preview_as')?.value     : null
+  const activeBrandId = profile?.role === 'franchisor' ? cookieStore.get('ff_active_brand_id')?.value : null
+
+  const { data: brandProfile } = previewAs
+    ? await admin.from('franchisor_profiles').select('*').eq('id', previewAs).single()
+    : activeBrandId
+      ? await supabase.from('franchisor_profiles').select('*').eq('id', activeBrandId).single()
+      : await supabase.from('franchisor_profiles').select('*').eq('user_id', user!.id)
+          .order('created_at', { ascending: true }).limit(1).single()
 
   return (
     <div>

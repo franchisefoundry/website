@@ -3,21 +3,34 @@ import { createAdminClient } from '@/lib/supabase/admin'
 import { redirect } from 'next/navigation'
 import { PageHeader } from '@/components/page-header'
 import QuestionnaireForm from './QuestionnaireForm'
+import { cookies } from 'next/headers'
 
 export default async function QuestionnairePage() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
 
-  const { data: franchisorProfile } = await supabase
-    .from('franchisor_profiles')
-    .select('*')
-    .eq('user_id', user.id)
+  const admin = createAdminClient()
+
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('role')
+    .eq('id', user.id)
     .single()
+
+  const cookieStore = await cookies()
+  const previewAs     = profile?.role === 'admin'      ? cookieStore.get('ff_preview_as')?.value     : null
+  const activeBrandId = profile?.role === 'franchisor' ? cookieStore.get('ff_active_brand_id')?.value : null
+
+  const { data: franchisorProfile } = previewAs
+    ? await admin.from('franchisor_profiles').select('*').eq('id', previewAs).single()
+    : activeBrandId
+      ? await supabase.from('franchisor_profiles').select('*').eq('id', activeBrandId).single()
+      : await supabase.from('franchisor_profiles').select('*').eq('user_id', user.id)
+          .order('created_at', { ascending: true }).limit(1).single()
 
   if (!franchisorProfile) redirect('/franchisor')
 
-  const admin = createAdminClient()
   const { data: questionnaire } = await admin
     .from('franchisor_questionnaires')
     .select('*')

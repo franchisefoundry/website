@@ -536,7 +536,7 @@ export default function OnboardingQuiz({ franchisorId, firstName, brandName, exi
                 type="text"
                 value={answers.brand_name}
                 onChange={e => { set('brand_name', e.target.value); if (e.target.value.trim()) setBrandNameError(false) }}
-                placeholder="e.g. SoBe Burger"
+                placeholder="e.g. Bob's Burgers"
                 className={`w-full px-4 py-3 border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#3a4a3a] focus:border-transparent text-slate-800 placeholder:text-slate-400 ${brandNameError ? 'border-red-400 bg-red-50' : 'border-slate-300'}`}
               />
               {brandNameError && (
@@ -571,7 +571,7 @@ export default function OnboardingQuiz({ franchisorId, firstName, brandName, exi
                   type="text"
                   value={brand2NameInput}
                   onChange={e => { setBrand2NameInput(e.target.value); if (e.target.value.trim()) setBrand2NameError(false) }}
-                  placeholder="e.g. Ivan Ramen"
+                  placeholder="e.g. Clucking Chicken"
                   className={`w-full px-4 py-3 border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#3a4a3a] focus:border-transparent text-slate-800 placeholder:text-slate-400 ${brand2NameError ? 'border-red-400 bg-red-50' : 'border-slate-300'}`}
                 />
                 {brand2NameError && (
