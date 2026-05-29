@@ -97,26 +97,27 @@ export async function middleware(request: NextRequest) {
   }
 
   // ── Franchisor access gates ───────────────────────────────────────────────
-  // Gate 1: quiz not completed → /franchisor/onboarding
-  // Gate 2: quiz done but pending review → /franchisor/pending
-  // Admins bypass both gates (they're previewing).
+  // Gate 1: no brand quiz completed → /franchisor/onboarding
+  // Gate 2: all brands still pending (none active) → /franchisor/pending
+  // Admins bypass both gates. Multi-brand: ANY active brand grants full access.
   if (
     role === 'franchisor' &&
     pathname.startsWith('/franchisor') &&
     !pathname.startsWith('/franchisor/onboarding') &&
     !pathname.startsWith('/franchisor/pending')
   ) {
-    const { data: fp } = await supabase
+    const { data: profiles } = await supabase
       .from('franchisor_profiles')
       .select('quiz_completed_at, status')
       .eq('user_id', user.id)
-      .single()
 
-    if (!fp || !fp.quiz_completed_at) {
+    const hasAnyCompleted = profiles?.some(p => p.quiz_completed_at)
+    const hasAnyActive    = profiles?.some(p => p.status === 'active')
+
+    if (!profiles?.length || !hasAnyCompleted) {
       return NextResponse.redirect(new URL('/franchisor/onboarding', request.url))
     }
-
-    if (fp.status === 'pending_review') {
+    if (!hasAnyActive) {
       return NextResponse.redirect(new URL('/franchisor/pending', request.url))
     }
   }

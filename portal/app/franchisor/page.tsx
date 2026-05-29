@@ -17,13 +17,18 @@ export default async function FranchisorDashboard() {
     .eq('id', user!.id)
     .single()
 
-  // Admin preview: cookie set by FranchisorPreviewButton — load that brand's data
   const cookieStore = await cookies()
-  const previewAs = profile?.role === 'admin' ? cookieStore.get('ff_preview_as')?.value : null
+  // Admin preview: FranchisorPreviewButton sets ff_preview_as
+  const previewAs    = profile?.role === 'admin'    ? cookieStore.get('ff_preview_as')?.value    : null
+  // Multi-brand: brand switcher sets ff_active_brand_id
+  const activeBrandId = profile?.role === 'franchisor' ? cookieStore.get('ff_active_brand_id')?.value : null
 
   const { data: brandProfile } = previewAs
     ? await admin.from('franchisor_profiles').select('*').eq('id', previewAs).single()
-    : await supabase.from('franchisor_profiles').select('*').eq('user_id', user!.id).single()
+    : activeBrandId
+      ? await supabase.from('franchisor_profiles').select('*').eq('id', activeBrandId).single()
+      : await supabase.from('franchisor_profiles').select('*').eq('user_id', user!.id)
+          .order('created_at', { ascending: true }).limit(1).single()
 
   const firstName = profile?.full_name?.split(' ')[0] ?? 'there'
 
@@ -197,6 +202,24 @@ export default async function FranchisorDashboard() {
             className="shrink-0 text-amber-700 text-xs font-semibold hover:underline"
           >
             View →
+          </Link>
+        </div>
+      )}
+
+      {/* Multi-brand: prompt to add another brand (only shown to real franchisors, not admin preview) */}
+      {profile?.role === 'franchisor' && isActive && (
+        <div className="mt-6 border border-dashed border-slate-300 rounded-xl px-5 py-4 flex items-center justify-between gap-4">
+          <div>
+            <p className="text-sm font-semibold text-slate-700">Have another brand to franchise?</p>
+            <p className="text-xs text-slate-400 mt-0.5">
+              Add a second brand to your account — the recruitment questionnaire is pre-filled from this one.
+            </p>
+          </div>
+          <Link
+            href="/franchisor/onboarding?add_brand=1"
+            className="shrink-0 text-xs font-medium text-slate-600 border border-slate-300 hover:border-slate-400 hover:text-slate-800 px-4 py-2 rounded-lg transition-colors"
+          >
+            + Add brand
           </Link>
         </div>
       )}

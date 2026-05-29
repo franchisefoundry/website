@@ -1,20 +1,22 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Image from 'next/image'
+import Link from 'next/link'
 
 export default async function FranchisorPendingPage() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
 
-  // If they've since been approved, send them through
-  const { data: fp } = await supabase
+  // If any brand has been approved, send them through to the portal
+  const { data: profiles } = await supabase
     .from('franchisor_profiles')
     .select('status, quiz_completed_at')
     .eq('user_id', user.id)
-    .single()
 
-  if (fp?.status === 'active') redirect('/franchisor')
+  if (profiles?.some(p => p.status === 'active')) redirect('/franchisor')
+
+  const pendingCount = profiles?.filter(p => p.quiz_completed_at).length ?? 0
 
   const { data: profile } = await supabase
     .from('profiles')
@@ -87,6 +89,21 @@ export default async function FranchisorPendingPage() {
               </div>
             </div>
           ))}
+        </div>
+
+        {/* Multi-brand: add another brand while waiting for review */}
+        <div className="text-center mb-4">
+          <Link
+            href="/franchisor/onboarding?add_brand=1"
+            className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-600 border border-slate-300 hover:border-slate-400 hover:text-slate-800 px-4 py-2 rounded-lg transition-colors"
+          >
+            + Add another brand
+          </Link>
+          {pendingCount > 1 && (
+            <p className="text-xs text-slate-400 mt-2">
+              {pendingCount} brands submitted — all are currently under review.
+            </p>
+          )}
         </div>
 
         <p className="text-center text-xs text-slate-400">

@@ -18,11 +18,15 @@ export default async function FranchisorMatchesPage() {
     .single()
 
   const cookieStore = await cookies()
-  const previewAs = profile?.role === 'admin' ? cookieStore.get('ff_preview_as')?.value : null
+  const previewAs     = profile?.role === 'admin'    ? cookieStore.get('ff_preview_as')?.value     : null
+  const activeBrandId = profile?.role === 'franchisor' ? cookieStore.get('ff_active_brand_id')?.value : null
 
   const { data: brandProfile } = previewAs
     ? await adminClient.from('franchisor_profiles').select('id, status').eq('id', previewAs).single()
-    : await supabase.from('franchisor_profiles').select('id, status').eq('user_id', user!.id).single()
+    : activeBrandId
+      ? await supabase.from('franchisor_profiles').select('id, status').eq('id', activeBrandId).single()
+      : await supabase.from('franchisor_profiles').select('id, status').eq('user_id', user!.id)
+          .order('created_at', { ascending: true }).limit(1).single()
 
   const { data: rawMatches } = brandProfile
     ? await adminClient

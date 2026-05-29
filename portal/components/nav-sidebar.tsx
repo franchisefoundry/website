@@ -144,9 +144,11 @@ function NavGroupItem({
 
 interface NavSidebarProps {
   profile: Profile
+  brands?: { id: string; brand_name: string | null; status: string }[]
+  activeBrandId?: string
 }
 
-export function NavSidebar({ profile }: NavSidebarProps) {
+export function NavSidebar({ profile, brands, activeBrandId }: NavSidebarProps) {
   const pathname = usePathname()
   const router = useRouter()
   const nav = navForRole(profile.role)
@@ -222,6 +224,41 @@ export function NavSidebar({ profile }: NavSidebarProps) {
             ×
           </button>
         </div>
+
+        {/* Brand switcher — only shown when account has multiple brands */}
+        {brands && brands.length > 1 && (
+          <div className="px-3 py-2 border-b border-white/10">
+            <p className="px-3 text-white/40 text-[10px] font-semibold uppercase tracking-wider mb-1">Brand</p>
+            {brands.map(brand => (
+              <button
+                key={brand.id}
+                onClick={() => {
+                  document.cookie = `ff_active_brand_id=${brand.id}; path=/; max-age=2592000; SameSite=Lax`
+                  router.refresh()
+                  setMobileOpen(false)
+                }}
+                className={cn(
+                  'w-full text-left flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs transition-colors',
+                  brand.id === activeBrandId
+                    ? 'text-white bg-white/15 font-medium'
+                    : 'text-white/60 hover:text-white hover:bg-white/10'
+                )}
+              >
+                <span className={cn(
+                  'w-1.5 h-1.5 rounded-full flex-shrink-0',
+                  brand.id === activeBrandId ? 'bg-emerald-400' : 'bg-transparent'
+                )} />
+                <span className="truncate">{brand.brand_name ?? 'Unnamed brand'}</span>
+              </button>
+            ))}
+            <button
+              onClick={() => { router.push('/franchisor/onboarding?add_brand=1'); setMobileOpen(false) }}
+              className="w-full text-left flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs text-white/40 hover:text-white/70 hover:bg-white/5 transition-colors mt-0.5"
+            >
+              <span className="text-base leading-none">+</span> Add another brand
+            </button>
+          </div>
+        )}
 
         {/* Nav */}
         <nav className="flex-1 px-3 py-4 space-y-0.5 overflow-y-auto">
