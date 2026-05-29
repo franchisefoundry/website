@@ -1,23 +1,31 @@
+'use client'
+
 import Link from 'next/link'
 
 export default function PreviewBanner({ role }: { role: 'franchisee' | 'franchisor' }) {
   const label = role === 'franchisee' ? 'Franchisee' : 'Franchisor'
 
+  function exitPreview() {
+    // Clear the preview cookie so subsequent admin page visits show their own data
+    document.cookie = 'ff_preview_as=; path=/; max-age=0; SameSite=Lax'
+  }
+
   return (
-    <div className="bg-amber-50 border-b border-amber-200 px-6 py-2.5 flex items-center justify-between">
+    <div className="bg-violet-50 border-b border-violet-200 px-6 py-2.5 flex items-center justify-between">
       <div className="flex items-center gap-2">
-        <span className="text-xs font-semibold text-amber-700 bg-amber-100 px-2 py-0.5 rounded-full">
-          Preview mode
+        <span className="text-xs font-semibold text-violet-700 bg-violet-100 px-2 py-0.5 rounded-full">
+          Admin preview
         </span>
-        <span className="text-xs text-amber-700">
-          You&apos;re viewing the <strong>{label}</strong> portal as an admin.
+        <span className="text-xs text-violet-700">
+          You&apos;re viewing the <strong>{label}</strong> portal as this brand would see it.
         </span>
       </div>
       <Link
         href="/admin"
-        className="text-xs font-medium text-amber-700 hover:text-amber-900 underline"
+        onClick={exitPreview}
+        className="text-xs font-medium text-violet-700 hover:text-violet-900 underline"
       >
-        ← Back to admin
+        ← Exit preview
       </Link>
     </div>
   )

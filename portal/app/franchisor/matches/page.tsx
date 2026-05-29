@@ -4,18 +4,26 @@ import { PageHeader } from '@/components/page-header'
 import { scoreColour, scoreLabel } from '@/lib/matching'
 import { formatInvestmentRange } from '@/lib/utils'
 import { CandidateActions } from './CandidateActions'
+import { cookies } from 'next/headers'
 
 export default async function FranchisorMatchesPage() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
+  const adminClient = createAdminClient()
 
-  const { data: brandProfile } = await supabase
-    .from('franchisor_profiles')
-    .select('id, status')
-    .eq('user_id', user!.id)
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('role')
+    .eq('id', user!.id)
     .single()
 
-  const adminClient = createAdminClient()
+  const cookieStore = await cookies()
+  const previewAs = profile?.role === 'admin' ? cookieStore.get('ff_preview_as')?.value : null
+
+  const { data: brandProfile } = previewAs
+    ? await adminClient.from('franchisor_profiles').select('id, status').eq('id', previewAs).single()
+    : await supabase.from('franchisor_profiles').select('id, status').eq('user_id', user!.id).single()
+
   const { data: rawMatches } = brandProfile
     ? await adminClient
         .from('matches')

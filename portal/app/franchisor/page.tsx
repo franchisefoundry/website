@@ -4,20 +4,30 @@ import { PageHeader } from '@/components/page-header'
 import { Card } from '@/components/ui/card'
 import { statusBadge } from '@/components/ui/badge'
 import Link from 'next/link'
+import { cookies } from 'next/headers'
 
 export default async function FranchisorDashboard() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
+  const admin = createAdminClient()
 
-  const [{ data: profile }, { data: brandProfile }] = await Promise.all([
-    supabase.from('profiles').select('full_name').eq('id', user!.id).single(),
-    supabase.from('franchisor_profiles').select('*').eq('user_id', user!.id).single(),
-  ])
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('full_name, role')
+    .eq('id', user!.id)
+    .single()
+
+  // Admin preview: cookie set by FranchisorPreviewButton — load that brand's data
+  const cookieStore = await cookies()
+  const previewAs = profile?.role === 'admin' ? cookieStore.get('ff_preview_as')?.value : null
+
+  const { data: brandProfile } = previewAs
+    ? await admin.from('franchisor_profiles').select('*').eq('id', previewAs).single()
+    : await supabase.from('franchisor_profiles').select('*').eq('user_id', user!.id).single()
 
   const firstName = profile?.full_name?.split(' ')[0] ?? 'there'
 
   // Fetch match stats via admin client (bypasses RLS, allows role filter)
-  const admin = createAdminClient()
   const { data: rawMatches } = brandProfile
     ? await admin
         .from('matches')
