@@ -2,6 +2,24 @@ import { NextResponse, type NextRequest } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 
+// ── Company (Section 5) upsert payload builder ───────────────────────────────
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function buildCompanyUpsert(userId: string, answers: Record<string, any>) {
+  return {
+    user_id:                      userId,
+    inquiry_channels:             answers.inquiry_channels         ?? [],
+    screening_steps:              answers.screening_steps?.length ? answers.screening_steps : null,
+    screening_method:             answers.screening_steps?.length ? answers.screening_steps.join('\n') : null,
+    approval_timing:              answers.approval_timing          || null,
+    approval_authority:           answers.approval_authority       || null,
+    timeline_inquiry_to_contract: answers.timeline_inquiry_to_contract || null,
+    post_signing_activities:      answers.post_signing_activities  || null,
+    timeline_signing_to_launch:   answers.timeline_signing_to_launch || null,
+    process_bottlenecks:          answers.process_bottlenecks      || null,
+    recruitment_process_rating:   answers.recruitment_process_rating || null,
+  }
+}
+
 // ── Shared upsert payload builder ─────────────────────────────────────────────
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function buildQuizUpsert(profileId: string, answers: Record<string, any>) {
@@ -138,7 +156,7 @@ export async function PATCH(request: NextRequest) {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) return NextResponse.json({ error: 'Unauthorised' }, { status: 401 })
 
-    const { answers, franchisorId } = await request.json()
+    const { answers, franchisorId, saveCompanyData } = await request.json()
     const admin = createAdminClient()
 
     // Get or create franchisor profile
@@ -169,6 +187,25 @@ export async function PATCH(request: NextRequest) {
       return NextResponse.json({ error: `Could not save quiz: ${quizError.message}` }, { status: 500 })
     }
 
+    // Save Section 5 to franchisor_companies when this is a first/single brand (not add_brand flow)
+    if (saveCompanyData) {
+      const companyPayload = buildCompanyUpsert(user.id, answers)
+      const { error: companyError } = await admin
+        .from('franchisor_companies')
+        .upsert(companyPayload, { onConflict: 'user_id' })
+      if (companyError) console.error('Company save error (non-fatal):', companyError)
+
+      // Ensure the profile is linked to the company row
+      const { data: company } = await admin
+        .from('franchisor_companies')
+        .select('id')
+        .eq('user_id', user.id)
+        .single()
+      if (company) {
+        await admin.from('franchisor_profiles').update({ company_id: company.id }).eq('id', profileId)
+      }
+    }
+
     // Update profile fields (no status change — that's only on final submit)
     const profileUpdates = buildProfileUpdates(answers, franchiseFee, royaltyPct, marketingLevy)
     if (Object.keys(profileUpdates).length) {
@@ -193,7 +230,7 @@ export async function POST(request: NextRequest) {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) return NextResponse.json({ error: 'Unauthorised' }, { status: 401 })
 
-    const { answers, franchisorId } = await request.json()
+    const { answers, franchisorId, saveCompanyData } = await request.json()
 
     const admin = createAdminClient()
 
@@ -214,7 +251,32 @@ export async function POST(request: NextRequest) {
       profileId = newProfile.id
     }
 
-    const { quiz, franchiseFee, royaltyPct, marketingLevy } = buildQuizUpsert(profileId!, answers)
+    // When adding a second brand, pull Section 5 from franchisor_companies so the
+    // questionnaire record is still fully populated (backward compat for admin views)
+    let finalAnswers = answers
+    if (!saveCompanyData) {
+      const { data: company } = await admin
+        .from('franchisor_companies')
+        .select('inquiry_channels, screening_steps, screening_method, approval_timing, approval_authority, timeline_inquiry_to_contract, post_signing_activities, timeline_signing_to_launch, process_bottlenecks, recruitment_process_rating')
+        .eq('user_id', user.id)
+        .single()
+      if (company) {
+        finalAnswers = {
+          ...answers,
+          inquiry_channels:             company.inquiry_channels            ?? answers.inquiry_channels,
+          screening_steps:              Array.isArray(company.screening_steps) ? company.screening_steps : answers.screening_steps,
+          approval_timing:              company.approval_timing              ?? answers.approval_timing,
+          approval_authority:           company.approval_authority           ?? answers.approval_authority,
+          timeline_inquiry_to_contract: company.timeline_inquiry_to_contract ?? answers.timeline_inquiry_to_contract,
+          post_signing_activities:      company.post_signing_activities      ?? answers.post_signing_activities,
+          timeline_signing_to_launch:   company.timeline_signing_to_launch   ?? answers.timeline_signing_to_launch,
+          process_bottlenecks:          company.process_bottlenecks          ?? answers.process_bottlenecks,
+          recruitment_process_rating:   company.recruitment_process_rating   ?? answers.recruitment_process_rating,
+        }
+      }
+    }
+
+    const { quiz, franchiseFee, royaltyPct, marketingLevy } = buildQuizUpsert(profileId!, finalAnswers)
 
     // Save questionnaire with completed_at
     const { error: quizError } = await admin
@@ -229,8 +291,30 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: `Could not save quiz: ${quizError.message}` }, { status: 500 })
     }
 
+    // Save Section 5 to franchisor_companies + mark company quiz complete
+    if (saveCompanyData) {
+      const companyPayload = {
+        ...buildCompanyUpsert(user.id, finalAnswers),
+        company_quiz_completed_at: new Date().toISOString(),
+      }
+      const { error: companyError } = await admin
+        .from('franchisor_companies')
+        .upsert(companyPayload, { onConflict: 'user_id' })
+      if (companyError) console.error('Company save error (non-fatal):', companyError)
+
+      // Ensure the profile is linked to the company row
+      const { data: company } = await admin
+        .from('franchisor_companies')
+        .select('id')
+        .eq('user_id', user.id)
+        .single()
+      if (company) {
+        await admin.from('franchisor_profiles').update({ company_id: company.id }).eq('id', profileId)
+      }
+    }
+
     // Update profile: mark complete + move to pending_review
-    const profileUpdates = buildProfileUpdates(answers, franchiseFee, royaltyPct, marketingLevy)
+    const profileUpdates = buildProfileUpdates(finalAnswers, franchiseFee, royaltyPct, marketingLevy)
     profileUpdates.quiz_completed_at = new Date().toISOString()
     profileUpdates.status = 'pending_review'
 

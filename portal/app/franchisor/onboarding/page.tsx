@@ -27,36 +27,25 @@ export default async function FranchisorOnboardingPage({ searchParams }: Props) 
 
   // ── Adding a new brand to an existing account ─────────────────────────────
   if (isAddingBrand) {
-    // Pre-fill Section 5 from their most recently completed questionnaire
-    const { data: allProfiles } = await admin
-      .from('franchisor_profiles')
-      .select('id')
+    // Pre-fill from franchisor_companies — the canonical home of Section 5 data
+    const { data: company } = await admin
+      .from('franchisor_companies')
+      .select(
+        'inquiry_channels, screening_steps, screening_method, approval_timing, ' +
+        'approval_authority, timeline_inquiry_to_contract, post_signing_activities, ' +
+        'timeline_signing_to_launch, process_bottlenecks, recruitment_process_rating'
+      )
       .eq('user_id', user.id)
-
-    const profileIds = allProfiles?.map(p => p.id) ?? []
-
-    const { data: latestQ } = profileIds.length
-      ? await admin
-          .from('franchisor_questionnaires')
-          .select(
-            'inquiry_channels, screening_steps, screening_method, approval_timing, ' +
-            'approval_authority, timeline_inquiry_to_contract, post_signing_activities, ' +
-            'timeline_signing_to_launch, process_bottlenecks, recruitment_process_rating'
-          )
-          .in('franchisor_id', profileIds)
-          .not('completed_at', 'is', null)
-          .order('completed_at', { ascending: false })
-          .limit(1)
-          .maybeSingle()
-      : { data: null }
+      .maybeSingle()
 
     return (
       <OnboardingQuiz
-        franchisorId={null}        // null → creates a fresh brand profile on first save
+        franchisorId={null}          // null → creates a fresh brand profile on first save
         userId={user.id}
         firstName={firstName}
         brandName={null}
-        existingAnswers={latestQ}  // Only Section 5 fields present — rest default to empty
+        isAddingBrand={true}
+        existingAnswers={company}    // Section 5 pre-filled; Sections 1–4 default to empty
       />
     )
   }

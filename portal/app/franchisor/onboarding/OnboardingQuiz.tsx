@@ -13,6 +13,7 @@ interface Props {
   userId: string
   firstName: string
   brandName?: string | null
+  isAddingBrand?: boolean
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   existingAnswers?: Record<string, any> | null
 }
@@ -357,8 +358,10 @@ function QuestionBlock({ number, question, hint, required, children }: {
 
 // ── Main component ────────────────────────────────────────────────────────────
 
-export default function OnboardingQuiz({ franchisorId, firstName, brandName, existingAnswers }: Props) {
+export default function OnboardingQuiz({ franchisorId, firstName, brandName, existingAnswers, isAddingBrand = false }: Props) {
   const hasExisting = !!existingAnswers
+  // When adding a second brand, Section 5 (Recruitment Process) is shared at company level — skip it
+  const effectiveSections = isAddingBrand ? 4 : TOTAL_SECTIONS
 
   const [answers, setAnswers] = useState<Answers>(() =>
     buildInitialAnswers(brandName, existingAnswers)
@@ -378,7 +381,7 @@ export default function OnboardingQuiz({ franchisorId, firstName, brandName, exi
     setAnswers(prev => ({ ...prev, [key]: value }))
   }
 
-  const progressPct = step === 0 ? 0 : Math.min(Math.round(((step - 1) / TOTAL_SECTIONS) * 100), 95)
+  const progressPct = step === 0 ? 0 : Math.min(Math.round(((step - 1) / effectiveSections) * 100), 95)
 
   // ── Auto-save current answers to DB (non-blocking for navigation) ──────────
   async function autoSave(currentFid: string | null, currentAnswers: Answers): Promise<string | null> {
@@ -388,7 +391,7 @@ export default function OnboardingQuiz({ franchisorId, firstName, brandName, exi
       const res = await fetch('/api/franchisor/onboarding', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ answers: currentAnswers, franchisorId: currentFid }),
+        body: JSON.stringify({ answers: currentAnswers, franchisorId: currentFid, saveCompanyData: !isAddingBrand }),
       })
       const data = await res.json()
       if (res.ok && data.franchisorId) {
@@ -428,11 +431,11 @@ export default function OnboardingQuiz({ franchisorId, firstName, brandName, exi
       const res = await fetch('/api/franchisor/onboarding', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ answers, franchisorId: fid }),
+        body: JSON.stringify({ answers, franchisorId: fid, saveCompanyData: !isAddingBrand }),
       })
       const data = await res.json()
       if (!res.ok) throw new Error(data.error ?? 'Unexpected error')
-      setStep(6)
+      setStep(effectiveSections + 1)
     } catch (err) {
       setSubmitError(err instanceof Error ? err.message : 'Something went wrong')
       setSubmitting(false)
@@ -472,7 +475,9 @@ export default function OnboardingQuiz({ franchisorId, firstName, brandName, exi
           <div className="bg-slate-50 border border-slate-200 rounded-2xl p-5 mb-8 text-left space-y-3">
             <p className="text-sm font-semibold text-slate-800">What to expect</p>
             {[
-              '5 sections · takes around 15 minutes',
+              isAddingBrand
+                ? '4 sections · takes around 10 minutes (recruitment process pre-filled from your first brand)'
+                : '5 sections · takes around 15 minutes',
               'Your progress saves automatically — pick up where you left off any time',
               'Your answers are only seen by the Franchise Foundry team',
               'Fields marked "Profile field" feed directly into your profile and matching',
@@ -498,7 +503,7 @@ export default function OnboardingQuiz({ franchisorId, firstName, brandName, exi
   }
 
   // ── Submitted — under review ───────────────────────────────────────────────
-  if (step === 6) {
+  if (step === effectiveSections + 1) {
     return (
       <div className="min-h-screen flex items-center justify-center p-6 bg-slate-50">
         <div className="max-w-lg w-full">
@@ -537,7 +542,7 @@ export default function OnboardingQuiz({ franchisorId, firstName, brandName, exi
   }
 
   const currentSection = SECTIONS[step - 1]
-  const isLastSection = step === TOTAL_SECTIONS
+  const isLastSection = step === effectiveSections
 
   // Cumulative visible-block offsets per section
   const Q_OFFSETS = [0, 4, 9, 15, 20]
@@ -556,7 +561,7 @@ export default function OnboardingQuiz({ franchisorId, firstName, brandName, exi
           <Image src="/logo-icon.png" alt="Franchise Foundry" width={32} height={32} />
           <div>
             <p className="text-xs text-slate-400 uppercase tracking-wider font-medium">
-              Section {step} of {TOTAL_SECTIONS}
+              Section {step} of {effectiveSections}
               {answers.brand_name && (
                 <span className="ml-2 text-slate-500 normal-case tracking-normal font-semibold">
                   · {answers.brand_name}
