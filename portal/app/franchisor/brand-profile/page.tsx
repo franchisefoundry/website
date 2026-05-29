@@ -24,8 +24,10 @@ export default async function BrandProfilePage() {
     ? await admin.from('franchisor_profiles').select('*').eq('id', previewAs).single()
     : activeBrandId
       ? await supabase.from('franchisor_profiles').select('*').eq('id', activeBrandId).single()
-      : await supabase.from('franchisor_profiles').select('*').eq('user_id', user!.id)
-          .order('created_at', { ascending: true }).limit(1).single()
+      : profile?.role === 'franchisor'
+        ? await supabase.from('franchisor_profiles').select('*').eq('user_id', user!.id)
+            .order('created_at', { ascending: true }).limit(1).single()
+        : { data: null }
 
   return (
     <div>
