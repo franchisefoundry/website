@@ -50,7 +50,7 @@ export default async function FranchisorDetailPage({ params }: Props) {
           <div className="flex items-center gap-2">
             <ImpersonateButton
               userId={franchisor.user_id}
-              redirectTo={`${process.env.NEXT_PUBLIC_SITE_URL ?? ''}/franchisor/dashboard`}
+              redirectTo={`${process.env.NEXT_PUBLIC_SITE_URL ?? ''}/franchisor`}
               label="View as franchisor →"
             />
             <Link
