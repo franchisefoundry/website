@@ -58,7 +58,7 @@ type Answers = {
   timeline_months: number               // REQUIRED · profile field
   inquiry_channels: string[]
 
-  // Section 5 — Recruitment Process
+  // Section 5 — Recruitment Process (company-level, asked once)
   screening_steps: string[]
   approval_timing: string
   approval_authority: string
@@ -188,8 +188,8 @@ function buildInitialAnswers(brandName?: string | null, existing?: Record<string
     high_performing_unit:     e.high_performing_unit     ?? '',
     underperformance_reasons: e.underperformance_reasons ?? '',
     format_types:             e.format_types             ?? [],
-    investment_min:           e.investment_min           ?? INVESTMENT_STEPS[1],   // £20k
-    investment_max:           e.investment_max           ?? INVESTMENT_STEPS[9],   // £100k
+    investment_min:           e.investment_min           ?? INVESTMENT_STEPS[1],
+    investment_max:           e.investment_max           ?? INVESTMENT_STEPS[9],
     liquid_capital_min:       e.liquid_capital_min       ?? 20000,
     franchise_fee:            e.franchise_fee   != null  ? String(e.franchise_fee)          : '',
     royalty_pct:              e.royalty_pct     != null  ? String(e.royalty_pct)             : '',
@@ -360,16 +360,29 @@ function QuestionBlock({ number, question, hint, required, children }: {
 
 export default function OnboardingQuiz({ franchisorId, firstName, brandName, existingAnswers, isAddingBrand = false }: Props) {
   const hasExisting = !!existingAnswers
-  // When adding a second brand, Section 5 (Recruitment Process) is shared at company level — skip it
+  // When adding a second brand from the portal, Section 5 is shared — skip it
   const effectiveSections = isAddingBrand ? 4 : TOTAL_SECTIONS
 
+  // ── Brand 1 state ────────────────────────────────────────────────────────
   const [answers, setAnswers] = useState<Answers>(() =>
     buildInitialAnswers(brandName, existingAnswers)
   )
-  // If they have saved progress, skip the welcome screen and land on section 1
   const [step, setStep] = useState(() => hasExisting ? 1 : 0)
-  // Track the profile ID — may be created on first PATCH if franchisorId was null
   const [fid, setFid] = useState(franchisorId)
+
+  // ── Multi-brand state (welcome screen) ───────────────────────────────────
+  const [wantsTwoBrands, setWantsTwoBrands] = useState(false)
+  const [brand2NameInput, setBrand2NameInput] = useState('')
+  const [brand2NameError, setBrand2NameError] = useState(false)
+  // Locked in when "Let's get started" is clicked
+  const [isTwoBrands, setIsTwoBrands] = useState(false)
+  const [brandLabels, setBrandLabels] = useState<[string, string]>(['Brand 1', 'Brand 2'])
+
+  // ── Brand 2 state ────────────────────────────────────────────────────────
+  const [answers2, setAnswers2] = useState<Answers>(() => buildInitialAnswers(null, null))
+  const [fid2, setFid2] = useState<string | null>(null)
+
+  // ── UI state ─────────────────────────────────────────────────────────────
   const [submitting, setSubmitting] = useState(false)
   const [saving, setSaving] = useState(false)
   const [saveError, setSaveError] = useState(false)
@@ -381,60 +394,117 @@ export default function OnboardingQuiz({ franchisorId, firstName, brandName, exi
     setAnswers(prev => ({ ...prev, [key]: value }))
   }
 
+  function set2<K extends keyof Answers>(key: K, value: Answers[K]) {
+    setAnswers2(prev => ({ ...prev, [key]: value }))
+  }
+
   const progressPct = step === 0 ? 0 : Math.min(Math.round(((step - 1) / effectiveSections) * 100), 95)
 
-  // ── Auto-save current answers to DB (non-blocking for navigation) ──────────
-  async function autoSave(currentFid: string | null, currentAnswers: Answers): Promise<string | null> {
-    setSaving(true)
-    setSaveError(false)
+  // ── perBrand: renders children once (single-brand) or twice with labels ──
+  // Used for Sections 1–4. Section 5 is always shared (single render).
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  type SetFn = (key: keyof Answers, value: any) => void
+
+  function perBrand(children: (a: Answers, s: SetFn, i: number) => React.ReactNode): React.ReactNode {
+    if (!isTwoBrands) return children(answers, set as SetFn, 0)
+    return (
+      <div className="space-y-5">
+        {([
+          { a: answers,  s: set  as SetFn, i: 0 },
+          { a: answers2, s: set2 as SetFn, i: 1 },
+        ]).map(({ a, s, i }) => (
+          <div key={i} className={i > 0 ? 'pt-4 border-t border-slate-100' : ''}>
+            <p className="text-[11px] font-bold text-[#3a4a3a] uppercase tracking-wide mb-3 flex items-center gap-1.5">
+              <span className="w-4 h-4 rounded-full bg-[#3a4a3a] text-white text-[10px] flex items-center justify-center shrink-0">{i + 1}</span>
+              {brandLabels[i]}
+            </p>
+            {children(a, s, i)}
+          </div>
+        ))}
+      </div>
+    )
+  }
+
+  // ── Save brand answers to DB ──────────────────────────────────────────────
+  async function saveOneBrand(
+    currentFid: string | null,
+    currentAnswers: Answers,
+    saveCompanyData: boolean,
+  ): Promise<{ ok: boolean; franchisorId: string | null }> {
     try {
       const res = await fetch('/api/franchisor/onboarding', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ answers: currentAnswers, franchisorId: currentFid, saveCompanyData: !isAddingBrand }),
+        body: JSON.stringify({ answers: currentAnswers, franchisorId: currentFid, saveCompanyData }),
       })
       const data = await res.json()
-      if (res.ok && data.franchisorId) {
-        if (!currentFid) setFid(data.franchisorId)
-        return data.franchisorId
-      } else {
-        setSaveError(true)
+      return { ok: res.ok, franchisorId: data.franchisorId ?? null }
+    } catch {
+      return { ok: false, franchisorId: null }
+    }
+  }
+
+  async function handleNext() {
+    // Validate brand 1 (and brand 2 on brand-specific sections)
+    const e1 = validateSection(step, answers)
+    const e2 = isTwoBrands && step < TOTAL_SECTIONS
+      ? validateSection(step, answers2).map(e => `${brandLabels[1]}: ${e}`)
+      : []
+    const errors = [...e1, ...e2]
+    if (errors.length) { setSectionErrors(errors); window.scrollTo({ top: 0, behavior: 'smooth' }); return }
+    setSectionErrors([])
+
+    setSaving(true)
+    setSaveError(false)
+    try {
+      const saves = [saveOneBrand(fid, answers, !isAddingBrand)]
+      // Only save brand 2 on brand-specific sections (1–4); Section 5 is always shared/brand1
+      if (isTwoBrands && step < TOTAL_SECTIONS) {
+        saves.push(saveOneBrand(fid2, answers2, false))
       }
+      const results = await Promise.all(saves)
+
+      if (results[0].franchisorId && !fid) setFid(results[0].franchisorId)
+      if (isTwoBrands && results[1]?.franchisorId && !fid2) setFid2(results[1].franchisorId)
+      if (results.some(r => !r.ok)) setSaveError(true)
     } catch {
       setSaveError(true)
     } finally {
       setSaving(false)
     }
-    return currentFid
-  }
-
-  async function handleNext() {
-    const errors = validateSection(step, answers)
-    if (errors.length) { setSectionErrors(errors); window.scrollTo({ top: 0, behavior: 'smooth' }); return }
-    setSectionErrors([])
-
-    // Auto-save progress before advancing — creates profile on first save
-    const updatedFid = await autoSave(fid, answers)
-    if (updatedFid && !fid) setFid(updatedFid)
 
     setStep(s => s + 1)
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
   async function handleSubmit() {
-    const errors = validateSection(step, answers)
+    const e1 = validateSection(step, answers)
+    const errors = [...e1]
     if (errors.length) { setSectionErrors(errors); window.scrollTo({ top: 0, behavior: 'smooth' }); return }
     setSectionErrors([])
     setSubmitting(true)
     setSubmitError(null)
     try {
-      const res = await fetch('/api/franchisor/onboarding', {
+      // Submit brand 1 first — saves Section 5 to franchisor_companies when !isAddingBrand
+      const res1 = await fetch('/api/franchisor/onboarding', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ answers, franchisorId: fid, saveCompanyData: !isAddingBrand }),
       })
-      const data = await res.json()
-      if (!res.ok) throw new Error(data.error ?? 'Unexpected error')
+      const data1 = await res1.json()
+      if (!res1.ok) throw new Error(data1.error ?? 'Unexpected error')
+
+      // Submit brand 2 if present — API merges Section 5 from franchisor_companies automatically
+      if (isTwoBrands) {
+        const res2 = await fetch('/api/franchisor/onboarding', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ answers: answers2, franchisorId: fid2, saveCompanyData: false }),
+        })
+        const data2 = await res2.json()
+        if (!res2.ok) throw new Error(data2.error ?? `${brandLabels[1]}: unexpected error`)
+      }
+
       setStep(effectiveSections + 1)
     } catch (err) {
       setSubmitError(err instanceof Error ? err.message : 'Something went wrong')
@@ -454,29 +524,71 @@ export default function OnboardingQuiz({ franchisorId, firstName, brandName, exi
             with the right candidates and brief our team properly.
           </p>
 
-          {/* Brand name — collected upfront so we can identify them immediately */}
-          <div className="bg-white border border-slate-200 rounded-2xl p-5 mb-5 text-left">
-            <label className="block text-sm font-semibold text-slate-800 mb-1">
-              What is your franchise brand name? <span className="text-red-400">*</span>
-            </label>
-            <p className="text-xs text-slate-400 mb-3">This is how your brand will appear throughout the portal</p>
-            <input
-              type="text"
-              value={answers.brand_name}
-              onChange={e => { set('brand_name', e.target.value); if (e.target.value.trim()) setBrandNameError(false) }}
-              placeholder="e.g. Pizza Palace"
-              className={`w-full px-4 py-3 border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#3a4a3a] focus:border-transparent text-slate-800 placeholder:text-slate-400 ${brandNameError ? 'border-red-400 bg-red-50' : 'border-slate-300'}`}
-            />
-            {brandNameError && (
-              <p className="text-xs text-red-500 mt-1.5">Please enter your brand name to continue</p>
+          {/* Brand name(s) — collected upfront */}
+          <div className="bg-white border border-slate-200 rounded-2xl p-5 mb-5 text-left space-y-4">
+            {/* Brand 1 */}
+            <div>
+              <label className="block text-sm font-semibold text-slate-800 mb-1">
+                What is your franchise brand name? <span className="text-red-400">*</span>
+              </label>
+              <p className="text-xs text-slate-400 mb-3">This is how your brand will appear throughout the portal</p>
+              <input
+                type="text"
+                value={answers.brand_name}
+                onChange={e => { set('brand_name', e.target.value); if (e.target.value.trim()) setBrandNameError(false) }}
+                placeholder="e.g. SoBe Burger"
+                className={`w-full px-4 py-3 border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#3a4a3a] focus:border-transparent text-slate-800 placeholder:text-slate-400 ${brandNameError ? 'border-red-400 bg-red-50' : 'border-slate-300'}`}
+              />
+              {brandNameError && (
+                <p className="text-xs text-red-500 mt-1.5">Please enter your brand name to continue</p>
+              )}
+            </div>
+
+            {/* Add second brand */}
+            {!wantsTwoBrands ? (
+              <button
+                type="button"
+                onClick={() => setWantsTwoBrands(true)}
+                className="flex items-center gap-1.5 text-sm text-[#3a4a3a] font-medium hover:underline"
+              >
+                <span className="text-lg leading-none">+</span> Add another brand
+              </button>
+            ) : (
+              <div>
+                <div className="flex items-center justify-between mb-1">
+                  <label className="block text-sm font-semibold text-slate-800">
+                    Second brand name <span className="text-red-400">*</span>
+                  </label>
+                  <button
+                    type="button"
+                    onClick={() => { setWantsTwoBrands(false); setBrand2NameInput(''); setBrand2NameError(false) }}
+                    className="text-xs text-slate-400 hover:text-slate-600"
+                  >
+                    Remove
+                  </button>
+                </div>
+                <input
+                  type="text"
+                  value={brand2NameInput}
+                  onChange={e => { setBrand2NameInput(e.target.value); if (e.target.value.trim()) setBrand2NameError(false) }}
+                  placeholder="e.g. Ivan Ramen"
+                  className={`w-full px-4 py-3 border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#3a4a3a] focus:border-transparent text-slate-800 placeholder:text-slate-400 ${brand2NameError ? 'border-red-400 bg-red-50' : 'border-slate-300'}`}
+                />
+                {brand2NameError && (
+                  <p className="text-xs text-red-500 mt-1.5">Please enter the second brand name to continue</p>
+                )}
+                <p className="text-xs text-slate-400 mt-2">
+                  Brand-specific details are collected side-by-side. Your recruitment process is asked once and shared across both brands.
+                </p>
+              </div>
             )}
           </div>
 
           <div className="bg-slate-50 border border-slate-200 rounded-2xl p-5 mb-8 text-left space-y-3">
             <p className="text-sm font-semibold text-slate-800">What to expect</p>
             {[
-              isAddingBrand
-                ? '4 sections · takes around 10 minutes (recruitment process pre-filled from your first brand)'
+              wantsTwoBrands
+                ? '5 sections · ~20 minutes · brand-specific questions answered for both brands side-by-side'
                 : '5 sections · takes around 15 minutes',
               'Your progress saves automatically — pick up where you left off any time',
               'Your answers are only seen by the Franchise Foundry team',
@@ -491,6 +603,12 @@ export default function OnboardingQuiz({ franchisorId, firstName, brandName, exi
           <button
             onClick={() => {
               if (!answers.brand_name.trim()) { setBrandNameError(true); return }
+              if (wantsTwoBrands) {
+                if (!brand2NameInput.trim()) { setBrand2NameError(true); return }
+                set2('brand_name', brand2NameInput.trim())
+                setBrandLabels([answers.brand_name.trim(), brand2NameInput.trim()])
+                setIsTwoBrands(true)
+              }
               setStep(1)
             }}
             className="w-full bg-[#3a4a3a] hover:bg-[#2d3b2d] text-white font-semibold py-3.5 px-6 rounded-xl transition-colors text-sm"
@@ -562,7 +680,12 @@ export default function OnboardingQuiz({ franchisorId, firstName, brandName, exi
           <div>
             <p className="text-xs text-slate-400 uppercase tracking-wider font-medium">
               Section {step} of {effectiveSections}
-              {answers.brand_name && (
+              {isTwoBrands && step < TOTAL_SECTIONS && (
+                <span className="ml-2 text-slate-500 normal-case tracking-normal font-semibold">
+                  · {brandLabels[0]} &amp; {brandLabels[1]}
+                </span>
+              )}
+              {!isTwoBrands && answers.brand_name && (
                 <span className="ml-2 text-slate-500 normal-case tracking-normal font-semibold">
                   · {answers.brand_name}
                 </span>
@@ -576,6 +699,16 @@ export default function OnboardingQuiz({ franchisorId, firstName, brandName, exi
             {saveError && <p className="text-xs text-amber-500 mt-0.5">Save failed — will retry</p>}
           </div>
         </div>
+
+        {/* Section 5 shared note for multi-brand */}
+        {isTwoBrands && step === TOTAL_SECTIONS && (
+          <div className="flex items-center gap-2 bg-[#3a4a3a]/5 border border-[#3a4a3a]/20 rounded-xl px-4 py-2.5 mb-4 ml-11">
+            <span className="text-[#3a4a3a]">🤝</span>
+            <p className="text-xs text-[#3a4a3a] font-medium">
+              This section applies to both {brandLabels[0]} and {brandLabels[1]} — your answers are shared across both brands.
+            </p>
+          </div>
+        )}
 
         {/* Resume banner */}
         {hasExisting && step === 1 && (
@@ -605,16 +738,20 @@ export default function OnboardingQuiz({ franchisorId, firstName, brandName, exi
                 number={qOffset + 1}
                 question="In one paragraph, describe your core business model — what a franchisee does day-to-day and how the business makes money."
               >
-                <Textarea value={answers.core_model} onChange={v => set('core_model', v)}
-                  placeholder="Daily operations, customer interactions, main revenue streams, what running a unit looks like…" />
+                {perBrand((a, s) => (
+                  <Textarea value={a.core_model} onChange={v => s('core_model', v)}
+                    placeholder="Daily operations, customer interactions, main revenue streams, what running a unit looks like…" />
+                ))}
               </QuestionBlock>
 
               <QuestionBlock
                 number={qOffset + 2}
                 question="What is your competitive advantage? Why would a customer choose you over the competition?"
               >
-                <Textarea value={answers.competitive_advantage} onChange={v => set('competitive_advantage', v)}
-                  placeholder="Product differentiation, price point, brand, experience, technology…" />
+                {perBrand((a, s) => (
+                  <Textarea value={a.competitive_advantage} onChange={v => s('competitive_advantage', v)}
+                    placeholder="Product differentiation, price point, brand, experience, technology…" />
+                ))}
               </QuestionBlock>
 
               <QuestionBlock
@@ -622,18 +759,20 @@ export default function OnboardingQuiz({ franchisorId, firstName, brandName, exi
                 question="Unit performance"
                 hint="Two quick questions about what good and poor performance looks like"
               >
-                <div className="space-y-4">
-                  <div>
-                    <SubLabel>What does a high-performing unit look like?</SubLabel>
-                    <Textarea value={answers.high_performing_unit} onChange={v => set('high_performing_unit', v)}
-                      rows={3} placeholder="e.g. Top-performing sites turn £X per week, with a team of 10…" />
+                {perBrand((a, s) => (
+                  <div className="space-y-4">
+                    <div>
+                      <SubLabel>What does a high-performing unit look like?</SubLabel>
+                      <Textarea value={a.high_performing_unit} onChange={v => s('high_performing_unit', v)}
+                        rows={3} placeholder="e.g. Top-performing sites turn £X per week, with a team of 10…" />
+                    </div>
+                    <div>
+                      <SubLabel>What are the most common reasons a unit underperforms?</SubLabel>
+                      <Textarea value={a.underperformance_reasons} onChange={v => s('underperformance_reasons', v)}
+                        rows={3} placeholder="Location, franchisee engagement, local competition, operational issues…" />
+                    </div>
                   </div>
-                  <div>
-                    <SubLabel>What are the most common reasons a unit underperforms?</SubLabel>
-                    <Textarea value={answers.underperformance_reasons} onChange={v => set('underperformance_reasons', v)}
-                      rows={3} placeholder="Location, franchisee engagement, local competition, operational issues…" />
-                  </div>
-                </div>
+                ))}
               </QuestionBlock>
 
               <QuestionBlock
@@ -642,19 +781,21 @@ export default function OnboardingQuiz({ franchisorId, firstName, brandName, exi
                 required
                 hint="Select all that apply — this helps us match candidates who fit your model"
               >
-                <div className="flex flex-wrap gap-2">
-                  {FORMAT_OPTIONS.map(fmt => (
-                    <button
-                      key={fmt.value} type="button"
-                      onClick={() => set('format_types', answers.format_types.includes(fmt.value)
-                        ? answers.format_types.filter(f => f !== fmt.value)
-                        : [...answers.format_types, fmt.value])}
-                      className={`px-3 py-2 rounded-lg text-sm border transition-colors ${answers.format_types.includes(fmt.value) ? 'bg-[#3a4a3a] text-white border-[#3a4a3a]' : 'border-slate-300 text-slate-700 hover:bg-slate-50'}`}
-                    >
-                      {fmt.label}
-                    </button>
-                  ))}
-                </div>
+                {perBrand((a, s) => (
+                  <div className="flex flex-wrap gap-2">
+                    {FORMAT_OPTIONS.map(fmt => (
+                      <button
+                        key={fmt.value} type="button"
+                        onClick={() => s('format_types', a.format_types.includes(fmt.value)
+                          ? a.format_types.filter(f => f !== fmt.value)
+                          : [...a.format_types, fmt.value])}
+                        className={`px-3 py-2 rounded-lg text-sm border transition-colors ${a.format_types.includes(fmt.value) ? 'bg-[#3a4a3a] text-white border-[#3a4a3a]' : 'border-slate-300 text-slate-700 hover:bg-slate-50'}`}
+                      >
+                        {fmt.label}
+                      </button>
+                    ))}
+                  </div>
+                ))}
               </QuestionBlock>
             </>
           )}
@@ -668,14 +809,16 @@ export default function OnboardingQuiz({ franchisorId, firstName, brandName, exi
                 required
                 hint="Drag the handles to set your minimum and maximum"
               >
-                <div className="bg-slate-50 rounded-2xl p-5 border border-slate-200">
-                  <DualRangeSlider
-                    min={answers.investment_min}
-                    max={answers.investment_max}
-                    onChange={(mn, mx) => { set('investment_min', mn); set('investment_max', mx) }}
-                    variant="dark"
-                  />
-                </div>
+                {perBrand((a, s) => (
+                  <div className="bg-slate-50 rounded-2xl p-5 border border-slate-200">
+                    <DualRangeSlider
+                      min={a.investment_min}
+                      max={a.investment_max}
+                      onChange={(mn, mx) => { s('investment_min', mn); s('investment_max', mx) }}
+                      variant="dark"
+                    />
+                  </div>
+                ))}
               </QuestionBlock>
 
               <QuestionBlock
@@ -684,16 +827,18 @@ export default function OnboardingQuiz({ franchisorId, firstName, brandName, exi
                 required
                 hint="Cash in hand — separate from any financed portion of the investment"
               >
-                <div className="bg-slate-50 rounded-2xl p-5 border border-slate-200">
-                  <SingleSlider
-                    value={answers.liquid_capital_min}
-                    min={5000} max={200000} step={5000}
-                    format={v => `£${v.toLocaleString()}`}
-                    lowLabel="£5k" highLabel="£200k+"
-                    onChange={v => set('liquid_capital_min', v)}
-                    variant="dark"
-                  />
-                </div>
+                {perBrand((a, s) => (
+                  <div className="bg-slate-50 rounded-2xl p-5 border border-slate-200">
+                    <SingleSlider
+                      value={a.liquid_capital_min}
+                      min={5000} max={200000} step={5000}
+                      format={v => `£${v.toLocaleString()}`}
+                      lowLabel="£5k" highLabel="£200k+"
+                      onChange={v => s('liquid_capital_min', v)}
+                      variant="dark"
+                    />
+                  </div>
+                ))}
               </QuestionBlock>
 
               <QuestionBlock
@@ -702,49 +847,51 @@ export default function OnboardingQuiz({ franchisorId, firstName, brandName, exi
                 required
                 hint="These feed directly into your profile — be as accurate as possible"
               >
-                <div className="grid gap-4">
-                  <div>
-                    <SubLabel>Franchise fee <span className="text-red-400">*</span></SubLabel>
-                    <div className="relative">
-                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm font-medium">£</span>
-                      <input
-                        type="number" min="0" step="500"
-                        value={answers.franchise_fee}
-                        onChange={e => set('franchise_fee', e.target.value)}
-                        placeholder="e.g. 25000"
-                        className="w-full pl-7 pr-4 py-3 border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#3a4a3a] focus:border-transparent text-slate-800"
-                      />
-                    </div>
-                  </div>
-                  <div className="grid grid-cols-2 gap-3">
+                {perBrand((a, s) => (
+                  <div className="grid gap-4">
                     <div>
-                      <SubLabel>Royalty <span className="text-red-400">*</span></SubLabel>
+                      <SubLabel>Franchise fee <span className="text-red-400">*</span></SubLabel>
                       <div className="relative">
+                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm font-medium">£</span>
                         <input
-                          type="number" min="0" max="100" step="0.5"
-                          value={answers.royalty_pct}
-                          onChange={e => set('royalty_pct', e.target.value)}
-                          placeholder="e.g. 7"
-                          className="w-full pl-4 pr-8 py-3 border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#3a4a3a] focus:border-transparent text-slate-800"
+                          type="number" min="0" step="500"
+                          value={a.franchise_fee}
+                          onChange={e => s('franchise_fee', e.target.value)}
+                          placeholder="e.g. 25000"
+                          className="w-full pl-7 pr-4 py-3 border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#3a4a3a] focus:border-transparent text-slate-800"
                         />
-                        <span className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm font-medium">%</span>
                       </div>
                     </div>
-                    <div>
-                      <SubLabel optional>Marketing levy</SubLabel>
-                      <div className="relative">
-                        <input
-                          type="number" min="0" max="100" step="0.5"
-                          value={answers.marketing_levy_pct}
-                          onChange={e => set('marketing_levy_pct', e.target.value)}
-                          placeholder="e.g. 2"
-                          className="w-full pl-4 pr-8 py-3 border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#3a4a3a] focus:border-transparent text-slate-800"
-                        />
-                        <span className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm font-medium">%</span>
+                    <div className="grid grid-cols-2 gap-3">
+                      <div>
+                        <SubLabel>Royalty <span className="text-red-400">*</span></SubLabel>
+                        <div className="relative">
+                          <input
+                            type="number" min="0" max="100" step="0.5"
+                            value={a.royalty_pct}
+                            onChange={e => s('royalty_pct', e.target.value)}
+                            placeholder="e.g. 7"
+                            className="w-full pl-4 pr-8 py-3 border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#3a4a3a] focus:border-transparent text-slate-800"
+                          />
+                          <span className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm font-medium">%</span>
+                        </div>
+                      </div>
+                      <div>
+                        <SubLabel optional>Marketing levy</SubLabel>
+                        <div className="relative">
+                          <input
+                            type="number" min="0" max="100" step="0.5"
+                            value={a.marketing_levy_pct}
+                            onChange={e => s('marketing_levy_pct', e.target.value)}
+                            placeholder="e.g. 2"
+                            className="w-full pl-4 pr-8 py-3 border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#3a4a3a] focus:border-transparent text-slate-800"
+                          />
+                          <span className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm font-medium">%</span>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
+                ))}
               </QuestionBlock>
 
               <QuestionBlock
@@ -752,18 +899,20 @@ export default function OnboardingQuiz({ franchisorId, firstName, brandName, exi
                 question="Financials with prospective franchisees"
                 hint="Two questions about what you share and what you typically hear back"
               >
-                <div className="space-y-4">
-                  <div>
-                    <SubLabel>What financial metrics or P&amp;L data do you share during recruitment?</SubLabel>
-                    <Textarea value={answers.financial_metrics_shared} onChange={v => set('financial_metrics_shared', v)}
-                      rows={3} placeholder="Average unit revenue, EBITDA, margins, FDD disclosure…" />
+                {perBrand((a, s) => (
+                  <div className="space-y-4">
+                    <div>
+                      <SubLabel>What financial metrics or P&amp;L data do you share during recruitment?</SubLabel>
+                      <Textarea value={a.financial_metrics_shared} onChange={v => s('financial_metrics_shared', v)}
+                        rows={3} placeholder="Average unit revenue, EBITDA, margins, FDD disclosure…" />
+                    </div>
+                    <div>
+                      <SubLabel>What are the most common financial objections you hear from prospective franchisees?</SubLabel>
+                      <Textarea value={a.common_objections} onChange={v => s('common_objections', v)}
+                        rows={3} placeholder="'The fee is too high', 'I don't have enough liquid capital', 'The payback is too long'…" />
+                    </div>
                   </div>
-                  <div>
-                    <SubLabel>What are the most common financial objections you hear from prospective franchisees?</SubLabel>
-                    <Textarea value={answers.common_objections} onChange={v => set('common_objections', v)}
-                      rows={3} placeholder="'The fee is too high', 'I don't have enough liquid capital', 'The payback is too long'…" />
-                  </div>
-                </div>
+                ))}
               </QuestionBlock>
 
               <QuestionBlock
@@ -771,16 +920,18 @@ export default function OnboardingQuiz({ franchisorId, firstName, brandName, exi
                 question="What is a realistic break-even timeline for a new franchisee?"
                 hint="Slide to select the typical number of months"
               >
-                <div className="bg-slate-50 rounded-2xl p-5 border border-slate-200">
-                  <SingleSlider
-                    value={answers.break_even_months}
-                    min={1} max={48}
-                    format={v => v === 48 ? '48+ months' : `${v} month${v === 1 ? '' : 's'}`}
-                    lowLabel="1 month" highLabel="48+ months"
-                    onChange={v => set('break_even_months', v)}
-                    variant="dark"
-                  />
-                </div>
+                {perBrand((a, s) => (
+                  <div className="bg-slate-50 rounded-2xl p-5 border border-slate-200">
+                    <SingleSlider
+                      value={a.break_even_months}
+                      min={1} max={48}
+                      format={v => v === 48 ? '48+ months' : `${v} month${v === 1 ? '' : 's'}`}
+                      lowLabel="1 month" highLabel="48+ months"
+                      onChange={v => s('break_even_months', v)}
+                      variant="dark"
+                    />
+                  </div>
+                ))}
               </QuestionBlock>
             </>
           )}
@@ -792,8 +943,10 @@ export default function OnboardingQuiz({ franchisorId, firstName, brandName, exi
                 number={qOffset + 1}
                 question="Describe your ideal franchisee — background, personality, experience, and what typically motivates them."
               >
-                <Textarea value={answers.ideal_franchisee_profile} onChange={v => set('ideal_franchisee_profile', v)}
-                  placeholder="Age range, professional background, management experience, lifestyle, motivations…" />
+                {perBrand((a, s) => (
+                  <Textarea value={a.ideal_franchisee_profile} onChange={v => s('ideal_franchisee_profile', v)}
+                    placeholder="Age range, professional background, management experience, lifestyle, motivations…" />
+                ))}
               </QuestionBlock>
 
               <QuestionBlock
@@ -802,18 +955,20 @@ export default function OnboardingQuiz({ franchisorId, firstName, brandName, exi
                 required
                 hint="This feeds directly into matching — be honest so we surface the right candidates"
               >
-                <div className="space-y-2">
-                  {EXPERIENCE_OPTIONS.map(opt => (
-                    <button
-                      key={opt.value} type="button"
-                      onClick={() => set('experience_required', opt.value)}
-                      className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl border text-left text-sm transition-colors ${answers.experience_required === opt.value ? 'bg-[#3a4a3a] text-white border-[#3a4a3a]' : 'border-slate-300 text-slate-700 hover:bg-slate-50'}`}
-                    >
-                      <span className="text-xl">{opt.icon}</span>
-                      <span className="font-medium">{opt.label}</span>
-                    </button>
-                  ))}
-                </div>
+                {perBrand((a, s) => (
+                  <div className="space-y-2">
+                    {EXPERIENCE_OPTIONS.map(opt => (
+                      <button
+                        key={opt.value} type="button"
+                        onClick={() => s('experience_required', opt.value)}
+                        className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl border text-left text-sm transition-colors ${a.experience_required === opt.value ? 'bg-[#3a4a3a] text-white border-[#3a4a3a]' : 'border-slate-300 text-slate-700 hover:bg-slate-50'}`}
+                      >
+                        <span className="text-xl">{opt.icon}</span>
+                        <span className="font-medium">{opt.label}</span>
+                      </button>
+                    ))}
+                  </div>
+                ))}
               </QuestionBlock>
 
               <QuestionBlock
@@ -821,25 +976,29 @@ export default function OnboardingQuiz({ franchisorId, firstName, brandName, exi
                 question="A couple of quick ones"
                 required
               >
-                <div className="space-y-4">
-                  <div>
-                    <SubLabel>Is full-time commitment required from the franchisee?</SubLabel>
-                    <p className="text-xs text-slate-400 mb-2">Some franchisees prefer semi-passive ownership — be clear about your expectation</p>
-                    <YesNo value={answers.full_time_required} onChange={v => set('full_time_required', v)} />
+                {perBrand((a, s) => (
+                  <div className="space-y-4">
+                    <div>
+                      <SubLabel>Is full-time commitment required from the franchisee?</SubLabel>
+                      <p className="text-xs text-slate-400 mb-2">Some franchisees prefer semi-passive ownership — be clear about your expectation</p>
+                      <YesNo value={a.full_time_required} onChange={v => s('full_time_required', v)} />
+                    </div>
+                    <div className="pt-1">
+                      <SubLabel>Do you grant single-location franchise licences?</SubLabel>
+                      <YesNo value={a.single_franchise_licenses} onChange={v => s('single_franchise_licenses', v)} />
+                    </div>
                   </div>
-                  <div className="pt-1">
-                    <SubLabel>Do you grant single-location franchise licences?</SubLabel>
-                    <YesNo value={answers.single_franchise_licenses} onChange={v => set('single_franchise_licenses', v)} />
-                  </div>
-                </div>
+                ))}
               </QuestionBlock>
 
               <QuestionBlock
                 number={qOffset + 4}
                 question="What are your top factors when approving a franchisee application? Select all that apply."
               >
-                <MultiSelect options={APPROVAL_FACTOR_OPTIONS} selected={answers.approval_factors}
-                  onChange={v => set('approval_factors', v)} />
+                {perBrand((a, s) => (
+                  <MultiSelect options={APPROVAL_FACTOR_OPTIONS} selected={a.approval_factors}
+                    onChange={v => s('approval_factors', v)} />
+                ))}
               </QuestionBlock>
 
               <QuestionBlock
@@ -847,16 +1006,20 @@ export default function OnboardingQuiz({ franchisorId, firstName, brandName, exi
                 question="Do you require the franchisee to be hands-on (owner-operator), or can they hire a manager to run the business?"
                 required
               >
-                <OperatingModelCards value={answers.operating_model_raw}
-                  onChange={v => set('operating_model_raw', v)} variant="dark" />
+                {perBrand((a, s) => (
+                  <OperatingModelCards value={a.operating_model_raw}
+                    onChange={v => s('operating_model_raw', v)} variant="dark" />
+                ))}
               </QuestionBlock>
 
               <QuestionBlock
                 number={qOffset + 6}
                 question="What are the most common reasons you decline a franchisee application? Select all that apply."
               >
-                <MultiSelect options={DECLINE_REASON_OPTIONS} selected={answers.decline_reasons}
-                  onChange={v => set('decline_reasons', v)} />
+                {perBrand((a, s) => (
+                  <MultiSelect options={DECLINE_REASON_OPTIONS} selected={a.decline_reasons}
+                    onChange={v => s('decline_reasons', v)} />
+                ))}
               </QuestionBlock>
             </>
           )}
@@ -870,40 +1033,44 @@ export default function OnboardingQuiz({ franchisorId, firstName, brandName, exi
                 required
                 hint="This is a hard filter in our matching algorithm"
               >
-                <div className="flex flex-wrap gap-2 mb-3">
-                  {UK_CITY_OPTIONS.map(city => (
-                    <button
-                      key={city} type="button"
-                      onClick={() => set('locations_available', answers.locations_available.includes(city)
-                        ? answers.locations_available.filter(c => c !== city)
-                        : [...answers.locations_available, city])}
-                      className={`px-3 py-1.5 rounded-full text-sm border capitalize transition-colors ${answers.locations_available.includes(city) ? 'bg-[#3a4a3a] text-white border-[#3a4a3a]' : 'border-slate-300 text-slate-700 hover:bg-slate-50'}`}
-                    >
-                      {city.charAt(0).toUpperCase() + city.slice(1)}
-                    </button>
-                  ))}
-                </div>
-                <div className="space-y-3">
-                  <div>
-                    <SubLabel optional>Other locations (comma-separated)</SubLabel>
-                    <input
-                      type="text"
-                      placeholder="e.g. Cambridge, Oxford, Brighton"
-                      defaultValue={answers.locations_available.filter(l => !UK_CITY_OPTIONS.includes(l)).join(', ')}
-                      onBlur={e => {
-                        const custom = e.target.value.split(',').map(l => l.trim().toLowerCase()).filter(Boolean)
-                        const presets = answers.locations_available.filter(l => UK_CITY_OPTIONS.includes(l))
-                        set('locations_available', [...presets, ...custom])
-                      }}
-                      className="w-full px-3 py-2.5 border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#3a4a3a] focus:border-transparent"
-                    />
-                  </div>
-                  <div>
-                    <SubLabel optional>Priority territories — which areas are you most focused on right now?</SubLabel>
-                    <Textarea value={answers.priority_territories} onChange={v => set('priority_territories', v)}
-                      rows={2} placeholder="e.g. Greater Manchester, West Yorkshire, Glasgow — avoiding Central London for now…" />
-                  </div>
-                </div>
+                {perBrand((a, s) => (
+                  <>
+                    <div className="flex flex-wrap gap-2 mb-3">
+                      {UK_CITY_OPTIONS.map(city => (
+                        <button
+                          key={city} type="button"
+                          onClick={() => s('locations_available', a.locations_available.includes(city)
+                            ? a.locations_available.filter(c => c !== city)
+                            : [...a.locations_available, city])}
+                          className={`px-3 py-1.5 rounded-full text-sm border capitalize transition-colors ${a.locations_available.includes(city) ? 'bg-[#3a4a3a] text-white border-[#3a4a3a]' : 'border-slate-300 text-slate-700 hover:bg-slate-50'}`}
+                        >
+                          {city.charAt(0).toUpperCase() + city.slice(1)}
+                        </button>
+                      ))}
+                    </div>
+                    <div className="space-y-3">
+                      <div>
+                        <SubLabel optional>Other locations (comma-separated)</SubLabel>
+                        <input
+                          type="text"
+                          placeholder="e.g. Cambridge, Oxford, Brighton"
+                          defaultValue={a.locations_available.filter(l => !UK_CITY_OPTIONS.includes(l)).join(', ')}
+                          onBlur={e => {
+                            const custom = e.target.value.split(',').map(l => l.trim().toLowerCase()).filter(Boolean)
+                            const presets = a.locations_available.filter(l => UK_CITY_OPTIONS.includes(l))
+                            s('locations_available', [...presets, ...custom])
+                          }}
+                          className="w-full px-3 py-2.5 border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#3a4a3a] focus:border-transparent"
+                        />
+                      </div>
+                      <div>
+                        <SubLabel optional>Priority territories — which areas are you most focused on right now?</SubLabel>
+                        <Textarea value={a.priority_territories} onChange={v => s('priority_territories', v)}
+                          rows={2} placeholder="e.g. Greater Manchester, West Yorkshire, Glasgow — avoiding Central London for now…" />
+                      </div>
+                    </div>
+                  </>
+                ))}
               </QuestionBlock>
 
               <QuestionBlock
@@ -911,29 +1078,35 @@ export default function OnboardingQuiz({ franchisorId, firstName, brandName, exi
                 question="How many new franchise units are you targeting to open per year?"
                 hint="Slide to set your target, then add any useful context below"
               >
-                <div className="bg-slate-50 rounded-2xl p-5 border border-slate-200">
-                  <SingleSlider
-                    value={answers.growth_target_units}
-                    min={1} max={50}
-                    format={v => v === 50 ? '50+ units/year' : `${v} unit${v === 1 ? '' : 's'}/year`}
-                    lowLabel="1 unit" highLabel="50+ units"
-                    onChange={v => set('growth_target_units', v)}
-                    variant="dark"
-                  />
-                </div>
-                <div className="mt-3">
-                  <SubLabel optional>Timeframe &amp; context</SubLabel>
-                  <Textarea value={answers.annual_growth_targets} onChange={v => set('annual_growth_targets', v)}
-                    rows={2} placeholder="e.g. Targeting 25 total by 2027, with 5–8 new units each year…" />
-                </div>
+                {perBrand((a, s) => (
+                  <>
+                    <div className="bg-slate-50 rounded-2xl p-5 border border-slate-200">
+                      <SingleSlider
+                        value={a.growth_target_units}
+                        min={1} max={50}
+                        format={v => v === 50 ? '50+ units/year' : `${v} unit${v === 1 ? '' : 's'}/year`}
+                        lowLabel="1 unit" highLabel="50+ units"
+                        onChange={v => s('growth_target_units', v)}
+                        variant="dark"
+                      />
+                    </div>
+                    <div className="mt-3">
+                      <SubLabel optional>Timeframe &amp; context</SubLabel>
+                      <Textarea value={a.annual_growth_targets} onChange={v => s('annual_growth_targets', v)}
+                        rows={2} placeholder="e.g. Targeting 25 total by 2027, with 5–8 new units each year…" />
+                    </div>
+                  </>
+                ))}
               </QuestionBlock>
 
               <QuestionBlock
                 number={qOffset + 3}
                 question="What is your biggest concern about scaling your franchise network over the next 2–3 years?"
               >
-                <Textarea value={answers.scaling_concerns} onChange={v => set('scaling_concerns', v)}
-                  placeholder="Maintaining quality, finding the right people, operational support capacity, brand consistency…" />
+                {perBrand((a, s) => (
+                  <Textarea value={a.scaling_concerns} onChange={v => s('scaling_concerns', v)}
+                    placeholder="Maintaining quality, finding the right people, operational support capacity, brand consistency…" />
+                ))}
               </QuestionBlock>
 
               <QuestionBlock
@@ -942,29 +1115,33 @@ export default function OnboardingQuiz({ franchisorId, firstName, brandName, exi
                 required
                 hint="Include training, fit-out, and launch preparation in your estimate"
               >
-                <div className="bg-slate-50 rounded-2xl p-5 border border-slate-200">
-                  <SingleSlider
-                    value={answers.timeline_months}
-                    min={1} max={36}
-                    format={v => v === 36 ? '36+ months' : `${v} month${v === 1 ? '' : 's'}`}
-                    lowLabel="1 month" highLabel="36+ months"
-                    onChange={v => set('timeline_months', v)}
-                    variant="dark"
-                  />
-                </div>
+                {perBrand((a, s) => (
+                  <div className="bg-slate-50 rounded-2xl p-5 border border-slate-200">
+                    <SingleSlider
+                      value={a.timeline_months}
+                      min={1} max={36}
+                      format={v => v === 36 ? '36+ months' : `${v} month${v === 1 ? '' : 's'}`}
+                      lowLabel="1 month" highLabel="36+ months"
+                      onChange={v => s('timeline_months', v)}
+                      variant="dark"
+                    />
+                  </div>
+                ))}
               </QuestionBlock>
 
               <QuestionBlock
                 number={qOffset + 5}
                 question="Where do your franchise enquiries currently come from? Select all that apply."
               >
-                <MultiSelect options={INQUIRY_CHANNEL_OPTIONS} selected={answers.inquiry_channels}
-                  onChange={v => set('inquiry_channels', v)} />
+                {perBrand((a, s) => (
+                  <MultiSelect options={INQUIRY_CHANNEL_OPTIONS} selected={a.inquiry_channels}
+                    onChange={v => s('inquiry_channels', v)} />
+                ))}
               </QuestionBlock>
             </>
           )}
 
-          {/* ── Section 5 — Recruitment Process ─────────────────────────────── */}
+          {/* ── Section 5 — Recruitment Process (shared for all brands) ───── */}
           {step === 5 && (
             <>
               <QuestionBlock
@@ -1060,7 +1237,6 @@ export default function OnboardingQuiz({ franchisorId, firstName, brandName, exi
           ) : <div />}
 
           <div className="flex items-center gap-3">
-            {/* Inline save indicator */}
             {saving && <span className="text-xs text-slate-400">Saving…</span>}
             {saveError && !saving && <span className="text-xs text-amber-500">Save failed</span>}
 
