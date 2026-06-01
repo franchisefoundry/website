@@ -1,31 +1,42 @@
 import { createClient } from '@/lib/supabase/server'
-import { PageHeader } from '@/components/page-header'
-import { Card } from '@/components/ui/card'
 import Link from 'next/link'
 
-const STATUS_COLOURS: Record<string, { text: string; bg: string; border: string }> = {
-  submitted:  { text: 'text-slate-600',   bg: 'bg-slate-50',    border: 'border-slate-200'   },
-  approved:   { text: 'text-emerald-600', bg: 'bg-emerald-50',  border: 'border-emerald-200' },
-  rejected:   { text: 'text-red-500',     bg: 'bg-red-50',      border: 'border-red-200'     },
-  invited:    { text: 'text-sky-600',     bg: 'bg-sky-50',      border: 'border-sky-200'     },
-  registered: { text: 'text-violet-600',  bg: 'bg-violet-50',   border: 'border-violet-200'  },
-  matched:    { text: 'text-amber-600',   bg: 'bg-amber-50',    border: 'border-amber-200'   },
-  intro_made: { text: 'text-orange-600',  bg: 'bg-orange-50',   border: 'border-orange-200'  },
-  signed:     { text: 'text-teal-600',    bg: 'bg-teal-50',     border: 'border-teal-200'    },
-  paid:       { text: 'text-brand-green', bg: 'bg-emerald-50',  border: 'border-emerald-300' },
+const PIPELINE: { key: string; label: string }[] = [
+  { key: 'submitted',  label: 'Submitted'  },
+  { key: 'invited',    label: 'Invited'    },
+  { key: 'registered', label: 'Registered' },
+  { key: 'matched',    label: 'Matched'    },
+  { key: 'intro_made', label: 'Intro Made' },
+  { key: 'signed',     label: 'Signed'     },
+  { key: 'paid',       label: 'Paid'       },
+]
+
+const STATUS_DOT: Record<string, string> = {
+  submitted:  'bg-slate-400',
+  invited:    'bg-sky-400',
+  registered: 'bg-violet-400',
+  matched:    'bg-amber-400',
+  intro_made: 'bg-orange-400',
+  signed:     'bg-teal-500',
+  paid:       'bg-emerald-500',
 }
 
-const STATUS_LABELS: Record<string, string> = {
-  submitted: 'Submitted', approved: 'Approved', rejected: 'Rejected',
-  invited: 'Invited', registered: 'Registered', matched: 'Matched',
-  intro_made: 'Intro Made', signed: 'Signed', paid: 'Paid',
+const STATUS_LABEL: Record<string, string> = {
+  submitted: 'Submitted', invited: 'Invited', registered: 'Registered',
+  matched: 'Matched', intro_made: 'Intro Made', signed: 'Signed',
+  paid: 'Paid', rejected: 'Rejected',
 }
 
-export default async function IntroducerDashboard() {
+export default async function AgentDashboard() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
 
-  const { data: profile } = await supabase.from('profiles').select('full_name').eq('id', user!.id).single()
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('full_name')
+    .eq('id', user!.id)
+    .single()
+
   const firstName = profile?.full_name?.split(' ')[0] ?? 'there'
 
   const { data: leads } = await supabase
@@ -34,89 +45,153 @@ export default async function IntroducerDashboard() {
     .eq('introducer_id', user!.id)
     .order('created_at', { ascending: false })
 
+  const { data: commissions } = await supabase
+    .from('introducer_commissions')
+    .select('commission_amount, status')
+    .eq('introducer_id', user!.id)
+
   const all = leads ?? []
 
-  const counts = {
-    submitted:  all.filter(l => l.status === 'submitted').length,
-    approved:   all.filter(l => l.status === 'approved').length,
-    invited:    all.filter(l => l.status === 'invited').length,
-    registered: all.filter(l => l.status === 'registered').length,
-    matched:    all.filter(l => l.status === 'matched').length,
-    intro_made: all.filter(l => l.status === 'intro_made').length,
-    signed:     all.filter(l => l.status === 'signed').length,
-    paid:       all.filter(l => l.status === 'paid').length,
-    rejected:   all.filter(l => l.status === 'rejected').length,
-  }
+  // Counts per stage
+  const counts: Record<string, number> = {}
+  PIPELINE.forEach(s => { counts[s.key] = 0 })
+  counts.rejected = 0
+  all.forEach(l => { if (counts[l.status] !== undefined) counts[l.status]++ })
 
-  const recentLeads = all.slice(0, 5)
+  const totalLeads   = all.length
+  const activePipeline = all.filter(l =>
+    ['invited','registered','matched','intro_made'].includes(l.status)
+  ).length
+  const signed       = counts.signed + counts.paid
+  const commEarned   = (commissions ?? [])
+    .filter(c => c.status === 'paid')
+    .reduce((s, c) => s + (c.commission_amount ?? 0), 0)
+
+  const recentLeads  = all.slice(0, 6)
 
   return (
-    <div>
-      <PageHeader
-        title={`Welcome, ${firstName}`}
-        description="Your agent dashboard."
-      />
+    <div className="space-y-8">
+      {/* Header */}
+      <div>
+        <h1 className="text-2xl font-semibold text-slate-900">Welcome back, {firstName}</h1>
+        <p className="text-sm text-slate-400 mt-0.5">Here&apos;s how your pipeline is looking.</p>
+      </div>
 
-      {/* Pipeline stats */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-8">
-        {(Object.entries(counts) as [string, number][]).filter(([k]) => k !== 'rejected').map(([status, count]) => {
-          const c = STATUS_COLOURS[status] ?? STATUS_COLOURS.submitted
-          return (
-            <Link key={status} href="/introducer/leads">
-              <div className={`rounded-2xl border ${c.border} ${c.bg} p-4 hover:shadow-sm transition-shadow cursor-pointer`}>
-                <p className={`text-2xl font-bold ${c.text} mb-0.5`}>{count}</p>
-                <p className="text-xs font-medium text-slate-600">{STATUS_LABELS[status]}</p>
+      {/* KPI cards */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        {[
+          { label: 'Total leads',      value: totalLeads,     sub: 'all time' },
+          { label: 'Active pipeline',  value: activePipeline, sub: 'in progress' },
+          { label: 'Signed',           value: signed,         sub: 'agreements' },
+          { label: 'Commission earned',value: `£${(commEarned / 100).toLocaleString('en-GB', { minimumFractionDigits: 2 })}`, sub: 'paid to date' },
+        ].map(card => (
+          <div key={card.label} className="bg-white rounded-2xl border border-slate-200 p-5">
+            <p className="text-3xl font-bold text-slate-900 mb-1">{card.value}</p>
+            <p className="text-sm font-medium text-slate-700">{card.label}</p>
+            <p className="text-xs text-slate-400 mt-0.5">{card.sub}</p>
+          </div>
+        ))}
+      </div>
+
+      {/* Pipeline flow */}
+      <div className="bg-white rounded-2xl border border-slate-200 p-6">
+        <div className="flex items-center justify-between mb-5">
+          <p className="text-sm font-semibold text-slate-800">Pipeline</p>
+          <Link href="/introducer/leads" className="text-xs text-brand-green hover:underline">
+            View all leads →
+          </Link>
+        </div>
+        <div className="flex items-start gap-0 overflow-x-auto pb-1">
+          {PIPELINE.map((stage, idx) => (
+            <div key={stage.key} className="flex items-center flex-shrink-0">
+              {/* Stage block */}
+              <div className="flex flex-col items-center min-w-[80px]">
+                <div className={`w-10 h-10 rounded-full flex items-center justify-center text-white text-sm font-bold mb-2 ${
+                  counts[stage.key] > 0 ? STATUS_DOT[stage.key] : 'bg-slate-100'
+                }`}>
+                  <span className={counts[stage.key] > 0 ? 'text-white' : 'text-slate-400'}>
+                    {counts[stage.key]}
+                  </span>
+                </div>
+                <p className={`text-[11px] font-medium text-center leading-tight ${
+                  counts[stage.key] > 0 ? 'text-slate-700' : 'text-slate-400'
+                }`}>
+                  {stage.label}
+                </p>
               </div>
-            </Link>
-          )
-        })}
-        {/* Rejected — muted */}
-        <div className="rounded-2xl border border-slate-100 bg-slate-50 p-4">
-          <p className="text-2xl font-bold text-slate-400 mb-0.5">{counts.rejected}</p>
-          <p className="text-xs font-medium text-slate-400">Rejected</p>
+              {/* Arrow connector (not after last) */}
+              {idx < PIPELINE.length - 1 && (
+                <div className="w-8 flex items-center justify-center mb-5 flex-shrink-0">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="text-slate-300">
+                    <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </div>
+              )}
+            </div>
+          ))}
         </div>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+      {/* Bottom row */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
         {/* Recent leads */}
-        <Card className="p-6">
+        <div className="sm:col-span-2 bg-white rounded-2xl border border-slate-200 p-6">
           <div className="flex items-center justify-between mb-4">
             <p className="text-sm font-semibold text-slate-800">Recent leads</p>
             <Link href="/introducer/leads" className="text-xs text-brand-green hover:underline">View all →</Link>
           </div>
           {recentLeads.length === 0 ? (
-            <p className="text-sm text-slate-400">No leads submitted yet.</p>
+            <div className="py-8 text-center">
+              <p className="text-sm text-slate-400">No leads yet — submit your first one below.</p>
+            </div>
           ) : (
-            <div className="space-y-2">
-              {recentLeads.map(lead => {
-                const c = STATUS_COLOURS[lead.status] ?? STATUS_COLOURS.submitted
-                return (
-                  <div key={lead.id} className="flex items-center justify-between">
+            <div className="divide-y divide-slate-50">
+              {recentLeads.map(lead => (
+                <div key={lead.id} className="flex items-center justify-between py-2.5">
+                  <div>
                     <p className="text-sm font-medium text-slate-800">{lead.first_name} {lead.last_name}</p>
-                    <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${c.bg} ${c.text}`}>
-                      {STATUS_LABELS[lead.status] ?? lead.status}
-                    </span>
+                    <p className="text-xs text-slate-400">
+                      {new Date(lead.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}
+                    </p>
                   </div>
-                )
-              })}
+                  <div className="flex items-center gap-1.5">
+                    <span className={`w-2 h-2 rounded-full flex-shrink-0 ${STATUS_DOT[lead.status] ?? 'bg-slate-300'}`} />
+                    <span className="text-xs text-slate-500">{STATUS_LABEL[lead.status] ?? lead.status}</span>
+                  </div>
+                </div>
+              ))}
             </div>
           )}
-        </Card>
+        </div>
 
-        {/* Quick links */}
-        <Card className="p-6">
+        {/* Quick actions */}
+        <div className="bg-white rounded-2xl border border-slate-200 p-6">
           <p className="text-sm font-semibold text-slate-800 mb-4">Quick actions</p>
-          <div className="space-y-2">
-            <Link href="/introducer/leads?new=1"
-              className="flex items-center gap-2 px-4 py-3 bg-brand-green hover:bg-brand-green-dark text-white text-sm font-medium rounded-xl transition-colors">
-              <span>+</span> Submit a new lead
+          <div className="space-y-2.5">
+            <Link
+              href="/introducer/leads"
+              className="flex items-center gap-2.5 px-4 py-3 bg-brand-green hover:bg-brand-green-dark text-white text-sm font-medium rounded-xl transition-colors"
+            >
+              <span className="text-lg leading-none">+</span>
+              Submit a new lead
             </Link>
-            <Link href="/introducer/commission"
-              className="flex items-center gap-2 px-4 py-3 border border-slate-200 hover:border-brand-green text-slate-700 text-sm font-medium rounded-xl transition-colors">
-              💰 View commission
+            <Link
+              href="/introducer/commission"
+              className="flex items-center gap-2.5 px-4 py-3 border border-slate-200 hover:border-brand-green hover:bg-slate-50 text-slate-700 text-sm font-medium rounded-xl transition-colors"
+            >
+              <span className="text-lg leading-none">💰</span>
+              View commission
             </Link>
           </div>
-        </Card>
+
+          {counts.rejected > 0 && (
+            <div className="mt-5 pt-4 border-t border-slate-100">
+              <p className="text-xs text-slate-400">
+                <span className="font-medium text-slate-600">{counts.rejected}</span> lead{counts.rejected !== 1 ? 's' : ''} not progressed
+              </p>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   )
