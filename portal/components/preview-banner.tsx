@@ -2,8 +2,8 @@
 
 import Link from 'next/link'
 
-export default function PreviewBanner({ role }: { role: 'franchisee' | 'franchisor' }) {
-  const label = role === 'franchisee' ? 'Franchisee' : 'Franchisor'
+export default function PreviewBanner({ role }: { role: 'franchisee' | 'franchisor' | 'introducer' }) {
+  const label = role === 'franchisee' ? 'Franchisee' : role === 'franchisor' ? 'Franchisor' : 'Agent'
 
   function exitPreview() {
     // Clear the preview cookie so subsequent admin page visits show their own data

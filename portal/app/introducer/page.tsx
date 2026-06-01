@@ -54,7 +54,7 @@ export default async function IntroducerDashboard() {
     <div>
       <PageHeader
         title={`Welcome, ${firstName}`}
-        description="Your Franchise Foundry introducer dashboard."
+        description="Your agent dashboard."
       />
 
       {/* Pipeline stats */}

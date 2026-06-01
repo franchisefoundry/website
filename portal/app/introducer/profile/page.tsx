@@ -9,7 +9,7 @@ export default async function IntroducerProfilePage() {
 
   return (
     <div>
-      <PageHeader title="My Account" description="Your Franchise Foundry introducer account." />
+      <PageHeader title="My Account" description="Your Franchise Foundry agent account." />
       <Card className="p-6 max-w-md">
         <div className="space-y-3">
           <div>
@@ -22,7 +22,7 @@ export default async function IntroducerProfilePage() {
           </div>
           <div>
             <p className="text-xs text-slate-400 mb-0.5">Role</p>
-            <p className="text-sm font-medium text-slate-800 capitalize">Introducer</p>
+            <p className="text-sm font-medium text-slate-800">Agent</p>
           </div>
         </div>
       </Card>
