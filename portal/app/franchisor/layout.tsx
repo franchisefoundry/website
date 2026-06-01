@@ -1,8 +1,10 @@
 import { redirect } from 'next/navigation'
 import { headers, cookies } from 'next/headers'
 import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 import { NavSidebar } from '@/components/nav-sidebar'
 import PreviewBanner from '@/components/preview-banner'
+import { notifyAdmins } from '@/lib/notifications'
 
 export default async function FranchisorLayout({ children }: { children: React.ReactNode }) {
   const supabase = await createClient()
@@ -20,6 +22,23 @@ export default async function FranchisorLayout({ children }: { children: React.R
   }
 
   const isPreview = profile?.role === 'admin'
+
+  // First-login notification — fires once when a real franchisor first accesses their portal
+  if (!isPreview && profile && !profile.first_login_notified) {
+    const adminClient = createAdminClient()
+    // Mark notified first to avoid duplicate notifications on rapid reloads
+    await adminClient
+      .from('profiles')
+      .update({ first_login_notified: true })
+      .eq('id', user.id)
+
+    await notifyAdmins({
+      type:  'franchisor_first_login',
+      title: 'Franchisor logged in',
+      body:  `${profile.full_name || profile.email || 'A franchisor'} has logged into the portal for the first time.`,
+      link:  '/admin/franchisors',
+    })
+  }
 
   // Multi-brand: fetch all brand profiles so the sidebar can show a switcher
   let brands: { id: string; brand_name: string | null; status: string }[] = []

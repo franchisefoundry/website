@@ -1,6 +1,7 @@
 import { NextResponse, type NextRequest } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
+import { notifyAdmins } from '@/lib/notifications'
 
 // ── Company (Section 5) upsert payload builder ───────────────────────────────
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -327,6 +328,21 @@ export async function POST(request: NextRequest) {
       console.error('Profile update error:', profileError)
       return NextResponse.json({ error: `Could not update profile: ${profileError.message}` }, { status: 500 })
     }
+
+    // Notify admins that the quiz has been submitted
+    const { data: fp } = await admin
+      .from('franchisor_profiles')
+      .select('brand_name')
+      .eq('id', profileId)
+      .single()
+
+    const brandLabel = fp?.brand_name?.trim() || 'A franchisor'
+    await notifyAdmins({
+      type:  'franchisor_quiz_submitted',
+      title: 'Franchisor quiz submitted',
+      body:  `${brandLabel} has completed their onboarding quiz and is awaiting review.`,
+      link:  '/admin/questionnaires',
+    })
 
     return NextResponse.json({ success: true })
   } catch (err) {
