@@ -7,6 +7,7 @@ import { usePathname, useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { cn, initials } from '@/lib/utils'
 import type { Profile } from '@/lib/supabase/types'
+import { NotificationBell } from '@/components/notification-bell'
 
 // A leaf is a direct link; a group is a collapsible section with children
 type NavLeaf = { label: string; href: string }
@@ -233,13 +234,16 @@ export function NavSidebar({ profile, brands, activeBrandId }: NavSidebarProps) 
               priority
             />
           </Link>
-          <button
-            onClick={() => setMobileOpen(false)}
-            aria-label="Close menu"
-            className="md:hidden text-white/60 hover:text-white text-2xl leading-none ml-3 transition-colors"
-          >
-            ×
-          </button>
+          <div className="flex items-center gap-1">
+            <NotificationBell />
+            <button
+              onClick={() => setMobileOpen(false)}
+              aria-label="Close menu"
+              className="md:hidden text-white/60 hover:text-white text-2xl leading-none ml-1 transition-colors"
+            >
+              ×
+            </button>
+          </div>
         </div>
 
         {/* Brand switcher — only shown when account has multiple brands */}

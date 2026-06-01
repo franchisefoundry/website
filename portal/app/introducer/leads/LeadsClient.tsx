@@ -26,7 +26,6 @@ type Lead = {
   relationship: string | null
   introducer_notes: string | null
   status: string
-  rejection_reason: string | null
   created_at: string
 }
 
@@ -60,8 +59,6 @@ const emptyForm: FormState = {
 
 const STATUS_COLOURS: Record<string, string> = {
   submitted:  'bg-slate-100 text-slate-600',
-  approved:   'bg-emerald-50 text-emerald-700',
-  rejected:   'bg-red-50 text-red-600',
   invited:    'bg-sky-50 text-sky-700',
   registered: 'bg-violet-50 text-violet-700',
   matched:    'bg-amber-50 text-amber-700',
@@ -71,9 +68,8 @@ const STATUS_COLOURS: Record<string, string> = {
 }
 
 const STATUS_LABELS: Record<string, string> = {
-  submitted: 'Submitted', approved: 'Approved', rejected: 'Rejected',
-  invited: 'Invited', registered: 'Registered', matched: 'Matched',
-  intro_made: 'Intro Made', signed: 'Signed', paid: 'Paid',
+  submitted: 'Submitted', invited: 'Invited', registered: 'Registered',
+  matched: 'Matched', intro_made: 'Intro Made', signed: 'Signed', paid: 'Paid',
 }
 
 // ── UI atoms ──────────────────────────────────────────────────────────────────
@@ -147,6 +143,9 @@ export default function LeadsClient({ leads }: { leads: Lead[] }) {
   const [notesText, setNotesText] = useState('')
   const [savingNotes, setSavingNotes] = useState(false)
   const [filter, setFilter] = useState<'all' | 'pending' | 'active' | 'complete'>('all')
+  const [invitingId, setInvitingId] = useState<string | null>(null)
+  const [inviteLink, setInviteLink] = useState<string | null>(null)
+  const [inviteCopied, setInviteCopied] = useState(false)
 
   function set<K extends keyof FormState>(key: K, value: FormState[K]) {
     setForm(prev => ({ ...prev, [key]: value }))
@@ -154,8 +153,8 @@ export default function LeadsClient({ leads }: { leads: Lead[] }) {
 
   const filteredLeads = leads.filter(l => {
     if (filter === 'pending') return l.status === 'submitted'
-    if (filter === 'active')  return ['approved', 'invited', 'registered', 'matched', 'intro_made'].includes(l.status)
-    if (filter === 'complete') return ['signed', 'paid', 'rejected'].includes(l.status)
+    if (filter === 'active')  return ['invited', 'registered', 'matched', 'intro_made'].includes(l.status)
+    if (filter === 'complete') return ['signed', 'paid'].includes(l.status)
     return true
   })
 
@@ -208,6 +207,22 @@ export default function LeadsClient({ leads }: { leads: Lead[] }) {
     }
   }
 
+  async function handleSendInvite(lead: Lead) {
+    setInvitingId(lead.id)
+    setSubmitError(null)
+    try {
+      const res = await fetch(`/api/introducer/leads/${lead.id}/invite`, { method: 'POST' })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.error ?? 'Failed to send invite')
+      setInviteLink(data.invite_link)
+      router.refresh()
+    } catch (err) {
+      setSubmitError(err instanceof Error ? err.message : 'Something went wrong')
+    } finally {
+      setInvitingId(null)
+    }
+  }
+
   const OPERATOR_OPTIONS = [
     { value: 'owner-operator', label: 'Owner-operator' },
     { value: 'hire-manager',   label: 'Hire a manager' },
@@ -239,7 +254,7 @@ export default function LeadsClient({ leads }: { leads: Lead[] }) {
         <div className="flex gap-1 bg-slate-100 rounded-xl p-1">
           {([
             { key: 'all',      label: `All (${leads.length})` },
-            { key: 'pending',  label: 'Pending review' },
+            { key: 'pending',  label: 'Not yet invited' },
             { key: 'active',   label: 'Active' },
             { key: 'complete', label: 'Complete' },
           ] as const).map(tab => (
@@ -261,6 +276,10 @@ export default function LeadsClient({ leads }: { leads: Lead[] }) {
           + Submit new lead
         </button>
       </div>
+
+      {submitError && (
+        <p className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-4 py-3 mb-4">{submitError}</p>
+      )}
 
       {/* Leads table */}
       {filteredLeads.length === 0 ? (
@@ -296,30 +315,76 @@ export default function LeadsClient({ leads }: { leads: Lead[] }) {
                       : '—'}
                   </td>
                   <td className="px-4 py-3">
-                    <div>
-                      <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${STATUS_COLOURS[lead.status] ?? 'bg-slate-100 text-slate-500'}`}>
-                        {STATUS_LABELS[lead.status] ?? lead.status}
-                      </span>
-                      {lead.status === 'rejected' && lead.rejection_reason && (
-                        <p className="text-xs text-red-500 mt-0.5">{lead.rejection_reason}</p>
-                      )}
-                    </div>
+                    <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${STATUS_COLOURS[lead.status] ?? 'bg-slate-100 text-slate-500'}`}>
+                      {STATUS_LABELS[lead.status] ?? lead.status}
+                    </span>
                   </td>
                   <td className="px-4 py-3 text-slate-400 text-xs hidden sm:table-cell">
                     {new Date(lead.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
                   </td>
                   <td className="px-4 py-3 text-right">
-                    <button
-                      onClick={() => { setNotesLead(lead); setNotesText(lead.introducer_notes ?? '') }}
-                      className="text-xs text-brand-green hover:underline"
-                    >
-                      Notes
-                    </button>
+                    <div className="flex items-center justify-end gap-2">
+                      {lead.status === 'submitted' && (
+                        <button
+                          onClick={() => handleSendInvite(lead)}
+                          disabled={invitingId === lead.id}
+                          className="text-xs px-2.5 py-1 bg-sky-50 text-sky-700 border border-sky-200 rounded-lg hover:bg-sky-100 transition-colors disabled:opacity-50 flex items-center gap-1"
+                        >
+                          {invitingId === lead.id ? (
+                            <>
+                              <svg className="animate-spin w-3 h-3" fill="none" viewBox="0 0 24 24">
+                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                              </svg>
+                              Sending…
+                            </>
+                          ) : 'Send invite'}
+                        </button>
+                      )}
+                      <button
+                        onClick={() => { setNotesLead(lead); setNotesText(lead.introducer_notes ?? '') }}
+                        className="text-xs text-brand-green hover:underline"
+                      >
+                        Notes
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
+        </div>
+      )}
+
+      {/* ── Invite link modal ────────────────────────────────────────────── */}
+      {inviteLink && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="fixed inset-0 bg-black/40" onClick={() => { setInviteLink(null); setInviteCopied(false) }} />
+          <div className="relative bg-white rounded-2xl shadow-xl w-full max-w-md p-6">
+            <h3 className="text-base font-semibold text-slate-800 mb-1">Invite link ready</h3>
+            <p className="text-xs text-slate-400 mb-4">
+              Copy and send this magic link directly to your lead. It will log them straight into the platform.
+            </p>
+            <div className="bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-xs text-slate-700 break-all mb-4">
+              {inviteLink}
+            </div>
+            <button
+              onClick={() => {
+                navigator.clipboard.writeText(inviteLink)
+                setInviteCopied(true)
+                setTimeout(() => setInviteCopied(false), 2000)
+              }}
+              className="w-full bg-brand-green hover:bg-brand-green-dark text-white font-medium py-2.5 rounded-lg text-sm transition-colors mb-2"
+            >
+              {inviteCopied ? 'Copied!' : 'Copy link'}
+            </button>
+            <button
+              onClick={() => { setInviteLink(null); setInviteCopied(false) }}
+              className="w-full px-4 py-2.5 border border-slate-300 text-slate-700 text-sm font-medium rounded-lg hover:bg-slate-50 transition-colors"
+            >
+              Done
+            </button>
+          </div>
         </div>
       )}
 
