@@ -10,6 +10,7 @@ export async function middleware(request: NextRequest) {
     '/setup-account',
     '/auth/callback',
     '/auth/confirm',
+    '/auth/reset-password',
     '/get-matched',
     '/api/leads',
   ]

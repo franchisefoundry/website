@@ -66,6 +66,8 @@ export default function AuthConfirmPage() {
           destination = '/admin'
         } else if (profile.role === 'franchisor') {
           destination = '/franchisor'
+        } else if (profile.role === 'introducer') {
+          destination = '/introducer'
         } else {
           destination = '/franchisee'
         }

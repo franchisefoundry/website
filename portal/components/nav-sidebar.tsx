@@ -330,6 +330,13 @@ export function NavSidebar({ profile, brands, activeBrandId }: NavSidebarProps) 
             >
               <span>🏢</span> Franchisor view
             </Link>
+            <Link
+              href="/introducer"
+              onClick={() => setMobileOpen(false)}
+              className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs text-white/60 hover:text-white hover:bg-white/10 transition-colors"
+            >
+              <span>🤝</span> Agent view
+            </Link>
           </div>
         )}
 
