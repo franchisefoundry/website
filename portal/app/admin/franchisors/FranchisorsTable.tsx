@@ -4,11 +4,12 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { statusBadge } from '@/components/ui/badge'
 import { Avatar } from '@/components/ui/Avatar'
-import { formatDate, formatInvestmentRange } from '@/lib/utils'
+import { formatDate, formatInvestmentRange, timeAgo } from '@/lib/utils'
 import DeleteUserButton from '../DeleteUserButton'
 
 interface FranchisorRow {
   id: string
+  user_id: string | null
   brand_name: string | null
   category: string | null
   status: string | null
@@ -19,7 +20,13 @@ interface FranchisorRow {
   profiles: any
 }
 
-export default function FranchisorsTable({ franchisors }: { franchisors: FranchisorRow[] }) {
+export default function FranchisorsTable({
+  franchisors,
+  lastLoginMap = {},
+}: {
+  franchisors: FranchisorRow[]
+  lastLoginMap?: Record<string, string | null>
+}) {
   const router = useRouter()
   const [search, setSearch] = useState('')
 
@@ -52,13 +59,14 @@ export default function FranchisorsTable({ franchisors }: { franchisors: Franchi
               <th className="text-left px-6 py-3 text-xs font-medium text-slate-500 uppercase tracking-wide">Investment</th>
               <th className="text-left px-6 py-3 text-xs font-medium text-slate-500 uppercase tracking-wide">Status</th>
               <th className="text-left px-6 py-3 text-xs font-medium text-slate-500 uppercase tracking-wide">Added</th>
+              <th className="text-left px-6 py-3 text-xs font-medium text-slate-500 uppercase tracking-wide hidden lg:table-cell">Last seen</th>
               <th className="px-6 py-3" />
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100">
             {filtered.length === 0 && (
               <tr>
-                <td colSpan={5} className="px-6 py-8 text-slate-400 text-center">
+                <td colSpan={6} className="px-6 py-8 text-slate-400 text-center">
                   {search ? `No brands match "${search}"` : 'No franchisors yet.'}
                 </td>
               </tr>
@@ -91,6 +99,9 @@ export default function FranchisorsTable({ franchisors }: { franchisors: Franchi
                   </td>
                   <td className="px-6 py-3">{statusBadge(f.status ?? 'unknown')}</td>
                   <td className="px-6 py-3 text-slate-500">{formatDate(f.created_at)}</td>
+                  <td className="px-6 py-3 hidden lg:table-cell">
+                    <span className="text-slate-500 text-sm">{timeAgo(lastLoginMap[f.user_id ?? ''])}</span>
+                  </td>
                   <td className="px-6 py-3" onClick={e => e.stopPropagation()}>
                     <DeleteUserButton
                       id={f.id}

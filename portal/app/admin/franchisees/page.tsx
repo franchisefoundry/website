@@ -29,6 +29,11 @@ export default async function FranchiseesPage({
     return (f.profiles as any)?.role === 'franchisee'
   })
 
+  // Fetch last_sign_in_at for all franchisee users
+  const { data: { users: authUsers } } = await admin.auth.admin.listUsers({ perPage: 1000 })
+  const lastLoginMap: Record<string, string | null> = {}
+  authUsers.forEach(u => { lastLoginMap[u.id] = u.last_sign_in_at ?? null })
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const kanbanData = franchisees.map(f => ({
     id: f.id,
@@ -61,7 +66,10 @@ export default async function FranchiseesPage({
       ) : isKanban ? (
         <FranchiseeKanban franchisees={kanbanData} />
       ) : (
-        <FranchiseesListView franchisees={franchisees as Parameters<typeof FranchiseesListView>[0]['franchisees']} />
+        <FranchiseesListView
+          franchisees={franchisees as Parameters<typeof FranchiseesListView>[0]['franchisees']}
+          lastLoginMap={lastLoginMap}
+        />
       )}
     </div>
   )

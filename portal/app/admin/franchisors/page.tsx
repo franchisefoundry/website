@@ -13,6 +13,11 @@ export default async function FranchisorsPage() {
     .select('*, profiles(full_name, email)')
     .order('created_at', { ascending: false })
 
+  // Fetch last_sign_in_at for all franchisor users
+  const { data: { users: authUsers } } = await admin.auth.admin.listUsers({ perPage: 1000 })
+  const lastLoginMap: Record<string, string | null> = {}
+  authUsers.forEach(u => { lastLoginMap[u.id] = u.last_sign_in_at ?? null })
+
   return (
     <div>
       <PageHeader
@@ -32,7 +37,10 @@ export default async function FranchisorsPage() {
         }
       />
 
-      <FranchisorsTable franchisors={(franchisors ?? []) as Parameters<typeof FranchisorsTable>[0]['franchisors']} />
+      <FranchisorsTable
+        franchisors={(franchisors ?? []) as Parameters<typeof FranchisorsTable>[0]['franchisors']}
+        lastLoginMap={lastLoginMap}
+      />
     </div>
   )
 }

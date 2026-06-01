@@ -4,11 +4,12 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { statusBadge } from '@/components/ui/badge'
 import { Avatar } from '@/components/ui/Avatar'
-import { formatDate, formatInvestmentRange } from '@/lib/utils'
+import { formatDate, formatInvestmentRange, timeAgo } from '@/lib/utils'
 import DeleteUserButton from '../DeleteUserButton'
 
 interface FranchiseeRow {
   id: string
+  user_id: string
   investment_min: number | null
   investment_max: number | null
   status: string | null
@@ -18,7 +19,13 @@ interface FranchiseeRow {
   profiles: any
 }
 
-export default function FranchiseesListView({ franchisees }: { franchisees: FranchiseeRow[] }) {
+export default function FranchiseesListView({
+  franchisees,
+  lastLoginMap = {},
+}: {
+  franchisees: FranchiseeRow[]
+  lastLoginMap?: Record<string, string | null>
+}) {
   const router = useRouter()
   const [search, setSearch] = useState('')
 
@@ -51,6 +58,7 @@ export default function FranchiseesListView({ franchisees }: { franchisees: Fran
               <th className="text-left px-6 py-3 text-xs font-medium text-slate-500 uppercase tracking-wide">Status</th>
               <th className="text-left px-6 py-3 text-xs font-medium text-slate-500 uppercase tracking-wide">Marketplace</th>
               <th className="text-left px-6 py-3 text-xs font-medium text-slate-500 uppercase tracking-wide">Joined</th>
+              <th className="text-left px-6 py-3 text-xs font-medium text-slate-500 uppercase tracking-wide hidden lg:table-cell">Last seen</th>
               <th className="px-6 py-3" />
             </tr>
           </thead>
@@ -89,6 +97,9 @@ export default function FranchiseesListView({ franchisees }: { franchisees: Fran
                       : <span className="text-slate-400 text-xs">Locked</span>}
                   </td>
                   <td className="px-6 py-3 text-slate-500">{formatDate(f.created_at)}</td>
+                  <td className="px-6 py-3 hidden lg:table-cell">
+                    <span className="text-slate-500 text-sm">{timeAgo(lastLoginMap[f.user_id])}</span>
+                  </td>
                   <td className="px-6 py-3" onClick={e => e.stopPropagation()}>
                     <DeleteUserButton
                       id={f.id}

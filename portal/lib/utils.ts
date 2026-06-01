@@ -13,6 +13,22 @@ export function formatInvestmentRange(min: number | null, max: number | null): s
   return `${formatCurrency(min)} – ${formatCurrency(max)}`
 }
 
+export function timeAgo(dateStr: string | null | undefined): string {
+  if (!dateStr) return 'Never'
+  const diff = Date.now() - new Date(dateStr).getTime()
+  const mins  = Math.floor(diff / 60_000)
+  if (mins < 2)   return 'Just now'
+  if (mins < 60)  return `${mins}m ago`
+  const hrs = Math.floor(mins / 60)
+  if (hrs < 24)   return `${hrs}h ago`
+  const days = Math.floor(hrs / 24)
+  if (days === 1) return 'Yesterday'
+  if (days < 30)  return `${days} days ago`
+  const months = Math.floor(days / 30)
+  if (months < 12) return `${months}mo ago`
+  return `${Math.floor(months / 12)}y ago`
+}
+
 export function formatDate(dateStr: string): string {
   return new Intl.DateTimeFormat('en-GB', {
     day: 'numeric',
