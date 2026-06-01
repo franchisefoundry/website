@@ -94,6 +94,8 @@ export default function AddBrandForm() {
   const [form, setForm] = useState<FormState>(initial)
   const [saving, setSaving] = useState<'save' | 'invite' | null>(null)
   const [error, setError] = useState<string | null>(null)
+  const [inviteLink, setInviteLink] = useState<string | null>(null)
+  const [copied, setCopied] = useState(false)
   const router = useRouter()
 
   function set<K extends keyof FormState>(key: K, value: FormState[K]) {
@@ -129,12 +131,25 @@ export default function AddBrandForm() {
         return
       }
 
-      router.push('/admin/franchisors')
-      router.refresh()
+      if (sendInvite && data.invite_link) {
+        // Show the link — admin copies and shares it manually
+        setInviteLink(data.invite_link)
+        setSaving(null)
+      } else {
+        router.push('/admin/franchisors')
+        router.refresh()
+      }
     } catch (err) {
       setError(`Request failed: ${err instanceof Error ? err.message : String(err)}`)
       setSaving(null)
     }
+  }
+
+  function handleCopy() {
+    if (!inviteLink) return
+    navigator.clipboard.writeText(inviteLink)
+    setCopied(true)
+    setTimeout(() => setCopied(false), 2000)
   }
 
   return (
@@ -383,7 +398,7 @@ export default function AddBrandForm() {
           disabled={saving !== null}
           className="border-2 border-brand-green text-brand-green hover:bg-brand-green hover:text-white font-medium py-2.5 px-8 rounded-lg text-sm transition-colors disabled:opacity-60"
         >
-          {saving === 'invite' ? 'Sending…' : 'Save & send invite'}
+          {saving === 'invite' ? 'Creating…' : 'Save & get invite link'}
         </button>
         <button
           type="button"
@@ -394,6 +409,34 @@ export default function AddBrandForm() {
           Cancel
         </button>
       </div>
+
+      {/* Invite link modal */}
+      {inviteLink && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="fixed inset-0 bg-black/40" onClick={() => { router.push('/admin/franchisors'); router.refresh() }} />
+          <div className="relative bg-white rounded-2xl shadow-xl w-full max-w-md p-6">
+            <h3 className="text-base font-semibold text-slate-800 mb-1">✓ Franchisor created</h3>
+            <p className="text-xs text-slate-400 mb-4">
+              Send this magic link to {form.franchisor_name}. It expires after first use.
+            </p>
+            <div className="bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-xs text-slate-700 break-all mb-4">
+              {inviteLink}
+            </div>
+            <button
+              onClick={handleCopy}
+              className="w-full bg-brand-green hover:bg-brand-green-dark text-white font-medium py-2.5 rounded-lg text-sm transition-colors mb-2"
+            >
+              {copied ? '✓ Copied!' : 'Copy invite link'}
+            </button>
+            <button
+              onClick={() => { router.push('/admin/franchisors'); router.refresh() }}
+              className="w-full px-4 py-2.5 border border-slate-300 text-slate-700 text-sm rounded-lg hover:bg-slate-50"
+            >
+              Done
+            </button>
+          </div>
+        </div>
+      )}
     </form>
   )
 }

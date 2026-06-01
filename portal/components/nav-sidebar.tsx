@@ -30,8 +30,13 @@ const adminNav: NavItem[] = [
     ],
   },
   { label: 'Matches', href: '/admin/matches' },
-  { label: 'Introducers', href: '/admin/introducers' },
-  { label: 'Introducer Leads', href: '/admin/introducer-leads' },
+  {
+    label: 'Introducers',
+    children: [
+      { label: 'Introducers', href: '/admin/introducers' },
+      { label: 'Leads',       href: '/admin/introducer-leads' },
+    ],
+  },
   {
     label: 'Marketplace',
     children: [

@@ -88,31 +88,28 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Name and email are required to send an invite.' }, { status: 400 })
     }
 
-    const { data: inviteData, error: inviteError } = await admin.auth.admin.inviteUserByEmail(
-      franchisor_email,
-      {
+    // Generate a magic link so admin can copy and share it manually
+    const { data: linkData, error: linkError } = await admin.auth.admin.generateLink({
+      type: 'magiclink',
+      email: franchisor_email.trim().toLowerCase(),
+      options: {
+        redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL ?? 'https://portal.franchisefoundry.co.uk'}/auth/callback?next=/setup-account`,
         data: { full_name: franchisor_name },
-        redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/auth/confirm`,
-      }
-    )
+      },
+    })
 
-    if (inviteError && !inviteError.message.toLowerCase().includes('already')) {
-      return NextResponse.json({ error: inviteError.message }, { status: 500 })
+    if (linkError) {
+      return NextResponse.json({ error: linkError.message }, { status: 500 })
     }
 
-    let franchiseeUserId = inviteData?.user?.id
-    if (!franchiseeUserId) {
-      const { data: { users } } = await admin.auth.admin.listUsers()
-      franchiseeUserId = users.find(u => u.email === franchisor_email)?.id
-    }
-
+    const franchiseeUserId = linkData?.user?.id
     if (!franchiseeUserId) {
       return NextResponse.json({ error: 'Could not find or create user.' }, { status: 500 })
     }
 
     await admin.from('profiles').upsert({
       id: franchiseeUserId,
-      email: franchisor_email,
+      email: franchisor_email.trim().toLowerCase(),
       full_name: franchisor_name,
       role: 'franchisor',
     }, { onConflict: 'id' })
@@ -137,7 +134,11 @@ export async function POST(request: NextRequest) {
       invited_by: user.id,
     })
 
-    return NextResponse.json({ id: profile.id, success: true })
+    return NextResponse.json({
+      id: profile.id,
+      success: true,
+      invite_link: linkData?.properties?.action_link ?? null,
+    })
   } catch (err) {
     return NextResponse.json(
       { error: `Unexpected error: ${err instanceof Error ? err.message : String(err)}` },
