@@ -95,6 +95,9 @@ export async function middleware(request: NextRequest) {
   if (pathname.startsWith('/franchisor') && role !== 'franchisor' && role !== 'admin') {
     return NextResponse.redirect(new URL(`/${role}`, request.url))
   }
+  if (pathname.startsWith('/introducer') && role !== 'introducer' && role !== 'admin') {
+    return NextResponse.redirect(new URL(`/${role}`, request.url))
+  }
 
   // ── Franchisor access gates ───────────────────────────────────────────────
   // Gate 1: no brand quiz completed → /franchisor/onboarding

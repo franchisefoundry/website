@@ -30,6 +30,8 @@ const adminNav: NavItem[] = [
     ],
   },
   { label: 'Matches', href: '/admin/matches' },
+  { label: 'Introducers', href: '/admin/introducers' },
+  { label: 'Introducer Leads', href: '/admin/introducer-leads' },
   {
     label: 'Marketplace',
     children: [
@@ -60,16 +62,26 @@ const franchisorNav: NavItem[] = [
   { label: 'My Account',  href: '/franchisor/profile' },
 ]
 
+const introducerNav: NavItem[] = [
+  { label: 'Dashboard',   href: '/introducer' },
+  { label: 'My Leads',    href: '/introducer/leads' },
+  { label: 'Commission',  href: '/introducer/commission' },
+  { label: 'Tools',       href: '/introducer/tools' },
+  { label: 'My Account',  href: '/introducer/profile' },
+]
+
 function navForRole(role: string): NavItem[] {
   if (role === 'admin')      return adminNav
   if (role === 'franchisee') return franchiseeNav
   if (role === 'franchisor') return franchisorNav
+  if (role === 'introducer') return introducerNav
   return []
 }
 
 function profileHrefForRole(role: string): string {
   if (role === 'admin')      return '/admin/profile'
   if (role === 'franchisor') return '/franchisor/profile'
+  if (role === 'introducer') return '/introducer/profile'
   return '/franchisee/profile'
 }
 

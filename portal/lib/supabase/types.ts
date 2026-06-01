@@ -1,4 +1,4 @@
-export type Role = 'franchisee' | 'franchisor' | 'admin'
+export type Role = 'franchisee' | 'franchisor' | 'admin' | 'introducer'
 export type OperatorModel = 'owner-operator' | 'hire-manager' | 'either'
 export type Experience = 'none' | 'management' | 'food-beverage'
 
