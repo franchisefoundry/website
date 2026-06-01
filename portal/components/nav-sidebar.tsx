@@ -32,10 +32,10 @@ const adminNav: NavItem[] = [
   },
   { label: 'Matches', href: '/admin/matches' },
   {
-    label: 'Introducers',
+    label: 'Agents',
     children: [
-      { label: 'Introducers', href: '/admin/introducers' },
-      { label: 'Leads',       href: '/admin/introducer-leads' },
+      { label: 'Agents', href: '/admin/introducers' },
+      { label: 'Leads',  href: '/admin/introducer-leads' },
     ],
   },
   {
@@ -234,16 +234,13 @@ export function NavSidebar({ profile, brands, activeBrandId }: NavSidebarProps) 
               priority
             />
           </Link>
-          <div className="flex items-center gap-1">
-            <NotificationBell />
-            <button
-              onClick={() => setMobileOpen(false)}
-              aria-label="Close menu"
-              className="md:hidden text-white/60 hover:text-white text-2xl leading-none ml-1 transition-colors"
-            >
-              ×
-            </button>
-          </div>
+          <button
+            onClick={() => setMobileOpen(false)}
+            aria-label="Close menu"
+            className="md:hidden text-white/60 hover:text-white text-2xl leading-none transition-colors"
+          >
+            ×
+          </button>
         </div>
 
         {/* Brand switcher — only shown when account has multiple brands */}
@@ -338,22 +335,25 @@ export function NavSidebar({ profile, brands, activeBrandId }: NavSidebarProps) 
 
         {/* User */}
         <div className="px-3 pb-4 border-t border-white/10 pt-4 flex-shrink-0">
-          <Link
-            href={profileHref}
-            onClick={() => setMobileOpen(false)}
-            className="flex items-center gap-3 px-3 py-2 mb-1 rounded-lg hover:bg-white/10 transition-colors group"
-          >
-            <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center text-white text-xs font-semibold flex-shrink-0 overflow-hidden">
-              {avatarUrl
-                ? <img src={avatarUrl} alt="" className="w-full h-full object-cover" />
-                : initials(profile.full_name)
-              }
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-white text-xs font-medium truncate">{profile.full_name || 'Account'}</p>
-              <p className="text-white/40 text-xs">Profile &amp; settings</p>
-            </div>
-          </Link>
+          <div className="flex items-center gap-1 mb-1">
+            <Link
+              href={profileHref}
+              onClick={() => setMobileOpen(false)}
+              className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-white/10 transition-colors flex-1 min-w-0"
+            >
+              <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center text-white text-xs font-semibold flex-shrink-0 overflow-hidden">
+                {avatarUrl
+                  ? <img src={avatarUrl} alt="" className="w-full h-full object-cover" />
+                  : initials(profile.full_name)
+                }
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-white text-xs font-medium truncate">{profile.full_name || 'Account'}</p>
+                <p className="text-white/40 text-xs">Profile &amp; settings</p>
+              </div>
+            </Link>
+            <NotificationBell />
+          </div>
           <button
             onClick={handleSignOut}
             className="w-full text-left px-3 py-2 text-xs text-white/60 hover:text-white/90 rounded-lg hover:bg-white/10 transition-colors"

@@ -3,14 +3,13 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 
-export default function InviteIntroducerButton() {
+export default function InviteAgentButton() {
   const [open, setOpen] = useState(false)
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [inviteLink, setInviteLink] = useState<string | null>(null)
-  const [copied, setCopied] = useState(false)
+  const [sent, setSent] = useState(false)
   const router = useRouter()
 
   async function handleInvite(e: React.FormEvent) {
@@ -26,7 +25,7 @@ export default function InviteIntroducerButton() {
       })
       const data = await res.json()
       if (!res.ok) throw new Error(data.error ?? 'Something went wrong')
-      setInviteLink(data.invite_link)
+      setSent(true)
       router.refresh()
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error')
@@ -36,7 +35,7 @@ export default function InviteIntroducerButton() {
   }
 
   function close() {
-    setOpen(false); setName(''); setEmail(''); setError(null); setInviteLink(null); setCopied(false)
+    setOpen(false); setName(''); setEmail(''); setError(null); setSent(false)
   }
 
   return (
@@ -45,16 +44,16 @@ export default function InviteIntroducerButton() {
         onClick={() => setOpen(true)}
         className="bg-brand-green hover:bg-brand-green-dark text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors"
       >
-        + Invite introducer
+        + Invite agent
       </button>
 
       {open && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="fixed inset-0 bg-black/40" onClick={close} />
           <div className="relative bg-white rounded-2xl shadow-xl w-full max-w-md p-6">
-            {!inviteLink ? (
+            {!sent ? (
               <>
-                <h3 className="text-base font-semibold text-slate-800 mb-4">Invite introducer</h3>
+                <h3 className="text-base font-semibold text-slate-800 mb-4">Invite agent</h3>
                 <form onSubmit={handleInvite} className="space-y-4">
                   <div>
                     <label className="block text-xs font-medium text-slate-600 mb-1">Full name</label>
@@ -78,7 +77,7 @@ export default function InviteIntroducerButton() {
                       type="submit" disabled={loading}
                       className="flex-1 bg-brand-green hover:bg-brand-green-dark text-white font-medium py-2.5 rounded-lg text-sm transition-colors disabled:opacity-60"
                     >
-                      {loading ? 'Creating…' : 'Create & get invite link'}
+                      {loading ? 'Sending…' : 'Send invite'}
                     </button>
                     <button type="button" onClick={close} className="px-4 py-2.5 border border-slate-300 text-slate-700 text-sm rounded-lg hover:bg-slate-50">
                       Cancel
@@ -88,19 +87,14 @@ export default function InviteIntroducerButton() {
               </>
             ) : (
               <>
-                <h3 className="text-base font-semibold text-slate-800 mb-1">✓ Introducer created</h3>
-                <p className="text-xs text-slate-400 mb-4">Send this magic link to {name}. It expires after use.</p>
-                <div className="bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-xs text-slate-700 break-all mb-4">
-                  {inviteLink}
-                </div>
-                <button
-                  onClick={() => { navigator.clipboard.writeText(inviteLink); setCopied(true); setTimeout(() => setCopied(false), 2000) }}
-                  className="w-full bg-brand-green hover:bg-brand-green-dark text-white font-medium py-2.5 rounded-lg text-sm transition-colors mb-2"
-                >
-                  {copied ? '✓ Copied!' : 'Copy invite link'}
-                </button>
-                <button onClick={close} className="w-full px-4 py-2.5 border border-slate-300 text-slate-700 text-sm rounded-lg hover:bg-slate-50">
-                  Close
+                <div className="text-2xl mb-3">✓</div>
+                <h3 className="text-base font-semibold text-slate-800 mb-1">Invite sent</h3>
+                <p className="text-sm text-slate-500 mb-6">
+                  An invite email has been sent to <span className="font-medium text-slate-700">{email}</span>.
+                  They&apos;ll receive a sign-in link to set up their account.
+                </p>
+                <button onClick={close} className="w-full bg-brand-green hover:bg-brand-green-dark text-white font-medium py-2.5 rounded-lg text-sm transition-colors">
+                  Done
                 </button>
               </>
             )}

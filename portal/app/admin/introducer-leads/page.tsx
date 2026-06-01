@@ -13,8 +13,8 @@ export default async function AdminIntroducerLeadsPage() {
   return (
     <div>
       <PageHeader
-        title="Introducer Leads"
-        description="Leads submitted by introducers — review and approve or reject."
+        title="Agent Leads"
+        description="Leads submitted by agents — monitor pipeline progress."
       />
       <IntroducerLeadsClient leads={leads ?? []} />
     </div>

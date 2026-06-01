@@ -32,23 +32,28 @@ export async function POST(request: NextRequest) {
 
   const admin = createAdminClient()
 
-  // Create or update user with introducer role
-  const { data: linkData, error: linkError } = await admin.auth.admin.generateLink({
-    type: 'magiclink',
-    email: email.trim().toLowerCase(),
-    options: {
-      redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL ?? 'https://portal.franchisefoundry.co.uk'}/auth/callback?next=/setup-account`,
-      data: {
-        full_name: full_name.trim(),
-        role: 'introducer',
-      },
-    },
-  })
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://portal.franchisefoundry.co.uk'
 
-  if (linkError) return NextResponse.json({ error: linkError.message }, { status: 500 })
+  // Send invite email directly — user gets a sign-in link in their inbox
+  const { data: inviteData, error: inviteError } = await admin.auth.admin.inviteUserByEmail(
+    email.trim().toLowerCase(),
+    {
+      data: { full_name: full_name.trim(), role: 'introducer' },
+      redirectTo: `${siteUrl}/auth/callback?next=/setup-account`,
+    }
+  )
 
-  // Upsert profile with introducer role
-  const userId = linkData?.user?.id
+  if (inviteError && !inviteError.message.toLowerCase().includes('already')) {
+    return NextResponse.json({ error: inviteError.message }, { status: 500 })
+  }
+
+  // Resolve user id (existing user if already registered)
+  let userId = inviteData?.user?.id
+  if (!userId) {
+    const { data: { users } } = await admin.auth.admin.listUsers()
+    userId = users.find(u => u.email === email.trim().toLowerCase())?.id
+  }
+
   if (userId) {
     await admin.from('profiles').upsert({
       id: userId,
@@ -59,8 +64,5 @@ export async function POST(request: NextRequest) {
     }, { onConflict: 'id' })
   }
 
-  return NextResponse.json({
-    success: true,
-    invite_link: linkData?.properties?.action_link ?? null,
-  })
+  return NextResponse.json({ success: true })
 }

@@ -1,6 +1,6 @@
 import { createAdminClient } from '@/lib/supabase/admin'
 import { PageHeader } from '@/components/page-header'
-import InviteIntroducerButton from './InviteIntroducerButton'
+import InviteAgentButton from './InviteIntroducerButton'
 
 export default async function AdminIntroducersPage() {
   const admin = createAdminClient()
@@ -29,16 +29,16 @@ export default async function AdminIntroducersPage() {
   return (
     <div>
       <PageHeader
-        title="Introducers"
-        description="Manage introducer accounts and pipeline."
-        action={<InviteIntroducerButton />}
+        title="Agents"
+        description="Manage agent accounts and their pipeline."
+        action={<InviteAgentButton />}
       />
 
       {(introducers ?? []).length === 0 ? (
         <div className="bg-white rounded-2xl border border-slate-200 p-12 text-center">
           <div className="text-3xl mb-3">👤</div>
-          <p className="text-slate-800 font-semibold text-sm mb-1">No introducers yet</p>
-          <p className="text-slate-400 text-xs">Use the button above to invite your first introducer.</p>
+          <p className="text-slate-800 font-semibold text-sm mb-1">No agents yet</p>
+          <p className="text-slate-400 text-xs">Use the button above to invite your first agent.</p>
         </div>
       ) : (
         <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
@@ -48,7 +48,7 @@ export default async function AdminIntroducersPage() {
                 <th className="text-left px-4 py-3 font-medium">Name</th>
                 <th className="text-left px-4 py-3 font-medium">Email</th>
                 <th className="text-left px-4 py-3 font-medium">Total leads</th>
-                <th className="text-left px-4 py-3 font-medium">Pending review</th>
+                <th className="text-left px-4 py-3 font-medium">Not yet invited</th>
                 <th className="text-left px-4 py-3 font-medium">Active</th>
                 <th className="text-left px-4 py-3 font-medium">Joined</th>
               </tr>
