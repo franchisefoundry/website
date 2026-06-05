@@ -11,6 +11,7 @@ import MatchStatusSelect from '@/app/admin/matches/match-status-select'
 import Link from 'next/link'
 import { MATCH_PIPELINE_STAGES } from '@/lib/supabase/types'
 import { FranchisorPreviewButton } from '@/components/admin/FranchisorPreviewButton'
+import SendAgreementButton from './SendAgreementButton'
 
 interface Props {
   params: Promise<{ id: string }>
@@ -29,13 +30,18 @@ export default async function FranchisorDetailPage({ params }: Props) {
   if (!franchisor) notFound()
 
   const admin = createAdminClient()
-  const [{ data: questionnaire }, { data: matches }] = await Promise.all([
+  const [{ data: questionnaire }, { data: matches }, { data: franchisorAgreement }] = await Promise.all([
     admin.from('franchisor_questionnaires').select('completed_at').eq('franchisor_id', id).single(),
     admin
       .from('matches')
       .select('id, status, pipeline_stage, score, franchisee_profiles(id, profiles!franchisee_profiles_user_id_fkey(full_name, role))')
       .eq('franchisor_id', id)
       .order('created_at', { ascending: false }),
+    admin
+      .from('franchisor_agreements')
+      .select('status')
+      .eq('franchisor_profile_id', id)
+      .single(),
   ])
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -48,6 +54,10 @@ export default async function FranchisorDetailPage({ params }: Props) {
         description={profile?.email}
         action={
           <div className="flex items-center gap-2">
+            <SendAgreementButton
+              franchisorProfileId={id}
+              currentStatus={franchisorAgreement?.status ?? null}
+            />
             <FranchisorPreviewButton franchisorId={id} />
             <Link
               href={`/admin/franchisors/${id}/edit`}

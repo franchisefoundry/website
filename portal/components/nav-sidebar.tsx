@@ -30,7 +30,8 @@ const adminNav: NavItem[] = [
       { label: 'Questions',      href: '/admin/questionnaire-template' },
     ],
   },
-  { label: 'Matches', href: '/admin/matches' },
+  { label: 'Matches',    href: '/admin/matches' },
+  { label: 'Agreements', href: '/admin/agreements' },
   {
     label: 'Agents',
     children: [
@@ -65,6 +66,7 @@ const franchisorNav: NavItem[] = [
   },
   { label: 'Candidates',  href: '/franchisor/matches' },
   { label: 'Marketplace', href: '/franchisor/marketplace' },
+  { label: 'Agreement',   href: '/franchisor/agreement' },
   { label: 'My Account',  href: '/franchisor/profile' },
 ]
 
