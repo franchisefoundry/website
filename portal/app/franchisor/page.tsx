@@ -3,6 +3,7 @@ import { createAdminClient } from '@/lib/supabase/admin'
 import { PageHeader } from '@/components/page-header'
 import { Card } from '@/components/ui/card'
 import { statusBadge } from '@/components/ui/badge'
+import { LeadsIcon, CheckIcon, PartnerIcon } from '@/components/icons'
 import Link from 'next/link'
 import { cookies } from 'next/headers'
 
@@ -67,13 +68,40 @@ export default async function FranchisorDashboard() {
       {isActive && matches.length > 0 && (
         <div className="grid grid-cols-3 gap-4 mb-6">
           {[
-            { label: 'New to review', count: incomingCount,   colour: 'text-sky-600',     bg: 'bg-sky-50',     border: 'border-sky-200'     },
-            { label: 'You\'re interested', count: interestedCount, colour: 'text-emerald-600', bg: 'bg-emerald-50', border: 'border-emerald-200' },
-            { label: 'Intros arranged', count: introCount,    colour: 'text-amber-600',   bg: 'bg-amber-50',   border: 'border-amber-200'   },
+            {
+              label: 'New to review',
+              count: incomingCount,
+              colour: 'text-sky-600',
+              bg: 'bg-sky-50',
+              border: 'border-sky-200',
+              iconBg: 'bg-sky-100',
+              icon: <LeadsIcon className="w-5 h-5 text-sky-600" />,
+            },
+            {
+              label: "You're interested",
+              count: interestedCount,
+              colour: 'text-emerald-600',
+              bg: 'bg-emerald-50',
+              border: 'border-emerald-200',
+              iconBg: 'bg-emerald-100',
+              icon: <CheckIcon className="w-5 h-5 text-emerald-600" />,
+            },
+            {
+              label: 'Intros arranged',
+              count: introCount,
+              colour: 'text-amber-600',
+              bg: 'bg-amber-50',
+              border: 'border-amber-200',
+              iconBg: 'bg-amber-100',
+              icon: <PartnerIcon className="w-5 h-5 text-amber-600" />,
+            },
           ].map(s => (
             <Link key={s.label} href="/franchisor/matches">
-              <div className={`rounded-2xl border ${s.border} ${s.bg} p-5 hover:shadow-sm transition-shadow cursor-pointer`}>
-                <p className={`text-2xl font-bold ${s.colour} mb-1`}>{s.count}</p>
+              <div className={`rounded-2xl border ${s.border} ${s.bg} p-5 hover:shadow-sm transition-all cursor-pointer`}>
+                <div className={`w-9 h-9 rounded-xl flex items-center justify-center mb-3 ${s.iconBg}`}>
+                  {s.icon}
+                </div>
+                <p className={`text-3xl font-bold tracking-tight ${s.colour} mb-1`}>{s.count}</p>
                 <p className="text-xs font-medium text-slate-600">{s.label}</p>
               </div>
             </Link>
@@ -191,7 +219,7 @@ export default async function FranchisorDashboard() {
         <div className="bg-amber-50 border border-amber-200 rounded-xl px-5 py-4 flex items-center justify-between gap-4">
           <div>
             <p className="text-sm font-semibold text-amber-800">
-              🤝 {introCount} introduction{introCount !== 1 ? 's' : ''} arranged
+              {introCount} introduction{introCount !== 1 ? 's' : ''} arranged
             </p>
             <p className="text-xs text-amber-700 mt-0.5">
               Your consultant will connect you with these candidates shortly. Check your email for scheduling details.

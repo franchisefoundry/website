@@ -157,15 +157,24 @@ export default async function FranchiseeDashboard() {
                 {primaryBrand.teaser && (
                   <p className="text-xs text-slate-600 leading-relaxed line-clamp-2 mb-3">{primaryBrand.teaser}</p>
                 )}
-                <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-slate-500">
+                <div className="flex flex-wrap gap-x-5 gap-y-2 text-xs">
                   {(primaryBrand.investment_display || (primaryBrand.investment_min && primaryBrand.investment_max)) && (
-                    <span>💰 {primaryBrand.investment_display || formatInvestmentRange(primaryBrand.investment_min, primaryBrand.investment_max)}</span>
+                    <div>
+                      <p className="text-slate-400 mb-0.5">Investment</p>
+                      <p className="font-medium text-slate-700">{primaryBrand.investment_display || formatInvestmentRange(primaryBrand.investment_min, primaryBrand.investment_max)}</p>
+                    </div>
                   )}
                   {primaryBrand.timeline_months && (
-                    <span>📅 {primaryBrand.timeline_months} month setup</span>
+                    <div>
+                      <p className="text-slate-400 mb-0.5">Setup</p>
+                      <p className="font-medium text-slate-700">{primaryBrand.timeline_months} months</p>
+                    </div>
                   )}
                   {primaryBrand.operator_model && (
-                    <span className="capitalize">🏃 {primaryBrand.operator_model.replace('-', ' ')}</span>
+                    <div>
+                      <p className="text-slate-400 mb-0.5">Model</p>
+                      <p className="font-medium text-slate-700 capitalize">{primaryBrand.operator_model.replace('-', ' ')}</p>
+                    </div>
                   )}
                 </div>
               </div>

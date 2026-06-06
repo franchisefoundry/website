@@ -2,7 +2,7 @@ import { createClient } from '@/lib/supabase/server'
 import { PageHeader } from '@/components/page-header'
 import { MATCH_PIPELINE_STAGES } from '@/lib/supabase/types'
 import { formatInvestmentRange } from '@/lib/utils'
-import { StarIcon } from '@/components/icons'
+import { StarIcon, MatchIcon } from '@/components/icons'
 
 // Ordered pipeline stages for progress display
 const JOURNEY_STAGES = MATCH_PIPELINE_STAGES
@@ -269,10 +269,12 @@ export default async function FranchiseeJourneyPage() {
       />
 
       {!hasAnyAssignment ? (
-        <div className="bg-white rounded-2xl border border-slate-200 p-12 text-center">
-          <div className="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center mx-auto mb-4 text-2xl">🗺️</div>
-          <p className="text-slate-600 text-sm font-medium mb-1">Your journey starts here</p>
-          <p className="text-slate-400 text-xs leading-relaxed max-w-xs mx-auto">
+        <div className="flex flex-col items-center justify-center py-16 px-6 text-center bg-white rounded-2xl border border-slate-200">
+          <div className="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center mx-auto mb-4">
+            <MatchIcon className="w-6 h-6 text-slate-400" />
+          </div>
+          <p className="text-sm font-semibold text-slate-700 mb-1">Your journey starts here</p>
+          <p className="text-xs text-slate-400 leading-relaxed max-w-xs">
             Your Franchise Foundry consultant will assign matched brands after your consultation.
             You&apos;ll be able to track your progress with each brand here.
           </p>

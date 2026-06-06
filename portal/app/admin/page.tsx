@@ -129,7 +129,7 @@ export default async function AdminDashboard() {
           >
             <div className="flex items-start justify-between mb-3">
               {s.icon}
-              <span className="text-3xl font-extrabold tracking-tight text-slate-900 group-hover:text-brand-green transition-colors">
+              <span className="text-3xl font-bold tracking-tight text-slate-900 group-hover:text-brand-green transition-colors">
                 {s.count}
               </span>
             </div>
@@ -162,7 +162,7 @@ export default async function AdminDashboard() {
                 </p>
               )}
             </div>
-            <span className="text-2xl font-extrabold tracking-tight text-slate-900 group-hover:text-brand-green transition-colors shrink-0">
+            <span className="text-2xl font-bold tracking-tight text-slate-900 group-hover:text-brand-green transition-colors shrink-0">
               {s.count}
             </span>
           </Link>
@@ -183,8 +183,8 @@ export default async function AdminDashboard() {
               <Link
                 key={lead.id}
                 href={`/admin/leads/${lead.id}`}
-                className={`flex items-center justify-between px-5 py-3 hover:bg-slate-50 transition-colors ${
-                  lead.status === 'meeting_requested' ? 'border-l-4 border-l-red-400 !pl-4' : ''
+                className={`flex items-center justify-between px-5 py-3 hover:bg-slate-50 transition-colors border-l-2 ${
+                  lead.status === 'meeting_requested' ? 'border-red-400' : 'border-transparent hover:border-brand-green'
                 }`}
               >
                 <div>
