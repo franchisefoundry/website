@@ -1,0 +1,971 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Franchise Foundry Website — UX Audit</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&display=swap');
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Sora',system-ui,sans-serif;background:#f0efec;color:#1a1a1a;min-height:100vh}
+
+  .audit-header{background:#3a4a3a;color:white;padding:28px 40px;display:flex;align-items:center;justify-content:space-between}
+  .audit-header h1{font-size:18px;font-weight:700;letter-spacing:-.3px}
+  .audit-header p{font-size:13px;color:rgba(255,255,255,.55);margin-top:3px}
+  .score-chips{display:flex;gap:10px;flex-shrink:0}
+  .chip{padding:5px 14px;border-radius:20px;font-size:12px;font-weight:600}
+  .chip-warn{background:rgba(212,165,116,.2);color:#d4a574;border:1px solid rgba(212,165,116,.3)}
+  .chip-info{background:rgba(150,200,255,.15);color:#93c5fd;border:1px solid rgba(150,200,255,.2)}
+
+  .tab-bar{background:white;border-bottom:1px solid #e5e7eb;padding:0 40px;display:flex;gap:0;position:sticky;top:0;z-index:100;overflow-x:auto}
+  .tab{padding:14px 18px;font-size:13px;font-weight:500;color:#6b7280;cursor:pointer;border-bottom:2px solid transparent;transition:all .15s;white-space:nowrap}
+  .tab:hover{color:#3a4a3a}
+  .tab.active{color:#3a4a3a;border-bottom-color:#3a4a3a;font-weight:600}
+
+  .content{max-width:1280px;margin:0 auto;padding:40px}
+  .panel{display:none}.panel.active{display:block}
+
+  .section{background:white;border-radius:16px;border:1px solid #e5e7eb;margin-bottom:28px;overflow:hidden}
+  .section-head{padding:20px 24px;border-bottom:1px solid #f3f4f6;display:flex;align-items:flex-start;justify-content:space-between;gap:16px}
+  .section-head h2{font-size:15px;font-weight:700;color:#111}
+  .section-head p{font-size:13px;color:#6b7280;margin-top:3px;line-height:1.5;max-width:640px}
+  .issue-count{font-size:12px;font-weight:600;color:#ef4444;background:#fef2f2;border:1px solid #fecaca;padding:3px 10px;border-radius:20px;white-space:nowrap}
+
+  .issues{padding:20px 24px;display:flex;flex-direction:column;gap:10px;border-bottom:1px solid #f3f4f6}
+  .issue{display:flex;gap:12px;align-items:flex-start}
+  .issue-dot{width:20px;height:20px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;margin-top:1px}
+  .dot-high{background:#fef2f2;color:#ef4444;border:1.5px solid #fecaca}
+  .dot-med{background:#fffbeb;color:#d97706;border:1.5px solid #fde68a}
+  .dot-low{background:#f0fdf4;color:#16a34a;border:1.5px solid #bbf7d0}
+  .issue-text{font-size:13px;color:#374151;line-height:1.5}
+  .issue-text strong{color:#111;font-weight:600}
+
+  .compare{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:#e5e7eb}
+  .compare-side{background:#f8f7f5;padding:20px 24px}
+  .compare-label{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-bottom:14px;display:flex;align-items:center;gap:6px}
+  .label-before{color:#9ca3af}
+  .label-after{color:#3a4a3a}
+  .label-dot{width:6px;height:6px;border-radius:50%}
+  .after-bg{background:#fff}
+
+  /* ── Website component mockups ── */
+  .w-nav{background:#3a4a3a;padding:0 20px;height:52px;display:flex;align-items:center;justify-content:space-between;border-radius:10px;margin-bottom:10px}
+  .w-nav-logo{color:white;font-weight:700;font-size:13px}
+  .w-nav-links{display:flex;gap:16px;align-items:center}
+  .w-nav-link{color:rgba(255,255,255,.65);font-size:11px;font-weight:500}
+  .w-nav-link.active{color:white;font-weight:600}
+  .w-nav-link.gold{color:#f0d4a8}
+  .w-nav-cta{background:white;color:#5f725f;font-size:11px;font-weight:600;padding:6px 14px;border-radius:6px}
+  .w-nav-login{border:1px solid rgba(255,255,255,.3);color:rgba(255,255,255,.8);font-size:11px;padding:5px 12px;border-radius:6px}
+
+  /* Hero current */
+  .w-hero-before{background:white;border-radius:10px;padding:24px;position:relative;overflow:hidden}
+  .w-hero-before::after{content:'';position:absolute;top:0;right:0;width:42%;height:100%;background:#c8d0c8;clip-path:polygon(8% 0,100% 0,100% 100%,0% 100%);pointer-events:none}
+  .w-eyebrow{display:inline-flex;align-items:center;gap:6px;background:#c8d0c8;border:1px solid #b8c4b8;color:#3a4a3a;font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:5px 12px;border-radius:100px;margin-bottom:12px}
+  .w-eyebrow-dot{width:5px;height:5px;background:#5f725f;border-radius:50%;flex-shrink:0}
+  .w-headline{font-size:22px;font-weight:800;color:#111;letter-spacing:-.04em;line-height:1.1;margin-bottom:10px;position:relative;z-index:1}
+  .w-subtext{font-size:11px;color:#4b5563;line-height:1.65;margin-bottom:14px;max-width:260px;font-weight:300;position:relative;z-index:1}
+  .w-ctas{display:flex;gap:8px;align-items:center;position:relative;z-index:1}
+  .w-btn-primary{background:#5f725f;color:white;padding:8px 16px;border-radius:6px;font-size:11px;font-weight:700}
+  .w-btn-ghost{border:1.5px solid #b8c4b8;color:#5f725f;padding:7px 14px;border-radius:6px;font-size:11px;font-weight:500}
+  .w-stat-hidden{background:#fef2f2;border:1px solid #fecaca;border-radius:6px;padding:8px 12px;font-size:10px;color:#ef4444;font-weight:600;margin-top:8px;position:relative;z-index:1}
+
+  /* Hero after */
+  .w-hero-after{background:white;border-radius:10px;padding:24px;margin-bottom:10px}
+  .w-eyebrow-after{display:inline-flex;align-items:center;gap:6px;background:#f0f4f0;border:1px solid #d4e0d4;color:#3a4a3a;font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:5px 12px;border-radius:100px;margin-bottom:12px}
+  .w-headline-after{font-size:24px;font-weight:800;color:#111;letter-spacing:-.04em;line-height:1.05;margin-bottom:8px}
+  .w-headline-after em{font-style:normal;color:#5f725f}
+  .w-subtext-after{font-size:11px;color:#4b5563;line-height:1.65;margin-bottom:14px;max-width:320px;font-weight:300}
+  .w-trust-line{font-size:10px;color:#9ca3af;margin-top:8px;display:flex;align-items:center;gap:12px}
+  .w-trust-item{display:flex;align-items:center;gap:4px}
+  .w-stat-row-inline{display:flex;gap:8px;margin-top:14px}
+  .w-stat-pill{background:#f8f7f5;border:1px solid #e5e7eb;border-radius:8px;padding:8px 12px;flex:1}
+  .w-stat-pill-num{font-size:16px;font-weight:800;color:#5f725f;letter-spacing:-.02em}
+  .w-stat-pill-label{font-size:9px;color:#6b7280;margin-top:2px;font-weight:400;line-height:1.3}
+
+  /* Social proof strip */
+  .w-social-strip{background:#f8f7f5;border:1px solid #e5e7eb;border-radius:10px;padding:14px 16px;margin-top:10px}
+  .w-social-head{font-size:10px;font-weight:600;color:#9ca3af;text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px}
+  .w-testimonials{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+  .w-testimonial{background:white;border:1px solid #efefef;border-radius:8px;padding:10px 12px}
+  .w-quote{font-size:10px;color:#374151;line-height:1.5;margin-bottom:8px;font-style:italic}
+  .w-quotee{font-size:10px;font-weight:600;color:#111}
+  .w-quotee-role{font-size:9px;color:#9ca3af}
+  .w-star-row{color:#f59e0b;font-size:10px;margin-bottom:5px}
+
+  /* How it works enhanced */
+  .w-steps-after{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin:14px 0;position:relative}
+  .w-steps-after::before{content:'';position:absolute;top:20px;left:calc(12.5%);right:calc(12.5%);height:1px;background:#d4e0d4}
+  .w-step-after{text-align:center;padding:0 8px;position:relative;z-index:1}
+  .w-step-num{width:40px;height:40px;background:#3a4a3a;color:white;font-size:13px;font-weight:800;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 10px;border:3px solid white}
+  .w-step-num.gold{background:#c8924a}
+  .w-step-title{font-size:10px;font-weight:700;color:#111;margin-bottom:4px}
+  .w-step-desc{font-size:9px;color:#6b7280;line-height:1.5}
+  .w-step-portal-note{background:#f0f4f0;border:1px solid #d4e0d4;border-radius:6px;padding:4px 8px;font-size:9px;color:#3a4a3a;font-weight:600;margin-top:6px;display:inline-block}
+
+  /* Nav proposed */
+  .w-nav-after{background:linear-gradient(90deg,#3a4a3a,#2d3d2d);padding:0 20px;height:56px;display:flex;align-items:center;justify-content:space-between;border-radius:10px;margin-bottom:10px;box-shadow:0 2px 12px rgba(58,74,58,.25)}
+  .w-active-dot{width:4px;height:4px;background:#d4a574;border-radius:50%;display:inline-block;margin-right:4px;vertical-align:middle}
+  .w-nav-pill-active{background:rgba(255,255,255,.12);color:white;padding:4px 10px;border-radius:20px;font-size:10px;font-weight:600;display:flex;align-items:center;gap:4px}
+
+  /* Match preview enhanced */
+  .w-match-ui{background:#1e261e;border-radius:12px;overflow:hidden;max-width:100%}
+  .w-match-bar{background:#242e24;padding:10px 16px;display:flex;align-items:center;gap:6px}
+  .w-dot{width:8px;height:8px;border-radius:50%}
+  .w-url{background:rgba(255,255,255,.06);border-radius:4px;padding:4px 12px;font-size:10px;color:rgba(255,255,255,.3);margin-left:12px;flex:1;font-family:monospace}
+  .w-match-body{padding:20px}
+  .w-match-title{font-size:11px;color:rgba(255,255,255,.5);text-align:center;margin-bottom:14px}
+  .w-match-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
+  .w-match-card{background:#2a342a;border:1px solid rgba(255,255,255,.07);border-radius:10px;padding:14px;position:relative}
+  .w-match-badge{position:absolute;top:-8px;left:50%;transform:translateX(-50%);background:#c8924a;color:white;font-size:9px;font-weight:700;padding:3px 10px;border-radius:100px;white-space:nowrap}
+  .w-match-cat{font-size:9px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:6px;margin-top:6px}
+  .w-match-name{font-size:13px;font-weight:700;color:white;filter:blur(5px);margin-bottom:8px}
+  .w-match-detail{font-size:9px;color:rgba(255,255,255,.35);margin-bottom:3px;filter:blur(3px)}
+  .w-lock{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;border-radius:10px}
+  .w-lock-icon{width:28px;height:28px;background:rgba(200,146,74,.2);border:1.5px solid rgba(200,146,74,.4);border-radius:50%;display:flex;align-items:center;justify-content:center}
+  .w-match-cta{text-align:center}
+  .w-match-btn{display:inline-flex;align-items:center;gap:6px;background:#c8924a;color:white;padding:10px 20px;border-radius:6px;font-size:11px;font-weight:700}
+  .w-match-disclaimer{font-size:9px;color:rgba(255,255,255,.3);text-align:center;margin-top:8px}
+
+  /* Blog card */
+  .w-blog-card{background:white;border:1px solid #e5e7eb;border-radius:10px;overflow:hidden}
+  .w-blog-card-img{height:80px;background:linear-gradient(135deg,#3a4a3a,#5f725f);display:flex;align-items:center;justify-content:center}
+  .w-blog-card-body{padding:12px}
+  .w-blog-cat{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#5f725f;margin-bottom:6px}
+  .w-blog-title{font-size:11px;font-weight:700;color:#111;line-height:1.4;margin-bottom:6px}
+  .w-blog-excerpt{font-size:10px;color:#6b7280;line-height:1.5;margin-bottom:8px}
+  .w-blog-footer{display:flex;justify-content:space-between;align-items:center}
+  .w-blog-meta{font-size:9px;color:#9ca3af}
+  .w-blog-cta{font-size:10px;font-weight:600;color:#5f725f}
+
+  /* Article inline CTA */
+  .w-article-cta{background:linear-gradient(135deg,#3a4a3a,#2d3d2d);border-radius:10px;padding:16px;margin:14px 0}
+  .w-article-cta-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#d4a574;margin-bottom:6px}
+  .w-article-cta-title{font-size:12px;font-weight:700;color:white;margin-bottom:4px}
+  .w-article-cta-body{font-size:10px;color:rgba(255,255,255,.6);margin-bottom:10px;line-height:1.5}
+  .w-article-cta-btn{background:#c8924a;color:white;font-size:10px;font-weight:700;padding:7px 14px;border-radius:6px;display:inline-block}
+
+  /* Footer */
+  .w-footer{background:#2a352a;border-radius:10px;padding:20px;margin-top:10px}
+  .w-footer-grid{display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr;gap:20px;border-bottom:1px solid rgba(255,255,255,.08);padding-bottom:16px;margin-bottom:12px}
+  .w-footer-col-head{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:10px}
+  .w-footer-link{font-size:10px;color:rgba(255,255,255,.55);display:block;margin-bottom:6px}
+  .w-footer-bottom{display:flex;justify-content:space-between;align-items:center}
+  .w-footer-copy{font-size:10px;color:rgba(255,255,255,.25)}
+  .w-footer-tagline{font-size:9px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#d4a574}
+
+  /* Flow diagram */
+  .flow-diagram{display:flex;align-items:stretch;gap:0;margin:16px 0}
+  .flow-node{flex:1;background:white;border:1.5px solid #e5e7eb;border-radius:10px;padding:12px;text-align:center;position:relative}
+  .flow-node.portal{background:#f0f4f0;border-color:#d4e0d4}
+  .flow-node.highlight{background:#3a4a3a;border-color:#3a4a3a}
+  .flow-node.warn{background:#fffbeb;border-color:#fde68a}
+  .flow-arrow{display:flex;align-items:center;padding:0 6px;flex-shrink:0}
+  .flow-node-title{font-size:11px;font-weight:700;color:#111;margin-bottom:3px}
+  .flow-node.portal .flow-node-title{color:#3a4a3a}
+  .flow-node.highlight .flow-node-title{color:white}
+  .flow-node-sub{font-size:9px;color:#6b7280;line-height:1.4}
+  .flow-node.highlight .flow-node-sub{color:rgba(255,255,255,.6)}
+  .flow-node.warn .flow-node-sub{color:#92400e}
+  .flow-gap{width:6px;flex-shrink:0;display:flex;align-items:center;justify-content:center;color:#9ca3af;font-size:14px}
+
+  /* Overview panel */
+  .score-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:28px}
+  .score-card{background:white;border-radius:14px;border:1px solid #efefef;padding:20px;text-align:center}
+  .score-num{font-size:40px;font-weight:800;letter-spacing:-1px;line-height:1}
+  .score-label{font-size:12px;color:#6b7280;margin-top:4px;font-weight:500}
+  .score-desc{font-size:11px;color:#9ca3af;margin-top:6px;line-height:1.4}
+  .priority-list{background:white;border-radius:14px;border:1px solid #efefef;overflow:hidden;margin-bottom:28px}
+  .priority-head{padding:16px 20px;border-bottom:1px solid #f3f4f6;font-size:14px;font-weight:700;color:#111}
+  .priority-item{display:flex;align-items:flex-start;gap:12px;padding:14px 20px;border-bottom:1px solid #f9fafb}
+  .priority-item:last-child{border-bottom:none}
+  .priority-num{width:24px;height:24px;border-radius:50%;background:#3a4a3a;color:white;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+  .priority-title{font-size:13px;font-weight:700;color:#111;margin-bottom:3px}
+  .priority-desc{font-size:12px;color:#6b7280;line-height:1.5}
+  .priority-impact{font-size:10px;font-weight:600;padding:2px 8px;border-radius:20px;display:inline-block;margin-top:4px}
+  .impact-high{background:#fef2f2;color:#ef4444}
+  .impact-med{background:#fffbeb;color:#d97706}
+  .impact-low{background:#f0fdf4;color:#16a34a}
+
+  .rec-row{padding:14px 24px;display:flex;flex-wrap:wrap;gap:8px;border-top:1px solid #f3f4f6}
+  .rec-tag{font-size:11px;font-weight:500;padding:4px 12px;border-radius:20px;border:1px solid}
+  .tag-copy{background:#fdf2f8;color:#9d174d;border-color:#fbcfe8}
+  .tag-trust{background:#fff7ed;color:#c2410c;border-color:#fed7aa}
+  .tag-flow{background:#eff6ff;color:#1d4ed8;border-color:#bfdbfe}
+  .tag-layout{background:#f0fdf4;color:#15803d;border-color:#bbf7d0}
+  .tag-content{background:#faf5ff;color:#7c3aed;border-color:#ddd6fe}
+  .inspo-row{display:flex;gap:8px;flex-wrap:wrap;padding:12px 24px;background:#f9fafb;border-top:1px solid #f3f4f6}
+  .inspo-label{font-size:11px;color:#9ca3af;align-self:center;font-weight:500}
+  .inspo-tag{font-size:11px;padding:4px 10px;border-radius:6px;background:white;border:1px solid #e5e7eb;color:#374151;font-weight:500}
+
+  /* Disconnect callout */
+  .disconnect-box{background:#fffbeb;border:1.5px solid #fde68a;border-radius:10px;padding:16px 20px;margin:16px 24px}
+  .disconnect-head{font-size:13px;font-weight:700;color:#92400e;margin-bottom:6px;display:flex;align-items:center;gap:8px}
+  .disconnect-body{font-size:12px;color:#78350f;line-height:1.6}
+  .disconnect-box.green{background:#f0f4f0;border-color:#d4e0d4}
+  .disconnect-box.green .disconnect-head{color:#1a2a1a}
+  .disconnect-box.green .disconnect-body{color:#2d4a2d}
+</style>
+</head>
+<body>
+
+<div class="audit-header">
+  <div>
+    <h1>Franchise Foundry — Website UX Audit</h1>
+    <p>Full site review: homepage · about · for brands · blog · articles · website→portal flow · June 2026</p>
+  </div>
+  <div class="score-chips">
+    <div class="chip chip-warn">18 Issues Found</div>
+    <div class="chip chip-info">Strong Copy — Weak Conversion Architecture</div>
+  </div>
+</div>
+
+<div class="tab-bar">
+  <div class="tab active" onclick="showPanel('overview')">Overview</div>
+  <div class="tab" onclick="showPanel('hero')">Homepage Hero</div>
+  <div class="tab" onclick="showPanel('flow')">Website → Portal Flow</div>
+  <div class="tab" onclick="showPanel('messaging')">Content & Messaging</div>
+  <div class="tab" onclick="showPanel('nav')">Navigation & CTAs</div>
+  <div class="tab" onclick="showPanel('blog')">Blog & Articles</div>
+  <div class="tab" onclick="showPanel('mobile')">Mobile</div>
+  <div class="tab" onclick="showPanel('footer')">Footer & Structure</div>
+</div>
+
+<!-- ════ OVERVIEW ════ -->
+<div id="panel-overview" class="panel active content">
+  <div class="score-grid">
+    <div class="score-card"><div class="score-num" style="color:#ef4444">6</div><div class="score-label">High Priority</div><div class="score-desc">Conversion and trust issues hurting sign-ups</div></div>
+    <div class="score-card"><div class="score-num" style="color:#d97706">8</div><div class="score-label">Medium Priority</div><div class="score-desc">UX improvements with clear conversion upside</div></div>
+    <div class="score-card"><div class="score-num" style="color:#16a34a">4</div><div class="score-label">Low Priority</div><div class="score-desc">Polish and consistency fixes</div></div>
+    <div class="score-card"><div class="score-num" style="color:#3a4a3a">6/10</div><div class="score-label">Overall Score</div><div class="score-desc">Outstanding copy. Conversion architecture needs work.</div></div>
+  </div>
+
+  <div style="background:white;border-radius:14px;border:1px solid #efefef;padding:20px;margin-bottom:24px">
+    <div style="font-size:14px;font-weight:700;color:#111;margin-bottom:12px">The single biggest issue: the website and portal tell different stories</div>
+    <div style="font-size:13px;color:#374151;line-height:1.7;max-width:900px">
+      The website promises "AI-Powered Franchise Matching" and says "your matches are ready" before the user has done anything. The portal delivers a consultant-led, human-guided process where a match can take days or weeks. This expectation gap is the most likely cause of post-click drop-off. Users click "Find Your Match", land in the portal questionnaire expecting instant AI results, and hit a friction wall when they realise they're creating an account and waiting for a human to review their profile.
+      <br><br>
+      The fix isn't complicated — it's about aligning the language. The portal experience is actually <em>better</em> than AI-only: it's expert-matched, personally guided, and free. Lead with that.
+    </div>
+  </div>
+
+  <div class="priority-list">
+    <div class="priority-head">Top 9 Priorities — ordered by conversion impact</div>
+
+    <div class="priority-item">
+      <div class="priority-num">1</div>
+      <div>
+        <div class="priority-title">Remove "AI-Powered" from the hero eyebrow</div>
+        <div class="priority-desc">The portal is consultant-led, not AI-automated. Users who click expecting instant AI matching land in a human onboarding process and feel misled. Change to "Expert-Led Franchise Matching" or "Data-Matched. Human-Guided." — both are more accurate and actually more reassuring for a high-stakes financial decision.</div>
+        <div class="priority-impact impact-high">High impact · 5 mins</div>
+      </div>
+    </div>
+
+    <div class="priority-item">
+      <div class="priority-num">2</div>
+      <div>
+        <div class="priority-title">Explain what happens after clicking "Find Your Match"</div>
+        <div class="priority-desc">The website never tells users that clicking "Find Your Match" takes them to create a portal account and complete a questionnaire — after which a consultant reviews their profile and gets in touch within [X] days. This unexplained journey is where drop-off happens. Add a "What to expect" note below the hero CTA: "You'll complete a 2-minute questionnaire and create a free account. A consultant will review your profile and be in touch within 1 business day."</div>
+        <div class="priority-impact impact-high">High impact · 1 hour</div>
+      </div>
+    </div>
+
+    <div class="priority-item">
+      <div class="priority-num">3</div>
+      <div>
+        <div class="priority-title">Add social proof — the site has none</div>
+        <div class="priority-desc">No testimonials, no success numbers, no "X franchises matched" stats, no logos with "As seen in." For a service asking users to trust you with a £100k–£300k financial decision, this is a critical trust gap. Even 2–3 short quotes from satisfied franchisees, placed just below the hero, would substantially increase conversion. If you don't have quotes yet, lead with credibility stats: "20+ franchise brands matched" or "100% of clients pay nothing."</div>
+        <div class="priority-impact impact-high">High impact · 2 hours</div>
+      </div>
+    </div>
+
+    <div class="priority-item">
+      <div class="priority-num">4</div>
+      <div>
+        <div class="priority-title">Strengthen the hero headline</div>
+        <div class="priority-desc">"Finding Your Perfect Franchise Fit" is the most generic possible franchise headline — it reads identically to every broker and portal in the market. Your real differentiator is that you've sat on the franchisor side of the table and you work exclusively in hospitality. Lead with that. Options: "The Franchise Match Built by Insiders" · "We've Sat Across From the Franchisors. Now We're On Your Side." · "Finally, Franchise Advice That Actually Works For You."</div>
+        <div class="priority-impact impact-high">High impact · 30 mins</div>
+      </div>
+    </div>
+
+    <div class="priority-item">
+      <div class="priority-num">5</div>
+      <div>
+        <div class="priority-title">Show the hero stats on mobile</div>
+        <div class="priority-desc">The hero stat card (15+ years, Free, Both sides) is hidden on mobile with display:none. These are your three most persuasive trust signals and mobile users — who are most likely to bounce — never see them. Move them below the CTA buttons as a compact inline row instead of the full desktop card. Mobile conversion depends on these trust signals being visible.</div>
+        <div class="priority-impact impact-high">High impact · 1 hour</div>
+      </div>
+    </div>
+
+    <div class="priority-item">
+      <div class="priority-num">6</div>
+      <div>
+        <div class="priority-title">Fix the match preview investment ranges</div>
+        <div class="priority-desc">The blurred match preview cards show "£10k – £25k" for a QSR and "£75k – £110k" for Japanese cuisine. These numbers don't match the reality of hospitality franchise investment (typically £80k–£300k). Users who've done any research will immediately notice this is illustrative fiction. Use plausible ranges that match the real brands in your network.</div>
+        <div class="priority-impact impact-high">High impact · 10 mins</div>
+      </div>
+    </div>
+
+    <div class="priority-item">
+      <div class="priority-num">7</div>
+      <div>
+        <div class="priority-title">Add in-article CTAs to every blog post</div>
+        <div class="priority-desc">The four article pages have one CTA box each, at the very bottom. Articles about royalty costs and franchisee mistakes are read by people who are actively considering franchising — they are your highest-intent audience. Each article should have 2–3 embedded CTAs: one after the intro, one mid-article, one at the end. The mid-article CTA should be contextually relevant to that article's topic.</div>
+        <div class="priority-impact impact-med">Medium impact · 2 hours</div>
+      </div>
+    </div>
+
+    <div class="priority-item">
+      <div class="priority-num">8</div>
+      <div>
+        <div class="priority-title">Add active state indicators to the navigation</div>
+        <div class="priority-desc">When you're on the About page, no nav link shows as active — even though the HTML adds a class="active" to the correct link. The CSS defines styles for .active but without a clear visual indicator like an underline or brighter text, users can't orient themselves. Add a visible bottom underline or white dot indicator for the current page.</div>
+        <div class="priority-impact impact-med">Medium impact · 20 mins</div>
+      </div>
+    </div>
+
+    <div class="priority-item">
+      <div class="priority-num">9</div>
+      <div>
+        <div class="priority-title">Consolidate the duplicate footer columns</div>
+        <div class="priority-desc">The footer has a "Quick Links" column and a "Company" column. Both contain About Us, For Franchise Brands, and Blog. This is pure duplication — it looks incomplete and wastes valuable footer space that could carry a newsletter signup or a trust statement.</div>
+        <div class="priority-impact impact-med">Medium impact · 15 mins</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════ HERO ════ -->
+<div id="panel-hero" class="panel content">
+  <div class="section">
+    <div class="section-head">
+      <div>
+        <h2>Homepage Hero</h2>
+        <p>The hero is the make-or-break moment. You have roughly 4 seconds before a visitor decides whether to stay. The copy is strong and distinctive — the structural issues are what need fixing: generic headline, AI claim mismatch, trust signals hidden on mobile.</p>
+      </div>
+      <div class="issue-count">5 issues</div>
+    </div>
+    <div class="issues">
+      <div class="issue"><div class="issue-dot dot-high">!</div><div class="issue-text"><strong>"AI-Powered Franchise Matching"</strong> in the eyebrow is inaccurate and creates a dangerous expectation gap. The portal is consultant-led. Users expecting instant AI results will feel misled when they create an account and wait for a human to call them.</div></div>
+      <div class="issue"><div class="issue-dot dot-high">!</div><div class="issue-text"><strong>"Finding Your Perfect Franchise Fit"</strong> is the most generic franchise headline imaginable. It could be lifted from any of 50 competitors. Your actual headline is buried in the subtext: "We're hospitality operators who've built, scaled and recruited for real brands" — lead with that differentiation.</div></div>
+      <div class="issue"><div class="issue-dot dot-high">!</div><div class="issue-text"><strong>Hero stat card is hidden on mobile.</strong> The 3 trust signals — 15+ years, Free, Both sides — are wrapped in `.hero-card { display: none !important }` on mobile. This is where your highest-intent, most-likely-to-bounce users are looking for a reason to trust you.</div></div>
+      <div class="issue"><div class="issue-dot dot-med">~</div><div class="issue-text"><strong>No trust line below the CTA.</strong> After the primary button, there's nothing reassuring the hesitant user. A simple "No account needed to start · Takes 2 minutes · Always free" line reduces friction significantly.</div></div>
+      <div class="issue"><div class="issue-dot dot-med">~</div><div class="issue-text"><strong>No social proof above the fold.</strong> The hero shows zero evidence that other people have used this service successfully. Even a 5-star badge or a one-line quote from a real franchisee would meaningfully increase the click-through rate on the CTA.</div></div>
+    </div>
+
+    <div class="compare">
+      <div class="compare-side">
+        <div class="compare-label label-before"><div class="label-dot" style="background:#9ca3af"></div>Current</div>
+        <div class="w-hero-before">
+          <div class="w-eyebrow"><div class="w-eyebrow-dot"></div>AI-Powered Franchise Matching · Hospitality Specialists</div>
+          <div class="w-headline">Finding Your Perfect Franchise Fit</div>
+          <div class="w-subtext">Traditional brokers and portals were built to shift volume, not find the right fit. We're hospitality operators who've built, scaled and recruited for real brands — that inside knowledge is now entirely in your corner, and it won't cost you a penny.</div>
+          <div class="w-ctas">
+            <div class="w-btn-primary">Find Your Match</div>
+            <div class="w-btn-ghost">See how it works</div>
+          </div>
+          <div class="w-stat-hidden">⚠ Trust stats hidden on mobile (display:none)</div>
+        </div>
+        <div style="font-size:10px;color:#9ca3af;margin-top:8px;font-style:italic;padding:0 2px">→ Generic headline · AI claim mismatch · No trust signals · No friction reducer below CTA</div>
+      </div>
+
+      <div class="compare-side after-bg">
+        <div class="compare-label label-after"><div class="label-dot" style="background:#3a4a3a"></div>Proposed</div>
+        <div class="w-hero-after">
+          <div class="w-eyebrow-after"><div class="w-eyebrow-dot" style="background:#5f725f"></div>Expert-Led Franchise Matching · Hospitality Specialists</div>
+          <div class="w-headline-after">The franchise match <em>built by insiders.</em></div>
+          <div class="w-subtext-after">We've sat at the franchisor's recruitment table. We know what they're actually looking for, where they have room to move, and which opportunities are worth your money. That knowledge is now entirely in your corner — and it costs you nothing.</div>
+          <div class="w-ctas">
+            <div class="w-btn-primary" style="background:#3a4a3a">Find Your Match — It's Free</div>
+            <div class="w-btn-ghost">See how it works</div>
+          </div>
+          <div class="w-trust-line">
+            <div class="w-trust-item"><span style="color:#16a34a">✓</span> 2-minute questionnaire</div>
+            <div class="w-trust-item"><span style="color:#16a34a">✓</span> No obligation</div>
+            <div class="w-trust-item"><span style="color:#16a34a">✓</span> Always free</div>
+          </div>
+          <!-- Stats visible on all screen sizes -->
+          <div class="w-stat-row-inline">
+            <div class="w-stat-pill"><div class="w-stat-pill-num">15+</div><div class="w-stat-pill-label">Years in hospitality franchising, on both sides</div></div>
+            <div class="w-stat-pill"><div class="w-stat-pill-num">Free</div><div class="w-stat-pill-label">Always — no hidden fees from franchisees</div></div>
+            <div class="w-stat-pill"><div class="w-stat-pill-num">Insider</div><div class="w-stat-pill-label">We've sat at the franchisor's table</div></div>
+          </div>
+        </div>
+        <!-- Social proof strip -->
+        <div class="w-social-strip">
+          <div class="w-social-head">What franchisees say</div>
+          <div class="w-testimonials">
+            <div class="w-testimonial">
+              <div class="w-star-row">★★★★★</div>
+              <div class="w-quote">"The only advisor who walked me through the unit economics before I'd even met the brand. Saved me from a bad deal."</div>
+              <div class="w-quotee">James W.</div>
+              <div class="w-quotee-role">QSR franchisee, Manchester</div>
+            </div>
+            <div class="w-testimonial">
+              <div class="w-star-row">★★★★★</div>
+              <div class="w-quote">"Completely free, completely honest. They turned down a brand I liked because they didn't think it was right for me. That trust is everything."</div>
+              <div class="w-quotee">Sarah M.</div>
+              <div class="w-quotee-role">Drinks brand franchisee, London</div>
+            </div>
+            <div class="w-testimonial">
+              <div class="w-star-row">★★★★★</div>
+              <div class="w-quote">"I'd spoken to three other advisors. None of them had operated a franchise. Harry and Ben had. The difference is night and day."</div>
+              <div class="w-quotee">Raj P.</div>
+              <div class="w-quotee-role">Multi-site operator, Birmingham</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="rec-row">
+      <span class="rec-tag tag-copy">New headline — lead with the insider angle</span>
+      <span class="rec-tag tag-copy">Remove "AI-Powered" → "Expert-Led"</span>
+      <span class="rec-tag tag-trust">Trust line below CTA (2 mins · free · no obligation)</span>
+      <span class="rec-tag tag-layout">Stats as inline pills (visible on mobile)</span>
+      <span class="rec-tag tag-trust">Add testimonial strip below hero</span>
+    </div>
+    <div class="inspo-row">
+      <span class="inspo-label">Inspired by →</span>
+      <span class="inspo-tag">Gusto's "Finally, payroll that works" hero pattern</span>
+      <span class="inspo-tag">Rippling's trust line below CTA</span>
+      <span class="inspo-tag">Linear's "built by insiders" positioning</span>
+    </div>
+  </div>
+
+  <!-- Match preview -->
+  <div class="section">
+    <div class="section-head">
+      <div>
+        <h2>Match Preview Section</h2>
+        <p>The browser mockup showing blurred match cards is a clever concept — it creates curiosity and drives clicks. Two specific issues undercut its credibility.</p>
+      </div>
+      <div class="issue-count">2 issues</div>
+    </div>
+    <div class="issues">
+      <div class="issue"><div class="issue-dot dot-high">!</div><div class="issue-text"><strong>Investment ranges are unrealistic.</strong> £10k–£25k for a QSR, £20k–£35k for a drinks brand. Real hospitality franchise investments are typically £80k–£350k. Anyone who's done basic research will clock this immediately and distrust the whole section.</div></div>
+      <div class="issue"><div class="issue-dot dot-med">~</div><div class="issue-text"><strong>"Your matches are ready"</strong> implies the user already has a result waiting. But they haven't submitted anything. Reframe to "Here's what your match results look like" or "Your personalised match view, unlocked after your free call."</div></div>
+    </div>
+    <div class="compare">
+      <div class="compare-side">
+        <div class="compare-label label-before"><div class="label-dot" style="background:#9ca3af"></div>Current — match preview</div>
+        <div class="w-match-ui">
+          <div class="w-match-bar">
+            <div class="w-dot" style="background:#ff5f57"></div>
+            <div class="w-dot" style="background:#febc2e"></div>
+            <div class="w-dot" style="background:#28c840"></div>
+            <div class="w-url">franchisefoundry.co.uk/find-match</div>
+          </div>
+          <div class="w-match-body">
+            <div class="w-match-title">Your Top Matches. Book a free call to unlock full details.</div>
+            <div class="w-match-cards">
+              <div class="w-match-card">
+                <div class="w-match-badge">94% Match</div>
+                <div class="w-match-cat">Quick Service Restaurant</div>
+                <div class="w-match-name">████████</div>
+                <div class="w-match-detail">Investment: £10k – £25k ⚠</div>
+                <div class="w-match-detail">London, Manchester</div>
+                <div class="w-lock"><div class="w-lock-icon"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#c8924a" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div></div>
+              </div>
+              <div class="w-match-card">
+                <div class="w-match-badge">89% Match</div>
+                <div class="w-match-cat">Japanese Cuisine</div>
+                <div class="w-match-name">██████</div>
+                <div class="w-match-detail">Investment: £75k – £110k</div>
+                <div class="w-lock"><div class="w-lock-icon"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#c8924a" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div></div>
+              </div>
+              <div class="w-match-card">
+                <div class="w-match-badge">82% Match</div>
+                <div class="w-match-cat">Drinks &amp; Beverages</div>
+                <div class="w-match-name">██████</div>
+                <div class="w-match-detail">Investment: £20k – £35k ⚠</div>
+                <div class="w-lock"><div class="w-lock-icon"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#c8924a" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div></div>
+              </div>
+            </div>
+            <div class="w-match-cta"><div class="w-match-btn">Unlock Your Matches for Free →</div></div>
+          </div>
+        </div>
+        <div style="font-size:10px;color:#ef4444;margin-top:8px;font-style:italic">⚠ £10k-£25k for QSR is completely unrealistic — damages credibility</div>
+      </div>
+
+      <div class="compare-side after-bg">
+        <div class="compare-label label-after"><div class="label-dot" style="background:#3a4a3a"></div>Proposed — credible ranges</div>
+        <div class="w-match-ui">
+          <div class="w-match-bar">
+            <div class="w-dot" style="background:#ff5f57"></div>
+            <div class="w-dot" style="background:#febc2e"></div>
+            <div class="w-dot" style="background:#28c840"></div>
+            <div class="w-url">portal.franchisefoundry.co.uk/dashboard</div>
+          </div>
+          <div class="w-match-body">
+            <div class="w-match-title" style="color:rgba(255,255,255,.65)">Your matches — scored against your profile</div>
+            <div class="w-match-cards">
+              <div class="w-match-card">
+                <div class="w-match-badge">94% Match</div>
+                <div class="w-match-cat">Quick Service Restaurant</div>
+                <div class="w-match-name">████████</div>
+                <div class="w-match-detail">Investment: £140k – £200k</div>
+                <div class="w-match-detail">Available: London, Manchester</div>
+                <div class="w-lock"><div class="w-lock-icon"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#c8924a" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div></div>
+              </div>
+              <div class="w-match-card">
+                <div class="w-match-badge">89% Match</div>
+                <div class="w-match-cat">Drinks &amp; Boba</div>
+                <div class="w-match-name">██████</div>
+                <div class="w-match-detail">Investment: £80k – £130k</div>
+                <div class="w-match-detail">Available: UK-wide</div>
+                <div class="w-lock"><div class="w-lock-icon"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#c8924a" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div></div>
+              </div>
+              <div class="w-match-card">
+                <div class="w-match-badge">82% Match</div>
+                <div class="w-match-cat">Asian Cuisine</div>
+                <div class="w-match-name">███████</div>
+                <div class="w-match-detail">Investment: £180k – £260k</div>
+                <div class="w-match-detail">Available: SE England</div>
+                <div class="w-lock"><div class="w-lock-icon"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#c8924a" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div></div>
+              </div>
+            </div>
+            <div class="w-match-cta"><div class="w-match-btn">Get your free matches →</div></div>
+            <div class="w-match-disclaimer">Based on profile data from franchisees matched in 2025 · Actual results are personalised</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="rec-row">
+      <span class="rec-tag tag-copy">Fix investment ranges → realistic £80k–£260k tier</span>
+      <span class="rec-tag tag-copy">Retitle: "Your matches — scored against your profile"</span>
+      <span class="rec-tag tag-trust">Add small disclaimer "based on real network data"</span>
+    </div>
+  </div>
+</div>
+
+<!-- ════ FLOW ════ -->
+<div id="panel-flow" class="panel content">
+  <div class="section">
+    <div class="section-head">
+      <div>
+        <h2>Website → Portal Journey</h2>
+        <p>This is the most important UX issue on the entire site. A visitor who clicks "Find Your Match" enters a journey the website has not prepared them for. Understanding this gap is critical — it explains most of the post-click drop-off.</p>
+      </div>
+      <div class="issue-count">4 issues</div>
+    </div>
+
+    <div class="disconnect-box" style="margin:16px 24px 0">
+      <div class="disconnect-head">⚠ The expectation gap</div>
+      <div class="disconnect-body">
+        The website says: <strong>"AI-Powered"</strong> · <strong>"Your matches are ready"</strong> · <strong>"Our matching engine does the work"</strong><br>
+        The portal delivers: <strong>Create an account → complete a questionnaire → wait for a consultant to review your profile → consultant contacts you → get your match revealed in a call</strong><br><br>
+        These are fundamentally different experiences. A visitor expecting instant AI results will encounter a registration form, a questionnaire, and then silence — with no indication of how long they'll wait or what happens next. The portal is actually a <em>better</em> product than "AI" would be for this decision. Lead with that.
+      </div>
+    </div>
+
+    <div style="padding:16px 24px;border-bottom:1px solid #f3f4f6">
+      <div style="font-size:12px;font-weight:600;color:#111;margin-bottom:12px">Current user journey (unexplained on website)</div>
+      <div class="flow-diagram">
+        <div class="flow-node"><div class="flow-node-title">Website</div><div class="flow-node-sub">"AI-Powered" · "Matches ready"</div></div>
+        <div class="flow-gap">→</div>
+        <div class="flow-node warn"><div class="flow-node-title">Click CTA</div><div class="flow-node-sub">User expects instant results</div></div>
+        <div class="flow-gap">→</div>
+        <div class="flow-node portal"><div class="flow-node-title">Portal: Questionnaire</div><div class="flow-node-sub">Create account + 2-min quiz</div></div>
+        <div class="flow-gap">→</div>
+        <div class="flow-node warn"><div class="flow-node-title">Waiting</div><div class="flow-node-sub">No timeline shown. Drop-off risk</div></div>
+        <div class="flow-gap">→</div>
+        <div class="flow-node portal"><div class="flow-node-title">Consultant Call</div><div class="flow-node-sub">Match revealed by human</div></div>
+        <div class="flow-gap">→</div>
+        <div class="flow-node portal highlight"><div class="flow-node-title" style="color:white">Portal Dashboard</div><div class="flow-node-sub" style="color:rgba(255,255,255,.6)">Ongoing journey tracked</div></div>
+      </div>
+    </div>
+
+    <div style="padding:16px 24px;border-bottom:1px solid #f3f4f6">
+      <div style="font-size:12px;font-weight:600;color:#111;margin-bottom:12px">Proposed: set expectations explicitly on the website</div>
+      <div class="flow-diagram">
+        <div class="flow-node highlight"><div class="flow-node-title" style="color:white">Website</div><div class="flow-node-sub" style="color:rgba(255,255,255,.6)">"Expert-led" · "Here's what happens"</div></div>
+        <div class="flow-gap">→</div>
+        <div class="flow-node"><div class="flow-node-title">Click CTA</div><div class="flow-node-sub">User knows what's coming</div></div>
+        <div class="flow-gap">→</div>
+        <div class="flow-node portal"><div class="flow-node-title">2-min questionnaire</div><div class="flow-node-sub">Free account + profile quiz</div></div>
+        <div class="flow-gap">→</div>
+        <div class="flow-node portal"><div class="flow-node-title">Confirmed within 24h</div><div class="flow-node-sub">Consultant reviews + contacts you</div></div>
+        <div class="flow-gap">→</div>
+        <div class="flow-node portal"><div class="flow-node-title">Match revealed</div><div class="flow-node-sub">Free call, no obligation</div></div>
+        <div class="flow-gap">→</div>
+        <div class="flow-node portal highlight"><div class="flow-node-title" style="color:white">Your Journey</div><div class="flow-node-sub" style="color:rgba(255,255,255,.6)">Portal tracks everything</div></div>
+      </div>
+    </div>
+
+    <div class="issues" style="border-bottom:1px solid #f3f4f6">
+      <div class="issue"><div class="issue-dot dot-high">!</div><div class="issue-text"><strong>Step 4 of "How It Works" on the website says</strong> "Tell us what you're really looking for — takes about two minutes." But it doesn't mention that this is done by creating a portal account. Users who click the CTA expecting a simple form are surprised to find themselves in a full registration flow. Set the expectation: "You'll create a free account, answer a 2-minute questionnaire, and a consultant will be in touch within one business day."</div></div>
+      <div class="issue"><div class="issue-dot dot-high">!</div><div class="issue-text"><strong>No "returning user" pathway on the website.</strong> Someone who's already in the portal and comes back to the website has no obvious route back to their dashboard. The "Portal Login" link is in the nav but is visually de-prioritised compared to "Find Your Match". Consider adding "Already have an account? Log in →" as a small secondary link below the hero CTA.</div></div>
+      <div class="issue"><div class="issue-dot dot-med">~</div><div class="issue-text"><strong>The "How It Works" steps don't mention the portal.</strong> Step 1 describes the questionnaire but doesn't mention the free account you create. Step 2 describes the "matching engine" without explaining that a consultant reviews results. Users who click expecting a fully automated flow are set up for disappointment.</div></div>
+      <div class="issue"><div class="issue-dot dot-med">~</div><div class="issue-text"><strong>No post-application expectation management.</strong> After completing the portal questionnaire, what do users see? The website has no "what happens next" page or section. The portal shows a pre-assignment dashboard but the website never primes users for this waiting state.</div></div>
+    </div>
+
+    <!-- How It Works proposed -->
+    <div style="padding:20px 24px">
+      <div class="compare-label label-after" style="margin-bottom:16px"><div class="label-dot" style="background:#3a4a3a"></div>Proposed: How It Works with portal journey clarity</div>
+      <div class="w-steps-after">
+        <div class="w-step-after">
+          <div class="w-step-num">1</div>
+          <div class="w-step-title">Tell us what you're looking for</div>
+          <div class="w-step-desc">Complete a free 2-minute profile — budget, location, lifestyle and what you won't compromise on.</div>
+          <div class="w-step-portal-note">↗ Done in the free portal</div>
+        </div>
+        <div class="w-step-after">
+          <div class="w-step-num">2</div>
+          <div class="w-step-title">We match you to brands</div>
+          <div class="w-step-desc">Our platform scores your profile against every brand in the network. Our consultants review and refine the shortlist.</div>
+          <div class="w-step-portal-note">↺ Within 1 business day</div>
+        </div>
+        <div class="w-step-after">
+          <div class="w-step-num">3</div>
+          <div class="w-step-title">We run the numbers with you</div>
+          <div class="w-step-desc">A free call: unit economics, the model, the pressure points. No pitch decks. You go in with your eyes open.</div>
+          <div class="w-step-portal-note">📞 Free 45-min call</div>
+        </div>
+        <div class="w-step-after">
+          <div class="w-step-num gold">4</div>
+          <div class="w-step-title">We're with you to signing</div>
+          <div class="w-step-desc">When you're ready, we make the introduction and stay in your corner — all the way to franchise award.</div>
+          <div class="w-step-portal-note">→ Tracked in your portal</div>
+        </div>
+      </div>
+      <div style="text-align:center;margin-top:8px">
+        <div style="font-size:11px;color:#6b7280;display:inline-flex;align-items:center;gap:6px;background:#f0f4f0;padding:6px 16px;border-radius:20px;border:1px solid #d4e0d4">
+          <span style="color:#3a4a3a;font-weight:600">✓</span> Everything tracked in your free Franchise Foundry portal
+        </div>
+      </div>
+    </div>
+    <div class="rec-row">
+      <span class="rec-tag tag-flow">Mention account creation in How It Works step 1</span>
+      <span class="rec-tag tag-flow">Add "within 1 business day" timeline to step 2</span>
+      <span class="rec-tag tag-flow">Add "Already have an account? Log in" below hero CTA</span>
+      <span class="rec-tag tag-copy">Remove "AI-Powered" — say "our consultants review"</span>
+      <span class="rec-tag tag-flow">Add portal context label to each step</span>
+    </div>
+  </div>
+</div>
+
+<!-- ════ MESSAGING ════ -->
+<div id="panel-messaging" class="panel content">
+  <div class="section">
+    <div class="section-head">
+      <div>
+        <h2>Content & Messaging</h2>
+        <p>The writing on this website is genuinely excellent — distinctive, honest, and differentiated. The issues are structural: where that copy lives on the page and what's missing entirely.</p>
+      </div>
+      <div class="issue-count">4 issues</div>
+    </div>
+    <div class="issues">
+      <div class="issue"><div class="issue-dot dot-high">!</div><div class="issue-text"><strong>No social proof anywhere on the site.</strong> The about page mentions "Ben and Harry" but has no photos, no LinkedIn links, and the experience section uses anonymised brand names ("17-Site Burger Chain", "International Franchise Concept"). These are compelling credentials but anonymised examples are less persuasive than named ones. At minimum, named team photos with brief bios would dramatically increase trust.</div></div>
+      <div class="issue"><div class="issue-dot dot-med">~</div><div class="issue-text"><strong>"Why Choose Us" section is a text wall.</strong> The green section on the homepage is three paragraphs of dense prose on a #5f725f background. The copy is excellent but it's not scannable. Users skip long text blocks. Break it into 3 short benefit cards with icons, or use a stat + quote combination that's easier to consume at pace.</div></div>
+      <div class="issue"><div class="issue-dot dot-med">~</div><div class="issue-text"><strong>The "For Brands" page doesn't mention the portal.</strong> Franchisors who visit for-brands.html and want to sign up have no clear conversion path. There's a partnership CTA but no mention of how the portal works for them — questionnaire, brand profile, match pipeline, candidate dashboard. A section on "what you get access to" would substantially improve franchisor lead quality.</div></div>
+      <div class="issue"><div class="issue-dot dot-low">✓</div><div class="issue-text"><strong>No FAQ page.</strong> For a service where users are making a potentially £200k+ financial decision, there are obvious unanswered questions: "How are you paid?", "Are you regulated?", "What types of franchise do you cover?", "How long does the process take?", "What if I don't like my matches?". An FAQ page would both convert hesitant visitors and improve SEO.</div></div>
+    </div>
+    <div class="disconnect-box green" style="margin:0 24px 16px">
+      <div class="disconnect-head" style="color:#1a2a1a">✓ What's working well — keep and amplify</div>
+      <div class="disconnect-body">
+        The copywriting is genuinely strong. "Not every franchise is the right franchise" — the pullquote — is memorable. "We only partner with brands we'd back ourselves" is differentiated. The article writing is exceptional — real, honest and clearly expert. These are worth amplifying: pull the best lines into the hero and social proof sections rather than burying them in body text lower on the page.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════ NAV ════ -->
+<div id="panel-nav" class="panel content">
+  <div class="section">
+    <div class="section-head">
+      <div>
+        <h2>Navigation & CTAs</h2>
+        <p>The nav is clean and functional. Three specific issues reduce its effectiveness as a conversion tool.</p>
+      </div>
+      <div class="issue-count">3 issues</div>
+    </div>
+    <div class="issues">
+      <div class="issue"><div class="issue-dot dot-med">~</div><div class="issue-text"><strong>Active page indicator is invisible.</strong> The HTML correctly adds class="active" to nav links. The CSS defines .nav-links a.active { font-weight: 600 } — but the difference between 500 and 600 weight is imperceptible at that font size. Add an underline or bottom border for the active state so users can orient themselves.</div></div>
+      <div class="issue"><div class="issue-dot dot-med">~</div><div class="issue-text"><strong>"Portal Login" is de-prioritised.</strong> The login link uses a subtle border style — visually the weakest element in the nav. But returning users (people who have accounts and are mid-journey) are arguably your highest-value traffic. Consider making it slightly more prominent: a solid light background on hover, or a different icon treatment.</div></div>
+      <div class="issue"><div class="issue-dot dot-low">✓</div><div class="issue-text"><strong>"For Franchise Brands" uses gold text</strong> which makes it pop — but it also reads slightly like an ad on your own nav (a different audience signal within your nav). This is intentional but worth monitoring. If it causes confusion about whose site this is, a subtle separator or badge might be cleaner.</div></div>
+    </div>
+
+    <div class="compare">
+      <div class="compare-side">
+        <div class="compare-label label-before"><div class="label-dot" style="background:#9ca3af"></div>Current nav</div>
+        <div class="w-nav">
+          <div class="w-nav-logo">Franchise Foundry</div>
+          <div class="w-nav-links">
+            <div class="w-nav-link active">About Us</div>
+            <div class="w-nav-link gold">For Franchise Brands</div>
+            <div class="w-nav-link">Blog</div>
+            <div class="w-nav-link">Contact</div>
+            <div class="w-nav-cta">Find Your Match</div>
+            <div class="w-nav-login">Portal Login</div>
+          </div>
+        </div>
+        <div style="font-size:10px;color:#9ca3af;font-style:italic">→ Active state imperceptible · Login de-prioritised</div>
+      </div>
+
+      <div class="compare-side after-bg">
+        <div class="compare-label label-after"><div class="label-dot" style="background:#3a4a3a"></div>Proposed nav</div>
+        <div class="w-nav-after">
+          <div class="w-nav-logo" style="color:white">Franchise Foundry</div>
+          <div class="w-nav-links">
+            <div class="w-nav-pill-active"><div style="width:5px;height:5px;background:#d4a574;border-radius:50%"></div>About Us</div>
+            <div class="w-nav-link gold">For Brands</div>
+            <div class="w-nav-link">Blog</div>
+            <div class="w-nav-link">Contact</div>
+            <div class="w-nav-cta" style="background:#c8924a;color:white;font-weight:700">Find Your Match</div>
+            <div class="w-nav-login" style="border-color:rgba(255,255,255,.4)">Log in →</div>
+          </div>
+        </div>
+        <div style="font-size:10px;color:#374151;font-style:italic;margin-top:6px">→ Active page: pill/highlight indicator · Gold CTA for primary action · Login slightly elevated</div>
+      </div>
+    </div>
+    <div class="rec-row">
+      <span class="rec-tag tag-layout">Active nav item: background pill indicator</span>
+      <span class="rec-tag tag-copy">CTA → gold background (matches gold used elsewhere)</span>
+      <span class="rec-tag tag-copy">Login → "Log in →" with arrow to signal it's a portal</span>
+    </div>
+  </div>
+</div>
+
+<!-- ════ BLOG ════ -->
+<div id="panel-blog" class="panel content">
+  <div class="section">
+    <div class="section-head">
+      <div>
+        <h2>Blog & Articles</h2>
+        <p>The 4 articles are excellent — genuinely expert content that no generic broker could produce. The structural issue is that they convert almost no readers into leads. Article traffic is your highest-intent audience and they're being sent away with a single CTA at the bottom.</p>
+      </div>
+      <div class="issue-count">3 issues</div>
+    </div>
+    <div class="issues">
+      <div class="issue"><div class="issue-dot dot-high">!</div><div class="issue-text"><strong>Articles have only one CTA, at the very bottom.</strong> Someone reading "What your royalty is actually costing you each month" is actively considering franchising. By the time they reach the end of a 1,500-word article they've already formed a view. A CTA placed mid-article ("Want us to run these numbers for your specific match? It's free →") converts at dramatically higher rates than a footer box.</div></div>
+      <div class="issue"><div class="issue-dot dot-med">~</div><div class="issue-text"><strong>Article pages have no related articles, no author box, and no share mechanism.</strong> Each article is a dead end. A "You might also like" section at the bottom drives session depth, and an author credit (Harry or Ben, with a photo) reinforces that this is expert-written content, not generic SEO copy.</div></div>
+      <div class="issue"><div class="issue-dot dot-low">✓</div><div class="issue-text"><strong>Blog listing page shows only 4 articles</strong> with limited preview content. The featured article format is good but the grid below it would benefit from category tags (Unit Economics, Choosing a Brand, Legal, etc.) to help readers find what's most relevant to their stage.</div></div>
+    </div>
+
+    <div class="compare">
+      <div class="compare-side">
+        <div class="compare-label label-before"><div class="label-dot" style="background:#9ca3af"></div>Current: one CTA, at the bottom of the article</div>
+        <div style="background:white;border-radius:10px;padding:14px;font-size:11px;color:#374151;line-height:1.6">
+          <div style="font-size:14px;font-weight:700;color:#111;margin-bottom:8px">What your royalty is actually costing you each month</div>
+          <p style="margin-bottom:8px">Here's a number worth sitting with before you sign anything: a 6% royalty on a £600,000 turnover unit costs £36,000 a year. Every year. Whether you had a good month or a terrible one...</p>
+          <div style="color:#9ca3af;font-size:10px;font-style:italic;margin-bottom:8px">[ ...1,500 words of excellent content... ]</div>
+          <div style="background:#f3f4f6;border-radius:8px;padding:12px;border-left:3px solid #c8924a">
+            <div style="font-size:12px;font-weight:700;color:#111;margin-bottom:4px">Want a straight conversation about the numbers?</div>
+            <div style="font-size:10px;color:#6b7280;margin-bottom:8px">If you're weighing up a specific opportunity, get in touch.</div>
+            <div style="background:#c8924a;color:white;font-size:10px;font-weight:700;padding:6px 14px;border-radius:6px;display:inline-block">Get in touch</div>
+          </div>
+        </div>
+        <div style="font-size:10px;color:#9ca3af;margin-top:6px;font-style:italic">→ Only one CTA, at the bottom, after 1,500 words. Most readers never reach it.</div>
+      </div>
+
+      <div class="compare-side after-bg">
+        <div class="compare-label label-after"><div class="label-dot" style="background:#3a4a3a"></div>Proposed: contextual inline CTAs</div>
+        <div style="background:white;border-radius:10px;padding:14px;font-size:11px;color:#374151;line-height:1.6">
+          <div style="font-size:14px;font-weight:700;color:#111;margin-bottom:8px">What your royalty is actually costing you each month</div>
+          <p style="margin-bottom:10px">Here's a number worth sitting with before you sign anything: a 6% royalty on a £600,000 turnover unit costs £36,000 a year...</p>
+
+          <!-- Inline CTA 1: after intro -->
+          <div class="w-article-cta">
+            <div class="w-article-cta-label">Free service</div>
+            <div class="w-article-cta-title">We run these numbers for your specific match</div>
+            <div class="w-article-cta-body">Before you sit down with any brand, we'll build out the unit economics with you. No obligation — just the numbers, done properly.</div>
+            <div class="w-article-cta-btn">Get your free analysis →</div>
+          </div>
+
+          <p style="margin-bottom:10px;margin-top:10px">Royalties are calculated on what you take, not what you keep. This is the bit that catches people out...</p>
+          <div style="color:#9ca3af;font-size:10px;font-style:italic;margin-bottom:8px">[ ...mid-article content... ]</div>
+
+          <!-- Inline CTA 2: mid-article, contextual -->
+          <div style="background:#f0f4f0;border:1px solid #d4e0d4;border-radius:8px;padding:12px;margin:10px 0;display:flex;align-items:center;gap:12px">
+            <div style="flex:1">
+              <div style="font-size:11px;font-weight:700;color:#3a4a3a;margin-bottom:2px">Weighing up a specific franchise?</div>
+              <div style="font-size:10px;color:#5f725f">We'll stress-test the unit economics with you — before you meet anyone.</div>
+            </div>
+            <div style="background:#3a4a3a;color:white;font-size:10px;font-weight:700;padding:6px 12px;border-radius:6px;white-space:nowrap;flex-shrink:0">Free review →</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="rec-row">
+      <span class="rec-tag tag-content">Add inline CTA after article intro paragraph</span>
+      <span class="rec-tag tag-content">Add contextual mid-article CTA (topic-specific)</span>
+      <span class="rec-tag tag-content">Add author bio box below article title</span>
+      <span class="rec-tag tag-content">Add "Related articles" section at foot of each post</span>
+      <span class="rec-tag tag-content">Add category tags to blog listing page</span>
+    </div>
+    <div class="inspo-row">
+      <span class="inspo-label">Inspired by →</span>
+      <span class="inspo-tag">HubSpot's inline article CTAs</span>
+      <span class="inspo-tag">Stripe's expert author boxes</span>
+      <span class="inspo-tag">Andreessen Horowitz article formatting</span>
+    </div>
+  </div>
+</div>
+
+<!-- ════ MOBILE ════ -->
+<div id="panel-mobile" class="panel content">
+  <div class="section">
+    <div class="section-head">
+      <div>
+        <h2>Mobile Experience</h2>
+        <p>The mobile nav overlay is well-executed. The main issues are content that's hidden on mobile and the missed opportunity to surface your strongest conversion assets to mobile users.</p>
+      </div>
+      <div class="issue-count">3 issues</div>
+    </div>
+    <div class="issues">
+      <div class="issue"><div class="issue-dot dot-high">!</div><div class="issue-text"><strong>The hero stat card is hidden on mobile (display:none).</strong> "15+ years", "Free", "Both sides" — these are your three most persuasive trust signals. On desktop they sit in a visible card. On mobile they're invisible. Given mobile users have a higher bounce rate and shorter attention span, these trust signals are even more important on mobile than on desktop. Move them inline, below the CTA, as compact pills.</div></div>
+      <div class="issue"><div class="issue-dot dot-med">~</div><div class="issue-text"><strong>Mobile CTA in the hamburger menu points to the questionnaire.</strong> The mobile menu CTA "Find Your Match →" uses a gold button that takes users to the portal. This is correct. But users who've already signed up have to scroll past all the nav links to find the "Portal Login" option. Consider reordering the mobile menu to put Portal Login closer to the top for returning users.</div></div>
+      <div class="issue"><div class="issue-dot dot-low">✓</div><div class="issue-text"><strong>The geometric hero panel (::before pseudo-element) is already correctly hidden on mobile.</strong> This is well done. The match preview browser mockup also collapses gracefully. The main mobile issue is purely the stat card visibility.</div></div>
+    </div>
+    <div class="compare">
+      <div class="compare-side">
+        <div class="compare-label label-before"><div class="label-dot" style="background:#9ca3af"></div>Mobile: trust stats invisible</div>
+        <div style="background:white;border-radius:10px;padding:16px;max-width:280px">
+          <div style="font-size:9px;background:#c8d0c8;color:#3a4a3a;font-weight:600;padding:4px 10px;border-radius:100px;display:inline-block;margin-bottom:10px;letter-spacing:.06em">EXPERT-LED MATCHING · HOSPITALITY</div>
+          <div style="font-size:18px;font-weight:800;color:#111;line-height:1.1;margin-bottom:8px">Finding Your Perfect Franchise Fit</div>
+          <div style="font-size:10px;color:#4b5563;line-height:1.6;margin-bottom:12px">Traditional brokers and portals were built to shift volume, not find the right fit...</div>
+          <div style="background:#5f725f;color:white;font-size:11px;font-weight:700;padding:10px;border-radius:6px;text-align:center;margin-bottom:6px">Find Your Match</div>
+          <div style="border:1.5px solid #b8c4b8;color:#5f725f;font-size:11px;padding:10px;border-radius:6px;text-align:center">See how it works</div>
+          <div style="background:#fef2f2;border:1px solid #fecaca;border-radius:6px;padding:6px 10px;font-size:9px;color:#ef4444;font-weight:600;margin-top:10px">⚠ 15+ yrs · Free · Both sides — ALL HIDDEN HERE</div>
+        </div>
+      </div>
+      <div class="compare-side after-bg">
+        <div class="compare-label label-after"><div class="label-dot" style="background:#3a4a3a"></div>Proposed: stats as inline pills</div>
+        <div style="background:white;border-radius:10px;padding:16px;max-width:280px">
+          <div style="font-size:9px;background:#f0f4f0;color:#3a4a3a;font-weight:600;padding:4px 10px;border-radius:100px;display:inline-block;margin-bottom:10px;letter-spacing:.06em;border:1px solid #d4e0d4">EXPERT-LED MATCHING · HOSPITALITY</div>
+          <div style="font-size:18px;font-weight:800;color:#111;line-height:1.05;margin-bottom:8px">The franchise match <span style="color:#5f725f">built by insiders.</span></div>
+          <div style="font-size:10px;color:#4b5563;line-height:1.6;margin-bottom:12px;font-weight:300">We've sat at the franchisor's recruitment table. That inside knowledge is now entirely in your corner.</div>
+          <div style="background:#3a4a3a;color:white;font-size:11px;font-weight:700;padding:10px;border-radius:6px;text-align:center;margin-bottom:6px">Find Your Match — Free</div>
+          <div style="font-size:9px;color:#9ca3af;text-align:center;margin-bottom:10px">2-min questionnaire · No obligation</div>
+          <!-- Stats visible on mobile -->
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px">
+            <div style="background:#f8f7f5;border:1px solid #efefef;border-radius:7px;padding:7px;text-align:center"><div style="font-size:14px;font-weight:800;color:#5f725f">15+</div><div style="font-size:8px;color:#9ca3af;margin-top:1px;line-height:1.3">Years in hospitality</div></div>
+            <div style="background:#f8f7f5;border:1px solid #efefef;border-radius:7px;padding:7px;text-align:center"><div style="font-size:14px;font-weight:800;color:#5f725f">Free</div><div style="font-size:8px;color:#9ca3af;margin-top:1px;line-height:1.3">Always, no fees</div></div>
+            <div style="background:#f8f7f5;border:1px solid #efefef;border-radius:7px;padding:7px;text-align:center"><div style="font-size:14px;font-weight:800;color:#5f725f">Both</div><div style="font-size:8px;color:#9ca3af;margin-top:1px;line-height:1.3">Sides of the table</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="rec-row">
+      <span class="rec-tag tag-layout">Remove display:none on .hero-card for mobile</span>
+      <span class="rec-tag tag-layout">Redesign stats as compact 3-column pill grid below CTA</span>
+      <span class="rec-tag tag-layout">Add "2-min questionnaire · no obligation" micro-copy</span>
+    </div>
+  </div>
+</div>
+
+<!-- ════ FOOTER ════ -->
+<div id="panel-footer" class="panel content">
+  <div class="section">
+    <div class="section-head">
+      <div>
+        <h2>Footer & Technical Structure</h2>
+        <p>The footer is functional but has two clear problems: duplicated columns and missing information. The technical structure (inline CSS per page) is a maintainability issue that's not a UX problem today but will slow down future changes.</p>
+      </div>
+      <div class="issue-count">3 issues</div>
+    </div>
+    <div class="issues">
+      <div class="issue"><div class="issue-dot dot-med">~</div><div class="issue-text"><strong>Duplicate "Quick Links" and "Company" columns.</strong> Both contain About Us, For Franchise Brands, and Blog. This looks unfinished and wastes 25% of the footer's horizontal space. Merge them into one column and use the freed space for a newsletter signup or a trust statement.</div></div>
+      <div class="issue"><div class="issue-dot dot-med">~</div><div class="issue-text"><strong>Each HTML page has its own full CSS block, including several layers of mobile overrides.</strong> The homepage CSS has comments like "MOBILE REDESIGN v3" — a sign of iterative patching. This isn't a user-facing problem now, but it means any future design change must be made in 6+ files. Consider a shared stylesheet for the common nav/footer/button styles.</div></div>
+      <div class="issue"><div class="issue-dot dot-low">✓</div><div class="issue-text"><strong>No phone number in the footer.</strong> The contact section only shows the email address. For a high-trust service, showing a phone number (even a mobile) signals accessibility and confidence. If you don't want calls, a calendar booking link (Calendly/TidyCal) would achieve the same effect.</div></div>
+    </div>
+
+    <div class="compare">
+      <div class="compare-side">
+        <div class="compare-label label-before"><div class="label-dot" style="background:#9ca3af"></div>Current footer — duplicated columns</div>
+        <div class="w-footer">
+          <div class="w-footer-grid">
+            <div>
+              <div style="color:white;font-weight:700;font-size:13px;margin-bottom:8px">Franchise Foundry</div>
+              <div class="w-footer-link">Built by hospitality operators. For people who want to get franchising right.</div>
+            </div>
+            <div>
+              <div class="w-footer-col-head">Quick Links</div>
+              <div class="w-footer-link">Home</div>
+              <div class="w-footer-link">About Us</div>
+              <div class="w-footer-link">Find Your Match</div>
+              <div class="w-footer-link" style="color:rgba(255,255,255,.25);font-style:italic">For Franchise Brands</div>
+              <div class="w-footer-link" style="color:rgba(255,255,255,.25);font-style:italic">Contact Us</div>
+            </div>
+            <div>
+              <div class="w-footer-col-head">Company ← duplicate</div>
+              <div class="w-footer-link" style="color:rgba(255,255,255,.25);font-style:italic">About Us ← same</div>
+              <div class="w-footer-link" style="color:rgba(255,255,255,.25);font-style:italic">For Brands ← same</div>
+              <div class="w-footer-link" style="color:rgba(255,255,255,.25);font-style:italic">Blog ← same</div>
+            </div>
+            <div>
+              <div class="w-footer-col-head">Contact</div>
+              <div class="w-footer-link">connect@franchisefoundry.co.uk</div>
+            </div>
+          </div>
+          <div class="w-footer-bottom">
+            <div class="w-footer-copy">© 2026 Franchise Foundry</div>
+            <div class="w-footer-tagline">Discover. Connect. Franchise.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="compare-side after-bg">
+        <div class="compare-label label-after"><div class="label-dot" style="background:#3a4a3a"></div>Proposed footer — deduplicated + newsletter</div>
+        <div class="w-footer">
+          <div style="display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr;gap:20px;border-bottom:1px solid rgba(255,255,255,.08);padding-bottom:16px;margin-bottom:12px">
+            <div>
+              <div style="color:white;font-weight:700;font-size:13px;margin-bottom:8px">Franchise Foundry</div>
+              <div class="w-footer-link">Built by hospitality operators. For people who want to get franchising right.</div>
+              <div style="margin-top:10px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:10px">
+                <div style="font-size:10px;color:rgba(255,255,255,.5);margin-bottom:6px">Get franchise insights in your inbox</div>
+                <div style="display:flex;gap:6px">
+                  <div style="flex:1;background:rgba(255,255,255,.08);border-radius:5px;padding:5px 8px;font-size:9px;color:rgba(255,255,255,.3)">your@email.com</div>
+                  <div style="background:#c8924a;color:white;font-size:9px;font-weight:700;padding:5px 10px;border-radius:5px;white-space:nowrap">Subscribe</div>
+                </div>
+              </div>
+            </div>
+            <div>
+              <div class="w-footer-col-head">Navigate</div>
+              <div class="w-footer-link">Home</div>
+              <div class="w-footer-link">About Us</div>
+              <div class="w-footer-link">For Brands</div>
+              <div class="w-footer-link">Blog & Insights</div>
+              <div class="w-footer-link">Contact</div>
+            </div>
+            <div>
+              <div class="w-footer-col-head">Get started</div>
+              <div class="w-footer-link">Find Your Match</div>
+              <div class="w-footer-link">Portal Login</div>
+              <div class="w-footer-link">Book a call</div>
+            </div>
+            <div>
+              <div class="w-footer-col-head">Contact</div>
+              <div class="w-footer-link">connect@franchisefoundry.co.uk</div>
+              <div class="w-footer-link">LinkedIn</div>
+              <div class="w-footer-link">Instagram</div>
+              <div style="margin-top:8px;font-size:9px;color:rgba(255,255,255,.2);line-height:1.5">Franchise Foundry Ltd<br>Registered in England & Wales</div>
+            </div>
+          </div>
+          <div class="w-footer-bottom">
+            <div class="w-footer-copy">© 2026 Franchise Foundry. All rights reserved. · Terms</div>
+            <div class="w-footer-tagline">Discover. Connect. Franchise.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="rec-row">
+      <span class="rec-tag tag-layout">Merge Quick Links + Company → one "Navigate" column</span>
+      <span class="rec-tag tag-layout">Add "Get Started" column: Find Match · Login · Book Call</span>
+      <span class="rec-tag tag-trust">Add newsletter signup in footer brand col</span>
+      <span class="rec-tag tag-trust">Add registered company details (trust signal)</span>
+    </div>
+  </div>
+</div>
+
+<script>
+function showPanel(id) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'))
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'))
+  document.getElementById('panel-' + id).classList.add('active')
+  event.currentTarget.classList.add('active')
+  window.scrollTo({top: 0, behavior: 'smooth'})
+}
+</script>
+</body>
+</html>
