@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import AgreementDocument from '@/components/AgreementDocument'
 
 interface Comment {
   id: string
@@ -27,18 +28,6 @@ interface Props {
   userFullName: string | null
 }
 
-function renderMarkdown(md: string): string {
-  return md
-    .replace(/^# (.+)$/gm, '<h1 class="text-2xl font-bold mt-8 mb-4 text-slate-900">$1</h1>')
-    .replace(/^## (.+)$/gm, '<h2 class="text-lg font-semibold mt-6 mb-2 text-slate-800 border-b pb-1">$2</h2>'.replace('$2', '$1'))
-    .replace(/^### (.+)$/gm, '<h3 class="text-base font-semibold mt-4 mb-1 text-slate-700">$1</h3>')
-    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-    .replace(/\*(.+?)\*/g, '<em>$1</em>')
-    .replace(/^[-*] (.+)$/gm, '<li class="ml-6 list-disc mb-1">$1</li>')
-    .replace(/(<li.*<\/li>\n?)+/g, m => `<ul class="mb-3">${m}</ul>`)
-    .replace(/\n\n/g, '</p><p class="mb-3 text-slate-700 leading-relaxed">')
-    .replace(/^(?!<[hul])(.+)$/gm, '<p class="mb-3 text-slate-700 leading-relaxed">$1</p>')
-}
 
 export default function AgreementView({
   franchisorAgreement: fa,
@@ -165,18 +154,14 @@ export default function AgreementView({
       )}
 
       {/* Agreement document */}
-      <div className="bg-white rounded-xl border border-slate-200 shadow-sm">
-        <div className="border-b border-slate-100 px-8 py-4 flex items-center justify-between">
-          <div>
-            <h3 className="font-semibold text-slate-900">{agreementTitle}</h3>
-            <p className="text-xs text-slate-400 mt-0.5">Version {agreementVersion}</p>
-          </div>
-        </div>
-        <div
-          className="px-8 py-6 prose prose-slate max-w-none text-sm leading-relaxed"
-          dangerouslySetInnerHTML={{ __html: renderMarkdown(agreementContent) }}
-        />
-      </div>
+      <AgreementDocument
+        title={agreementTitle}
+        version={agreementVersion}
+        content={agreementContent}
+        signed={signed}
+        signedAt={fa?.signed_at}
+        signerName={signedName || fa?.signer_name}
+      />
 
       {/* Comments */}
       {!signed && (

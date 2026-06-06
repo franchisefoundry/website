@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useRef } from 'react'
+import AgreementDocument from '@/components/AgreementDocument'
 
 interface Agreement {
   id: string
@@ -58,20 +59,6 @@ export default function TemplateEditor({ initial }: { initial: Agreement | null 
       setUploading(false)
       if (fileRef.current) fileRef.current.value = ''
     }
-  }
-
-  // Simple markdown to HTML for preview
-  function renderPreview(md: string): string {
-    return md
-      .replace(/^# (.+)$/gm, '<h1 class="text-2xl font-bold mt-6 mb-3">$1</h1>')
-      .replace(/^## (.+)$/gm, '<h2 class="text-xl font-semibold mt-5 mb-2">$1</h2>')
-      .replace(/^### (.+)$/gm, '<h3 class="text-base font-semibold mt-4 mb-1">$1</h3>')
-      .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-      .replace(/\*(.+?)\*/g, '<em>$1</em>')
-      .replace(/^[-*] (.+)$/gm, '<li class="ml-4 list-disc">$1</li>')
-      .replace(/^(\d+)\. (.+)$/gm, '<li class="ml-4 list-decimal">$2</li>')
-      .replace(/\n\n/g, '</p><p class="mb-3">')
-      .replace(/^(?!<[hlip])(.+)$/gm, '<p class="mb-3">$1</p>')
   }
 
   return (
@@ -138,9 +125,10 @@ export default function TemplateEditor({ initial }: { initial: Agreement | null 
           className="w-full font-mono text-sm border border-slate-200 rounded-lg px-4 py-3 resize-y focus:outline-none focus:ring-2 focus:ring-brand-green placeholder:text-slate-300"
         />
       ) : (
-        <div
-          className="w-full min-h-96 border border-slate-200 rounded-lg px-8 py-6 prose prose-slate max-w-none text-sm overflow-auto bg-white"
-          dangerouslySetInnerHTML={{ __html: renderPreview(content) }}
+        <AgreementDocument
+          title={title}
+          version={(initial?.version ?? 0) + 1}
+          content={content}
         />
       )}
 
