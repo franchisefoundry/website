@@ -5,10 +5,13 @@ import { statusBadge } from '@/components/ui/badge'
 import { formatDate } from '@/lib/utils'
 import Link from 'next/link'
 import InviteUserButton from './invite-user-button'
+import { LeadsIcon, FranchiseeIcon, FranchisorIcon, MatchIcon, PartnerIcon } from '@/components/icons'
 
 export default async function AdminDashboard() {
   const supabase = await createClient()
   const admin = createAdminClient()
+
+  const { data: { user } } = await supabase.auth.getUser()
 
   const [
     { count: franchiseeCount },
@@ -20,6 +23,7 @@ export default async function AdminDashboard() {
     { count: pendingIntroCount },
     { data: recentLeads },
     { data: pendingReviews },
+    { data: adminProfile },
   ] = await Promise.all([
     // Count only real franchisees (role = 'franchisee'), not admin users with franchisee profiles
     admin.from('profiles').select('*', { count: 'exact', head: true }).eq('role', 'franchisee'),
@@ -32,7 +36,12 @@ export default async function AdminDashboard() {
     admin.from('intro_requests').select('*', { count: 'exact', head: true }).eq('status', 'pending'),
     admin.from('leads').select('*').in('status', ['new', 'meeting_requested']).order('created_at', { ascending: false }).limit(5),
     admin.from('franchisor_profiles').select('*, profiles(full_name, email)').eq('status', 'pending_review').order('created_at', { ascending: false }).limit(5),
+    admin.from('profiles').select('full_name').eq('id', user!.id).single(),
   ])
+
+  const firstName = adminProfile?.full_name?.split(' ')[0] ?? 'there'
+  const hour = new Date().getHours()
+  const greeting = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening'
 
   const sections = [
     {
@@ -42,7 +51,11 @@ export default async function AdminDashboard() {
       count: leadCount ?? 0,
       alert: meetingRequestCount ? `${meetingRequestCount} requesting a meeting` : null,
       alertColour: 'text-amber-700 bg-amber-50',
-      icon: '📋',
+      icon: (
+        <div className="w-9 h-9 rounded-xl bg-red-50 flex items-center justify-center">
+          <LeadsIcon className="w-4 h-4 text-red-500" />
+        </div>
+      ),
     },
     {
       title: 'Franchisees',
@@ -51,7 +64,11 @@ export default async function AdminDashboard() {
       count: franchiseeCount ?? 0,
       alert: null,
       alertColour: '',
-      icon: '👤',
+      icon: (
+        <div className="w-9 h-9 rounded-xl bg-brand-green/10 flex items-center justify-center">
+          <FranchiseeIcon className="w-4 h-4 text-brand-green" />
+        </div>
+      ),
     },
     {
       title: 'Franchisors',
@@ -60,7 +77,11 @@ export default async function AdminDashboard() {
       count: franchisorCount ?? 0,
       alert: pendingReviewCount ? `${pendingReviewCount} pending review` : null,
       alertColour: 'text-blue-700 bg-blue-50',
-      icon: '🏢',
+      icon: (
+        <div className="w-9 h-9 rounded-xl bg-brand-gold/10 flex items-center justify-center">
+          <FranchisorIcon className="w-4 h-4 text-brand-gold" />
+        </div>
+      ),
     },
     {
       title: 'Matches',
@@ -69,7 +90,11 @@ export default async function AdminDashboard() {
       count: suggestedMatchCount ?? 0,
       alert: null,
       alertColour: '',
-      icon: '🎯',
+      icon: (
+        <div className="w-8 h-8 rounded-xl bg-violet-50 flex items-center justify-center">
+          <MatchIcon className="w-4 h-4 text-violet-600" />
+        </div>
+      ),
     },
     {
       title: 'Marketplace Intros',
@@ -78,15 +103,19 @@ export default async function AdminDashboard() {
       count: pendingIntroCount ?? 0,
       alert: pendingIntroCount ? `${pendingIntroCount} pending` : null,
       alertColour: 'text-purple-700 bg-purple-50',
-      icon: '🤝',
+      icon: (
+        <div className="w-8 h-8 rounded-xl bg-blue-50 flex items-center justify-center">
+          <PartnerIcon className="w-4 h-4 text-blue-600" />
+        </div>
+      ),
     },
   ]
 
   return (
     <div>
       <PageHeader
-        title="Dashboard"
-        description="Overview of the Franchise Foundry portal."
+        title={`${greeting}, ${firstName}`}
+        description="Here's what's happening across the Franchise Foundry portal."
         action={<InviteUserButton />}
       />
 
@@ -99,8 +128,8 @@ export default async function AdminDashboard() {
             className="bg-white rounded-2xl border border-slate-200 p-5 hover:border-brand-green hover:shadow-sm transition-all group"
           >
             <div className="flex items-start justify-between mb-3">
-              <span className="text-2xl">{s.icon}</span>
-              <span className="text-3xl font-bold text-slate-900 group-hover:text-brand-green transition-colors">
+              {s.icon}
+              <span className="text-3xl font-extrabold tracking-tight text-slate-900 group-hover:text-brand-green transition-colors">
                 {s.count}
               </span>
             </div>
@@ -122,7 +151,7 @@ export default async function AdminDashboard() {
             className="bg-white rounded-2xl border border-slate-200 p-4 hover:border-brand-green hover:shadow-sm transition-all group flex items-center gap-4"
           >
             <div className="shrink-0">
-              <span className="text-xl">{s.icon}</span>
+              {s.icon}
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-sm font-semibold text-slate-800 mb-0.5">{s.title}</p>
@@ -133,7 +162,7 @@ export default async function AdminDashboard() {
                 </p>
               )}
             </div>
-            <span className="text-2xl font-bold text-slate-900 group-hover:text-brand-green transition-colors shrink-0">
+            <span className="text-2xl font-extrabold tracking-tight text-slate-900 group-hover:text-brand-green transition-colors shrink-0">
               {s.count}
             </span>
           </Link>
@@ -142,7 +171,7 @@ export default async function AdminDashboard() {
 
       <div className="grid grid-cols-2 gap-6">
         {/* Recent leads needing attention */}
-        <div className="bg-white rounded-2xl border border-slate-200">
+        <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
           <div className="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
             <h2 className="text-sm font-semibold text-slate-900">Leads needing attention</h2>
             <Link href="/admin/leads" className="text-xs text-brand-green hover:underline">View all</Link>
@@ -154,7 +183,9 @@ export default async function AdminDashboard() {
               <Link
                 key={lead.id}
                 href={`/admin/leads/${lead.id}`}
-                className="flex items-center justify-between px-5 py-3 hover:bg-slate-50 transition-colors"
+                className={`flex items-center justify-between px-5 py-3 hover:bg-slate-50 transition-colors ${
+                  lead.status === 'meeting_requested' ? 'border-l-4 border-l-red-400 !pl-4' : ''
+                }`}
               >
                 <div>
                   <p className="text-sm font-medium text-slate-900">{lead.full_name}</p>

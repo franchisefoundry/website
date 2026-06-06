@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { cn } from '@/lib/utils'
+import { BellIcon } from '@/components/icons'
 
 type Notification = {
   id: string
@@ -14,7 +15,12 @@ type Notification = {
   created_at: string
 }
 
-export function NotificationBell() {
+interface NotificationBellProps {
+  /** compact=true renders a small icon button (for sidebar header). Default renders a full nav-item row. */
+  compact?: boolean
+}
+
+export function NotificationBell({ compact = false }: NotificationBellProps) {
   const [notifications, setNotifications] = useState<Notification[]>([])
   const [open, setOpen]                   = useState(false)
   const [dropPos, setDropPos]             = useState({ top: 0, left: 0 })
@@ -52,8 +58,6 @@ export function NotificationBell() {
   function handleOpen() {
     if (!open && btnRef.current) {
       const rect = btnRef.current.getBoundingClientRect()
-      // On md+ screens the sidebar is on the left — open to the right.
-      // On small screens open below the button.
       const isMd = window.innerWidth >= 768
       if (isMd) {
         setDropPos({ top: rect.top, left: rect.right + 8 })
@@ -88,9 +92,65 @@ export function NotificationBell() {
     return `${Math.floor(hrs / 24)}d ago`
   }
 
+  const dropdown = open && (
+    <div
+      ref={dropRef}
+      style={{ position: 'fixed', top: dropPos.top, left: dropPos.left, zIndex: 200 }}
+      className="w-80 bg-white rounded-xl shadow-2xl border border-slate-200 overflow-hidden"
+    >
+      <div className="flex items-center justify-between px-4 py-3 border-b border-slate-100">
+        <p className="text-sm font-semibold text-slate-800">Notifications</p>
+        {unread > 0 && (
+          <button onClick={markAllRead} className="text-xs text-brand-green hover:underline">
+            Mark all read
+          </button>
+        )}
+      </div>
+      {notifications.length === 0 ? (
+        <div className="px-4 py-8 text-center text-xs text-slate-400">No notifications yet</div>
+      ) : (
+        <div className="max-h-96 overflow-y-auto divide-y divide-slate-50">
+          {notifications.slice(0, 10).map(n => (
+            <button
+              key={n.id}
+              onClick={() => handleNotificationClick(n)}
+              className="w-full text-left px-4 py-3 hover:bg-slate-50 transition-colors flex gap-3 items-start"
+            >
+              <div className={`w-1.5 h-1.5 rounded-full mt-1.5 flex-shrink-0 ${n.read ? 'bg-transparent' : 'bg-brand-green'}`} />
+              <div className="flex-1 min-w-0">
+                <p className={`text-xs font-medium ${n.read ? 'text-slate-600' : 'text-slate-800'}`}>{n.title}</p>
+                {n.body && <p className="text-xs text-slate-400 truncate mt-0.5">{n.body}</p>}
+                <p className="text-[10px] text-slate-300 mt-1">{relativeTime(n.created_at)}</p>
+              </div>
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  )
+
+  if (compact) {
+    return (
+      <>
+        <button
+          ref={btnRef}
+          onClick={handleOpen}
+          aria-label="Notifications"
+          className="relative p-2 rounded-lg text-white/50 hover:text-white hover:bg-white/10 transition-colors"
+        >
+          <BellIcon className="w-4 h-4" />
+          {unread > 0 && (
+            <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full border border-[#3a4a3a]" />
+          )}
+        </button>
+        {dropdown}
+      </>
+    )
+  }
+
   return (
     <>
-      {/* Nav-item styled trigger */}
+      {/* Full nav-item styled trigger */}
       <button
         ref={btnRef}
         onClick={handleOpen}
@@ -102,11 +162,10 @@ export function NotificationBell() {
         )}
         aria-label="Notifications"
       >
-        <div className="flex items-center gap-2">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="flex-shrink-0">
-            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
-            <path d="M13.73 21a2 2 0 0 1-3.46 0" />
-          </svg>
+        <div className="flex items-center gap-2.5">
+          <span className="flex-shrink-0 opacity-70">
+            <BellIcon className="w-4 h-4" />
+          </span>
           Notifications
         </div>
         {unread > 0 && (
@@ -115,44 +174,7 @@ export function NotificationBell() {
           </span>
         )}
       </button>
-
-      {/* Fixed-position dropdown — never clipped by sidebar overflow */}
-      {open && (
-        <div
-          ref={dropRef}
-          style={{ position: 'fixed', top: dropPos.top, left: dropPos.left, zIndex: 200 }}
-          className="w-80 bg-white rounded-xl shadow-2xl border border-slate-200 overflow-hidden"
-        >
-          <div className="flex items-center justify-between px-4 py-3 border-b border-slate-100">
-            <p className="text-sm font-semibold text-slate-800">Notifications</p>
-            {unread > 0 && (
-              <button onClick={markAllRead} className="text-xs text-brand-green hover:underline">
-                Mark all read
-              </button>
-            )}
-          </div>
-          {notifications.length === 0 ? (
-            <div className="px-4 py-8 text-center text-xs text-slate-400">No notifications yet</div>
-          ) : (
-            <div className="max-h-96 overflow-y-auto divide-y divide-slate-50">
-              {notifications.slice(0, 10).map(n => (
-                <button
-                  key={n.id}
-                  onClick={() => handleNotificationClick(n)}
-                  className="w-full text-left px-4 py-3 hover:bg-slate-50 transition-colors flex gap-3 items-start"
-                >
-                  <div className={`w-1.5 h-1.5 rounded-full mt-1.5 flex-shrink-0 ${n.read ? 'bg-transparent' : 'bg-brand-green'}`} />
-                  <div className="flex-1 min-w-0">
-                    <p className={`text-xs font-medium ${n.read ? 'text-slate-600' : 'text-slate-800'}`}>{n.title}</p>
-                    {n.body && <p className="text-xs text-slate-400 truncate mt-0.5">{n.body}</p>}
-                    <p className="text-[10px] text-slate-300 mt-1">{relativeTime(n.created_at)}</p>
-                  </div>
-                </button>
-              ))}
-            </div>
-          )}
-        </div>
-      )}
+      {dropdown}
     </>
   )
 }

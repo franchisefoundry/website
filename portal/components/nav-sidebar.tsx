@@ -8,74 +8,91 @@ import { createClient } from '@/lib/supabase/client'
 import { cn, initials } from '@/lib/utils'
 import type { Profile } from '@/lib/supabase/types'
 import { NotificationBell } from '@/components/notification-bell'
+import {
+  DashboardIcon, LeadsIcon, FranchiseeIcon, FranchisorIcon,
+  MatchIcon, AgreementIcon, MarketplaceIcon, AgentIcon,
+  QuestionnaireIcon, SignOutIcon,
+} from '@/components/icons'
 
-// A leaf is a direct link; a group is a collapsible section with children
-type NavLeaf = { label: string; href: string }
-type NavGroup = { label: string; children: NavLeaf[] }
-type NavItem = NavLeaf | NavGroup
+// ── Nav type system ──────────────────────────────────────────────────────────
+type NavLeaf    = { label: string; href: string; icon?: React.ReactNode }
+type NavGroup   = { label: string; icon?: React.ReactNode; children: NavLeaf[] }
+type NavDivider = { sectionLabel: string }
+type NavItem    = NavLeaf | NavGroup | NavDivider
 
 function isGroup(item: NavItem): item is NavGroup {
   return 'children' in item
 }
+function isDivider(item: NavItem): item is NavDivider {
+  return 'sectionLabel' in item
+}
 
+// ── Nav definitions ──────────────────────────────────────────────────────────
 const adminNav: NavItem[] = [
-  { label: 'Dashboard',   href: '/admin' },
-  { label: 'Leads',       href: '/admin/leads' },
-  { label: 'Franchisees', href: '/admin/franchisees' },
+  { sectionLabel: 'Pipeline' },
+  { label: 'Dashboard',   href: '/admin',            icon: <DashboardIcon className="w-4 h-4" /> },
+  { label: 'Leads',       href: '/admin/leads',       icon: <LeadsIcon className="w-4 h-4" /> },
+  { label: 'Franchisees', href: '/admin/franchisees', icon: <FranchiseeIcon className="w-4 h-4" /> },
+  { sectionLabel: 'Brands' },
   {
     label: 'Franchisors',
+    icon: <FranchisorIcon className="w-4 h-4" />,
     children: [
-      { label: 'Franchisors',    href: '/admin/franchisors' },
-      { label: 'Questionnaires', href: '/admin/questionnaires' },
-      { label: 'Questions',      href: '/admin/questionnaire-template' },
+      { label: 'Franchisors',    href: '/admin/franchisors',            icon: <FranchisorIcon className="w-3.5 h-3.5" /> },
+      { label: 'Questionnaires', href: '/admin/questionnaires',         icon: <QuestionnaireIcon className="w-3.5 h-3.5" /> },
+      { label: 'Questions',      href: '/admin/questionnaire-template', icon: <QuestionnaireIcon className="w-3.5 h-3.5" /> },
     ],
   },
-  { label: 'Matches',    href: '/admin/matches' },
-  { label: 'Agreements', href: '/admin/agreements' },
+  { label: 'Matches',    href: '/admin/matches',    icon: <MatchIcon className="w-4 h-4" /> },
+  { label: 'Agreements', href: '/admin/agreements', icon: <AgreementIcon className="w-4 h-4" /> },
+  { sectionLabel: 'More' },
   {
     label: 'Agents',
+    icon: <AgentIcon className="w-4 h-4" />,
     children: [
-      { label: 'Agents', href: '/admin/introducers' },
-      { label: 'Leads',  href: '/admin/introducer-leads' },
+      { label: 'Agents', href: '/admin/introducers',     icon: <AgentIcon className="w-3.5 h-3.5" /> },
+      { label: 'Leads',  href: '/admin/introducer-leads', icon: <LeadsIcon className="w-3.5 h-3.5" /> },
     ],
   },
   {
     label: 'Marketplace',
+    icon: <MarketplaceIcon className="w-4 h-4" />,
     children: [
-      { label: 'Partners',  href: '/admin/partners' },
-      { label: 'Intros',    href: '/admin/intro-requests' },
+      { label: 'Partners', href: '/admin/partners',      icon: <MarketplaceIcon className="w-3.5 h-3.5" /> },
+      { label: 'Intros',   href: '/admin/intro-requests', icon: <MatchIcon className="w-3.5 h-3.5" /> },
     ],
   },
 ]
 
 const franchiseeNav: NavItem[] = [
-  { label: 'Dashboard',   href: '/franchisee' },
-  { label: 'My Journey',  href: '/franchisee/matches' },
-  { label: 'Marketplace', href: '/franchisee/marketplace' },
-  { label: 'My Profile',  href: '/franchisee/profile' },
+  { label: 'Dashboard',   href: '/franchisee',             icon: <DashboardIcon className="w-4 h-4" /> },
+  { label: 'My Journey',  href: '/franchisee/matches',     icon: <MatchIcon className="w-4 h-4" /> },
+  { label: 'Marketplace', href: '/franchisee/marketplace', icon: <MarketplaceIcon className="w-4 h-4" /> },
+  { label: 'My Profile',  href: '/franchisee/profile',     icon: <FranchiseeIcon className="w-4 h-4" /> },
 ]
 
 const franchisorNav: NavItem[] = [
-  { label: 'Dashboard',  href: '/franchisor' },
+  { label: 'Dashboard',  href: '/franchisor',             icon: <DashboardIcon className="w-4 h-4" /> },
   {
     label: 'Brand Profile',
+    icon: <FranchisorIcon className="w-4 h-4" />,
     children: [
-      { label: 'Brand Profile',  href: '/franchisor/brand-profile' },
-      { label: 'Questionnaire',  href: '/franchisor/questionnaire' },
+      { label: 'Brand Profile',  href: '/franchisor/brand-profile', icon: <FranchisorIcon className="w-3.5 h-3.5" /> },
+      { label: 'Questionnaire',  href: '/franchisor/questionnaire', icon: <QuestionnaireIcon className="w-3.5 h-3.5" /> },
     ],
   },
-  { label: 'Candidates',  href: '/franchisor/matches' },
-  { label: 'Marketplace', href: '/franchisor/marketplace' },
-  { label: 'Agreement',   href: '/franchisor/agreement' },
-  { label: 'My Account',  href: '/franchisor/profile' },
+  { label: 'Candidates',  href: '/franchisor/matches',     icon: <LeadsIcon className="w-4 h-4" /> },
+  { label: 'Marketplace', href: '/franchisor/marketplace', icon: <MarketplaceIcon className="w-4 h-4" /> },
+  { label: 'Agreement',   href: '/franchisor/agreement',   icon: <AgreementIcon className="w-4 h-4" /> },
+  { label: 'My Account',  href: '/franchisor/profile',     icon: <FranchiseeIcon className="w-4 h-4" /> },
 ]
 
 const introducerNav: NavItem[] = [
-  { label: 'Dashboard',   href: '/introducer' },
-  { label: 'My Leads',    href: '/introducer/leads' },
-  { label: 'Commission',  href: '/introducer/commission' },
-  { label: 'Tools',       href: '/introducer/tools' },
-  { label: 'My Account',  href: '/introducer/profile' },
+  { label: 'Dashboard',  href: '/introducer',         icon: <DashboardIcon className="w-4 h-4" /> },
+  { label: 'My Leads',   href: '/introducer/leads',   icon: <LeadsIcon className="w-4 h-4" /> },
+  { label: 'Commission', href: '/introducer/commission', icon: <MatchIcon className="w-4 h-4" /> },
+  { label: 'Tools',      href: '/introducer/tools',   icon: <MarketplaceIcon className="w-4 h-4" /> },
+  { label: 'My Account', href: '/introducer/profile', icon: <FranchiseeIcon className="w-4 h-4" /> },
 ]
 
 function navForRole(role: string): NavItem[] {
@@ -93,15 +110,21 @@ function profileHrefForRole(role: string): string {
   return '/franchisee/profile'
 }
 
+function roleLabel(role: string): string {
+  if (role === 'admin')      return 'Administrator'
+  if (role === 'franchisor') return 'Franchisor'
+  if (role === 'introducer') return 'Agent'
+  return 'Franchisee'
+}
+
+// ── NavGroupItem ─────────────────────────────────────────────────────────────
 function NavGroupItem({
   group,
   pathname,
-  role,
   onClose,
 }: {
   group: NavGroup
   pathname: string
-  role: string
   onClose: () => void
 }) {
   const anyChildActive = group.children.some(
@@ -109,7 +132,6 @@ function NavGroupItem({
   )
   const [open, setOpen] = useState(anyChildActive)
 
-  // Auto-expand when navigating to a child page (sidebar persists across navigations)
   useEffect(() => {
     if (anyChildActive) setOpen(true)
   }, [anyChildActive])
@@ -125,11 +147,12 @@ function NavGroupItem({
             : 'text-white/60 hover:text-white hover:bg-white/10'
         )}
       >
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2.5">
+          {group.icon && <span className="flex-shrink-0 opacity-70">{group.icon}</span>}
           {group.label}
         </div>
         <svg
-          className={cn('w-3.5 h-3.5 opacity-60 transition-transform', open ? 'rotate-180' : '')}
+          className={cn('w-3.5 h-3.5 opacity-50 transition-transform flex-shrink-0', open ? 'rotate-180' : '')}
           fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}
         >
           <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
@@ -146,12 +169,13 @@ function NavGroupItem({
                 href={child.href}
                 onClick={onClose}
                 className={cn(
-                  'flex items-center px-3 py-2 rounded-lg text-xs font-medium transition-all',
+                  'flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium transition-all',
                   active
                     ? 'bg-white text-brand-green shadow-sm'
                     : 'text-white/60 hover:text-white hover:bg-white/10'
                 )}
               >
+                {child.icon && <span className="flex-shrink-0 opacity-60">{child.icon}</span>}
                 {child.label}
               </Link>
             )
@@ -162,6 +186,7 @@ function NavGroupItem({
   )
 }
 
+// ── NavSidebar ────────────────────────────────────────────────────────────────
 interface NavSidebarProps {
   profile: Profile
   brands?: { id: string; brand_name: string | null; status: string }[]
@@ -188,15 +213,9 @@ export function NavSidebar({ profile, brands, activeBrandId }: NavSidebarProps) 
   return (
     <>
       {/* ── Mobile top bar ─────────────────────────────── */}
-      <div className="fixed top-0 left-0 right-0 h-14 bg-brand-green flex items-center justify-between px-4 md:hidden z-30 border-b border-white/10">
-        <Image
-          src="/logo-white.png"
-          alt="Franchise Foundry"
-          width={120}
-          height={32}
-          className="object-contain"
-          priority
-        />
+      <div className="fixed top-0 left-0 right-0 h-14 flex items-center justify-between px-4 md:hidden z-30 border-b border-white/10"
+        style={{ background: 'linear-gradient(160deg, #3a4a3a 0%, #2d3d2d 100%)' }}>
+        <Image src="/logo-white.png" alt="Franchise Foundry" width={120} height={32} className="object-contain" priority />
         <button
           onClick={() => setMobileOpen(true)}
           aria-label="Open menu"
@@ -212,43 +231,39 @@ export function NavSidebar({ profile, brands, activeBrandId }: NavSidebarProps) 
 
       {/* ── Mobile backdrop ────────────────────────────── */}
       {mobileOpen && (
-        <div
-          className="fixed inset-0 bg-black/50 z-40 md:hidden"
-          onClick={() => setMobileOpen(false)}
-        />
+        <div className="fixed inset-0 bg-black/50 z-40 md:hidden" onClick={() => setMobileOpen(false)} />
       )}
 
       {/* ── Sidebar ────────────────────────────────────── */}
-      <aside className={cn(
-        'fixed inset-y-0 left-0 w-64 bg-brand-green flex flex-col z-50 transition-transform duration-300',
-        'md:static md:w-60 md:min-h-screen md:translate-x-0 md:z-auto md:transition-none',
-        mobileOpen ? 'translate-x-0' : '-translate-x-full'
-      )}>
-        {/* Logo */}
-        <div className="px-6 py-5 border-b border-white/10 flex items-center justify-between flex-shrink-0">
+      <aside
+        className={cn(
+          'fixed inset-y-0 left-0 w-64 flex flex-col z-50 transition-transform duration-300',
+          'md:static md:w-60 md:min-h-screen md:translate-x-0 md:z-auto md:transition-none',
+          mobileOpen ? 'translate-x-0' : '-translate-x-full'
+        )}
+        style={{ background: 'linear-gradient(160deg, #3a4a3a 0%, #2d3d2d 100%)' }}
+      >
+        {/* ── Logo + bell row ─────────────────────────── */}
+        <div className="px-5 py-4 border-b border-white/10 flex items-center justify-between flex-shrink-0">
           <Link href={`/${profile.role}`} onClick={() => setMobileOpen(false)}>
-            <Image
-              src="/logo-white.png"
-              alt="Franchise Foundry"
-              width={160}
-              height={42}
-              className="object-contain"
-              priority
-            />
+            <Image src="/logo-white.png" alt="Franchise Foundry" width={140} height={38} className="object-contain" priority />
           </Link>
-          <button
-            onClick={() => setMobileOpen(false)}
-            aria-label="Close menu"
-            className="md:hidden text-white/60 hover:text-white text-2xl leading-none transition-colors"
-          >
-            ×
-          </button>
+          <div className="flex items-center gap-0.5">
+            <NotificationBell compact />
+            <button
+              onClick={() => setMobileOpen(false)}
+              aria-label="Close menu"
+              className="md:hidden text-white/50 hover:text-white w-8 h-8 flex items-center justify-center rounded-lg hover:bg-white/10 transition-colors text-xl leading-none"
+            >
+              ×
+            </button>
+          </div>
         </div>
 
-        {/* Brand switcher — only shown when account has multiple brands */}
+        {/* ── Brand switcher ─────────────────────────── */}
         {brands && brands.length > 1 && (
           <div className="px-3 py-2 border-b border-white/10">
-            <p className="px-3 text-white/40 text-[10px] font-semibold uppercase tracking-wider mb-1">Brand</p>
+            <p className="px-3 text-white/30 text-[10px] font-bold uppercase tracking-widest mb-1">Brand</p>
             {brands.map(brand => (
               <button
                 key={brand.id}
@@ -264,10 +279,7 @@ export function NavSidebar({ profile, brands, activeBrandId }: NavSidebarProps) 
                     : 'text-white/60 hover:text-white hover:bg-white/10'
                 )}
               >
-                <span className={cn(
-                  'w-1.5 h-1.5 rounded-full flex-shrink-0',
-                  brand.id === activeBrandId ? 'bg-emerald-400' : 'bg-transparent'
-                )} />
+                <span className={cn('w-1.5 h-1.5 rounded-full flex-shrink-0', brand.id === activeBrandId ? 'bg-emerald-400' : 'bg-transparent')} />
                 <span className="truncate">{brand.brand_name ?? 'Unnamed brand'}</span>
               </button>
             ))}
@@ -280,16 +292,23 @@ export function NavSidebar({ profile, brands, activeBrandId }: NavSidebarProps) 
           </div>
         )}
 
-        {/* Nav */}
+        {/* ── Nav ─────────────────────────────────────── */}
         <nav className="flex-1 px-3 py-4 space-y-0.5 overflow-y-auto">
           {nav.map((item, i) => {
+            if (isDivider(item)) {
+              return (
+                <p key={i} className="px-3 pt-4 pb-1 text-[10px] font-bold uppercase tracking-widest text-white/25">
+                  {item.sectionLabel}
+                </p>
+              )
+            }
+
             if (isGroup(item)) {
               return (
                 <NavGroupItem
                   key={i}
                   group={item}
                   pathname={pathname}
-                  role={profile.role}
                   onClose={() => setMobileOpen(false)}
                 />
               )
@@ -302,49 +321,46 @@ export function NavSidebar({ profile, brands, activeBrandId }: NavSidebarProps) 
                 href={item.href}
                 onClick={() => setMobileOpen(false)}
                 className={cn(
-                  'flex items-center px-3 py-2.5 rounded-lg text-sm font-medium transition-all',
+                  'flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm font-medium transition-all',
                   active
                     ? 'bg-white text-brand-green shadow-sm'
                     : 'text-white/70 hover:text-white hover:bg-white/10'
                 )}
               >
+                {item.icon && (
+                  <span className={cn('flex-shrink-0', active ? 'opacity-100' : 'opacity-70')}>
+                    {item.icon}
+                  </span>
+                )}
                 {item.label}
               </Link>
             )
           })}
-          {/* Notification bell — rendered as a nav item at the bottom of the list */}
-          <NotificationBell />
         </nav>
 
-        {/* Admin preview switcher */}
+        {/* ── Admin preview switcher ──────────────────── */}
         {profile.role === 'admin' && (
           <div className="px-3 pb-3 border-t border-white/10 pt-3 flex-shrink-0">
-            <p className="px-3 text-white/40 text-xs font-medium mb-1">Preview as</p>
-            <Link
-              href="/franchisee"
-              onClick={() => setMobileOpen(false)}
-              className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs text-white/60 hover:text-white hover:bg-white/10 transition-colors"
-            >
-              <span>👤</span> Franchisee view
-            </Link>
-            <Link
-              href="/franchisor"
-              onClick={() => setMobileOpen(false)}
-              className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs text-white/60 hover:text-white hover:bg-white/10 transition-colors"
-            >
-              <span>🏢</span> Franchisor view
-            </Link>
-            <Link
-              href="/introducer"
-              onClick={() => setMobileOpen(false)}
-              className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs text-white/60 hover:text-white hover:bg-white/10 transition-colors"
-            >
-              <span>🤝</span> Agent view
-            </Link>
+            <p className="px-3 text-white/30 text-[10px] font-bold uppercase tracking-widest mb-1">Preview as</p>
+            {[
+              { href: '/franchisee', label: 'Franchisee view' },
+              { href: '/franchisor', label: 'Franchisor view' },
+              { href: '/introducer', label: 'Agent view' },
+            ].map(({ href, label }) => (
+              <Link
+                key={href}
+                href={href}
+                onClick={() => setMobileOpen(false)}
+                className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs text-white/50 hover:text-white hover:bg-white/10 transition-colors"
+              >
+                <FranchiseeIcon className="w-3 h-3 opacity-60" />
+                {label}
+              </Link>
+            ))}
           </div>
         )}
 
-        {/* User */}
+        {/* ── User footer ─────────────────────────────── */}
         <div className="px-3 pb-4 border-t border-white/10 pt-4 flex-shrink-0">
           <Link
             href={profileHref}
@@ -359,13 +375,14 @@ export function NavSidebar({ profile, brands, activeBrandId }: NavSidebarProps) 
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-white text-xs font-medium truncate">{profile.full_name || 'Account'}</p>
-              <p className="text-white/40 text-xs">Profile &amp; settings</p>
+              <p className="text-white/40 text-[10px] capitalize">{roleLabel(profile.role)}</p>
             </div>
           </Link>
           <button
             onClick={handleSignOut}
-            className="w-full text-left px-3 py-2 text-xs text-white/60 hover:text-white/90 rounded-lg hover:bg-white/10 transition-colors"
+            className="w-full text-left flex items-center gap-2 px-3 py-2 text-xs text-white/50 hover:text-white/90 rounded-lg hover:bg-white/10 transition-colors"
           >
+            <SignOutIcon className="w-3.5 h-3.5 opacity-60" />
             Sign out
           </button>
         </div>

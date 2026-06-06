@@ -236,7 +236,9 @@ function PartnerCard({
   }
 
   return (
-    <div className="bg-white rounded-xl border border-slate-200 shadow-sm hover:shadow-md hover:border-slate-300 transition-all flex flex-col">
+    <div className="bg-white rounded-xl border border-slate-200 shadow-sm hover:shadow-md hover:border-slate-300 transition-all flex flex-col overflow-hidden">
+      {/* Gold accent strip */}
+      <div className="h-[3px] bg-gradient-to-r from-brand-gold to-brand-gold-light flex-shrink-0" />
       {/* Card header */}
       <div className="p-5 flex items-start gap-4 border-b border-slate-100">
         <div className="w-12 h-12 rounded-xl bg-slate-100 flex items-center justify-center flex-shrink-0 overflow-hidden">

@@ -20,37 +20,41 @@ const BUCKETS = [
   {
     key: 'new',
     label: 'New',
-    colour: 'bg-sky-500',
+    topBorder: 'border-t-sky-400',
     headerBg: 'bg-sky-50',
     headerBorder: 'border-sky-100',
     countBg: 'bg-sky-100 text-sky-700',
+    stagePillColour: 'bg-sky-50 text-sky-700 border-sky-100',
     stages: ['new_enquiry', 'meeting_booked'],
   },
   {
     key: 'active',
     label: 'Active',
-    colour: 'bg-amber-400',
+    topBorder: 'border-t-amber-400',
     headerBg: 'bg-amber-50',
     headerBorder: 'border-amber-100',
     countBg: 'bg-amber-100 text-amber-700',
+    stagePillColour: 'bg-amber-50 text-amber-700 border-amber-100',
     stages: ['profile_complete', 'matches_sent'],
   },
   {
     key: 'in_play',
     label: 'In Play',
-    colour: 'bg-emerald-500',
+    topBorder: 'border-t-emerald-500',
     headerBg: 'bg-emerald-50',
     headerBorder: 'border-emerald-100',
     countBg: 'bg-emerald-100 text-emerald-700',
+    stagePillColour: 'bg-emerald-50 text-emerald-700 border-emerald-100',
     stages: ['brand_shortlisted', 'intro_made'],
   },
   {
     key: 'closing',
     label: 'Closing',
-    colour: 'bg-violet-500',
+    topBorder: 'border-t-violet-500',
     headerBg: 'bg-violet-50',
     headerBorder: 'border-violet-100',
     countBg: 'bg-violet-100 text-violet-700',
+    stagePillColour: 'bg-violet-50 text-violet-700 border-violet-100',
     stages: ['agreement_sent', 'signed'],
   },
 ] as const
@@ -100,13 +104,10 @@ export default function FranchiseeKanban({ franchisees }: { franchisees: Franchi
       {BUCKETS.map(bucket => {
         const cards = bucketMap.get(bucket.key) ?? []
         return (
-          <div key={bucket.key} className="flex flex-col min-h-[480px]">
+          <div key={bucket.key} className={`flex flex-col min-h-[480px] border-t-2 pt-3 ${bucket.topBorder}`}>
             {/* Column header */}
             <div className={`flex items-center justify-between px-3 py-2.5 rounded-xl border mb-3 ${bucket.headerBg} ${bucket.headerBorder}`}>
-              <div className="flex items-center gap-2">
-                <span className={`w-2 h-2 rounded-full ${bucket.colour}`} />
-                <span className="text-xs font-bold text-slate-700 tracking-wide">{bucket.label}</span>
-              </div>
+              <span className="text-xs font-bold text-slate-700 tracking-wide">{bucket.label}</span>
               <span className={`text-xs font-semibold rounded-full px-2 py-0.5 ${bucket.countBg}`}>
                 {cards.length}
               </span>
@@ -146,9 +147,9 @@ export default function FranchiseeKanban({ franchisees }: { franchisees: Franchi
                         </div>
                       </div>
 
-                      {/* Sub-stage pill */}
+                      {/* Sub-stage pill — coloured to match bucket */}
                       {stageInfo && (
-                        <span className="inline-flex items-center gap-1 text-[10px] font-medium text-slate-500 bg-slate-50 border border-slate-100 rounded-full px-2 py-0.5 mb-2">
+                        <span className={`inline-flex items-center gap-1 text-[10px] font-medium rounded-full px-2 py-0.5 mb-2 border ${bucket.stagePillColour}`}>
                           <span>{stageInfo.emoji}</span>
                           <span>{stageInfo.label}</span>
                         </span>

@@ -4,6 +4,7 @@ import { PageHeader } from '@/components/page-header'
 import { Card } from '@/components/ui/card'
 import { MATCH_PIPELINE_STAGES } from '@/lib/supabase/types'
 import { formatInvestmentRange } from '@/lib/utils'
+import { CheckIcon } from '@/components/icons'
 import Link from 'next/link'
 
 export default async function FranchiseeDashboard() {
@@ -204,25 +205,61 @@ export default async function FranchiseeDashboard() {
         </div>
       )}
 
-      {/* ── PRE-ASSIGNMENT WELCOME ── */}
+      {/* ── GETTING STARTED CHECKLIST (pre-assignment) ── */}
       {!hasPrimaryBrand && (
-        <div className="bg-white rounded-2xl border border-slate-200 p-8 mb-6 text-center">
-          <div className="w-12 h-12 rounded-full bg-brand-green/10 flex items-center justify-center mx-auto mb-3 text-2xl">🗺️</div>
-          <p className="text-sm font-semibold text-slate-800 mb-1">Your journey starts here</p>
-          <p className="text-slate-400 text-xs leading-relaxed max-w-sm mx-auto">
-            Your consultant is reviewing your profile and identifying the best franchise matches for you.
-            {completeness < 100
-              ? ' A complete profile helps us find a stronger fit — add the missing details below.'
-              : ' We\'ll notify you as soon as your first match is ready.'}
-          </p>
-          {completeness < 100 && (
-            <Link
-              href="/franchisee/profile"
-              className="mt-4 inline-block bg-brand-green hover:bg-brand-green-dark text-white text-xs font-semibold px-4 py-2 rounded-lg transition-colors"
-            >
-              Complete your profile — {completeness}% done →
-            </Link>
-          )}
+        <div className="bg-white rounded-2xl border border-slate-200 p-6 mb-6">
+          <p className="text-sm font-semibold text-slate-800 mb-5">Getting started</p>
+          <div>
+            {[
+              {
+                label: 'Account created',
+                done: true,
+                description: "You're in — welcome to Franchise Foundry.",
+              },
+              {
+                label: 'Complete your profile',
+                done: completeness === 100,
+                description: completeness === 100
+                  ? 'Profile complete — great work.'
+                  : `${completeness}% done — a full profile helps us find stronger matches.`,
+                href: completeness < 100 ? '/franchisee/profile' : undefined,
+                cta: `Complete profile — ${completeness}% done →`,
+              },
+              {
+                label: 'First match revealed',
+                done: false,
+                description: 'Your consultant is reviewing your profile and identifying the best fit for you.',
+              },
+            ].map((step, i, arr) => (
+              <div key={step.label} className="flex gap-4">
+                {/* Dot + connector line */}
+                <div className="flex flex-col items-center">
+                  <div className={`w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 border-2 transition-colors ${
+                    step.done
+                      ? 'bg-brand-green border-brand-green'
+                      : 'bg-white border-slate-200'
+                  }`}>
+                    {step.done && <CheckIcon className="w-3 h-3 text-white" />}
+                  </div>
+                  {i < arr.length - 1 && (
+                    <div className="w-0.5 flex-1 min-h-[2rem] bg-slate-100 my-1" />
+                  )}
+                </div>
+                {/* Content */}
+                <div className={`pb-5 flex-1 ${i === arr.length - 1 ? 'pb-0' : ''}`}>
+                  <p className={`text-sm font-medium ${step.done ? 'text-slate-700' : 'text-slate-400'}`}>
+                    {step.label}
+                  </p>
+                  <p className="text-xs text-slate-400 mt-0.5 leading-relaxed">{step.description}</p>
+                  {step.href && (
+                    <Link href={step.href} className="mt-1.5 inline-block text-xs font-semibold text-brand-green hover:underline">
+                      {step.cta}
+                    </Link>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       )}
 
