@@ -1,0 +1,1039 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Franchise Foundry — UX Audit</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&display=swap');
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Sora',system-ui,sans-serif;background:#f0efec;color:#1a1a1a;min-height:100vh}
+
+  /* ── Audit shell ── */
+  .audit-header{background:#3a4a3a;color:white;padding:28px 40px;display:flex;align-items:center;justify-content:space-between}
+  .audit-header h1{font-size:18px;font-weight:700;letter-spacing:-0.3px}
+  .audit-header p{font-size:13px;color:rgba(255,255,255,.55);margin-top:3px}
+  .score-chips{display:flex;gap:10px}
+  .chip{padding:5px 14px;border-radius:20px;font-size:12px;font-weight:600}
+  .chip-warn{background:rgba(212,165,116,.2);color:#d4a574;border:1px solid rgba(212,165,116,.3)}
+  .chip-good{background:rgba(100,200,140,.15);color:#5cb87a;border:1px solid rgba(100,200,140,.25)}
+
+  /* ── Tabs ── */
+  .tab-bar{background:white;border-bottom:1px solid #e5e7eb;padding:0 40px;display:flex;gap:0;position:sticky;top:0;z-index:100}
+  .tab{padding:14px 18px;font-size:13px;font-weight:500;color:#6b7280;cursor:pointer;border-bottom:2px solid transparent;transition:all .15s;white-space:nowrap}
+  .tab:hover{color:#3a4a3a}
+  .tab.active{color:#3a4a3a;border-bottom-color:#3a4a3a;font-weight:600}
+
+  /* ── Layout ── */
+  .content{max-width:1280px;margin:0 auto;padding:40px}
+  .panel{display:none}.panel.active{display:block}
+
+  /* ── Section cards ── */
+  .section{background:white;border-radius:16px;border:1px solid #e5e7eb;margin-bottom:28px;overflow:hidden}
+  .section-head{padding:20px 24px;border-bottom:1px solid #f3f4f6;display:flex;align-items:flex-start;justify-content:space-between;gap:16px}
+  .section-head h2{font-size:15px;font-weight:700;color:#111}
+  .section-head p{font-size:13px;color:#6b7280;margin-top:3px;line-height:1.5;max-width:600px}
+  .issue-count{font-size:12px;font-weight:600;color:#ef4444;background:#fef2f2;border:1px solid #fecaca;padding:3px 10px;border-radius:20px;white-space:nowrap}
+
+  /* ── Issues list ── */
+  .issues{padding:20px 24px;display:flex;flex-direction:column;gap:10px;border-bottom:1px solid #f3f4f6}
+  .issue{display:flex;gap:12px;align-items:flex-start}
+  .issue-dot{width:20px;height:20px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;margin-top:1px}
+  .dot-high{background:#fef2f2;color:#ef4444;border:1.5px solid #fecaca}
+  .dot-med{background:#fffbeb;color:#d97706;border:1.5px solid #fde68a}
+  .dot-low{background:#f0fdf4;color:#16a34a;border:1.5px solid #bbf7d0}
+  .issue-text{font-size:13px;color:#374151;line-height:1.5}
+  .issue-text strong{color:#111;font-weight:600}
+
+  /* ── Comparison view ── */
+  .compare{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:#e5e7eb}
+  .compare-side{background:#f8f7f5;padding:20px 24px}
+  .compare-label{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-bottom:14px;display:flex;align-items:center;gap:6px}
+  .label-before{color:#9ca3af}
+  .label-after{color:#3a4a3a}
+  .label-dot{width:6px;height:6px;border-radius:50%}
+  .after-bg{background:#fff}
+
+  /* ═══════════════════════════════
+     CURRENT (BEFORE) mockup pieces
+  ═══════════════════════════════ */
+  .m-sidebar-before{width:200px;background:#3a4a3a;border-radius:12px;padding:16px 12px;font-size:12px}
+  .m-logo{color:rgba(255,255,255,.9);font-weight:700;font-size:13px;padding:4px 8px 12px;border-bottom:1px solid rgba(255,255,255,.1);margin-bottom:8px}
+  .m-nav-item{padding:8px 10px;border-radius:8px;color:rgba(255,255,255,.6);cursor:pointer;margin-bottom:2px}
+  .m-nav-item.active{background:white;color:#3a4a3a;font-weight:600}
+  .m-nav-group-label{padding:8px 10px;color:rgba(255,255,255,.6);display:flex;justify-content:space-between;align-items:center;cursor:pointer}
+  .m-nav-sub{margin-left:12px;padding-left:10px;border-left:1px solid rgba(255,255,255,.1)}
+  .m-nav-sub .m-nav-item{font-size:11px}
+
+  /* stat cards */
+  .m-stat-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:8px}
+  .m-stat-card{background:white;border:1px solid #e5e7eb;border-radius:12px;padding:14px;cursor:pointer}
+  .m-stat-card:hover{border-color:#3a4a3a}
+  .m-stat-icon{font-size:20px;margin-bottom:8px}
+  .m-stat-num{font-size:24px;font-weight:700;color:#111}
+  .m-stat-label{font-size:11px;color:#6b7280;margin-top:2px;font-weight:500}
+  .m-stat-alert{font-size:10px;font-weight:600;padding:2px 7px;border-radius:20px;display:inline-block;margin-top:6px}
+
+  /* ═══════════════════════════════
+     PROPOSED (AFTER) mockup pieces
+  ═══════════════════════════════ */
+
+  /* Sidebar after */
+  .m-sidebar-after{width:220px;background:linear-gradient(160deg,#3a4a3a 0%,#2d3d2d 100%);border-radius:14px;padding:0;font-size:12px;overflow:hidden;box-shadow:0 8px 32px rgba(58,74,58,.25)}
+  .m-sidebar-top{padding:18px 14px 14px;border-bottom:1px solid rgba(255,255,255,.08)}
+  .m-logo-after{display:flex;align-items:center;gap:8px}
+  .m-logo-icon{width:28px;height:28px;border-radius:8px;background:rgba(212,165,116,.2);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .m-logo-text{color:white;font-weight:700;font-size:13px;letter-spacing:-.2px}
+  .m-logo-sub{color:rgba(255,255,255,.4);font-size:10px;margin-top:1px}
+  .m-nav-after{padding:10px 10px;display:flex;flex-direction:column;gap:2px}
+  .m-nav-item-after{padding:8px 10px;border-radius:9px;color:rgba(255,255,255,.55);cursor:pointer;display:flex;align-items:center;gap:9px;font-size:12px;transition:all .1s}
+  .m-nav-item-after:hover{background:rgba(255,255,255,.07);color:rgba(255,255,255,.85)}
+  .m-nav-item-after.active{background:rgba(255,255,255,.12);color:white;font-weight:600}
+  .m-nav-item-after.active .nav-icon{opacity:1}
+  .nav-icon{width:16px;height:16px;opacity:.5;flex-shrink:0}
+  .nav-section-label{font-size:9.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.25);padding:10px 10px 4px;margin-top:4px}
+  .m-sidebar-bottom{padding:10px;border-top:1px solid rgba(255,255,255,.08);margin-top:auto}
+  .m-user-row{display:flex;align-items:center;gap:8px;padding:7px 8px;border-radius:9px;cursor:pointer}
+  .m-user-row:hover{background:rgba(255,255,255,.07)}
+  .m-avatar{width:28px;height:28px;border-radius:50%;background:rgba(212,165,116,.25);color:#d4a574;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .m-user-name{color:white;font-size:11px;font-weight:600}
+  .m-user-role{color:rgba(255,255,255,.35);font-size:10px}
+
+  /* Dashboard after */
+  .m-page-header-after{margin-bottom:20px}
+  .m-page-title-after{font-size:22px;font-weight:800;color:#111;letter-spacing:-.5px}
+  .m-page-sub-after{font-size:13px;color:#9ca3af;margin-top:3px}
+  .m-stat-grid-after{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:10px}
+  .m-stat-after{background:white;border:1px solid #efefef;border-radius:14px;padding:16px 18px;position:relative;overflow:hidden;cursor:pointer;transition:all .15s}
+  .m-stat-after:hover{box-shadow:0 4px 16px rgba(0,0,0,.06);border-color:#d1d5db}
+  .m-stat-accent{position:absolute;top:0;left:0;right:0;height:3px;border-radius:0}
+  .m-stat-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px}
+  .m-stat-icon-after{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center}
+  .m-stat-trend{font-size:10px;font-weight:600;color:#10b981;background:#f0fdf4;padding:3px 7px;border-radius:20px;display:flex;align-items:center;gap:3px}
+  .m-stat-num-after{font-size:28px;font-weight:800;color:#111;line-height:1;letter-spacing:-.5px}
+  .m-stat-label-after{font-size:12px;color:#6b7280;margin-top:3px;font-weight:500}
+  .m-stat-sub-after{font-size:11px;color:#f97316;background:#fff7ed;padding:3px 8px;border-radius:12px;display:inline-block;margin-top:6px;font-weight:600}
+
+  /* activity feed */
+  .m-feed{background:white;border:1px solid #efefef;border-radius:14px;overflow:hidden}
+  .m-feed-head{padding:14px 18px;border-bottom:1px solid #f3f4f6;display:flex;justify-content:space-between;align-items:center}
+  .m-feed-title{font-size:13px;font-weight:700;color:#111}
+  .m-feed-link{font-size:11px;color:#3a4a3a;font-weight:600;cursor:pointer}
+  .m-feed-item{display:flex;align-items:flex-start;gap:10px;padding:11px 18px;border-bottom:1px solid #f9fafb;cursor:pointer;transition:background .1s}
+  .m-feed-item:hover{background:#fafafa}
+  .m-feed-item:last-child{border-bottom:none}
+  .m-feed-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;margin-top:5px}
+  .m-feed-name{font-size:12px;font-weight:600;color:#111}
+  .m-feed-detail{font-size:11px;color:#9ca3af;margin-top:1px}
+  .m-feed-badge{font-size:10px;font-weight:600;padding:2px 7px;border-radius:20px;margin-left:auto;flex-shrink:0;align-self:center}
+
+  /* Franchisee journey after */
+  .m-journey-hero{background:white;border:1px solid #efefef;border-radius:14px;overflow:hidden;margin-bottom:10px}
+  .m-journey-hero-head{background:linear-gradient(135deg,#3a4a3a,#2d3d2d);padding:16px 20px;display:flex;align-items:center;gap:12px}
+  .m-brand-logo{width:44px;height:44px;background:white;border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;color:#3a4a3a;flex-shrink:0}
+  .m-brand-name{color:white;font-size:15px;font-weight:700}
+  .m-brand-cat{color:rgba(255,255,255,.5);font-size:11px;margin-top:2px}
+  .m-match-badge{margin-left:auto;background:rgba(212,165,116,.25);color:#d4a574;font-size:11px;font-weight:700;padding:4px 10px;border-radius:20px;border:1px solid rgba(212,165,116,.3)}
+  .m-journey-body{padding:18px 20px}
+  .m-steps{display:flex;gap:0;margin-bottom:14px}
+  .m-step{flex:1;position:relative}
+  .m-step-line{height:3px;background:#e5e7eb;margin-bottom:6px}
+  .m-step-line.done{background:#3a4a3a}
+  .m-step-line.current{background:linear-gradient(90deg,#3a4a3a,#6a8a6a)}
+  .m-step-label{font-size:9px;color:#9ca3af;text-align:center;font-weight:500}
+  .m-step-label.done{color:#3a4a3a;font-weight:600}
+  .m-step-label.current{color:#3a4a3a;font-weight:700}
+  .m-stage-callout{background:#f7f9f7;border:1px solid rgba(58,74,58,.12);border-radius:10px;padding:12px 14px;display:flex;gap:10px;align-items:flex-start}
+  .m-stage-icon{width:32px;height:32px;background:#3a4a3a;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+  .m-stage-title{font-size:12px;font-weight:700;color:#111}
+  .m-stage-body{font-size:11px;color:#6b7280;margin-top:3px;line-height:1.5}
+
+  /* Marketplace after */
+  .m-mkt-filters{display:flex;gap:6px;margin-bottom:14px}
+  .m-filter-pill{padding:6px 14px;border-radius:20px;font-size:12px;font-weight:500;border:1px solid #e5e7eb;background:white;color:#6b7280;cursor:pointer}
+  .m-filter-pill.active{background:#3a4a3a;color:white;border-color:#3a4a3a}
+  .m-partner-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .m-partner-card{background:white;border:1px solid #efefef;border-radius:14px;overflow:hidden;cursor:pointer;transition:all .15s}
+  .m-partner-card:hover{box-shadow:0 4px 16px rgba(0,0,0,.07);border-color:#d4a574}
+  .m-partner-accent{height:3px}
+  .m-partner-body{padding:14px}
+  .m-partner-top{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+  .m-partner-logo{width:38px;height:38px;border-radius:9px;background:#f3f4f6;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#6b7280;flex-shrink:0}
+  .m-partner-name{font-size:13px;font-weight:700;color:#111}
+  .m-partner-sector{font-size:10px;font-weight:600;padding:2px 8px;border-radius:20px;display:inline-block;margin-top:2px}
+  .m-partner-desc{font-size:11px;color:#6b7280;line-height:1.5;margin-bottom:12px}
+  .m-partner-btn{width:100%;padding:8px;border-radius:9px;font-size:12px;font-weight:600;background:#3a4a3a;color:white;border:none;cursor:pointer;text-align:center}
+
+  /* Profile completeness widget */
+  .m-profile-card{background:white;border:1px solid #efefef;border-radius:14px;padding:16px 18px;margin-bottom:10px}
+  .m-progress-bar-wrap{background:#f3f4f6;border-radius:20px;height:6px;margin:8px 0}
+  .m-progress-bar{height:6px;border-radius:20px;background:linear-gradient(90deg,#3a4a3a,#6a8a6a)}
+  .m-checklist{display:flex;flex-direction:column;gap:6px;margin-top:10px}
+  .m-check-item{display:flex;align-items:center;gap:8px;font-size:12px;color:#374151}
+  .m-check-icon{width:16px;height:16px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:9px;font-weight:700}
+  .check-done{background:#dcfce7;color:#16a34a;border:1px solid #bbf7d0}
+  .check-todo{background:#f3f4f6;color:#9ca3af;border:1px solid #e5e7eb}
+
+  /* ── Recommendation tags ── */
+  .rec-row{padding:16px 24px;display:flex;flex-wrap:wrap;gap:8px;border-top:1px solid #f3f4f6}
+  .rec-tag{font-size:11px;font-weight:500;padding:4px 12px;border-radius:20px;border:1px solid}
+  .tag-icons{background:#faf5ff;color:#7c3aed;border-color:#ddd6fe}
+  .tag-type{background:#fff7ed;color:#c2410c;border-color:#fed7aa}
+  .tag-color{background:#f0fdf4;color:#15803d;border-color:#bbf7d0}
+  .tag-layout{background:#eff6ff;color:#1d4ed8;border-color:#bfdbfe}
+  .tag-motion{background:#fdf2f8;color:#9d174d;border-color:#fbcfe8}
+
+  /* ── Kanban improvements ── */
+  .m-kanban{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+  .m-kanban-col{border-radius:12px;background:#f9fafb;border:1px solid #f3f4f6;padding:10px}
+  .m-kanban-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;padding-bottom:8px;border-bottom:1px solid #f3f4f6}
+  .m-kanban-label{font-size:11px;font-weight:700;color:#374151;display:flex;align-items:center;gap:6px}
+  .m-kanban-dot{width:8px;height:8px;border-radius:50%}
+  .m-kanban-count{font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px}
+  .m-kcard{background:white;border:1px solid #efefef;border-radius:10px;padding:10px;margin-bottom:6px;cursor:pointer;transition:all .1s}
+  .m-kcard:hover{border-color:#3a4a3a;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+  .m-kcard-name{font-size:11px;font-weight:700;color:#111;margin-bottom:3px}
+  .m-kcard-email{font-size:10px;color:#9ca3af;margin-bottom:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .m-kcard-bottom{display:flex;justify-content:space-between;align-items:center}
+  .m-kcard-budget{font-size:10px;color:#6b7280;font-weight:600}
+  .m-kcard-stage{font-size:9.5px;font-weight:600;padding:2px 6px;border-radius:20px}
+
+  /* ── Overview panel ── */
+  .score-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:28px}
+  .score-card{background:white;border-radius:14px;border:1px solid #efefef;padding:20px;text-align:center}
+  .score-num{font-size:40px;font-weight:800;letter-spacing:-1px;line-height:1}
+  .score-label{font-size:12px;color:#6b7280;margin-top:4px;font-weight:500}
+  .score-desc{font-size:11px;color:#9ca3af;margin-top:6px;line-height:1.4}
+  .priority-list{background:white;border-radius:14px;border:1px solid #efefef;overflow:hidden}
+  .priority-head{padding:16px 20px;border-bottom:1px solid #f3f4f6;font-size:14px;font-weight:700;color:#111}
+  .priority-item{display:flex;align-items:flex-start;gap:12px;padding:14px 20px;border-bottom:1px solid #f9fafb}
+  .priority-item:last-child{border-bottom:none}
+  .priority-num{width:24px;height:24px;border-radius:50%;background:#3a4a3a;color:white;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+  .priority-title{font-size:13px;font-weight:700;color:#111;margin-bottom:3px}
+  .priority-desc{font-size:12px;color:#6b7280;line-height:1.5}
+  .priority-impact{font-size:10px;font-weight:600;padding:2px 8px;border-radius:20px;display:inline-block;margin-top:4px}
+  .impact-high{background:#fef2f2;color:#ef4444}
+  .impact-med{background:#fffbeb;color:#d97706}
+  .impact-low{background:#f0fdf4;color:#16a34a}
+
+  /* Inspiration reference */
+  .inspo-row{display:flex;gap:8px;flex-wrap:wrap;padding:16px 24px;background:#f9fafb;border-top:1px solid #f3f4f6}
+  .inspo-tag{font-size:11px;padding:4px 10px;border-radius:6px;background:white;border:1px solid #e5e7eb;color:#374151;font-weight:500}
+  .inspo-label{font-size:11px;color:#9ca3af;align-self:center;font-weight:500}
+</style>
+</head>
+<body>
+
+<div class="audit-header">
+  <div>
+    <h1>Franchise Foundry — UX Audit</h1>
+    <p>Portal review across Admin, Franchisee, Franchisor & Introducer roles · June 2026</p>
+  </div>
+  <div class="score-chips">
+    <div class="chip chip-warn">15 Issues Found</div>
+    <div class="chip chip-good">Solid Foundation</div>
+  </div>
+</div>
+
+<div class="tab-bar">
+  <div class="tab active" onclick="showPanel('overview')">Overview</div>
+  <div class="tab" onclick="showPanel('sidebar')">Navigation & Sidebar</div>
+  <div class="tab" onclick="showPanel('admin')">Admin Dashboard</div>
+  <div class="tab" onclick="showPanel('franchisee')">Franchisee Portal</div>
+  <div class="tab" onclick="showPanel('journey')">Journey Page</div>
+  <div class="tab" onclick="showPanel('kanban')">Franchisee Kanban</div>
+  <div class="tab" onclick="showPanel('marketplace')">Marketplace</div>
+</div>
+
+<!-- ═══════════ OVERVIEW ═══════════ -->
+<div id="panel-overview" class="panel active content">
+  <div class="score-grid">
+    <div class="score-card"><div class="score-num" style="color:#ef4444">5</div><div class="score-label">High Priority</div><div class="score-desc">Issues that visibly hurt the premium feel</div></div>
+    <div class="score-card"><div class="score-num" style="color:#d97706">7</div><div class="score-label">Medium Priority</div><div class="score-desc">Quick wins that elevate the experience</div></div>
+    <div class="score-card"><div class="score-num" style="color:#16a34a">3</div><div class="score-label">Low Priority</div><div class="score-desc">Polish items for later sprints</div></div>
+    <div class="score-card"><div class="score-num" style="color:#3a4a3a">7/10</div><div class="score-label">Overall UX Score</div><div class="score-desc">Strong bones — needs visual elevation</div></div>
+  </div>
+
+  <div class="priority-list">
+    <div class="priority-head">Top 8 Priorities — ordered by user impact</div>
+
+    <div class="priority-item">
+      <div class="priority-num">1</div>
+      <div>
+        <div class="priority-title">Add icons to the sidebar navigation</div>
+        <div class="priority-desc">Every top SaaS product (Linear, Vercel, Gusto, Toast) uses icons alongside nav labels. Without them, the sidebar reads like a developer's debug menu, not a polished product. Users scan icons 3× faster than text.</div>
+        <div class="priority-impact impact-high">High impact · ~2 hours</div>
+      </div>
+    </div>
+
+    <div class="priority-item">
+      <div class="priority-num">2</div>
+      <div>
+        <div class="priority-title">Replace emoji icons with SVG icons on the admin dashboard</div>
+        <div class="priority-desc">Stat cards currently use 📋 👤 🏢 🎯 🤝 as icons. This is the single biggest signal that the product is self-built. Lucide or Heroicons SVGs with a tinted background pill looks immediately more professional.</div>
+        <div class="priority-impact impact-high">High impact · ~1 hour</div>
+      </div>
+    </div>
+
+    <div class="priority-item">
+      <div class="priority-num">3</div>
+      <div>
+        <div class="priority-title">Strengthen page-level typography hierarchy</div>
+        <div class="priority-desc">The PageHeader uses text-xl (20px) for all page titles. Compare to products like Rippling or HubSpot which use 26–32px bold headings. Heavy reliance on text-xs throughout also makes content feel cramped and low-rent.</div>
+        <div class="priority-impact impact-high">High impact · ~3 hours (global change)</div>
+      </div>
+    </div>
+
+    <div class="priority-item">
+      <div class="priority-num">4</div>
+      <div>
+        <div class="priority-title">Introduce the gold accent colour as a design system element</div>
+        <div class="priority-desc">brand-gold (#d4a574) is defined in the config but used only sparingly. It's the warmth that differentiates you from generic B2B tools. Use it for primary CTA buttons, active state accents, and premium indicators — it signals quality in a hospitality context.</div>
+        <div class="priority-impact impact-high">High impact · ~4 hours</div>
+      </div>
+    </div>
+
+    <div class="priority-item">
+      <div class="priority-num">5</div>
+      <div>
+        <div class="priority-title">Upgrade the franchisee pre-assignment empty state to an onboarding checklist</div>
+        <div class="priority-desc">Currently just a centred paragraph in a card. The best products (Notion, Gusto, Stripe) turn empty states into progress-driving experiences. Show a 4-step checklist: profile complete → consultation booked → match identified → intro arranged. Users always know their next action.</div>
+        <div class="priority-impact impact-high">High impact · ~3 hours</div>
+      </div>
+    </div>
+
+    <div class="priority-item">
+      <div class="priority-num">6</div>
+      <div>
+        <div class="priority-title">Add trend indicators to admin dashboard stat cards</div>
+        <div class="priority-desc">Raw counts don't tell a story. A small "+3 this week" indicator next to each stat metric tells admins at a glance whether the pipeline is growing or stalling. Mindbody, HubSpot and Linear all do this well.</div>
+        <div class="priority-impact impact-med">Medium impact · ~2 hours</div>
+      </div>
+    </div>
+
+    <div class="priority-item">
+      <div class="priority-num">7</div>
+      <div>
+        <div class="priority-title">Refine the pipeline progress indicator on the journey page</div>
+        <div class="priority-desc">The current implementation is flat coloured bars with tiny 9px labels below. Upgrade to a connected step indicator with dots, a highlighted current step, and a distinct "next step" CTA. This is core UX for a product whose primary value is guiding people through a journey.</div>
+        <div class="priority-impact impact-med">Medium impact · ~2 hours</div>
+      </div>
+    </div>
+
+    <div class="priority-item">
+      <div class="priority-num">8</div>
+      <div>
+        <div class="priority-title">Move notification bell to the top of the sidebar, not inline with nav links</div>
+        <div class="priority-desc">The notification bell is currently appended to the bottom of the nav list as if it's a nav item. Standard pattern (used by every product) is a bell icon in the sidebar header or user area, possibly with an unread count badge.</div>
+        <div class="priority-impact impact-med">Medium impact · ~30 mins</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ SIDEBAR ═══════════ -->
+<div id="panel-sidebar" class="panel content">
+  <div class="section">
+    <div class="section-head">
+      <div>
+        <h2>Navigation & Sidebar</h2>
+        <p>The sidebar is the skeleton of every portal. It's the first thing users see and the interface they interact with most. Right now it's functional but lacks the icon-driven visual language that signals a polished product.</p>
+      </div>
+      <div class="issue-count">4 issues</div>
+    </div>
+    <div class="issues">
+      <div class="issue"><div class="issue-dot dot-high">!</div><div class="issue-text"><strong>No nav icons.</strong> Text-only navigation feels generic. Icons give users a spatial anchor for each section — critical for a portal with many sections.</div></div>
+      <div class="issue"><div class="issue-dot dot-high">!</div><div class="issue-text"><strong>Notification bell in wrong position.</strong> It's appended to the bottom of nav items like a regular link. It belongs near the user avatar or in a top-right utility area.</div></div>
+      <div class="issue"><div class="issue-dot dot-med">~</div><div class="issue-text"><strong>Sidebar background is flat.</strong> A very subtle gradient (top slightly lighter) adds depth and signals that this is a premium product, not a default stylesheet.</div></div>
+      <div class="issue"><div class="issue-dot dot-med">~</div><div class="issue-text"><strong>User card at bottom is minimal.</strong> The full-name + "Profile & settings" link is good but the avatar area could show a role badge (e.g. "Admin" / "Franchisee") so users always know their context.</div></div>
+    </div>
+
+    <div class="compare">
+      <div class="compare-side">
+        <div class="compare-label label-before"><div class="label-dot" style="background:#9ca3af"></div>Current</div>
+        <div style="display:flex;gap:12px;align-items:flex-start">
+          <div class="m-sidebar-before">
+            <div class="m-logo">Franchise Foundry</div>
+            <div class="m-nav-item active">Dashboard</div>
+            <div class="m-nav-item">Leads</div>
+            <div class="m-nav-item">Franchisees</div>
+            <div class="m-nav-group-label">Franchisors <span style="font-size:10px">▾</span></div>
+            <div class="m-nav-sub">
+              <div class="m-nav-item">Franchisors</div>
+              <div class="m-nav-item">Questionnaires</div>
+              <div class="m-nav-item">Questions</div>
+            </div>
+            <div class="m-nav-item">Matches</div>
+            <div class="m-nav-item">Agreements</div>
+            <div class="m-nav-group-label">Agents <span style="font-size:10px">▾</span></div>
+            <div style="margin-top:auto;padding-top:12px;border-top:1px solid rgba(255,255,255,.1);margin-top:16px">
+              <div style="color:rgba(255,255,255,.5);font-size:10px;padding:4px 8px">🔔 Notifications</div>
+              <div style="display:flex;align-items:center;gap:6px;padding:8px;margin-top:4px;border-top:1px solid rgba(255,255,255,.1)">
+                <div style="width:24px;height:24px;border-radius:50%;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:9px;color:white;font-weight:700">HB</div>
+                <div><div style="color:white;font-size:10px;font-weight:600">Harry Banff</div><div style="color:rgba(255,255,255,.4);font-size:9px">Profile & settings</div></div>
+              </div>
+              <div style="padding:6px 8px;color:rgba(255,255,255,.4);font-size:10px;cursor:pointer">Sign out</div>
+            </div>
+          </div>
+          <div style="background:#f8f7f5;border-radius:8px;padding:12px;flex:1;min-height:200px">
+            <div style="font-size:10px;color:#9ca3af;font-weight:600;margin-bottom:8px">Issues</div>
+            <div style="font-size:11px;color:#6b7280;line-height:1.6">
+              ✗ No icons — text only<br>
+              ✗ Notification buried in nav<br>
+              ✗ Flat solid background<br>
+              ✗ No role indicator on user card<br>
+              ✗ Group chevrons feel generic
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="compare-side after-bg">
+        <div class="compare-label label-after"><div class="label-dot" style="background:#3a4a3a"></div>Proposed</div>
+        <div style="display:flex;gap:12px;align-items:flex-start">
+          <div class="m-sidebar-after" style="flex-shrink:0">
+            <div class="m-sidebar-top">
+              <div class="m-logo-after">
+                <div class="m-logo-icon">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#d4a574" stroke-width="2.5"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>
+                </div>
+                <div>
+                  <div class="m-logo-text">Franchise Foundry</div>
+                  <div class="m-logo-sub">Admin Portal</div>
+                </div>
+                <div style="margin-left:auto;position:relative;cursor:pointer">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.45)" stroke-width="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"/></svg>
+                  <div style="position:absolute;top:-3px;right:-3px;width:8px;height:8px;background:#ef4444;border-radius:50%;border:1.5px solid #2d3d2d"></div>
+                </div>
+              </div>
+            </div>
+            <div class="m-nav-after">
+              <div class="nav-section-label">Main</div>
+              <div class="m-nav-item-after active">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+                Dashboard
+              </div>
+              <div class="m-nav-item-after">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+                Leads
+                <span style="margin-left:auto;background:rgba(239,68,68,.2);color:#fca5a5;font-size:9px;font-weight:700;padding:1px 6px;border-radius:20px">12</span>
+              </div>
+              <div class="m-nav-item-after">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                Franchisees
+              </div>
+              <div class="nav-section-label">Brands</div>
+              <div class="m-nav-item-after">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>
+                Franchisors
+              </div>
+              <div class="m-nav-item-after">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                Matches
+              </div>
+              <div class="nav-section-label">More</div>
+              <div class="m-nav-item-after">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+                Agreements
+              </div>
+              <div class="m-nav-item-after">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+                Marketplace
+              </div>
+            </div>
+            <div class="m-sidebar-bottom">
+              <div class="m-user-row">
+                <div class="m-avatar">HB</div>
+                <div>
+                  <div class="m-user-name">Harry Banff</div>
+                  <div class="m-user-role">Administrator</div>
+                </div>
+                <svg style="margin-left:auto;opacity:.3" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v3M12 20v3M4.22 4.22l2.12 2.12M17.66 17.66l2.12 2.12M1 12h3M20 12h3M4.22 19.78l2.12-2.12M17.66 6.34l2.12-2.12"/></svg>
+              </div>
+            </div>
+          </div>
+          <div style="background:#f8f7f5;border-radius:8px;padding:12px;flex:1;min-height:200px">
+            <div style="font-size:10px;color:#3a4a3a;font-weight:600;margin-bottom:8px">Improvements</div>
+            <div style="font-size:11px;color:#374151;line-height:1.6">
+              ✓ SVG icons per nav item<br>
+              ✓ Bell in header with badge<br>
+              ✓ Subtle gradient background<br>
+              ✓ Grouped sections with labels<br>
+              ✓ Role displayed on user card<br>
+              ✓ Unread count badges on links
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="inspo-row">
+      <span class="inspo-label">Inspired by →</span>
+      <span class="inspo-tag">Linear's icon-first sidebar</span>
+      <span class="inspo-tag">Vercel's nav grouping with labels</span>
+      <span class="inspo-tag">Rippling's badge-on-nav-item pattern</span>
+      <span class="inspo-tag">Gusto's user role indicator</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ ADMIN DASHBOARD ═══════════ -->
+<div id="panel-admin" class="panel content">
+  <div class="section">
+    <div class="section-head">
+      <div>
+        <h2>Admin Dashboard</h2>
+        <p>The first screen admins see every day. Currently shows counts in emoji-icon cards + two list panels. Good structure, weak visual execution — emoji icons and flat typography undercut the premium positioning.</p>
+      </div>
+      <div class="issue-count">4 issues</div>
+    </div>
+    <div class="issues">
+      <div class="issue"><div class="issue-dot dot-high">!</div><div class="issue-text"><strong>Emoji stat icons</strong> (📋 👤 🏢 🎯 🤝) are the biggest single signal that this is a self-built tool. Replace with Lucide/Heroicons SVGs in tinted background containers.</div></div>
+      <div class="issue"><div class="issue-dot dot-high">!</div><div class="issue-text"><strong>No trend data on stat cards.</strong> A static count of "12 leads" tells you nothing. "+3 this week" or a tiny sparkline tells a story and drives action.</div></div>
+      <div class="issue"><div class="issue-dot dot-med">~</div><div class="issue-text"><strong>PageHeader h1 is text-xl (20px).</strong> For a dashboard header, this reads like a section title, not a page. 26–28px bold creates the visual authority this screen needs.</div></div>
+      <div class="issue"><div class="issue-dot dot-med">~</div><div class="issue-text"><strong>Activity feeds use tiny dividers</strong> and the same visual weight for every row. Meeting-requested leads should pop visually with a coloured left border or highlight row, not just a small amber badge.</div></div>
+    </div>
+
+    <div class="compare">
+      <div class="compare-side">
+        <div class="compare-label label-before"><div class="label-dot" style="background:#9ca3af"></div>Current</div>
+        <div style="padding-bottom:4px">
+          <div style="margin-bottom:14px">
+            <div style="font-size:16px;font-weight:600;color:#111">Dashboard</div>
+            <div style="font-size:12px;color:#6b7280;margin-top:2px">Overview of the Franchise Foundry portal.</div>
+          </div>
+          <div class="m-stat-grid">
+            <div class="m-stat-card"><div class="m-stat-icon">📋</div><div style="display:flex;justify-content:space-between;align-items:flex-start"><div><div class="m-stat-label">Leads</div><div style="font-size:9px;color:#6b7280">Quiz submissions</div></div><div class="m-stat-num">12</div></div><div class="m-stat-alert" style="background:#fffbeb;color:#d97706">3 requesting a meeting</div></div>
+            <div class="m-stat-card"><div class="m-stat-icon">👤</div><div style="display:flex;justify-content:space-between;align-items:flex-start"><div><div class="m-stat-label">Franchisees</div><div style="font-size:9px;color:#6b7280">Portal access</div></div><div class="m-stat-num">8</div></div></div>
+            <div class="m-stat-card"><div class="m-stat-icon">🏢</div><div style="display:flex;justify-content:space-between;align-items:flex-start"><div><div class="m-stat-label">Franchisors</div><div style="font-size:9px;color:#6b7280">Brands on platform</div></div><div class="m-stat-num">24</div></div><div class="m-stat-alert" style="background:#eff6ff;color:#1d4ed8">2 pending review</div></div>
+          </div>
+          <div style="font-size:10px;color:#9ca3af;margin-top:8px;font-style:italic">→ emoji icons, flat count numbers, no trend data</div>
+        </div>
+      </div>
+
+      <div class="compare-side after-bg">
+        <div class="compare-label label-after"><div class="label-dot" style="background:#3a4a3a"></div>Proposed</div>
+        <div class="m-page-header-after">
+          <div style="display:flex;align-items:baseline;justify-content:space-between">
+            <div class="m-page-title-after">Good morning, Harry</div>
+            <div style="font-size:11px;color:#9ca3af">Saturday, 6 June</div>
+          </div>
+          <div class="m-page-sub-after">3 items need your attention today</div>
+        </div>
+        <div class="m-stat-grid-after">
+          <div class="m-stat-after">
+            <div class="m-stat-accent" style="background:#ef4444"></div>
+            <div class="m-stat-top">
+              <div class="m-stat-icon-after" style="background:#fef2f2">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+              </div>
+              <div class="m-stat-trend">↑ +3</div>
+            </div>
+            <div class="m-stat-num-after">12</div>
+            <div class="m-stat-label-after">Active Leads</div>
+            <div class="m-stat-sub-after">3 meeting requests</div>
+          </div>
+          <div class="m-stat-after">
+            <div class="m-stat-accent" style="background:#3a4a3a"></div>
+            <div class="m-stat-top">
+              <div class="m-stat-icon-after" style="background:#f0f4f0">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3a4a3a" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              </div>
+              <div class="m-stat-trend" style="color:#3a4a3a;background:#f0f4f0">↑ +2</div>
+            </div>
+            <div class="m-stat-num-after">8</div>
+            <div class="m-stat-label-after">Franchisees</div>
+          </div>
+          <div class="m-stat-after">
+            <div class="m-stat-accent" style="background:#d4a574"></div>
+            <div class="m-stat-top">
+              <div class="m-stat-icon-after" style="background:#fdf8f3">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#d4a574" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>
+              </div>
+              <div class="m-stat-trend" style="color:#d97706;background:#fffbeb">2 pending</div>
+            </div>
+            <div class="m-stat-num-after">24</div>
+            <div class="m-stat-label-after">Franchisors</div>
+          </div>
+        </div>
+        <div class="m-feed">
+          <div class="m-feed-head">
+            <div class="m-feed-title">Needs attention</div>
+            <div class="m-feed-link">View all →</div>
+          </div>
+          <div class="m-feed-item" style="border-left:3px solid #ef4444">
+            <div class="m-feed-dot" style="background:#ef4444"></div>
+            <div style="flex:1">
+              <div class="m-feed-name">James Whitfield</div>
+              <div class="m-feed-detail">james@example.com · submitted 2h ago</div>
+            </div>
+            <div class="m-feed-badge" style="background:#fef2f2;color:#ef4444">Meeting requested</div>
+          </div>
+          <div class="m-feed-item">
+            <div class="m-feed-dot" style="background:#d4a574"></div>
+            <div style="flex:1">
+              <div class="m-feed-name">Bravo Burgers</div>
+              <div class="m-feed-detail">Brand profile · pending review since Mon</div>
+            </div>
+            <div class="m-feed-badge" style="background:#fffbeb;color:#d97706">Pending review</div>
+          </div>
+          <div class="m-feed-item">
+            <div class="m-feed-dot" style="background:#3a4a3a"></div>
+            <div style="flex:1">
+              <div class="m-feed-name">Sarah Chen</div>
+              <div class="m-feed-detail">Match assigned · no response in 5 days</div>
+            </div>
+            <div class="m-feed-badge" style="background:#f0f4f0;color:#3a4a3a">Follow up</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="rec-row">
+      <span class="rec-tag tag-icons">SVG icons</span>
+      <span class="rec-tag tag-type">Larger heading (26px+)</span>
+      <span class="rec-tag tag-color">Gold accent on franchisor card</span>
+      <span class="rec-tag tag-layout">Trend badges on stats</span>
+      <span class="rec-tag tag-color">Left-border highlight for urgent rows</span>
+    </div>
+    <div class="inspo-row">
+      <span class="inspo-label">Inspired by →</span>
+      <span class="inspo-tag">HubSpot's contextual dashboard greeting</span>
+      <span class="inspo-tag">Linear's stat + trend pattern</span>
+      <span class="inspo-tag">Mindbody's colour-coded activity feed</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ FRANCHISEE PORTAL ═══════════ -->
+<div id="panel-franchisee" class="panel content">
+  <div class="section">
+    <div class="section-head">
+      <div>
+        <h2>Franchisee Dashboard — Pre-Assignment State</h2>
+        <p>This is what a new franchisee sees before they've been matched. Currently it's a centred paragraph in a card. This is the highest-stakes screen in the product — it needs to drive engagement and reduce drop-off.</p>
+      </div>
+      <div class="issue-count">3 issues</div>
+    </div>
+    <div class="issues">
+      <div class="issue"><div class="issue-dot dot-high">!</div><div class="issue-text"><strong>Empty state doesn't guide users.</strong> A single centred paragraph gives no clear next action. Users don't know what to do or how long anything takes. This is where drop-off happens.</div></div>
+      <div class="issue"><div class="issue-dot dot-med">~</div><div class="issue-text"><strong>Profile completeness CTA is buried.</strong> The "Complete your profile — 65% done →" link appears as small inline text below a paragraph. It should be a primary visual element — this is the most important action on the page.</div></div>
+      <div class="issue"><div class="issue-dot dot-low">✓</div><div class="issue-text"><strong>Stat cards (Brands matched, Interested, Intros) look good</strong> but use inconsistent text sizes across the three cards when values are at 0.</div></div>
+    </div>
+
+    <div class="compare">
+      <div class="compare-side">
+        <div class="compare-label label-before"><div class="label-dot" style="background:#9ca3af"></div>Current — pre-assignment empty state</div>
+        <div style="background:white;border-radius:12px;border:1px solid #e5e7eb;padding:28px;text-align:center;max-width:400px;margin:0 auto">
+          <div style="font-size:28px;margin-bottom:12px">🗺️</div>
+          <div style="font-size:13px;font-weight:600;color:#111;margin-bottom:6px">Your journey starts here</div>
+          <div style="font-size:11px;color:#9ca3af;line-height:1.6;margin-bottom:14px">Your consultant is reviewing your profile and identifying the best franchise matches for you. A complete profile helps us find a stronger fit — add the missing details below.</div>
+          <div style="background:#3a4a3a;color:white;font-size:11px;font-weight:600;padding:7px 14px;border-radius:7px;display:inline-block">Complete your profile — 65% done →</div>
+        </div>
+        <div style="font-size:10px;color:#9ca3af;margin-top:10px;text-align:center;font-style:italic">→ No sense of time, no steps, no momentum</div>
+      </div>
+
+      <div class="compare-side after-bg">
+        <div class="compare-label label-after"><div class="label-dot" style="background:#3a4a3a"></div>Proposed — onboarding progress view</div>
+        <div class="m-page-header-after" style="margin-bottom:14px">
+          <div class="m-page-title-after" style="font-size:18px">Welcome, James</div>
+          <div class="m-page-sub-after" style="font-size:12px;color:#9ca3af">Your franchise journey is just getting started</div>
+        </div>
+        <div class="m-profile-card">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+            <div style="font-size:13px;font-weight:700;color:#111">Getting started</div>
+            <div style="font-size:11px;font-weight:700;color:#3a4a3a">2 of 4 complete</div>
+          </div>
+          <div class="m-progress-bar-wrap"><div class="m-progress-bar" style="width:50%"></div></div>
+          <div class="m-checklist">
+            <div class="m-check-item">
+              <div class="m-check-icon check-done">✓</div>
+              <span>Account created</span>
+              <span style="margin-left:auto;font-size:10px;color:#9ca3af">Done</span>
+            </div>
+            <div class="m-check-item">
+              <div class="m-check-icon check-done">✓</div>
+              <span>Profile questionnaire completed</span>
+              <span style="margin-left:auto;font-size:10px;color:#9ca3af">Done</span>
+            </div>
+            <div class="m-check-item" style="font-weight:600;color:#3a4a3a">
+              <div class="m-check-icon" style="background:#f0f4f0;color:#3a4a3a;border:1.5px solid #3a4a3a;font-size:9px;font-weight:700">3</div>
+              <span>Consultation with your advisor</span>
+              <div style="margin-left:auto;background:#3a4a3a;color:white;font-size:10px;font-weight:600;padding:2px 9px;border-radius:20px;cursor:pointer">Book now →</div>
+            </div>
+            <div class="m-check-item" style="opacity:.4">
+              <div class="m-check-icon check-todo">4</div>
+              <span>First match revealed</span>
+              <span style="margin-left:auto;font-size:10px;color:#9ca3af">After step 3</span>
+            </div>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
+          <div style="background:#f9fafb;border:1px solid #f3f4f6;border-radius:10px;padding:12px;text-align:center">
+            <div style="font-size:22px;font-weight:800;color:#d1d5db">0</div>
+            <div style="font-size:10px;color:#9ca3af;font-weight:500;margin-top:2px">Brands matched</div>
+          </div>
+          <div style="background:#f9fafb;border:1px solid #f3f4f6;border-radius:10px;padding:12px;text-align:center">
+            <div style="font-size:22px;font-weight:800;color:#d1d5db">0</div>
+            <div style="font-size:10px;color:#9ca3af;font-weight:500;margin-top:2px">Interested in</div>
+          </div>
+          <div style="background:#f9fafb;border:1px solid #f3f4f6;border-radius:10px;padding:12px;text-align:center">
+            <div style="font-size:22px;font-weight:800;color:#d1d5db">0</div>
+            <div style="font-size:10px;color:#9ca3af;font-weight:500;margin-top:2px">Intros made</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="rec-row">
+      <span class="rec-tag tag-layout">4-step progress checklist</span>
+      <span class="rec-tag tag-layout">Progress bar on checklist</span>
+      <span class="rec-tag tag-color">CTA button inline in step row</span>
+      <span class="rec-tag tag-type">Personalised greeting heading</span>
+    </div>
+    <div class="inspo-row">
+      <span class="inspo-label">Inspired by →</span>
+      <span class="inspo-tag">Notion's getting-started checklist</span>
+      <span class="inspo-tag">Gusto's onboarding progress tracker</span>
+      <span class="inspo-tag">Stripe's setup checklist pattern</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ JOURNEY ═══════════ -->
+<div id="panel-journey" class="panel content">
+  <div class="section">
+    <div class="section-head">
+      <div>
+        <h2>Franchisee Journey Page — Pipeline Progress</h2>
+        <p>This is the most emotionally significant screen for franchisees — it shows exactly where they are in their franchise journey. The content logic is strong; the visual execution needs upgrading to match the emotional weight of the moment.</p>
+      </div>
+      <div class="issue-count">3 issues</div>
+    </div>
+    <div class="issues">
+      <div class="issue"><div class="issue-dot dot-high">!</div><div class="issue-text"><strong>Pipeline bars are too thin and flat.</strong> 8px bars with 9px labels below feel like a loading indicator, not a meaningful journey visualisation. Users should feel clear progress at a glance.</div></div>
+      <div class="issue"><div class="issue-dot dot-med">~</div><div class="issue-text"><strong>"Backup options — in case your primary doesn't progress"</strong> is a demotivating frame. Rename to "Alternative paths" or "Additional matches" — warmer language that doesn't imply failure.</div></div>
+      <div class="issue"><div class="issue-dot dot-low">✓</div><div class="issue-text"><strong>The brand hero card and stage guidance sections are well structured</strong> — just needs visual elevation (see mock below).</div></div>
+    </div>
+
+    <div class="compare">
+      <div class="compare-side">
+        <div class="compare-label label-before"><div class="label-dot" style="background:#9ca3af"></div>Current — pipeline bar</div>
+        <div style="background:white;border-radius:12px;border:1px solid #e5e7eb;padding:16px">
+          <div style="font-size:11px;color:#6b7280;font-weight:500;margin-bottom:8px">Your journey</div>
+          <div style="display:flex;gap:3px;margin-bottom:6px">
+            <div style="flex:1;height:8px;border-radius:20px;background:#3a4a3a"></div>
+            <div style="flex:1;height:8px;border-radius:20px;background:#3a4a3a"></div>
+            <div style="flex:1;height:8px;border-radius:20px;background:#3a4a3a"></div>
+            <div style="flex:1;height:8px;border-radius:20px;background:#e5e7eb"></div>
+            <div style="flex:1;height:8px;border-radius:20px;background:#e5e7eb"></div>
+          </div>
+          <div style="display:flex;gap:3px">
+            <div style="flex:1;font-size:9px;text-align:center;color:#9ca3af">Matched</div>
+            <div style="flex:1;font-size:9px;text-align:center;color:#9ca3af">Approved</div>
+            <div style="flex:1;font-size:9px;text-align:center;color:#3a4a3a;font-weight:700">Meeting</div>
+            <div style="flex:1;font-size:9px;text-align:center;color:#9ca3af">Agreement</div>
+            <div style="flex:1;font-size:9px;text-align:center;color:#9ca3af">Signed</div>
+          </div>
+          <div style="font-size:11px;color:#6b7280;margin-top:10px;display:flex;align-items:center;gap:6px">
+            <span>📅</span><span style="font-weight:600;color:#374151">Meeting booked</span><span style="color:#9ca3af">→ next: Agreement sent</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="compare-side after-bg">
+        <div class="compare-label label-after"><div class="label-dot" style="background:#3a4a3a"></div>Proposed — step indicator + brand hero</div>
+        <div class="m-journey-hero">
+          <div class="m-journey-hero-head">
+            <div class="m-brand-logo">B</div>
+            <div>
+              <div class="m-brand-name">Bravo Burgers</div>
+              <div class="m-brand-cat">Quick Service · £180k – £240k investment</div>
+            </div>
+            <div class="m-match-badge">⭐ Primary match</div>
+          </div>
+          <div class="m-journey-body">
+            <div style="font-size:11px;color:#9ca3af;font-weight:600;margin-bottom:10px;letter-spacing:.04em;text-transform:uppercase">Your journey</div>
+            <div class="m-steps">
+              <div class="m-step">
+                <div class="m-step-line done"></div>
+                <div class="m-step-label done">Matched</div>
+              </div>
+              <div class="m-step">
+                <div class="m-step-line done"></div>
+                <div class="m-step-label done">Confirmed</div>
+              </div>
+              <div class="m-step">
+                <div class="m-step-line current"></div>
+                <div class="m-step-label current">↓ Meeting</div>
+              </div>
+              <div class="m-step">
+                <div class="m-step-line"></div>
+                <div class="m-step-label">Agreement</div>
+              </div>
+              <div class="m-step">
+                <div class="m-step-line"></div>
+                <div class="m-step-label">Signed</div>
+              </div>
+            </div>
+            <div class="m-stage-callout">
+              <div class="m-stage-icon">📅</div>
+              <div>
+                <div class="m-stage-title">Introduction meeting booked — prepare now</div>
+                <div class="m-stage-body">This is your chance to learn about the brand and ask your questions. Think about investment timeline, day-to-day operations, and support structure.</div>
+                <div style="margin-top:8px;display:inline-flex;align-items:center;gap:6px;background:#3a4a3a;color:white;font-size:11px;font-weight:600;padding:5px 12px;border-radius:7px;cursor:pointer">
+                  View preparation guide →
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div style="font-size:11px;color:#9ca3af;font-weight:500;margin-bottom:8px;margin-top:4px">ALTERNATIVE PATHS</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+          <div style="background:white;border:1px solid #efefef;border-radius:12px;padding:12px">
+            <div style="font-size:12px;font-weight:700;color:#111;margin-bottom:4px">Crispy Co.</div>
+            <div style="font-size:10px;color:#9ca3af">Quick Service</div>
+            <div style="font-size:10px;color:#6b7280;margin-top:6px">£140k – £200k</div>
+          </div>
+          <div style="background:white;border:1.5px dashed #e5e7eb;border-radius:12px;padding:12px;display:flex;align-items:center;justify-content:center">
+            <div style="font-size:11px;color:#9ca3af;text-align:center">Being identified…</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="rec-row">
+      <span class="rec-tag tag-layout">Stepped progress indicator (not flat bars)</span>
+      <span class="rec-tag tag-layout">Dark hero header for primary brand card</span>
+      <span class="rec-tag tag-color">Rename "backup options" → "alternative paths"</span>
+      <span class="rec-tag tag-color">Gold badge for primary match</span>
+      <span class="rec-tag tag-layout">CTA button inside guidance callout</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ KANBAN ═══════════ -->
+<div id="panel-kanban" class="panel content">
+  <div class="section">
+    <div class="section-head">
+      <div>
+        <h2>Franchisee Kanban Board</h2>
+        <p>The admin's primary tool for managing the franchisee pipeline. The structure (4 buckets: New / Active / In Play / Closing) is sound. Visual refinements would make it feel closer to Linear or Monday.com than a custom build.</p>
+      </div>
+      <div class="issue-count">2 issues</div>
+    </div>
+    <div class="issues">
+      <div class="issue"><div class="issue-dot dot-med">~</div><div class="issue-text"><strong>Cards lack visual hierarchy between name, stage and budget.</strong> All text is roughly the same visual weight. A clearer name → stage pill → budget hierarchy would let admins scan faster.</div></div>
+      <div class="issue"><div class="issue-dot dot-low">✓</div><div class="issue-text"><strong>Column headers are clean</strong> but the coloured dot + label could be replaced with a left-border accent on the entire column to create stronger visual separation — a pattern used by Linear and Notion databases.</div></div>
+    </div>
+
+    <div class="compare">
+      <div class="compare-side">
+        <div class="compare-label label-before"><div class="label-dot" style="background:#9ca3af"></div>Current card</div>
+        <div style="background:white;border:1px solid #e5e7eb;border-radius:10px;padding:10px;width:180px">
+          <div style="display:flex;align-items:flex-start;gap:6px;margin-bottom:6px">
+            <div style="width:22px;height:22px;border-radius:50%;background:#3a4a3a;color:white;font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">JW</div>
+            <div style="flex:1">
+              <div style="font-size:11px;font-weight:600;color:#111">James Whitfield</div>
+              <div style="font-size:9px;color:#9ca3af">james@example.com</div>
+            </div>
+            <div style="width:6px;height:6px;border-radius:50%;background:#10b981;flex-shrink:0;margin-top:3px"></div>
+          </div>
+          <div style="font-size:9.5px;background:#f9fafb;border:1px solid #f3f4f6;border-radius:20px;padding:2px 7px;display:inline-flex;align-items:center;gap:4px;margin-bottom:6px">
+            <span>📋</span><span style="color:#6b7280">Profile complete</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div style="font-size:10px;color:#6b7280;font-weight:600">£80k – £150k</div>
+            <div style="font-size:10px;color:#f59e0b">★★★★☆</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="compare-side after-bg">
+        <div class="compare-label label-after"><div class="label-dot" style="background:#3a4a3a"></div>Proposed kanban</div>
+        <div class="m-kanban">
+          <div class="m-kanban-col" style="border-top:3px solid #38bdf8">
+            <div class="m-kanban-head">
+              <div class="m-kanban-label">New <span style="font-size:10px;opacity:.5">·</span></div>
+              <div class="m-kanban-count" style="background:#e0f2fe;color:#0284c7">3</div>
+            </div>
+            <div class="m-kcard">
+              <div class="m-kcard-name">James Whitfield</div>
+              <div class="m-kcard-email">james@example.com</div>
+              <div class="m-kcard-bottom">
+                <div class="m-kcard-budget">£80k–150k</div>
+                <div class="m-kcard-stage" style="background:#e0f2fe;color:#0369a1">New enquiry</div>
+              </div>
+            </div>
+            <div class="m-kcard">
+              <div class="m-kcard-name">Priya Sharma</div>
+              <div class="m-kcard-email">priya@example.com</div>
+              <div class="m-kcard-bottom">
+                <div class="m-kcard-budget">£120k–200k</div>
+                <div class="m-kcard-stage" style="background:#fef9c3;color:#854d0e">Mtg booked</div>
+              </div>
+            </div>
+          </div>
+          <div class="m-kanban-col" style="border-top:3px solid #fbbf24">
+            <div class="m-kanban-head">
+              <div class="m-kanban-label">Active</div>
+              <div class="m-kanban-count" style="background:#fef9c3;color:#b45309">2</div>
+            </div>
+            <div class="m-kcard">
+              <div class="m-kcard-name">Tom Bishop</div>
+              <div class="m-kcard-email">tom@example.com</div>
+              <div class="m-kcard-bottom">
+                <div class="m-kcard-budget">£200k–300k</div>
+                <div class="m-kcard-stage" style="background:#f0f4f0;color:#3a4a3a">★★★★★</div>
+              </div>
+            </div>
+          </div>
+          <div class="m-kanban-col" style="border-top:3px solid #34d399">
+            <div class="m-kanban-head">
+              <div class="m-kanban-label">In Play</div>
+              <div class="m-kanban-count" style="background:#d1fae5;color:#065f46">1</div>
+            </div>
+            <div class="m-kcard" style="border-color:#d1fae5">
+              <div class="m-kcard-name">Sarah Chen</div>
+              <div class="m-kcard-email">sarah@example.com</div>
+              <div class="m-kcard-bottom">
+                <div class="m-kcard-budget">£150k–220k</div>
+                <div class="m-kcard-stage" style="background:#d1fae5;color:#065f46">Intro made</div>
+              </div>
+            </div>
+          </div>
+          <div class="m-kanban-col" style="border-top:3px solid #a78bfa">
+            <div class="m-kanban-head">
+              <div class="m-kanban-label">Closing</div>
+              <div class="m-kanban-count" style="background:#ede9fe;color:#6d28d9">1</div>
+            </div>
+            <div class="m-kcard" style="border-color:#ede9fe">
+              <div class="m-kcard-name">Raj Patel</div>
+              <div class="m-kcard-email">raj@example.com</div>
+              <div class="m-kcard-bottom">
+                <div class="m-kcard-budget">£180k–250k</div>
+                <div class="m-kcard-stage" style="background:#ede9fe;color:#6d28d9">Agreement sent</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="rec-row">
+      <span class="rec-tag tag-color">Top border accent per column (not dot)</span>
+      <span class="rec-tag tag-layout">Stage pill colour matches column colour</span>
+      <span class="rec-tag tag-type">Clearer name → detail → budget hierarchy</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ MARKETPLACE ═══════════ -->
+<div id="panel-marketplace" class="panel content">
+  <div class="section">
+    <div class="section-head">
+      <div>
+        <h2>Partner Marketplace</h2>
+        <p>The marketplace is one of the most polished parts of the portal. The blur/lock pattern is smart. Main upgrades are visual — partner cards can feel more premium, and the filter pills could have icons.</p>
+      </div>
+      <div class="issue-count">2 issues</div>
+    </div>
+    <div class="issues">
+      <div class="issue"><div class="issue-dot dot-med">~</div><div class="issue-text"><strong>Partner cards use text-only sector badges.</strong> Small coloured icons alongside the category label (e.g. a £ icon for Finance) would make scanning faster and feel more considered.</div></div>
+      <div class="issue"><div class="issue-dot dot-low">✓</div><div class="issue-text"><strong>The gold brand colour isn't used at all here.</strong> A gold accent strip at the top of each "featured" partner card, or a gold CTA button for unlocked cards, would reinforce the premium brand feel.</div></div>
+    </div>
+
+    <div class="compare">
+      <div class="compare-side">
+        <div class="compare-label label-before"><div class="label-dot" style="background:#9ca3af"></div>Current</div>
+        <div style="display:flex;gap:6px;margin-bottom:12px">
+          <div style="padding:5px 12px;border-radius:20px;font-size:11px;font-weight:500;background:#3a4a3a;color:white;border:1px solid #3a4a3a">All</div>
+          <div style="padding:5px 12px;border-radius:20px;font-size:11px;background:white;color:#6b7280;border:1px solid #e5e7eb">Finance</div>
+          <div style="padding:5px 12px;border-radius:20px;font-size:11px;background:white;color:#6b7280;border:1px solid #e5e7eb">Property</div>
+          <div style="padding:5px 12px;border-radius:20px;font-size:11px;background:white;color:#6b7280;border:1px solid #e5e7eb">Tech</div>
+        </div>
+        <div style="background:white;border:1px solid #e5e7eb;border-radius:10px;overflow:hidden;max-width:260px">
+          <div style="padding:14px;border-bottom:1px solid #f3f4f6;display:flex;align-items:flex-start;gap:10px">
+            <div style="width:40px;height:40px;border-radius:9px;background:#f3f4f6;display:flex;align-items:center;justify-content:center;font-weight:700;color:#6b7280;flex-shrink:0">F</div>
+            <div style="flex:1">
+              <div style="font-size:12px;font-weight:700;color:#111">FundMyFranchise</div>
+              <div style="font-size:10px;color:#9ca3af;margin-top:2px">Specialist franchise lending</div>
+            </div>
+            <div style="font-size:10px;font-weight:600;padding:2px 7px;border-radius:20px;background:#eff6ff;color:#1d4ed8;flex-shrink:0">Finance</div>
+          </div>
+          <div style="padding:12px">
+            <div style="font-size:11px;color:#6b7280;line-height:1.5;margin-bottom:10px">Specialist finance for franchise buyers across all major brands.</div>
+            <div style="background:#3a4a3a;color:white;font-size:11px;font-weight:600;padding:8px;border-radius:7px;text-align:center;cursor:pointer">Request intro →</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="compare-side after-bg">
+        <div class="compare-label label-after"><div class="label-dot" style="background:#3a4a3a"></div>Proposed</div>
+        <div class="m-mkt-filters">
+          <div class="m-filter-pill active">◈ All</div>
+          <div class="m-filter-pill">£ Finance</div>
+          <div class="m-filter-pill">⌂ Property</div>
+          <div class="m-filter-pill">⚙ Tech</div>
+          <div class="m-filter-pill">⚖ Legal</div>
+        </div>
+        <div class="m-partner-grid">
+          <div class="m-partner-card">
+            <div class="m-partner-accent" style="background:linear-gradient(90deg,#d4a574,#e8c9a0)"></div>
+            <div class="m-partner-body">
+              <div class="m-partner-top">
+                <div class="m-partner-logo" style="background:#eff6ff;color:#1d4ed8;font-size:16px">£</div>
+                <div>
+                  <div class="m-partner-name">FundMyFranchise</div>
+                  <div class="m-partner-sector" style="background:#eff6ff;color:#1d4ed8">Finance</div>
+                </div>
+              </div>
+              <div class="m-partner-desc">Specialist franchise lending for all major brands. Rates from 5.9% APR.</div>
+              <div style="display:flex;flex-direction:column;gap:4px;margin-bottom:10px">
+                <div style="font-size:10px;color:#374151;display:flex;gap:6px;align-items:center"><span style="color:#d4a574;font-size:11px">✦</span> <strong>Exclusive rate:</strong> 0.5% below high street</div>
+                <div style="font-size:10px;color:#374151;display:flex;gap:6px;align-items:center"><span style="color:#d4a574;font-size:11px">✦</span> <strong>Decision in:</strong> 48 hours</div>
+              </div>
+              <div class="m-partner-btn">Request intro →</div>
+            </div>
+          </div>
+          <div class="m-partner-card">
+            <div class="m-partner-accent" style="background:linear-gradient(90deg,#d4a574,#e8c9a0)"></div>
+            <div class="m-partner-body">
+              <div class="m-partner-top">
+                <div class="m-partner-logo" style="background:#fdf4ff;color:#7e22ce;font-size:16px">⚙</div>
+                <div>
+                  <div class="m-partner-name">FranchiseTech Pro</div>
+                  <div class="m-partner-sector" style="background:#fdf4ff;color:#7e22ce">Tech</div>
+                </div>
+              </div>
+              <div class="m-partner-desc">POS, scheduling and ops software built for franchise operators.</div>
+              <div style="display:flex;flex-direction:column;gap:4px;margin-bottom:10px">
+                <div style="font-size:10px;color:#374151;display:flex;gap:6px;align-items:center"><span style="color:#d4a574;font-size:11px">✦</span> <strong>Free trial:</strong> 60 days for FF members</div>
+              </div>
+              <div class="m-partner-btn">Request intro →</div>
+            </div>
+          </div>
+        </div>
+        <div style="font-size:10px;color:#9ca3af;margin-top:10px;text-align:center">Gold accent strip signals vetted / premium partners</div>
+      </div>
+    </div>
+    <div class="rec-row">
+      <span class="rec-tag tag-color">Gold accent strip on partner cards</span>
+      <span class="rec-tag tag-icons">Icon characters in filter pills</span>
+      <span class="rec-tag tag-color">Gold ✦ bullet for features</span>
+      <span class="rec-tag tag-layout">Consistent card height with flex layout</span>
+    </div>
+    <div class="inspo-row">
+      <span class="inspo-label">Inspired by →</span>
+      <span class="inspo-tag">Toast's integration marketplace</span>
+      <span class="inspo-tag">Mindbody's partner directory</span>
+      <span class="inspo-tag">HubSpot's App Marketplace cards</span>
+    </div>
+  </div>
+</div>
+
+<script>
+function showPanel(id) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'))
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'))
+  document.getElementById('panel-' + id).classList.add('active')
+  event.currentTarget.classList.add('active')
+}
+</script>
+</body>
+</html>
