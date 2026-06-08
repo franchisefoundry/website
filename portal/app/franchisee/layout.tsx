@@ -3,6 +3,7 @@ import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { NavSidebar } from '@/components/nav-sidebar'
 import PreviewBanner from '@/components/preview-banner'
+import InactivityTimeout from '@/components/inactivity-timeout'
 import { notifyAdmins } from '@/lib/notifications'
 
 export default async function FranchiseeLayout({ children }: { children: React.ReactNode }) {
@@ -46,6 +47,7 @@ export default async function FranchiseeLayout({ children }: { children: React.R
 
   return (
     <div className="flex min-h-screen">
+      <InactivityTimeout />
       <NavSidebar profile={sidebarProfile} />
       <main className="flex-1 overflow-auto pt-14 md:pt-0">
         {isPreview && <PreviewBanner role="franchisee" />}

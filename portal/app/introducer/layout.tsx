@@ -2,6 +2,7 @@ import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { NavSidebar } from '@/components/nav-sidebar'
 import PreviewBanner from '@/components/preview-banner'
+import InactivityTimeout from '@/components/inactivity-timeout'
 
 export default async function IntroducerLayout({ children }: { children: React.ReactNode }) {
   const supabase = await createClient()
@@ -27,6 +28,7 @@ export default async function IntroducerLayout({ children }: { children: React.R
 
   return (
     <div className="flex min-h-screen">
+      <InactivityTimeout />
       <NavSidebar profile={sidebarProfile} />
       <main className="flex-1 overflow-auto pt-14 md:pt-0">
         {isPreview && <PreviewBanner role="introducer" />}

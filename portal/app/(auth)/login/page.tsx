@@ -20,6 +20,7 @@ function LoginForm() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const next = searchParams.get('next') ?? '/'
+  const reason = searchParams.get('reason')
 
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault()
@@ -121,9 +122,15 @@ function LoginForm() {
     <div className="w-full max-w-sm">
       <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-8">
         <h1 className="text-xl font-semibold text-slate-900 mb-1">Sign in</h1>
-        <p className="text-sm text-slate-500 mb-6">
-          Enter your details to access the portal.
-        </p>
+        {reason === 'idle' ? (
+          <p className="text-sm text-amber-700 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2 mb-6">
+            You were signed out due to inactivity.
+          </p>
+        ) : (
+          <p className="text-sm text-slate-500 mb-6">
+            Enter your details to access the portal.
+          </p>
+        )}
 
         <form onSubmit={handleLogin} className="space-y-4">
           <div>
