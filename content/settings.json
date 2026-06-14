@@ -33,6 +33,10 @@
     {
       "logo": "/images/zambrero_logo.svg.png",
       "name": "Zambrero"
+    },
+    {
+      "logo": "/images/pg-stamp.svg",
+      "name": "PG Fast Foods"
     }
   ]
 }
