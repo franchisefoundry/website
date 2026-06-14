@@ -133,9 +133,16 @@ export default function UnlockForm({ quizData, matchCount }: { quizData: QuizDat
           <input type="checkbox" checked={terms} onChange={e => { setTerms(e.target.checked); setError(null) }}
             style={{ marginTop: 3, flexShrink: 0, accentColor: '#c8924a' }} />
           <span style={{ fontSize: '0.82rem', color: 'rgba(255,255,255,0.5)', lineHeight: 1.6 }}>
-            I agree to the <a href="https://franchisefoundry.co.uk/terms.html" target="_blank" rel="noreferrer" style={{ color: '#f0d4a8', textDecoration: 'underline' }}>Franchise Foundry Terms of Engagement</a>. I understand that any franchise introductions made by Franchise Foundry are made in a brokerage capacity, and I agree not to approach any introduced brand directly without Franchise Foundry&apos;s involvement.
+            I agree to the <a href="https://franchisefoundry.co.uk/terms.html" target="_blank" rel="noreferrer" style={{ color: '#f0d4a8', textDecoration: 'underline' }}>Franchise Foundry Terms of Engagement</a> and <a href="https://franchisefoundry.co.uk/privacy.html" target="_blank" rel="noreferrer" style={{ color: '#f0d4a8', textDecoration: 'underline' }}>Privacy Policy</a>. I understand that any franchise introductions made by Franchise Foundry are made in a brokerage capacity, and I agree not to approach any introduced brand directly without Franchise Foundry&apos;s involvement.
           </span>
         </label>
+
+        {/* GDPR data processing notice — required under UK GDPR Article 13 */}
+        <p style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.35)', lineHeight: 1.6, margin: 0, borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: 12 }}>
+          <strong style={{ color: 'rgba(255,255,255,0.5)' }}>How we use your data:</strong> Franchise Foundry (the data controller) will use the information you provide to match you with franchise opportunities and to contact you about your enquiry. We will not sell your personal data to third parties. You have the right to access, correct, or delete your data at any time by emailing{' '}
+          <a href="mailto:hello@franchisefoundry.co.uk" style={{ color: 'rgba(255,255,255,0.5)', textDecoration: 'underline' }}>hello@franchisefoundry.co.uk</a>.
+          For full details see our <a href="https://franchisefoundry.co.uk/privacy.html" target="_blank" rel="noreferrer" style={{ color: 'rgba(255,255,255,0.5)', textDecoration: 'underline' }}>Privacy Policy</a>.
+        </p>
 
         {error && (
           <p style={{ fontSize: '0.85rem', color: '#fca5a5', background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.2)', borderRadius: 8, padding: '10px 14px', margin: 0 }}>

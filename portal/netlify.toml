@@ -4,3 +4,32 @@
 
 [[plugins]]
   package = "@netlify/plugin-nextjs"
+
+# ── Security headers — applied to every response from the portal ──────────────
+[[headers]]
+  for = "/*"
+  [headers.values]
+    # Prevent browsers caching sensitive portal pages
+    Cache-Control = "no-store, max-age=0"
+
+    # Force HTTPS for 1 year and include subdomains
+    Strict-Transport-Security = "max-age=31536000; includeSubDomains"
+
+    # Prevent the portal being embedded in an iframe (clickjacking protection)
+    X-Frame-Options = "DENY"
+
+    # Stop browsers guessing content types (MIME-sniffing attacks)
+    X-Content-Type-Options = "nosniff"
+
+    # Only send the origin (not the full URL) in Referer headers
+    Referrer-Policy = "strict-origin-when-cross-origin"
+
+    # Disable browser features that aren't needed
+    Permissions-Policy = "camera=(), microphone=(), geolocation=(), payment=()"
+
+    # Content Security Policy — controls what scripts/styles/connections are allowed
+    # 'unsafe-inline' for scripts/styles is required by Next.js and inline-styled components
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https://*.supabase.co; connect-src 'self' https://*.supabase.co wss://*.supabase.co; frame-ancestors 'none'; base-uri 'self'; form-action 'self';"
+
+    # Remove server fingerprint
+    X-Powered-By = ""

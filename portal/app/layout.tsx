@@ -3,6 +3,7 @@ import { Sora } from 'next/font/google'
 import './globals.css'
 import { DevRoleSwitcher } from '@/components/dev/DevRoleSwitcher'
 import { ToastContainer } from '@/components/ui/ToastContainer'
+import CookieNotice from '@/components/cookie-notice'
 
 const sora = Sora({
   subsets: ['latin'],
@@ -20,6 +21,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         {children}
         <ToastContainer />
+        <CookieNotice />
         {process.env.NODE_ENV === 'development' && <DevRoleSwitcher />}
       </body>
     </html>

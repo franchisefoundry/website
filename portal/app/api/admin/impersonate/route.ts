@@ -26,7 +26,7 @@ export async function POST(request: NextRequest) {
   }
 
   // Generate a one-time magic link for that user
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000'
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://portal.franchisefoundry.co.uk'
   const { data, error } = await admin.auth.admin.generateLink({
     type: 'magiclink',
     email: userData.user.email,

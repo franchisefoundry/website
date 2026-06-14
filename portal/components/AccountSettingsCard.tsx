@@ -1,6 +1,8 @@
 'use client'
 
 import { useState, useRef } from 'react'
+import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
 import { Card, CardBody, CardHeader, CardTitle } from '@/components/ui/card'
 import { initials } from '@/lib/utils'
@@ -12,6 +14,7 @@ interface Props {
 }
 
 export default function AccountSettingsCard({ userId, fullName, avatarUrl }: Props) {
+  const router = useRouter()
   const [currentAvatar, setCurrentAvatar] = useState(avatarUrl)
   const [avatarLoading, setAvatarLoading] = useState(false)
   const [avatarError, setAvatarError] = useState<string | null>(null)
@@ -21,6 +24,26 @@ export default function AccountSettingsCard({ userId, fullName, avatarUrl }: Pro
   const [confirmPw, setConfirmPw] = useState('')
   const [pwLoading, setPwLoading] = useState(false)
   const [pwMsg, setPwMsg] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
+
+  const [deleteConfirm, setDeleteConfirm] = useState(false)
+  const [deleteLoading, setDeleteLoading] = useState(false)
+  const [deleteError, setDeleteError] = useState<string | null>(null)
+
+  async function handleDeleteAccount() {
+    setDeleteLoading(true)
+    setDeleteError(null)
+    const res = await fetch('/api/auth/delete-account', { method: 'DELETE' })
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({}))
+      setDeleteError(data.error ?? 'Failed to delete account. Please contact support.')
+      setDeleteLoading(false)
+      return
+    }
+    // Sign out client-side and redirect to login
+    const supabase = createClient()
+    await supabase.auth.signOut()
+    router.replace('/login')
+  }
 
   async function handleAvatarUpload(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0]
@@ -171,6 +194,68 @@ export default function AccountSettingsCard({ userId, fullName, avatarUrl }: Pro
               {pwLoading ? 'Updating…' : 'Update password'}
             </button>
           </form>
+        </CardBody>
+      </Card>
+
+      {/* Data & Privacy */}
+      <Card>
+        <CardHeader><CardTitle>Data &amp; privacy</CardTitle></CardHeader>
+        <CardBody className="space-y-4">
+          <p className="text-sm text-slate-500">
+            Read our{' '}
+            <Link href="/privacy" className="text-brand-green hover:underline font-medium">
+              Privacy Policy
+            </Link>{' '}
+            to understand how we collect, use and protect your personal data.
+            To request a copy of your data or raise any GDPR query, email{' '}
+            <a href="mailto:connect@franchisefoundry.co.uk" className="text-brand-green hover:underline font-medium">
+              connect@franchisefoundry.co.uk
+            </a>.
+          </p>
+
+          <div className="border-t border-slate-100 pt-4">
+            <p className="text-sm font-medium text-red-600 mb-1">Delete account</p>
+            <p className="text-xs text-slate-500 mb-3">
+              Permanently delete your account and all associated data. This cannot be undone.
+            </p>
+            {!deleteConfirm ? (
+              <button
+                type="button"
+                onClick={() => setDeleteConfirm(true)}
+                className="text-sm text-red-500 border border-red-200 rounded-lg px-4 py-2 hover:bg-red-50 transition-colors"
+              >
+                Delete my account
+              </button>
+            ) : (
+              <div className="bg-red-50 border border-red-200 rounded-xl p-4 space-y-3 max-w-sm">
+                <p className="text-sm font-medium text-red-700">Are you sure?</p>
+                <p className="text-xs text-red-600">
+                  Your profile, matches and all data will be permanently deleted. This action cannot be reversed.
+                </p>
+                {deleteError && (
+                  <p className="text-xs text-red-600 bg-white border border-red-200 rounded-lg px-3 py-2">{deleteError}</p>
+                )}
+                <div className="flex gap-2">
+                  <button
+                    type="button"
+                    onClick={handleDeleteAccount}
+                    disabled={deleteLoading}
+                    className="text-sm font-medium bg-red-600 text-white rounded-lg px-4 py-2 hover:bg-red-700 transition-colors disabled:opacity-60"
+                  >
+                    {deleteLoading ? 'Deleting…' : 'Yes, delete my account'}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => { setDeleteConfirm(false); setDeleteError(null) }}
+                    disabled={deleteLoading}
+                    className="text-sm text-slate-500 border border-slate-200 rounded-lg px-4 py-2 hover:bg-slate-50 transition-colors"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
         </CardBody>
       </Card>
     </div>

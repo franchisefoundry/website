@@ -19,6 +19,20 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
         </div>
       </nav>
       <main>{children}</main>
+      <footer style={{ borderTop: '1px solid rgba(255,255,255,0.08)', padding: '20px 40px', display: 'flex', justifyContent: 'center', gap: 24 }}>
+        <Link
+          href="/privacy"
+          style={{ color: 'rgba(255,255,255,0.45)', fontSize: '0.8rem', textDecoration: 'none' }}
+        >
+          Privacy Policy
+        </Link>
+        <a
+          href="mailto:connect@franchisefoundry.co.uk"
+          style={{ color: 'rgba(255,255,255,0.45)', fontSize: '0.8rem', textDecoration: 'none' }}
+        >
+          Contact us
+        </a>
+      </footer>
     </div>
   )
 }
