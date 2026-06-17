@@ -8,6 +8,7 @@ import CookieNotice from '@/components/cookie-notice'
 const sora = Sora({
   subsets: ['latin'],
   display: 'swap',
+  variable: '--font-sora',
 })
 
 export const metadata: Metadata = {
@@ -17,7 +18,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={sora.className}>
+    <html lang="en" className={`${sora.className} ${sora.variable}`}>
       <body>
         {children}
         <ToastContainer />

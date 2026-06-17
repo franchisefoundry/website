@@ -231,7 +231,7 @@ export default function QuizForm() {
           .ql-dot:nth-child(2) { animation-delay: 0.2s; }
           .ql-dot:nth-child(3) { animation-delay: 0.4s; }
         `}</style>
-        <div style={{ position: 'fixed', inset: 0, background: 'rgba(255,255,255,0.97)', backdropFilter: 'blur(8px)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', zIndex: 9999, fontFamily: "'Sora', system-ui, sans-serif" }}>
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(255,255,255,0.97)', backdropFilter: 'blur(8px)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', zIndex: 9999, fontFamily: "var(--font-sora), system-ui, sans-serif" }}>
           <div style={{ position: 'relative', width: 180, height: 180, margin: '0 auto 36px' }}>
             <Image src="/logo-icon.png" alt="Franchise Foundry" width={90} height={90}
               fetchPriority="high"

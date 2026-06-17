@@ -33,24 +33,25 @@ export default async function AgentDashboard() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
 
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('full_name')
-    .eq('id', user!.id)
-    .single()
+  // These three queries only depend on user.id — run them in parallel
+  const [{ data: profile }, { data: leads }, { data: commissions }] = await Promise.all([
+    supabase
+      .from('profiles')
+      .select('full_name')
+      .eq('id', user!.id)
+      .single(),
+    supabase
+      .from('introducer_leads')
+      .select('id, first_name, last_name, status, created_at')
+      .eq('introducer_id', user!.id)
+      .order('created_at', { ascending: false }),
+    supabase
+      .from('introducer_commissions')
+      .select('commission_amount, status')
+      .eq('introducer_id', user!.id),
+  ])
 
   const firstName = profile?.full_name?.split(' ')[0] ?? 'there'
-
-  const { data: leads } = await supabase
-    .from('introducer_leads')
-    .select('id, first_name, last_name, status, created_at')
-    .eq('introducer_id', user!.id)
-    .order('created_at', { ascending: false })
-
-  const { data: commissions } = await supabase
-    .from('introducer_commissions')
-    .select('commission_amount, status')
-    .eq('introducer_id', user!.id)
 
   const all = leads ?? []
 

@@ -28,35 +28,37 @@ export default async function FranchiseeDashboard() {
   // Use admin client so we can access franchisor profile data and role-filter
   const admin = createAdminClient()
 
-  // Fetch all their matches (for stats)
-  const { data: allMatches } = profileId
-    ? await admin
-        .from('matches')
-        .select('id, status, score')
-        .eq('franchisee_id', profileId)
-        .not('status', 'eq', 'declined')
-    : { data: [] }
+  // Both match queries depend only on profileId — run them in parallel
+  const [{ data: allMatches }, { data: primaryMatch }] = await Promise.all([
+    // All matches (for stats)
+    profileId
+      ? admin
+          .from('matches')
+          .select('id, status, score')
+          .eq('franchisee_id', profileId)
+          .not('status', 'eq', 'declined')
+      : Promise.resolve({ data: [] as { id: string; status: string; score: number }[] }),
+    // Primary brand match for the hero card
+    hasPrimaryBrand && profileId
+      ? admin
+          .from('matches')
+          .select(`
+            id, pipeline_stage, franchisor_notes,
+            franchisor_profiles(
+              id, brand_name, category, teaser, logo_url,
+              investment_min, investment_max, investment_display,
+              timeline_months, operator_model, experience_required
+            )
+          `)
+          .eq('franchisee_id', profileId)
+          .eq('franchisor_id', fp.assigned_franchisor_id)
+          .maybeSingle()
+      : Promise.resolve({ data: null }),
+  ])
 
   const totalMatches   = (allMatches ?? []).length
   const interestedCount = (allMatches ?? []).filter(m => m.status === 'interested').length
   const introCount     = (allMatches ?? []).filter(m => m.status === 'intro_made').length
-
-  // Fetch primary brand match for the hero card
-  const { data: primaryMatch } = hasPrimaryBrand && profileId
-    ? await admin
-        .from('matches')
-        .select(`
-          id, pipeline_stage, franchisor_notes,
-          franchisor_profiles(
-            id, brand_name, category, teaser, logo_url,
-            investment_min, investment_max, investment_display,
-            timeline_months, operator_model, experience_required
-          )
-        `)
-        .eq('franchisee_id', profileId)
-        .eq('franchisor_id', fp.assigned_franchisor_id)
-        .maybeSingle()
-    : { data: null }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const primaryBrand = (primaryMatch?.franchisor_profiles as any) ?? null

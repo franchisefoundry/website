@@ -122,7 +122,7 @@ export default function UnlockForm({ quizData, matchCount }: { quizData: QuizDat
                 border: '1px solid rgba(255,255,255,0.12)',
                 borderRadius: 10, padding: '12px 16px',
                 fontSize: '1rem', color: 'white',
-                fontFamily: "'Sora', sans-serif",
+                fontFamily: "var(--font-sora), sans-serif",
                 outline: 'none',
               }}
             />
@@ -155,7 +155,7 @@ export default function UnlockForm({ quizData, matchCount }: { quizData: QuizDat
             width: '100%', background: '#c8924a', color: 'white',
             padding: '16px 32px', border: 'none', borderRadius: 8,
             fontWeight: 700, fontSize: '1rem', cursor: loading ? 'not-allowed' : 'pointer',
-            fontFamily: "'Sora', sans-serif", opacity: loading ? 0.7 : 1,
+            fontFamily: "var(--font-sora), sans-serif", opacity: loading ? 0.7 : 1,
             display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
           }}>
           {loading ? 'Submitting…' : <>Unlock My Matches <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M5 12h14M12 5l7 7-7 7" /></svg></>}

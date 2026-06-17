@@ -62,7 +62,7 @@ export default function ResetPasswordPage() {
     maxWidth: 400,
     width: '100%',
     textAlign: 'center',
-    fontFamily: "'Sora', system-ui, sans-serif",
+    fontFamily: "var(--font-sora), system-ui, sans-serif",
   }
   const pageStyle: React.CSSProperties = {
     minHeight: '100vh',
@@ -72,7 +72,7 @@ export default function ResetPasswordPage() {
     alignItems: 'center',
     justifyContent: 'center',
     padding: 24,
-    fontFamily: "'Sora', system-ui, sans-serif",
+    fontFamily: "var(--font-sora), system-ui, sans-serif",
   }
 
   if (stage === 'verifying') {

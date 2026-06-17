@@ -62,7 +62,7 @@ export function StatCard({ label, value, sub, icon, iconBg, trend, alert }: Stat
           </span>
         )}
       </div>
-      <p className="text-3xl font-extrabold tracking-tight text-slate-900">{value}</p>
+      <p className="text-3xl font-bold tracking-tight text-slate-900">{value}</p>
       <p className="text-sm text-slate-500 mt-0.5">{label}</p>
       {sub && <p className="text-xs text-slate-400 mt-1">{sub}</p>}
       {alert && (

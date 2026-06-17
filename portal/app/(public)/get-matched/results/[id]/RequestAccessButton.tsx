@@ -57,7 +57,7 @@ export default function RequestAccessButton({
           fontWeight: 700,
           fontSize: '1rem',
           cursor: loading ? 'not-allowed' : 'pointer',
-          fontFamily: "'Sora', sans-serif",
+          fontFamily: "var(--font-sora), sans-serif",
           opacity: loading ? 0.7 : 1,
           display: 'flex',
           alignItems: 'center',

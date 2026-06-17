@@ -3,7 +3,7 @@ import Link from 'next/link'
 
 export default function PublicLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="min-h-screen" style={{ fontFamily: "'Sora', system-ui, sans-serif" }}>
+    <div className="min-h-screen" style={{ fontFamily: "var(--font-sora), system-ui, sans-serif" }}>
       {/* Navbar — matches website */}
       <nav style={{ background: '#3a4a3a', borderBottom: '1px solid rgba(255,255,255,0.08)', position: 'sticky', top: 0, zIndex: 100 }}>
         <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 40px', height: 72, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>

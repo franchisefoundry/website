@@ -91,7 +91,7 @@ export default function AuthConfirmPage() {
         minHeight: '100vh', background: '#f8fafc',
         display: 'flex', flexDirection: 'column',
         alignItems: 'center', justifyContent: 'center', gap: 16, padding: 24,
-        fontFamily: "'Sora', system-ui, sans-serif",
+        fontFamily: "var(--font-sora), system-ui, sans-serif",
       }}>
         <div style={{
           background: '#fff', border: '1px solid #e2e8f0', borderRadius: 16,
@@ -128,7 +128,7 @@ export default function AuthConfirmPage() {
         minHeight: '100vh', background: '#2a352a',
         display: 'flex', flexDirection: 'column',
         alignItems: 'center', justifyContent: 'center', gap: 20,
-        fontFamily: "'Sora', system-ui, sans-serif",
+        fontFamily: "var(--font-sora), system-ui, sans-serif",
       }}>
         <img src="/favicon-icon.png" alt="" width={64} height={64}
           style={{ animation: 'ffBreath 1.8s ease-in-out infinite' }} />

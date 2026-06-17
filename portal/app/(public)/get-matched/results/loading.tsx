@@ -29,7 +29,7 @@ export default function ResultsLoading() {
         backdropFilter: 'blur(8px)',
         display: 'flex', flexDirection: 'column',
         alignItems: 'center', justifyContent: 'center',
-        fontFamily: "'Sora', system-ui, sans-serif",
+        fontFamily: "var(--font-sora), system-ui, sans-serif",
         zIndex: 9999,
       }}>
         {/* Logo icon + spinning ring */}

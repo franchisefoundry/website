@@ -11,7 +11,7 @@ const COMPANY_NAME = 'Franchise Foundry Ltd'
 
 export default function PrivacyPolicyPage() {
   return (
-    <div style={{ maxWidth: 760, margin: '0 auto', padding: '48px 24px 80px', color: '#1e293b', fontFamily: "'Sora', system-ui, sans-serif", lineHeight: 1.75 }}>
+    <div style={{ maxWidth: 760, margin: '0 auto', padding: '48px 24px 80px', color: '#1e293b', fontFamily: "var(--font-sora), system-ui, sans-serif", lineHeight: 1.75 }}>
       <p style={{ fontSize: '0.85rem', color: '#64748b', marginBottom: 8 }}>Last updated: {LAST_UPDATED}</p>
       <h1 style={{ fontSize: '2rem', fontWeight: 700, color: '#0f172a', marginBottom: 8 }}>Privacy Policy</h1>
       <p style={{ color: '#475569', marginBottom: 40 }}>
