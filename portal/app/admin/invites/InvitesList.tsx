@@ -1,0 +1,136 @@
+'use client'
+
+import { useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { formatDate, timeAgo } from '@/lib/utils'
+import { toast } from '@/lib/toast'
+
+export interface InviteRow {
+  id: string
+  email: string
+  role: string
+  full_name: string | null
+  created_at: string
+  invite_expires_at: string | null
+  accepted: boolean
+}
+
+function statusInfo(row: InviteRow): { label: string; classes: string } {
+  if (row.accepted) return { label: 'Accepted', classes: 'bg-emerald-50 text-emerald-700 border-emerald-200' }
+  if (!row.invite_expires_at || new Date(row.invite_expires_at) < new Date()) {
+    return { label: 'Expired', classes: 'bg-red-50 text-red-600 border-red-200' }
+  }
+  return { label: 'Pending', classes: 'bg-amber-50 text-amber-700 border-amber-200' }
+}
+
+function ResendButton({ email, role, fullName }: { email: string; role: string; fullName: string | null }) {
+  const [loading, setLoading] = useState(false)
+  const router = useRouter()
+
+  async function handleResend() {
+    setLoading(true)
+    const res = await fetch('/api/admin/invite', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, role, full_name: fullName }),
+    })
+    setLoading(false)
+    if (res.ok) {
+      toast('Invite resent')
+      router.refresh()
+    } else {
+      const data = await res.json().catch(() => ({}))
+      toast(data.error ?? 'Failed to resend invite')
+    }
+  }
+
+  return (
+    <button
+      onClick={handleResend}
+      disabled={loading}
+      className="text-xs text-brand-green hover:text-brand-green/80 font-medium disabled:opacity-50 transition-colors"
+    >
+      {loading ? 'Sending…' : 'Resend'}
+    </button>
+  )
+}
+
+export default function InvitesList({ invites }: { invites: InviteRow[] }) {
+  const [search, setSearch] = useState('')
+
+  const filtered = search.trim()
+    ? invites.filter(i =>
+        i.email.toLowerCase().includes(search.toLowerCase()) ||
+        (i.full_name ?? '').toLowerCase().includes(search.toLowerCase())
+      )
+    : invites
+
+  return (
+    <div>
+      <div className="mb-4">
+        <input
+          type="text"
+          placeholder="Search by name or email…"
+          value={search}
+          onChange={e => setSearch(e.target.value)}
+          className="w-full max-w-sm px-4 py-2 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-green focus:border-transparent placeholder:text-slate-400"
+        />
+      </div>
+
+      <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+        <table className="w-full text-sm">
+          <thead className="bg-slate-50 border-b border-slate-200">
+            <tr>
+              <th className="text-left px-6 py-3 text-xs font-medium text-slate-500 uppercase tracking-wide">Person</th>
+              <th className="text-left px-6 py-3 text-xs font-medium text-slate-500 uppercase tracking-wide">Role</th>
+              <th className="text-left px-6 py-3 text-xs font-medium text-slate-500 uppercase tracking-wide">Status</th>
+              <th className="text-left px-6 py-3 text-xs font-medium text-slate-500 uppercase tracking-wide">Invited</th>
+              <th className="text-left px-6 py-3 text-xs font-medium text-slate-500 uppercase tracking-wide hidden md:table-cell">Expires</th>
+              <th className="px-6 py-3" />
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-slate-100">
+            {filtered.length === 0 && (
+              <tr>
+                <td colSpan={6} className="px-6 py-10 text-center text-slate-400 text-sm">
+                  {search ? `No invites match "${search}"` : 'No invites sent yet.'}
+                </td>
+              </tr>
+            )}
+            {filtered.map(invite => {
+              const status = statusInfo(invite)
+              const canResend = !invite.accepted
+              return (
+                <tr key={invite.id} className="hover:bg-slate-50 transition-colors">
+                  <td className="px-6 py-3">
+                    <p className="font-medium text-slate-900">{invite.full_name || '—'}</p>
+                    <p className="text-xs text-slate-400">{invite.email}</p>
+                  </td>
+                  <td className="px-6 py-3 capitalize text-slate-600">{invite.role}</td>
+                  <td className="px-6 py-3">
+                    <span className={`inline-flex text-[11px] font-semibold px-2 py-0.5 rounded-full border ${status.classes}`}>
+                      {status.label}
+                    </span>
+                  </td>
+                  <td className="px-6 py-3 text-slate-500 text-xs">{timeAgo(invite.created_at)}</td>
+                  <td className="px-6 py-3 text-slate-400 text-xs hidden md:table-cell">
+                    {invite.invite_expires_at ? formatDate(invite.invite_expires_at) : '—'}
+                  </td>
+                  <td className="px-6 py-3 text-right">
+                    {canResend && (
+                      <ResendButton
+                        email={invite.email}
+                        role={invite.role}
+                        fullName={invite.full_name}
+                      />
+                    )}
+                  </td>
+                </tr>
+              )
+            })}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  )
+}

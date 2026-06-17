@@ -11,7 +11,7 @@ import { NotificationBell } from '@/components/notification-bell'
 import {
   DashboardIcon, LeadsIcon, FranchiseeIcon, FranchisorIcon,
   MatchIcon, AgreementIcon, MarketplaceIcon, AgentIcon,
-  QuestionnaireIcon, SignOutIcon,
+  QuestionnaireIcon, SignOutIcon, PlusIcon,
 } from '@/components/icons'
 
 // ── Nav type system ──────────────────────────────────────────────────────────
@@ -45,6 +45,7 @@ const adminNav: NavItem[] = [
   },
   { label: 'Matches',    href: '/admin/matches',    icon: <MatchIcon className="w-4 h-4" /> },
   { label: 'Agreements', href: '/admin/agreements', icon: <AgreementIcon className="w-4 h-4" /> },
+  { label: 'Invites',    href: '/admin/invites',    icon: <PlusIcon className="w-4 h-4" /> },
   { sectionLabel: 'More' },
   {
     label: 'Agents',
