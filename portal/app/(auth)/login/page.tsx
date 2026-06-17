@@ -71,7 +71,7 @@ function LoginForm() {
               </p>
               <Button
                 fullWidth
-                className="py-2.5"
+                size="lg"
                 onClick={() => { setForgotMode(false); setForgotSent(false); setForgotEmail('') }}
               >
                 Back to sign in
@@ -93,7 +93,7 @@ function LoginForm() {
                     placeholder="you@example.com"
                   />
                 </Field>
-                <Button type="submit" fullWidth className="py-2.5" disabled={loading}>
+                <Button type="submit" fullWidth size="lg" disabled={loading}>
                   {loading ? 'Sending…' : 'Send reset link'}
                 </Button>
                 <Button type="button" variant="ghost" fullWidth onClick={() => setForgotMode(false)}>
@@ -183,7 +183,7 @@ function LoginForm() {
             </p>
           )}
 
-          <Button type="submit" fullWidth className="py-2.5" disabled={loading}>
+          <Button type="submit" fullWidth size="lg" disabled={loading}>
             {loading ? 'Signing in…' : 'Sign in'}
           </Button>
         </form>

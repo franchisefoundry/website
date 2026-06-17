@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { Button } from '@/components/ui/button'
 
 export default function RunMatchingButton() {
   const [loading, setLoading] = useState(false)
@@ -26,13 +27,9 @@ export default function RunMatchingButton() {
   return (
     <div className="flex items-center gap-3">
       {result && <span className="text-sm text-slate-500">{result}</span>}
-      <button
-        onClick={handleRun}
-        disabled={loading}
-        className="bg-brand-green hover:bg-brand-green-dark text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors disabled:opacity-60"
-      >
+      <Button onClick={handleRun} disabled={loading}>
         {loading ? 'Running…' : 'Run matching'}
-      </button>
+      </Button>
     </div>
   )
 }

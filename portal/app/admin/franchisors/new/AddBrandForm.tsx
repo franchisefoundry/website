@@ -3,6 +3,9 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Card, CardBody, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Field, Input, Textarea } from '@/components/ui/input'
+import { Modal } from '@/components/ui/modal'
 import { UK_CITIES, SECTORS } from '@/lib/supabase/types'
 
 type FormState = {
@@ -161,26 +164,22 @@ export default function AddBrandForm() {
           <CardTitle>Franchisor contact <span className="text-slate-400 font-normal text-sm ml-1">— optional, required only to send invite</span></CardTitle>
         </CardHeader>
         <CardBody className="grid grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">Full name</label>
-            <input
+          <Field label="Full name">
+            <Input
               type="text"
               value={form.franchisor_name}
               onChange={e => set('franchisor_name', e.target.value)}
-              className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-green focus:border-transparent"
               placeholder="Jane Smith"
             />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">Email address</label>
-            <input
+          </Field>
+          <Field label="Email address">
+            <Input
               type="email"
               value={form.franchisor_email}
               onChange={e => set('franchisor_email', e.target.value)}
-              className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-green focus:border-transparent"
               placeholder="jane@brand.com"
             />
-          </div>
+          </Field>
           <div className="col-span-2">
             <label className="block text-sm font-medium text-slate-700 mb-1">Profile status</label>
             <div className="flex gap-3">
@@ -211,43 +210,38 @@ export default function AddBrandForm() {
         <CardHeader><CardTitle>Brand details</CardTitle></CardHeader>
         <CardBody className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1">Brand name</label>
-              <input
+            <Field label="Brand name">
+              <Input
                 type="text"
                 value={form.brand_name}
                 onChange={e => set('brand_name', e.target.value)}
-                className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-green focus:border-transparent"
                 placeholder="e.g. Sides, Zambrero"
               />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1">Category</label>
-              <input
+            </Field>
+            <Field label="Category">
+              <Input
                 type="text"
                 value={form.category}
                 onChange={e => set('category', e.target.value)}
-                className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-green focus:border-transparent"
                 placeholder="e.g. Quick Service Restaurant"
               />
-            </div>
+            </Field>
           </div>
           <div>
             <label className="block text-sm font-medium text-slate-700 mb-1">
               Concept teaser <span className="text-slate-400 font-normal text-xs">— shown to candidates without naming the brand</span>
             </label>
-            <textarea
+            <Textarea
               value={form.teaser}
               onChange={e => set('teaser', e.target.value)}
               rows={3}
-              className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-green focus:border-transparent resize-none"
               placeholder="Describe the concept without naming it…"
             />
           </div>
           <div>
             <label className="block text-sm font-medium text-slate-700 mb-2">Key highlights (up to 3)</label>
             {form.highlights.map((h, i) => (
-              <input
+              <Input
                 key={i}
                 type="text"
                 value={h}
@@ -257,7 +251,7 @@ export default function AddBrandForm() {
                   set('highlights', updated)
                 }}
                 placeholder={`Highlight ${i + 1} — e.g. No food experience required`}
-                className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-green focus:border-transparent mb-2"
+                className="mb-2"
               />
             ))}
           </div>
@@ -268,24 +262,18 @@ export default function AddBrandForm() {
       <Card>
         <CardHeader><CardTitle>Investment</CardTitle></CardHeader>
         <CardBody className="grid grid-cols-3 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">Minimum (£)</label>
-            <input type="number" value={form.investment_min} onChange={e => set('investment_min', e.target.value)}
-              className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-green focus:border-transparent"
+          <Field label="Minimum (£)">
+            <Input type="number" value={form.investment_min} onChange={e => set('investment_min', e.target.value)}
               placeholder="e.g. 150000" />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">Maximum (£)</label>
-            <input type="number" value={form.investment_max} onChange={e => set('investment_max', e.target.value)}
-              className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-green focus:border-transparent"
+          </Field>
+          <Field label="Maximum (£)">
+            <Input type="number" value={form.investment_max} onChange={e => set('investment_max', e.target.value)}
               placeholder="e.g. 300000" />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">Setup timeline (months)</label>
-            <input type="number" value={form.timeline_months} onChange={e => set('timeline_months', e.target.value)}
-              className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-green focus:border-transparent"
+          </Field>
+          <Field label="Setup timeline (months)">
+            <Input type="number" value={form.timeline_months} onChange={e => set('timeline_months', e.target.value)}
               placeholder="e.g. 6" />
-          </div>
+          </Field>
         </CardBody>
       </Card>
 
@@ -359,8 +347,7 @@ export default function AddBrandForm() {
             <label className="block text-sm font-medium text-slate-700 mb-1">
               Display text <span className="text-slate-400 font-normal text-xs">— shown to candidates</span>
             </label>
-            <input type="text" value={form.locations_display} onChange={e => set('locations_display', e.target.value)}
-              className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-green focus:border-transparent"
+            <Input type="text" value={form.locations_display} onChange={e => set('locations_display', e.target.value)}
               placeholder="e.g. Major UK cities" />
           </div>
         </CardBody>
@@ -384,14 +371,9 @@ export default function AddBrandForm() {
       )}
 
       <div className="flex gap-3 pb-8">
-        <button
-          type="button"
-          onClick={() => handleSubmit(false)}
-          disabled={saving !== null}
-          className="bg-brand-green hover:bg-brand-green-dark text-white font-medium py-2.5 px-8 rounded-lg text-sm transition-colors disabled:opacity-60"
-        >
+        <Button type="button" size="lg" onClick={() => handleSubmit(false)} disabled={saving !== null}>
           {saving === 'save' ? 'Saving…' : 'Save profile'}
-        </button>
+        </Button>
         <button
           type="button"
           onClick={() => handleSubmit(true)}
@@ -400,43 +382,36 @@ export default function AddBrandForm() {
         >
           {saving === 'invite' ? 'Creating…' : 'Save & get invite link'}
         </button>
-        <button
-          type="button"
-          onClick={() => router.back()}
-          disabled={saving !== null}
-          className="border border-slate-300 text-slate-700 text-sm font-medium py-2.5 px-6 rounded-lg hover:bg-slate-50 transition-colors disabled:opacity-60"
-        >
+        <Button type="button" variant="secondary" size="lg" onClick={() => router.back()} disabled={saving !== null}>
           Cancel
-        </button>
+        </Button>
       </div>
 
       {/* Invite link modal */}
-      {inviteLink && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div className="fixed inset-0 bg-black/40" onClick={() => { router.push('/admin/franchisors'); router.refresh() }} />
-          <div className="relative bg-white rounded-2xl shadow-xl w-full max-w-md p-6">
-            <h3 className="text-base font-semibold text-slate-800 mb-1">✓ Franchisor created</h3>
-            <p className="text-xs text-slate-400 mb-4">
-              Send this magic link to {form.franchisor_name}. It expires after first use.
-            </p>
-            <div className="bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-xs text-slate-700 break-all mb-4">
-              {inviteLink}
-            </div>
-            <button
-              onClick={handleCopy}
-              className="w-full bg-brand-green hover:bg-brand-green-dark text-white font-medium py-2.5 rounded-lg text-sm transition-colors mb-2"
-            >
-              {copied ? '✓ Copied!' : 'Copy invite link'}
-            </button>
-            <button
-              onClick={() => { router.push('/admin/franchisors'); router.refresh() }}
-              className="w-full px-4 py-2.5 border border-slate-300 text-slate-700 text-sm rounded-lg hover:bg-slate-50"
-            >
-              Done
-            </button>
-          </div>
+      <Modal
+        open={!!inviteLink}
+        onClose={() => { router.push('/admin/franchisors'); router.refresh() }}
+        maxWidth="max-w-md"
+      >
+        <h3 className="text-base font-semibold text-slate-800 mb-1">✓ Franchisor created</h3>
+        <p className="text-xs text-slate-400 mb-4">
+          Send this magic link to {form.franchisor_name}. It expires after first use.
+        </p>
+        <div className="bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-xs text-slate-700 break-all mb-4">
+          {inviteLink}
         </div>
-      )}
+        <Button onClick={handleCopy} fullWidth size="lg" className="mb-2">
+          {copied ? '✓ Copied!' : 'Copy invite link'}
+        </Button>
+        <Button
+          variant="secondary"
+          fullWidth
+          size="lg"
+          onClick={() => { router.push('/admin/franchisors'); router.refresh() }}
+        >
+          Done
+        </Button>
+      </Modal>
     </form>
   )
 }

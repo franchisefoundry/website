@@ -3,6 +3,8 @@
 import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
+import { Button } from '@/components/ui/button'
+import { Field, Input } from '@/components/ui/input'
 
 export default function SetupAccountForm() {
   const [fullName, setFullName] = useState('')
@@ -114,66 +116,55 @@ export default function SetupAccountForm() {
         </p>
 
         <form onSubmit={handleSetup} className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">Your full name</label>
-            <input
+          <Field label="Your full name">
+            <Input
               type="text"
               required
               value={fullName}
               onChange={e => setFullName(e.target.value)}
-              className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-green focus:border-transparent"
               placeholder="Jane Smith"
             />
-          </div>
+          </Field>
 
           <div>
             <label className="block text-sm font-medium text-slate-700 mb-1">
               Phone number <span className="text-slate-400 font-normal">(optional)</span>
             </label>
-            <input
+            <Input
               type="tel"
               value={phone}
               onChange={e => setPhone(e.target.value)}
-              className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-green focus:border-transparent"
               placeholder="+44 7700 000000"
             />
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">Set a password</label>
-            <input
+          <Field label="Set a password">
+            <Input
               type="password"
               required
               value={password}
               onChange={e => setPassword(e.target.value)}
-              className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-green focus:border-transparent"
               placeholder="Min. 8 characters"
             />
-          </div>
+          </Field>
 
-          <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">Confirm password</label>
-            <input
+          <Field label="Confirm password">
+            <Input
               type="password"
               required
               value={confirmPassword}
               onChange={e => setConfirmPassword(e.target.value)}
-              className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-green focus:border-transparent"
               placeholder="••••••••"
             />
-          </div>
+          </Field>
 
           {error && (
             <p className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2">{error}</p>
           )}
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full bg-brand-green hover:bg-brand-green-dark text-white font-medium py-2.5 px-4 rounded-lg text-sm transition-colors disabled:opacity-60"
-          >
+          <Button type="submit" fullWidth size="lg" disabled={loading}>
             {loading ? 'Saving…' : 'Finish setup'}
-          </button>
+          </Button>
         </form>
       </div>
     </div>

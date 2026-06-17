@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { Button } from '@/components/ui/button'
 
 export default function ConvertButton({ leadId }: { leadId: string }) {
   const [loading, setLoading] = useState(false)
@@ -36,13 +37,9 @@ export default function ConvertButton({ leadId }: { leadId: string }) {
 
   return (
     <>
-      <button
-        onClick={handleConvert}
-        disabled={loading}
-        className="w-full bg-brand-green hover:bg-brand-green-dark text-white text-sm font-medium py-2.5 rounded-lg transition-colors disabled:opacity-60"
-      >
+      <Button onClick={handleConvert} fullWidth size="lg" disabled={loading}>
         {loading ? 'Converting…' : 'Convert & send invite'}
-      </button>
+      </Button>
       {error && <p className="text-red-600 text-xs mt-2">{error}</p>}
     </>
   )
