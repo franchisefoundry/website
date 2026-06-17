@@ -74,7 +74,7 @@ function buildEmail(name: string | null, link: string, toEmail: string): string 
         <tr><td style="padding:40px;">
           <p style="margin:0 0 16px;font-size:16px;color:#374151;">${greeting}</p>
           <p style="margin:0 0 28px;font-size:16px;color:#374151;line-height:1.6;">
-            Your Franchise Foundry portal access is ready. Click the button below to log in — the link is valid for 24 hours.
+            Your Franchise Foundry portal access is ready. Click the button below to log in — the link is valid for 72 hours.
           </p>
           <table cellpadding="0" cellspacing="0" style="margin:0 auto 32px;">
             <tr><td style="background:#3a4a3a;border-radius:8px;text-align:center;">
