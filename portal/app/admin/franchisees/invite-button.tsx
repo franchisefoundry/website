@@ -2,6 +2,9 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { Modal } from '@/components/ui/modal'
+import { Button } from '@/components/ui/button'
+import { Field, Input } from '@/components/ui/input'
 
 export default function InviteFranchiseeButton() {
   const [open, setOpen] = useState(false)
@@ -43,75 +46,54 @@ export default function InviteFranchiseeButton() {
 
   return (
     <>
-      <button
-        onClick={() => setOpen(true)}
-        className="bg-brand-green hover:bg-brand-green-dark text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors"
+      <Button onClick={() => setOpen(true)}>Invite franchisee</Button>
+
+      <Modal
+        open={open}
+        onClose={() => setOpen(false)}
+        title="Invite franchisee"
+        description="They'll receive an email to set their password and access the portal."
       >
-        Invite franchisee
-      </button>
+        {success ? (
+          <p className="text-sm text-emerald-600 bg-emerald-50 border border-emerald-200 rounded-lg px-4 py-3">
+            Invite sent successfully.
+          </p>
+        ) : (
+          <form onSubmit={handleInvite} className="space-y-4">
+            <Field label="Full name">
+              <Input
+                type="text"
+                required
+                value={name}
+                onChange={e => setName(e.target.value)}
+                placeholder="Jane Smith"
+              />
+            </Field>
+            <Field label="Email address">
+              <Input
+                type="email"
+                required
+                value={email}
+                onChange={e => setEmail(e.target.value)}
+                placeholder="jane@example.com"
+              />
+            </Field>
 
-      {open && (
-        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl shadow-xl w-full max-w-sm p-6">
-            <h2 className="text-base font-semibold text-slate-900 mb-1">Invite franchisee</h2>
-            <p className="text-sm text-slate-500 mb-5">
-              They&apos;ll receive an email to set their password and access the portal.
-            </p>
-
-            {success ? (
-              <p className="text-sm text-emerald-600 bg-emerald-50 border border-emerald-200 rounded-lg px-4 py-3">
-                Invite sent successfully.
-              </p>
-            ) : (
-              <form onSubmit={handleInvite} className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">Full name</label>
-                  <input
-                    type="text"
-                    required
-                    value={name}
-                    onChange={e => setName(e.target.value)}
-                    className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-green focus:border-transparent"
-                    placeholder="Jane Smith"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">Email address</label>
-                  <input
-                    type="email"
-                    required
-                    value={email}
-                    onChange={e => setEmail(e.target.value)}
-                    className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-green focus:border-transparent"
-                    placeholder="jane@example.com"
-                  />
-                </div>
-
-                {error && (
-                  <p className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2">{error}</p>
-                )}
-
-                <div className="flex gap-3 pt-1">
-                  <button
-                    type="button"
-                    onClick={() => setOpen(false)}
-                    className="flex-1 border border-slate-300 text-slate-700 text-sm font-medium py-2 rounded-lg hover:bg-slate-50 transition-colors"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="submit"
-                    disabled={loading}
-                    className="flex-1 bg-brand-green hover:bg-brand-green-dark text-white text-sm font-medium py-2 rounded-lg transition-colors disabled:opacity-60"
-                  >
-                    {loading ? 'Sending…' : 'Send invite'}
-                  </button>
-                </div>
-              </form>
+            {error && (
+              <p className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2">{error}</p>
             )}
-          </div>
-        </div>
-      )}
+
+            <div className="flex gap-3 pt-1">
+              <Button type="button" variant="secondary" fullWidth onClick={() => setOpen(false)}>
+                Cancel
+              </Button>
+              <Button type="submit" fullWidth disabled={loading}>
+                {loading ? 'Sending…' : 'Send invite'}
+              </Button>
+            </div>
+          </form>
+        )}
+      </Modal>
     </>
   )
 }

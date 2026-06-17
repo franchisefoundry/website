@@ -5,6 +5,8 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
 import { Card, CardBody, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Field, Input } from '@/components/ui/input'
 import { initials } from '@/lib/utils'
 
 interface Props {
@@ -157,26 +159,22 @@ export default function AccountSettingsCard({ userId, fullName, avatarUrl }: Pro
         <CardHeader><CardTitle>Change password</CardTitle></CardHeader>
         <CardBody>
           <form onSubmit={handlePasswordChange} className="space-y-4 max-w-sm">
-            <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1">New password</label>
-              <input
+            <Field label="New password">
+              <Input
                 type="password"
                 value={newPw}
                 onChange={e => setNewPw(e.target.value)}
                 placeholder="Min. 8 characters"
-                className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-green focus:border-transparent"
               />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1">Confirm new password</label>
-              <input
+            </Field>
+            <Field label="Confirm new password">
+              <Input
                 type="password"
                 value={confirmPw}
                 onChange={e => setConfirmPw(e.target.value)}
                 placeholder="Repeat password"
-                className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-green focus:border-transparent"
               />
-            </div>
+            </Field>
             {pwMsg && (
               <p className={`text-sm px-3 py-2 rounded-lg border ${
                 pwMsg.type === 'success'
@@ -186,13 +184,9 @@ export default function AccountSettingsCard({ userId, fullName, avatarUrl }: Pro
                 {pwMsg.text}
               </p>
             )}
-            <button
-              type="submit"
-              disabled={pwLoading || !newPw || !confirmPw}
-              className="bg-brand-green hover:bg-brand-green-dark text-white font-medium py-2.5 px-5 rounded-lg text-sm transition-colors disabled:opacity-60"
-            >
+            <Button type="submit" disabled={pwLoading || !newPw || !confirmPw}>
               {pwLoading ? 'Updating…' : 'Update password'}
-            </button>
+            </Button>
           </form>
         </CardBody>
       </Card>
@@ -236,22 +230,17 @@ export default function AccountSettingsCard({ userId, fullName, avatarUrl }: Pro
                   <p className="text-xs text-red-600 bg-white border border-red-200 rounded-lg px-3 py-2">{deleteError}</p>
                 )}
                 <div className="flex gap-2">
-                  <button
-                    type="button"
-                    onClick={handleDeleteAccount}
-                    disabled={deleteLoading}
-                    className="text-sm font-medium bg-red-600 text-white rounded-lg px-4 py-2 hover:bg-red-700 transition-colors disabled:opacity-60"
-                  >
+                  <Button type="button" variant="danger" onClick={handleDeleteAccount} disabled={deleteLoading}>
                     {deleteLoading ? 'Deleting…' : 'Yes, delete my account'}
-                  </button>
-                  <button
+                  </Button>
+                  <Button
                     type="button"
+                    variant="secondary"
                     onClick={() => { setDeleteConfirm(false); setDeleteError(null) }}
                     disabled={deleteLoading}
-                    className="text-sm text-slate-500 border border-slate-200 rounded-lg px-4 py-2 hover:bg-slate-50 transition-colors"
                   >
                     Cancel
-                  </button>
+                  </Button>
                 </div>
               </div>
             )}

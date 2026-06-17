@@ -3,6 +3,8 @@
 import { Suspense, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter, useSearchParams } from 'next/navigation'
+import { Button } from '@/components/ui/button'
+import { Field, Input, Label } from '@/components/ui/input'
 
 function LoginForm() {
   const [email, setEmail]           = useState('')
@@ -67,12 +69,13 @@ function LoginForm() {
                 We&apos;ve sent a password reset link to <span className="font-medium text-slate-700">{forgotEmail}</span>.
                 It may take a minute to arrive.
               </p>
-              <button
+              <Button
+                fullWidth
+                className="py-2.5"
                 onClick={() => { setForgotMode(false); setForgotSent(false); setForgotEmail('') }}
-                className="w-full bg-brand-green hover:bg-brand-green-dark text-white font-medium py-2.5 px-4 rounded-lg text-sm transition-colors"
               >
                 Back to sign in
-              </button>
+              </Button>
             </>
           ) : (
             <>
@@ -81,34 +84,21 @@ function LoginForm() {
                 Enter your email and we&apos;ll send you a reset link.
               </p>
               <form onSubmit={handleForgot} className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">Email address</label>
-                  <input
+                <Field label="Email address" error={forgotError}>
+                  <Input
                     type="email"
                     required
                     value={forgotEmail}
                     onChange={e => setForgotEmail(e.target.value)}
-                    className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-green focus:border-transparent"
                     placeholder="you@example.com"
                   />
-                </div>
-                {forgotError && (
-                  <p className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2">{forgotError}</p>
-                )}
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="w-full bg-brand-green hover:bg-brand-green-dark text-white font-medium py-2.5 px-4 rounded-lg text-sm transition-colors disabled:opacity-60"
-                >
+                </Field>
+                <Button type="submit" fullWidth className="py-2.5" disabled={loading}>
                   {loading ? 'Sending…' : 'Send reset link'}
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setForgotMode(false)}
-                  className="w-full text-sm text-slate-500 hover:text-slate-700 transition-colors"
-                >
+                </Button>
+                <Button type="button" variant="ghost" fullWidth onClick={() => setForgotMode(false)}>
                   ← Back to sign in
-                </button>
+                </Button>
               </form>
             </>
           )}
@@ -133,24 +123,20 @@ function LoginForm() {
         )}
 
         <form onSubmit={handleLogin} className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">
-              Email address
-            </label>
-            <input
+          <Field label="Email address">
+            <Input
               type="email"
               required
               value={email}
               onChange={e => setEmail(e.target.value)}
-              className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-green focus:border-transparent"
               placeholder="you@example.com"
               autoComplete="email"
             />
-          </div>
+          </Field>
 
           <div>
             <div className="flex items-center justify-between mb-1">
-              <label className="block text-sm font-medium text-slate-700">Password</label>
+              <Label className="mb-0">Password</Label>
               <button
                 type="button"
                 onClick={() => setForgotMode(true)}
@@ -160,12 +146,12 @@ function LoginForm() {
               </button>
             </div>
             <div className="relative">
-              <input
+              <Input
                 type={showPassword ? 'text' : 'password'}
                 required
                 value={password}
                 onChange={e => setPassword(e.target.value)}
-                className="w-full px-3 py-2 pr-10 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-green focus:border-transparent"
+                className="pr-10"
                 placeholder="••••••••"
                 autoComplete="current-password"
               />
@@ -197,13 +183,9 @@ function LoginForm() {
             </p>
           )}
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full bg-brand-green hover:bg-brand-green-dark text-white font-medium py-2.5 px-4 rounded-lg text-sm transition-colors disabled:opacity-60"
-          >
+          <Button type="submit" fullWidth className="py-2.5" disabled={loading}>
             {loading ? 'Signing in…' : 'Sign in'}
-          </button>
+          </Button>
         </form>
       </div>
 
