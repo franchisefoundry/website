@@ -29,7 +29,7 @@ export async function POST(
     return NextResponse.json({ error: 'Lead already invited or registered' }, { status: 400 })
   }
 
-  // Create the auth user so the on-demand magic link can be generated at /auth/invite
+  // Create the auth user so the on-demand magic link can be generated at /invite
   const fullName = [lead.first_name, lead.last_name].filter(Boolean).join(' ') || null
   const { error: createError } = await admin.auth.admin.createUser({
     email: lead.email,

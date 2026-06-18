@@ -136,7 +136,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Issue a 72h invite token — return the working /auth/invite link for the admin to share
+    // Issue a 72h invite token — return the working /invite link for the admin to share
     const { token, error: inviteError } = await issueInvite(admin, {
       email: normalisedEmail, role: 'franchisor', fullName: franchisor_name, invitedBy: user.id,
     })

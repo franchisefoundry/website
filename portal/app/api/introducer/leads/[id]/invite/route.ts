@@ -25,7 +25,7 @@ export async function POST(
   if (leadError || !lead) return NextResponse.json({ error: 'Lead not found' }, { status: 404 })
   if (lead.status !== 'submitted') return NextResponse.json({ error: 'Already invited' }, { status: 400 })
 
-  // Create the auth user so the on-demand magic link can be generated at /auth/invite
+  // Create the auth user so the on-demand magic link can be generated at /invite
   const fullName = [lead.first_name, lead.last_name].filter(Boolean).join(' ') || null
   const { error: createError } = await admin.auth.admin.createUser({
     email: lead.email.trim().toLowerCase(),

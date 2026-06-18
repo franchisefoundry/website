@@ -4,15 +4,21 @@ import { NextResponse, type NextRequest } from 'next/server'
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
 
-  // Public routes — always allow through without auth checks
+  // Public routes — always allow through without auth checks.
+  // These are reached by unauthenticated users by design (invite acceptance,
+  // password reset, account setup). Note: /api/auth/delete-account is NOT here —
+  // it deletes the signed-in user and must stay behind auth.
   const publicPaths = [
     '/login',
     '/setup-account',
+    '/invite',                    // invite landing page (consumes 72h token)
     '/auth/callback',
     '/auth/confirm',
     '/auth/reset-password',
     '/get-matched',
     '/api/leads',
+    '/api/auth/invite',           // generates the on-demand magic link from a token
+    '/api/auth/forgot-password',  // sends the Resend-backed reset email
   ]
   if (publicPaths.some(p => pathname.startsWith(p))) {
     return NextResponse.next()

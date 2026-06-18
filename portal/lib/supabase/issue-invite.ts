@@ -13,7 +13,7 @@ interface IssueInviteArgs {
  * Inserts an invite row with a fresh 72-hour token and returns the token.
  *
  * This is the single source of truth for invite tokens. The token is consumed
- * at /auth/invite, which generates a short-lived Supabase magic link on demand
+ * at /invite, which generates a short-lived Supabase magic link on demand
  * (no PKCE, no 24h OTP cap, no reliance on Supabase's built-in email).
  *
  * Callers are responsible for having already created the Supabase auth user
@@ -47,5 +47,5 @@ export async function issueInvite(
 /** Builds the public invite landing URL for a token. */
 export function inviteUrl(token: string): string {
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://portal.franchisefoundry.co.uk'
-  return `${siteUrl}/auth/invite?token=${token}`
+  return `${siteUrl}/invite?token=${token}`
 }

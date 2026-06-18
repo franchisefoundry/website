@@ -2,7 +2,7 @@ import { Resend } from 'resend'
 
 /**
  * Sends the initial portal invite email.
- * The link points to our own /auth/invite landing page (not a raw Supabase magic link),
+ * The link points to our own /invite landing page (not a raw Supabase magic link),
  * which generates a fresh Supabase session only when the user clicks the button.
  * This decouples invite link lifetime (72 h, stored in our DB) from Supabase's
  * 24 h OTP cap.
@@ -13,7 +13,7 @@ export async function sendInviteEmail(
   inviteToken: string,
 ): Promise<string | null> {
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL!
-  const inviteUrl = `${siteUrl}/auth/invite?token=${inviteToken}`
+  const inviteUrl = `${siteUrl}/invite?token=${inviteToken}`
 
   const resend = new Resend(process.env.RESEND_API_KEY!)
   const from = `Franchise Foundry <${process.env.RESEND_FROM_EMAIL ?? 'team@franchisefoundry.co.uk'}>`
