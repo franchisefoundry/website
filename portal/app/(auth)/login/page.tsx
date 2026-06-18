@@ -43,14 +43,16 @@ function LoginForm() {
     e.preventDefault()
     setLoading(true)
     setForgotError(null)
-    const supabase = createClient()
-    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? window.location.origin
-    const { error } = await supabase.auth.resetPasswordForEmail(forgotEmail.trim(), {
-      redirectTo: `${siteUrl}/auth/reset-password`,
+    // Send via our own Resend-backed route (not Supabase's rate-limited built-in email)
+    const res = await fetch('/api/auth/forgot-password', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: forgotEmail.trim() }),
     })
     setLoading(false)
-    if (error) {
-      setForgotError(error.message)
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({}))
+      setForgotError(data.error ?? 'Something went wrong. Please try again.')
       return
     }
     setForgotSent(true)

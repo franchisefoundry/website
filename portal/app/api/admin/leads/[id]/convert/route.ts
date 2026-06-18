@@ -2,7 +2,8 @@ import { NextResponse, type NextRequest } from 'next/server'
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
-import { sendMagicLink } from '@/lib/supabase/send-magic-link'
+import { issueInvite } from '@/lib/supabase/issue-invite'
+import { sendInviteEmail } from '@/lib/supabase/send-invite-email'
 import type { Lead } from '@/lib/supabase/types'
 
 export async function POST(
@@ -104,16 +105,16 @@ export async function POST(
   const { error: leadUpdateErr } = await admin.from('leads').update({ status: 'converted' }).eq('id', id)
   if (leadUpdateErr) console.error('[convert] lead status update error:', leadUpdateErr)
 
-  // Record invite (ignore duplicate — idempotent)
-  await admin.from('invites')
-    .upsert(
-      { email: typedLead.email, role: 'franchisee', full_name: typedLead.full_name, invited_by: user.id },
-      { onConflict: 'email', ignoreDuplicates: true }
-    )
-
-  // Send magic link
-  const linkErr = await sendMagicLink(typedLead.email, typedLead.full_name, null)
-  if (linkErr) console.error('[convert] sendMagicLink failed:', linkErr)
+  // Issue a 72h invite token and email it via Resend (unified account-creation path)
+  const { token, error: inviteError } = await issueInvite(admin, {
+    email: typedLead.email, role: 'franchisee', fullName: typedLead.full_name, invitedBy: user.id,
+  })
+  if (inviteError || !token) {
+    console.error('[convert] issueInvite failed:', inviteError)
+  } else {
+    const emailErr = await sendInviteEmail(typedLead.email, typedLead.full_name, token)
+    if (emailErr) console.error('[convert] sendInviteEmail failed:', emailErr)
+  }
 
   // Bust Next.js page cache so leads list and franchisees list show fresh data immediately
   revalidatePath('/admin/leads')

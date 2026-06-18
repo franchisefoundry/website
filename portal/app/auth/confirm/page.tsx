@@ -18,7 +18,7 @@ export default function AuthConfirmPage() {
     async function handleAuth() {
       try {
         if (token_hash && type) {
-          // Our sendMagicLink flow — direct token_hash, no PKCE needed
+          // Our invite/reset flow — direct token_hash, no PKCE needed
           const { error } = await supabase.auth.verifyOtp({ token_hash, type })
           if (error) { setErrorMsg(error.message); setStatus('error'); return }
 

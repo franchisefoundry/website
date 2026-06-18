@@ -1,7 +1,8 @@
 import { NextResponse, type NextRequest } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
-import { sendMagicLink } from '@/lib/supabase/send-magic-link'
+import { issueInvite } from '@/lib/supabase/issue-invite'
+import { sendInviteEmail } from '@/lib/supabase/send-invite-email'
 
 export async function POST(
   request: NextRequest,
@@ -22,7 +23,6 @@ export async function POST(
     if (!email || !name) return NextResponse.json({ error: 'Name and email are required.' }, { status: 400 })
 
     const admin = createAdminClient()
-    const redirectTo = `${process.env.NEXT_PUBLIC_SITE_URL}/auth/confirm`
 
     const { data: created, error: createError } = await admin.auth.admin.createUser({
       email,
@@ -43,9 +43,6 @@ export async function POST(
 
     if (!userId) return NextResponse.json({ error: 'Could not find or create user.' }, { status: 500 })
 
-    const linkError = await sendMagicLink(email, name, null)
-    if (linkError) return NextResponse.json({ error: `Could not send login link: ${linkError}` }, { status: 500 })
-
     await admin.from('profiles').upsert(
       { id: userId, email, full_name: name, role: 'franchisor' },
       { onConflict: 'id' }
@@ -55,7 +52,16 @@ export async function POST(
       .update({ user_id: userId, contact_email: email, contact_name: name })
       .eq('id', id)
 
-    await admin.from('invites').insert({ email, role: 'franchisor', full_name: name, invited_by: user.id })
+    // Issue a 72h invite token and email it via Resend (unified account-creation path)
+    const { token, error: inviteError } = await issueInvite(admin, {
+      email, role: 'franchisor', fullName: name, invitedBy: user.id,
+    })
+    if (inviteError || !token) {
+      return NextResponse.json({ error: inviteError ?? 'Could not create invite.' }, { status: 500 })
+    }
+
+    const emailError = await sendInviteEmail(email, name, token)
+    if (emailError) return NextResponse.json({ error: `Could not send invite email: ${emailError}` }, { status: 500 })
 
     return NextResponse.json({ success: true })
   } catch (err) {
