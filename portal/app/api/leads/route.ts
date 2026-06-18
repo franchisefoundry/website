@@ -2,6 +2,7 @@ import { NextResponse, type NextRequest } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { scoreMatch } from '@/lib/matching'
 import { sendLeadNotificationToTeam, sendLeadConfirmationToFranchisee } from '@/lib/email'
+import { notifyAdmins } from '@/lib/notifications'
 import type { FranchiseeProfile, FranchisorProfile } from '@/lib/supabase/types'
 
 // Simple email format check (server-side, belt-and-braces)
@@ -150,6 +151,15 @@ export async function POST(request: NextRequest) {
     ])
     emailResults.forEach((r, i) => {
       if (r.status === 'rejected') console.error(`Email ${i} failed:`, r.reason)
+    })
+
+    // In-app alert for every admin (+ optional personal email per their preference).
+    // The team inbox is always emailed above; this adds the bell notification.
+    await notifyAdmins({
+      type: 'new_lead',
+      title: `New lead — ${nameClean}`,
+      body: `${matchCount} match${matchCount === 1 ? '' : 'es'} found. Tap to review.`,
+      link: `/admin/leads/${lead.id}`,
     })
 
     return NextResponse.json({ id: lead.id })

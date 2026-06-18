@@ -2,6 +2,7 @@ import { createAdminClient } from '@/lib/supabase/admin'
 import { PageHeader } from '@/components/page-header'
 import InviteAgentButton from './InviteIntroducerButton'
 import AgentsTable from './AgentsTable'
+import RoleInvites from '@/components/admin/RoleInvites'
 
 export default async function AdminIntroducersPage() {
   const admin = createAdminClient()
@@ -44,6 +45,8 @@ export default async function AdminIntroducersPage() {
       ) : (
         <AgentsTable agents={introducers ?? []} countsByAgent={countsByAgent} />
       )}
+
+      <RoleInvites role="introducer" title="Agent invites" />
     </div>
   )
 }

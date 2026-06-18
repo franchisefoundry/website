@@ -31,3 +31,18 @@ export async function PATCH() {
 
   return NextResponse.json({ success: true })
 }
+
+// DELETE — clear (permanently remove) all already-read notifications for the user
+export async function DELETE() {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return NextResponse.json({ error: 'Unauthorised' }, { status: 401 })
+
+  await supabase
+    .from('notifications')
+    .delete()
+    .eq('user_id', user.id)
+    .eq('read', true)
+
+  return NextResponse.json({ success: true })
+}

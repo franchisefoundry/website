@@ -4,6 +4,7 @@ import Link from 'next/link'
 import InviteFranchisorButton from './invite-button'
 import SeedFranchisorsButton from './seed-button'
 import FranchisorsTable from './FranchisorsTable'
+import RoleInvites from '@/components/admin/RoleInvites'
 
 export default async function FranchisorsPage() {
   const admin = createAdminClient()
@@ -41,6 +42,8 @@ export default async function FranchisorsPage() {
         franchisors={(franchisors ?? []) as Parameters<typeof FranchisorsTable>[0]['franchisors']}
         lastLoginMap={lastLoginMap}
       />
+
+      <RoleInvites role="franchisor" title="Franchisor invites" />
     </div>
   )
 }

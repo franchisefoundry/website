@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { PageHeader } from '@/components/page-header'
 import { Card } from '@/components/ui/card'
+import NotificationSettingsCard from '@/components/NotificationSettingsCard'
 
 export default async function IntroducerProfilePage() {
   const supabase = await createClient()
@@ -8,7 +9,7 @@ export default async function IntroducerProfilePage() {
   const { data: profile } = await supabase.from('profiles').select('*').eq('id', user!.id).single()
 
   return (
-    <div>
+    <div className="space-y-8">
       <PageHeader title="My Account" description="Your Franchise Foundry agent account." />
       <Card className="p-6 max-w-md">
         <div className="space-y-3">
@@ -26,6 +27,10 @@ export default async function IntroducerProfilePage() {
           </div>
         </div>
       </Card>
+      <div>
+        <h2 className="text-base font-bold text-slate-900 mb-4">Notifications</h2>
+        <NotificationSettingsCard role="introducer" initialPrefs={profile?.notification_prefs ?? null} />
+      </div>
     </div>
   )
 }

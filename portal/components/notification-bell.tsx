@@ -3,7 +3,10 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { cn } from '@/lib/utils'
-import { BellIcon } from '@/components/icons'
+import {
+  BellIcon, AgreementIcon, FranchiseeIcon, FranchisorIcon,
+  QuestionnaireIcon, LeadsIcon, MatchIcon,
+} from '@/components/icons'
 
 type Notification = {
   id: string
@@ -13,6 +16,19 @@ type Notification = {
   link: string | null
   read: boolean
   created_at: string
+}
+
+/** Maps a notification type to a distinct icon + tinted colour so the list scans fast. */
+function notificationStyle(type: string): { Icon: React.ComponentType<{ className?: string }>; bg: string; fg: string } {
+  if (type.startsWith('agreement_signed')) return { Icon: AgreementIcon, bg: 'bg-emerald-50', fg: 'text-emerald-600' }
+  if (type.startsWith('agreement_comment')) return { Icon: AgreementIcon, bg: 'bg-amber-50', fg: 'text-amber-600' }
+  if (type.startsWith('agreement')) return { Icon: AgreementIcon, bg: 'bg-sky-50', fg: 'text-sky-600' }
+  if (type.startsWith('franchisor_quiz')) return { Icon: QuestionnaireIcon, bg: 'bg-violet-50', fg: 'text-violet-600' }
+  if (type.startsWith('franchisor')) return { Icon: FranchisorIcon, bg: 'bg-slate-100', fg: 'text-slate-500' }
+  if (type.startsWith('franchisee')) return { Icon: FranchiseeIcon, bg: 'bg-slate-100', fg: 'text-slate-500' }
+  if (type.includes('lead') || type.includes('invite')) return { Icon: LeadsIcon, bg: 'bg-amber-50', fg: 'text-amber-600' }
+  if (type.includes('intro') || type.includes('match')) return { Icon: MatchIcon, bg: 'bg-violet-50', fg: 'text-violet-600' }
+  return { Icon: BellIcon, bg: 'bg-slate-100', fg: 'text-slate-500' }
 }
 
 interface NotificationBellProps {
@@ -73,6 +89,18 @@ export function NotificationBell({ compact = false }: NotificationBellProps) {
     setNotifications(prev => prev.map(n => ({ ...n, read: true })))
   }
 
+  async function clearRead() {
+    // Optimistically drop read items, then persist
+    setNotifications(prev => prev.filter(n => !n.read))
+    await fetch('/api/notifications', { method: 'DELETE' })
+  }
+
+  async function dismiss(id: string, e: React.MouseEvent) {
+    e.stopPropagation()
+    setNotifications(prev => prev.filter(n => n.id !== id))
+    await fetch(`/api/notifications/${id}`, { method: 'DELETE' })
+  }
+
   async function handleNotificationClick(n: Notification) {
     if (!n.read) {
       await fetch(`/api/notifications/${n.id}`, { method: 'PATCH' })
@@ -81,6 +109,8 @@ export function NotificationBell({ compact = false }: NotificationBellProps) {
     setOpen(false)
     if (n.link) router.push(n.link)
   }
+
+  const hasRead = notifications.some(n => n.read)
 
   function relativeTime(iso: string) {
     const diff = Date.now() - new Date(iso).getTime()
@@ -100,30 +130,61 @@ export function NotificationBell({ compact = false }: NotificationBellProps) {
     >
       <div className="flex items-center justify-between px-4 py-3 border-b border-slate-100">
         <p className="text-sm font-semibold text-slate-800">Notifications</p>
-        {unread > 0 && (
-          <button onClick={markAllRead} className="text-xs text-brand-green hover:underline">
-            Mark all read
-          </button>
-        )}
+        <div className="flex items-center gap-3">
+          {unread > 0 && (
+            <button onClick={markAllRead} className="text-xs text-brand-green hover:underline">
+              Mark all read
+            </button>
+          )}
+          {hasRead && (
+            <button onClick={clearRead} className="text-xs text-slate-400 hover:text-slate-600 hover:underline">
+              Clear read
+            </button>
+          )}
+        </div>
       </div>
       {notifications.length === 0 ? (
         <div className="px-4 py-8 text-center text-xs text-slate-400">No notifications yet</div>
       ) : (
         <div className="max-h-96 overflow-y-auto divide-y divide-slate-50">
-          {notifications.slice(0, 10).map(n => (
-            <button
-              key={n.id}
-              onClick={() => handleNotificationClick(n)}
-              className="w-full text-left px-4 py-3 hover:bg-slate-50 transition-colors flex gap-3 items-start"
-            >
-              <div className={`w-1.5 h-1.5 rounded-full mt-1.5 flex-shrink-0 ${n.read ? 'bg-transparent' : 'bg-brand-green'}`} />
-              <div className="flex-1 min-w-0">
-                <p className={`text-xs font-medium ${n.read ? 'text-slate-600' : 'text-slate-800'}`}>{n.title}</p>
-                {n.body && <p className="text-xs text-slate-400 truncate mt-0.5">{n.body}</p>}
-                <p className="text-[10px] text-slate-300 mt-1">{relativeTime(n.created_at)}</p>
+          {notifications.slice(0, 10).map(n => {
+            const { Icon, bg, fg } = notificationStyle(n.type)
+            return (
+              <div
+                key={n.id}
+                className={cn(
+                  'group relative flex gap-3 items-start px-4 py-3 transition-colors hover:bg-slate-50',
+                  !n.read && 'bg-brand-green/[0.03]'
+                )}
+              >
+                <button
+                  onClick={() => handleNotificationClick(n)}
+                  className="flex gap-3 items-start flex-1 min-w-0 text-left"
+                >
+                  <div className={cn('w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0', bg)}>
+                    <Icon className={cn('w-3.5 h-3.5', fg)} />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className={cn('text-xs', n.read ? 'font-medium text-slate-500' : 'font-semibold text-slate-800')}>
+                      {n.title}
+                    </p>
+                    {n.body && <p className="text-xs text-slate-400 truncate mt-0.5">{n.body}</p>}
+                    <p className="text-[10px] text-slate-300 mt-1">{relativeTime(n.created_at)}</p>
+                  </div>
+                  {!n.read && <div className="w-1.5 h-1.5 rounded-full bg-brand-green mt-1.5 flex-shrink-0" />}
+                </button>
+                <button
+                  onClick={e => dismiss(n.id, e)}
+                  aria-label="Dismiss notification"
+                  className="flex-shrink-0 w-5 h-5 -mr-1 rounded flex items-center justify-center text-slate-300 hover:text-slate-600 hover:bg-slate-100 opacity-0 group-hover:opacity-100 focus:opacity-100 transition-opacity"
+                >
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                    <line x1="5" y1="5" x2="19" y2="19" /><line x1="19" y1="5" x2="5" y2="19" />
+                  </svg>
+                </button>
               </div>
-            </button>
-          ))}
+            )
+          })}
         </div>
       )}
     </div>

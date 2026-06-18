@@ -2,6 +2,8 @@ import { NextResponse, type NextRequest } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { sendFranchisorMatchNotification } from '@/lib/email'
+import { notify } from '@/lib/notifications'
+import { shouldEmail } from '@/lib/notification-events'
 
 export async function POST(
   request: NextRequest,
@@ -56,28 +58,51 @@ export async function POST(
 
   if (matchError) return NextResponse.json({ error: matchError.message }, { status: 500 })
 
-  // For primary assignments only: notify the franchisor by email
+  // For primary assignments only: notify both sides
   if (rank === 1) {
     try {
-      // Get franchisor profile + auth email
       const { data: franchisor } = await admin
         .from('franchisor_profiles')
         .select('user_id, brand_name')
         .eq('id', franchisor_id)
         .single()
 
+      // ── Franchisee: "your match has been revealed" (in-app + email per pref) ──
+      const { data: franchiseeProfile } = await admin
+        .from('franchisee_profiles')
+        .select('user_id, investment_min, investment_max, timeline_months, operator_model')
+        .eq('id', franchiseeId)
+        .single()
+
+      if (franchiseeProfile?.user_id) {
+        await notify({
+          userId: franchiseeProfile.user_id,
+          event: 'match_revealed',
+          title: 'Your match has been revealed',
+          body: 'A franchise brand has been matched to you. View it in your portal.',
+          link: '/franchisee/matches',
+        })
+      }
+
+      // ── Franchisor: in-app always; rich match email gated by their preference ──
       if (franchisor?.user_id) {
-        const [{ data: userData }, { data: franchisorProfile }, { data: franchisee }] = await Promise.all([
+        const [{ data: userData }, { data: franchisorProfile }] = await Promise.all([
           admin.auth.admin.getUserById(franchisor.user_id),
-          admin.from('profiles').select('full_name').eq('id', franchisor.user_id).single(),
-          admin.from('franchisee_profiles')
-            .select('investment_min, investment_max, timeline_months, operator_model')
-            .eq('id', franchiseeId)
-            .single(),
+          admin.from('profiles').select('full_name, notification_prefs').eq('id', franchisor.user_id).single(),
         ])
 
+        // In-app notification (direct insert so we don't double-email alongside the rich template)
+        await admin.from('notifications').insert({
+          user_id: franchisor.user_id,
+          type: 'candidate_matched',
+          title: 'New candidate matched to your brand',
+          body: 'A new candidate has been assigned to you. Review them in your portal.',
+          link: '/franchisor/matches',
+        })
+
         const email = userData?.user?.email
-        if (email && franchisee) {
+        const prefs = franchisorProfile?.notification_prefs as Record<string, boolean> | null
+        if (email && franchiseeProfile && shouldEmail(prefs, 'candidate_matched')) {
           const OPERATOR_LABELS: Record<string, string> = {
             'owner-operator': 'Owner-operator',
             'hire-manager': 'Hire a manager',
@@ -89,20 +114,20 @@ export async function POST(
             brandName: franchisor.brand_name ?? 'your brand',
             matches: [{
               score: null,
-              budget: franchisee.investment_min && franchisee.investment_max
-                ? `£${Math.round(franchisee.investment_min / 1000)}k – £${Math.round(franchisee.investment_max / 1000)}k`
+              budget: franchiseeProfile.investment_min && franchiseeProfile.investment_max
+                ? `£${Math.round(franchiseeProfile.investment_min / 1000)}k – £${Math.round(franchiseeProfile.investment_max / 1000)}k`
                 : 'Not specified',
-              timeline: franchisee.timeline_months ? `${franchisee.timeline_months} months` : 'Flexible',
-              operatorModel: franchisee.operator_model
-                ? (OPERATOR_LABELS[franchisee.operator_model] ?? franchisee.operator_model)
+              timeline: franchiseeProfile.timeline_months ? `${franchiseeProfile.timeline_months} months` : 'Flexible',
+              operatorModel: franchiseeProfile.operator_model
+                ? (OPERATOR_LABELS[franchiseeProfile.operator_model] ?? franchiseeProfile.operator_model)
                 : '—',
             }],
           })
         }
       }
     } catch (emailErr) {
-      // Non-fatal — assignment succeeded, just log the email failure
-      console.error('Match notification email failed:', emailErr)
+      // Non-fatal — assignment succeeded, just log the notification failure
+      console.error('Match notification failed:', emailErr)
     }
   }
 

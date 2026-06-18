@@ -1,7 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { PageHeader } from '@/components/page-header'
 import AccountSettingsCard from '@/components/AccountSettingsCard'
-import { Card, CardBody, CardHeader, CardTitle } from '@/components/ui/card'
+import NotificationSettingsCard from '@/components/NotificationSettingsCard'
 import FranchisorPersonalForm from './personal-form'
 
 export default async function FranchisorProfilePage() {
@@ -21,6 +21,10 @@ export default async function FranchisorProfilePage() {
         description="Update your personal details and account settings."
       />
       <FranchisorPersonalForm profile={profile} />
+      <div>
+        <h2 className="text-base font-bold text-slate-900 mb-4">Notifications</h2>
+        <NotificationSettingsCard role="franchisor" initialPrefs={profile?.notification_prefs ?? null} />
+      </div>
       <div>
         <h2 className="text-base font-bold text-slate-900 mb-4">Account settings</h2>
         <AccountSettingsCard

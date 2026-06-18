@@ -91,8 +91,14 @@ export default async function FranchisorPendingPage() {
           ))}
         </div>
 
-        {/* Multi-brand: add another brand while waiting for review */}
-        <div className="text-center mb-4">
+        {/* Self-manage: edit submission or add another brand while waiting */}
+        <div className="text-center mb-4 flex items-center justify-center gap-3 flex-wrap">
+          <Link
+            href="/franchisor/questionnaire"
+            className="inline-flex items-center gap-1.5 text-sm font-medium text-white bg-brand-green hover:bg-brand-green-dark px-4 py-2 rounded-lg transition-colors"
+          >
+            Review or edit your answers
+          </Link>
           <Link
             href="/franchisor/onboarding?add_brand=1"
             className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-600 border border-slate-300 hover:border-slate-400 hover:text-slate-800 px-4 py-2 rounded-lg transition-colors"

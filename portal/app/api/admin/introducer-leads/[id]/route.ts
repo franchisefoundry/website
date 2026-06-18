@@ -1,7 +1,7 @@
 import { NextResponse, type NextRequest } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
-import { sendEmail } from '@/lib/email/resend'
+import { notify } from '@/lib/notifications'
 
 const NOTIFICATION_MESSAGES: Record<string, { title: string; body: (name: string) => string }> = {
   invited:    { title: 'Lead invited',      body: (n) => `${n} has been sent their platform invite.` },
@@ -10,6 +10,15 @@ const NOTIFICATION_MESSAGES: Record<string, { title: string; body: (name: string
   intro_made: { title: 'Introduction made', body: (n) => `An introduction has been made for ${n}.` },
   signed:     { title: 'Lead signed! 🎉',   body: (n) => `${n} has signed a franchise agreement.` },
   paid:       { title: 'Commission due',    body: (n) => `Your commission for ${n} will be processed next month.` },
+}
+
+// Map lead status → notification registry event (controls per-introducer email prefs).
+// Statuses without a mapping deliver in-app only.
+const STATUS_TO_EVENT: Record<string, string> = {
+  registered: 'lead_accepted',
+  matched:    'lead_matched',
+  signed:     'lead_signed',
+  paid:       'commission_paid',
 }
 
 export async function PATCH(
@@ -50,37 +59,15 @@ export async function PATCH(
       const leadName = `${lead.first_name} ${lead.last_name}`
       const msg = NOTIFICATION_MESSAGES[body.status]
 
-      await admin.from('notifications').insert({
-        user_id: lead.introducer_id,
-        type: body.status,
+      // In-app always; email gated by the introducer's preference for the mapped event.
+      // Unmapped statuses (invited, intro_made) deliver in-app only.
+      await notify({
+        userId: lead.introducer_id,
+        event: STATUS_TO_EVENT[body.status] ?? body.status,
         title: msg.title,
         body: msg.body(leadName),
         link: '/introducer/leads',
       })
-
-      // Send email if lead signed
-      if (body.status === 'signed') {
-        const { data: introducerProfile } = await admin
-          .from('profiles')
-          .select('email, full_name')
-          .eq('id', lead.introducer_id)
-          .single()
-
-        if (introducerProfile?.email) {
-          const introducerName = introducerProfile.full_name ?? 'there'
-          await sendEmail({
-            to: introducerProfile.email,
-            subject: `Great news — ${leadName} has signed! 🎉`,
-            html: `
-<h2>Great news — your lead has signed! 🎉</h2>
-<p>Hi ${introducerName},</p>
-<p><strong>${leadName}</strong> has signed a franchise agreement. Your commission will be calculated and processed next month.</p>
-<p>Log in to your portal to track your commission status.</p>
-<p>— The Franchise Foundry team</p>
-`,
-          })
-        }
-      }
     }
   }
 

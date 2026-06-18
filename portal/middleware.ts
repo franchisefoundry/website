@@ -114,7 +114,10 @@ export async function middleware(request: NextRequest) {
     role === 'franchisor' &&
     pathname.startsWith('/franchisor') &&
     !pathname.startsWith('/franchisor/onboarding') &&
-    !pathname.startsWith('/franchisor/pending')
+    !pathname.startsWith('/franchisor/pending') &&
+    // Franchisors can always view/edit their own questionnaire so they can
+    // self-manage answers while awaiting (or after) review.
+    !pathname.startsWith('/franchisor/questionnaire')
   ) {
     const { data: profiles } = await supabase
       .from('franchisor_profiles')

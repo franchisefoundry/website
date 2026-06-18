@@ -3,7 +3,7 @@ import { createClient } from '@/lib/supabase/server'
 import { notFound } from 'next/navigation'
 import { PageHeader } from '@/components/page-header'
 import Link from 'next/link'
-import AdminQuestionnaireForm from './AdminQuestionnaireForm'
+import QuestionnaireReview from './QuestionnaireReview'
 import type { SectionRow, QuestionRow } from '@/app/admin/questionnaire-template/page'
 
 interface Props {
@@ -73,8 +73,9 @@ export default async function FranchisorQuestionnairePage({ params }: Props) {
       />
 
       <div className="max-w-3xl">
-        <AdminQuestionnaireForm
+        <QuestionnaireReview
           franchisorId={id}
+          status={franchisor.status ?? 'draft'}
           existing={questionnaire ? {
             ...questionnaire,
             // Merge profile fields as fallback when questionnaire columns are null

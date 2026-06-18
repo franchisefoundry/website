@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
-import { notifyAdmins } from '@/lib/notifications'
+import { notify, notifyAdmins } from '@/lib/notifications'
 
 export async function POST(req: NextRequest) {
   const supabase = await createClient()
@@ -63,11 +63,11 @@ export async function POST(req: NextRequest) {
 
   if (faError) return NextResponse.json({ error: faError.message }, { status: 500 })
 
-  // Notify the franchisor (in-app)
+  // Notify the franchisor (in-app always; email per their preference)
   if (fp?.user_id) {
-    await admin.from('notifications').insert({
-      user_id: fp.user_id,
-      type: 'agreement_ready',
+    await notify({
+      userId: fp.user_id,
+      event: 'agreement_ready',
       title: 'Your agreement is ready to sign',
       body: 'Your Franchise Foundry agreement is ready. Please review and sign it in the portal.',
       link: '/franchisor/agreement',
