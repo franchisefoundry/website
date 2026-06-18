@@ -4,7 +4,6 @@ import InviteFranchiseeButton from './invite-button'
 import FranchiseeKanban from './FranchiseeKanban'
 import FranchiseesListView from './FranchiseesListView'
 import ViewToggle from './ViewToggle'
-import RoleInvites from '@/components/admin/RoleInvites'
 
 interface SearchParams { view?: string }
 
@@ -72,8 +71,6 @@ export default async function FranchiseesPage({
           lastLoginMap={lastLoginMap}
         />
       )}
-
-      <RoleInvites role="franchisee" title="Franchisee invites" />
     </div>
   )
 }

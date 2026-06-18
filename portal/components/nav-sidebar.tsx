@@ -11,7 +11,7 @@ import { NotificationBell } from '@/components/notification-bell'
 import {
   DashboardIcon, LeadsIcon, FranchiseeIcon, FranchisorIcon,
   MatchIcon, AgreementIcon, MarketplaceIcon, AgentIcon,
-  QuestionnaireIcon, SignOutIcon,
+  QuestionnaireIcon, SignOutIcon, PlusIcon,
 } from '@/components/icons'
 
 // ── Nav type system ──────────────────────────────────────────────────────────
@@ -30,9 +30,16 @@ function isDivider(item: NavItem): item is NavDivider {
 // ── Nav definitions ──────────────────────────────────────────────────────────
 const adminNav: NavItem[] = [
   { sectionLabel: 'Pipeline' },
-  { label: 'Dashboard',   href: '/admin',            icon: <DashboardIcon className="w-4 h-4" /> },
-  { label: 'Leads',       href: '/admin/leads',       icon: <LeadsIcon className="w-4 h-4" /> },
-  { label: 'Franchisees', href: '/admin/franchisees', icon: <FranchiseeIcon className="w-4 h-4" /> },
+  { label: 'Dashboard',   href: '/admin',       icon: <DashboardIcon className="w-4 h-4" /> },
+  { label: 'Leads',       href: '/admin/leads', icon: <LeadsIcon className="w-4 h-4" /> },
+  {
+    label: 'Franchisees',
+    icon: <FranchiseeIcon className="w-4 h-4" />,
+    children: [
+      { label: 'Franchisees', href: '/admin/franchisees',         icon: <FranchiseeIcon className="w-3.5 h-3.5" /> },
+      { label: 'Invites',     href: '/admin/franchisees/invites', icon: <PlusIcon className="w-3.5 h-3.5" /> },
+    ],
+  },
   { sectionLabel: 'Brands' },
   {
     label: 'Franchisors',
@@ -41,6 +48,7 @@ const adminNav: NavItem[] = [
       { label: 'Franchisors',    href: '/admin/franchisors',            icon: <FranchisorIcon className="w-3.5 h-3.5" /> },
       { label: 'Questionnaires', href: '/admin/questionnaires',         icon: <QuestionnaireIcon className="w-3.5 h-3.5" /> },
       { label: 'Questions',      href: '/admin/questionnaire-template', icon: <QuestionnaireIcon className="w-3.5 h-3.5" /> },
+      { label: 'Invites',        href: '/admin/franchisors/invites',    icon: <PlusIcon className="w-3.5 h-3.5" /> },
     ],
   },
   { label: 'Matches',    href: '/admin/matches',    icon: <MatchIcon className="w-4 h-4" /> },
@@ -50,8 +58,9 @@ const adminNav: NavItem[] = [
     label: 'Agents',
     icon: <AgentIcon className="w-4 h-4" />,
     children: [
-      { label: 'Agents', href: '/admin/introducers',     icon: <AgentIcon className="w-3.5 h-3.5" /> },
-      { label: 'Leads',  href: '/admin/introducer-leads', icon: <LeadsIcon className="w-3.5 h-3.5" /> },
+      { label: 'Agents',  href: '/admin/introducers',         icon: <AgentIcon className="w-3.5 h-3.5" /> },
+      { label: 'Leads',   href: '/admin/introducer-leads',    icon: <LeadsIcon className="w-3.5 h-3.5" /> },
+      { label: 'Invites', href: '/admin/introducers/invites', icon: <PlusIcon className="w-3.5 h-3.5" /> },
     ],
   },
   {
@@ -127,9 +136,14 @@ function NavGroupItem({
   pathname: string
   onClose: () => void
 }) {
-  const anyChildActive = group.children.some(
-    c => pathname === c.href || pathname.startsWith(c.href + '/')
-  )
+  // Pick only the single most-specific (longest-prefix) matching child, so a
+  // nested route like /admin/franchisors/invites doesn't also light up the
+  // parent "/admin/franchisors" child.
+  const activeChildHref = group.children
+    .filter(c => pathname === c.href || pathname.startsWith(c.href + '/'))
+    .sort((a, b) => b.href.length - a.href.length)[0]?.href
+
+  const anyChildActive = activeChildHref !== undefined
   const [open, setOpen] = useState(anyChildActive)
 
   useEffect(() => {
@@ -162,7 +176,7 @@ function NavGroupItem({
       {open && (
         <div className="ml-3 mt-0.5 space-y-0.5 border-l border-white/10 pl-3">
           {group.children.map(child => {
-            const active = pathname === child.href || pathname.startsWith(child.href + '/')
+            const active = child.href === activeChildHref
             return (
               <Link
                 key={child.href}

@@ -2,11 +2,11 @@ import { createAdminClient } from '@/lib/supabase/admin'
 import InvitesList, { type InviteRow } from './InvitesList'
 
 /**
- * Per-role invites section, shown under each people list (Franchisors,
- * Franchisees, Agents). Deduplicates to the most recent invite per email and
- * marks those whose owner has completed setup as accepted.
+ * Per-role invites list. Deduplicates to the most recent invite per email and
+ * marks those whose owner has completed setup as accepted. Rendered on each
+ * role's dedicated invites page (Franchisors / Franchisees / Agents).
  */
-export default async function RoleInvites({ role, title = 'Invites' }: { role: string; title?: string }) {
+export default async function RoleInvites({ role }: { role: string }) {
   const admin = createAdminClient()
 
   const [{ data: rawInvites }, { data: completed }] = await Promise.all([
@@ -36,16 +36,11 @@ export default async function RoleInvites({ role, title = 'Invites' }: { role: s
   const pending = invites.filter(i => !i.accepted && i.invite_expires_at && new Date(i.invite_expires_at) >= new Date()).length
 
   return (
-    <section className="mt-10">
-      <div className="flex items-center gap-2 mb-3">
-        <h2 className="text-base font-bold text-slate-900">{title}</h2>
-        {pending > 0 && (
-          <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full border bg-amber-50 text-amber-700 border-amber-200">
-            {pending} pending
-          </span>
-        )}
-      </div>
+    <div>
+      {pending > 0 && (
+        <p className="text-xs text-slate-500 mb-3">{pending} invite{pending === 1 ? '' : 's'} awaiting acceptance</p>
+      )}
       <InvitesList invites={invites} />
-    </section>
+    </div>
   )
 }
