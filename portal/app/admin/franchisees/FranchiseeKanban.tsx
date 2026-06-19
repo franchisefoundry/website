@@ -100,7 +100,7 @@ export default function FranchiseeKanban({ franchisees }: { franchisees: Franchi
   }
 
   return (
-    <div className="grid grid-cols-4 gap-4">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
       {BUCKETS.map(bucket => {
         const cards = bucketMap.get(bucket.key) ?? []
         return (

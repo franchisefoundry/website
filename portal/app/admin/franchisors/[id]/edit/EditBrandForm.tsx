@@ -166,7 +166,7 @@ export default function EditBrandForm({ franchisor }: Props) {
       {/* Contact info */}
       <Card>
         <CardHeader><CardTitle>Contact details</CardTitle></CardHeader>
-        <CardBody className="grid grid-cols-2 gap-4">
+        <CardBody className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium text-slate-700 mb-1">Contact name</label>
             <input type="text" value={form.contact_name} onChange={e => set('contact_name', e.target.value)}
@@ -216,7 +216,7 @@ export default function EditBrandForm({ franchisor }: Props) {
       <Card>
         <CardHeader><CardTitle>Brand details</CardTitle></CardHeader>
         <CardBody className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-1">Brand name</label>
               <input type="text" value={form.brand_name} onChange={e => set('brand_name', e.target.value)}
@@ -259,7 +259,7 @@ export default function EditBrandForm({ franchisor }: Props) {
       {/* Investment */}
       <Card>
         <CardHeader><CardTitle>Investment</CardTitle></CardHeader>
-        <CardBody className="grid grid-cols-3 gap-4">
+        <CardBody className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div>
             <label className="block text-sm font-medium text-slate-700 mb-1">Minimum (£)</label>
             <input type="number" value={form.investment_min} onChange={e => set('investment_min', e.target.value)}
@@ -328,7 +328,7 @@ export default function EditBrandForm({ franchisor }: Props) {
               ))}
             </div>
           </div>
-          <div className="grid grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-2">Full-time required?</label>
               <RadioRow value={String(form.full_time_required)} onChange={v => set('full_time_required', v === 'true')}

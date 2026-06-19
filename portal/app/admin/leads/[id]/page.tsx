@@ -62,9 +62,9 @@ export default async function LeadDetailPage({ params }: { params: Promise<{ id:
         action={<DeleteLeadButton leadId={id} redirectAfter />}
       />
 
-      <div className="grid grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Left — profile details */}
-        <div className="col-span-1 space-y-4">
+        <div className="lg:col-span-1 space-y-4">
           {/* Contact */}
           <div className="bg-white rounded-2xl border border-slate-200 p-5">
             <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">Contact</h3>
@@ -162,7 +162,7 @@ export default async function LeadDetailPage({ params }: { params: Promise<{ id:
         </div>
 
         {/* Right — matches */}
-        <div className="col-span-2">
+        <div className="lg:col-span-2">
           <h3 className="text-sm font-semibold text-slate-700 mb-3">
             Pre-computed matches ({typedMatches.length})
           </h3>

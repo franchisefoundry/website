@@ -17,10 +17,13 @@ export async function DELETE(
   const admin = createAdminClient()
 
   // Verify target is an introducer (safety check)
-  const { data: target } = await admin.from('profiles').select('role').eq('id', id).single()
+  const { data: target } = await admin.from('profiles').select('role, email').eq('id', id).single()
   if (target?.role !== 'introducer') {
     return NextResponse.json({ error: 'User is not an agent' }, { status: 400 })
   }
+
+  // Remove any lingering invite rows so they don't stack up
+  if (target.email) await admin.from('invites').delete().eq('email', target.email)
 
   // Delete from auth — cascades to profiles and introducer_leads via FK
   const { error } = await admin.auth.admin.deleteUser(id)

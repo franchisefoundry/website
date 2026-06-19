@@ -23,18 +23,20 @@ function statusInfo(row: InviteRow): { label: string; classes: string } {
   return { label: 'Pending', classes: 'bg-amber-50 text-amber-700 border-amber-200' }
 }
 
-function ResendButton({ email, role, fullName }: { email: string; role: string; fullName: string | null }) {
-  const [loading, setLoading] = useState(false)
+function InviteActions({ invite }: { invite: InviteRow }) {
+  const [resending, setResending] = useState(false)
+  const [removing, setRemoving] = useState(false)
+  const [confirm, setConfirm] = useState(false)
   const router = useRouter()
 
   async function handleResend() {
-    setLoading(true)
+    setResending(true)
     const res = await fetch('/api/admin/invite', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, role, full_name: fullName }),
+      body: JSON.stringify({ email: invite.email, role: invite.role, full_name: invite.full_name }),
     })
-    setLoading(false)
+    setResending(false)
     if (res.ok) {
       toast('Invite resent')
       router.refresh()
@@ -44,14 +46,55 @@ function ResendButton({ email, role, fullName }: { email: string; role: string; 
     }
   }
 
+  async function handleRemove() {
+    setRemoving(true)
+    const res = await fetch(`/api/admin/invites/${invite.id}`, { method: 'DELETE' })
+    setRemoving(false)
+    if (res.ok) {
+      toast('Invite removed')
+      router.refresh()
+    } else {
+      toast('Could not remove invite')
+      setConfirm(false)
+    }
+  }
+
+  if (confirm) {
+    return (
+      <div className="inline-flex items-center gap-3">
+        <span className="text-xs text-slate-500">Remove?</span>
+        <button
+          onClick={handleRemove}
+          disabled={removing}
+          className="text-xs font-medium text-red-600 hover:text-red-700 disabled:opacity-50"
+        >
+          {removing ? 'Removing…' : 'Yes'}
+        </button>
+        <button onClick={() => setConfirm(false)} disabled={removing} className="text-xs text-slate-400 hover:text-slate-600">
+          Cancel
+        </button>
+      </div>
+    )
+  }
+
   return (
-    <button
-      onClick={handleResend}
-      disabled={loading}
-      className="text-xs text-brand-green hover:text-brand-green/80 font-medium disabled:opacity-50 transition-colors"
-    >
-      {loading ? 'Sending…' : 'Resend'}
-    </button>
+    <div className="inline-flex items-center gap-4">
+      {!invite.accepted && (
+        <button
+          onClick={handleResend}
+          disabled={resending}
+          className="text-xs text-brand-green hover:text-brand-green/80 font-medium disabled:opacity-50 transition-colors"
+        >
+          {resending ? 'Sending…' : 'Resend'}
+        </button>
+      )}
+      <button
+        onClick={() => setConfirm(true)}
+        className="text-xs text-slate-400 hover:text-red-600 font-medium transition-colors"
+      >
+        Remove
+      </button>
+    </div>
   )
 }
 
@@ -95,9 +138,7 @@ export default function InvitesList({ invites }: { invites: InviteRow[] }) {
                   {invite.invite_expires_at ? formatDate(invite.invite_expires_at) : '—'}
                 </td>
                 <td className="px-6 py-3 text-right">
-                  {!invite.accepted && (
-                    <ResendButton email={invite.email} role={invite.role} fullName={invite.full_name} />
-                  )}
+                  <InviteActions invite={invite} />
                 </td>
               </tr>
             )

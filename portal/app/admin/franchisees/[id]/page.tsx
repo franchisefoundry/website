@@ -80,9 +80,9 @@ export default async function FranchiseeDetailPage({ params }: Props) {
         </div>
       </div>
 
-      <div className="grid grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Left column */}
-        <div className="col-span-2 space-y-6">
+        <div className="lg:col-span-2 space-y-6">
           {/* Profile */}
           <Card>
             <CardHeader>
@@ -92,7 +92,7 @@ export default async function FranchiseeDetailPage({ params }: Props) {
               </div>
             </CardHeader>
             <CardBody>
-              <dl className="grid grid-cols-2 gap-x-8 gap-y-4 text-sm">
+              <dl className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-4 text-sm">
                 <div>
                   <dt className="text-slate-500 mb-0.5">Investment budget</dt>
                   <dd className="font-medium">{formatInvestmentRange(franchisee.investment_min, franchisee.investment_max)}</dd>

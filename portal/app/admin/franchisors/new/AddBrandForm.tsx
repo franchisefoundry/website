@@ -163,7 +163,7 @@ export default function AddBrandForm() {
         <CardHeader>
           <CardTitle>Franchisor contact <span className="text-slate-400 font-normal text-sm ml-1">— optional, required only to send invite</span></CardTitle>
         </CardHeader>
-        <CardBody className="grid grid-cols-2 gap-4">
+        <CardBody className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <Field label="Full name">
             <Input
               type="text"
@@ -209,7 +209,7 @@ export default function AddBrandForm() {
       <Card>
         <CardHeader><CardTitle>Brand details</CardTitle></CardHeader>
         <CardBody className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <Field label="Brand name">
               <Input
                 type="text"
@@ -261,7 +261,7 @@ export default function AddBrandForm() {
       {/* Investment */}
       <Card>
         <CardHeader><CardTitle>Investment</CardTitle></CardHeader>
-        <CardBody className="grid grid-cols-3 gap-4">
+        <CardBody className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <Field label="Minimum (£)">
             <Input type="number" value={form.investment_min} onChange={e => set('investment_min', e.target.value)}
               placeholder="e.g. 150000" />
@@ -314,7 +314,7 @@ export default function AddBrandForm() {
               ))}
             </div>
           </div>
-          <div className="grid grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-2">Full-time required?</label>
               <RadioRow value={String(form.full_time_required)} onChange={v => set('full_time_required', v === 'true')}

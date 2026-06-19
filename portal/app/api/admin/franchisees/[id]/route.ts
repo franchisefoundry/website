@@ -17,10 +17,10 @@ export async function DELETE(
 
   const admin = createAdminClient()
 
-  // Get the franchisee profile to find user_id
+  // Get the franchisee profile to find user_id + email (for invite cleanup)
   const { data: profile } = await admin
     .from('franchisee_profiles')
-    .select('user_id')
+    .select('user_id, profiles(email)')
     .eq('id', id)
     .single()
 
@@ -33,6 +33,11 @@ export async function DELETE(
   if (profileError) {
     return NextResponse.json({ error: profileError.message }, { status: 500 })
   }
+
+  // Remove any lingering invite rows for this person so they don't stack up
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const email = (profile as any)?.profiles?.email as string | undefined
+  if (email) await admin.from('invites').delete().eq('email', email)
 
   // Delete auth user if present
   if (profile?.user_id) {

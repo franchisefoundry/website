@@ -153,7 +153,7 @@ export default function QuestionnaireReview({ franchisorId, status: initialStatu
       <Section title="2 · Financials">
         <Field label="Total investment range"><Text value={`${money(e.investment_min)} – ${money(e.investment_max)}`} /></Field>
         <Field label="Minimum liquid capital"><Text value={money(e.liquid_capital_min)} /></Field>
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <Field label="Franchise fee"><Text value={money(e.franchise_fee)} /></Field>
           <Field label="Royalty"><Text value={e.royalty_pct != null ? `${e.royalty_pct}%` : ''} /></Field>
           <Field label="Marketing levy"><Text value={e.marketing_levy_pct != null ? `${e.marketing_levy_pct}%` : ''} /></Field>

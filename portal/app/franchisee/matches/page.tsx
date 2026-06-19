@@ -134,7 +134,7 @@ function BrandCard({ rank, match, placeholder }: BrandCardProps) {
         )}
 
         {/* Key facts */}
-        <div className="grid grid-cols-2 gap-3 text-xs mb-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs mb-4">
           <div>
             <p className="text-slate-400 mb-0.5">Investment</p>
             <p className="font-medium text-slate-700">

@@ -24,7 +24,7 @@ export default async function FranchisorsPage() {
         title="Franchisors"
         description="Brands onboarded to the network."
         action={
-          <div className="flex gap-2 items-start">
+          <div className="flex flex-wrap gap-2 items-center">
             <SeedFranchisorsButton />
             <Link
               href="/admin/franchisors/new"

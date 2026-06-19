@@ -862,7 +862,7 @@ export default function OnboardingQuiz({ franchisorId, firstName, brandName, exi
                         />
                       </div>
                     </div>
-                    <div className="grid grid-cols-2 gap-3">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       <div>
                         <SubLabel>Royalty <span className="text-red-400">*</span></SubLabel>
                         <div className="relative">

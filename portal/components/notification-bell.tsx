@@ -78,7 +78,9 @@ export function NotificationBell({ compact = false }: NotificationBellProps) {
       if (isMd) {
         setDropPos({ top: rect.top, left: rect.right + 8 })
       } else {
-        setDropPos({ top: rect.bottom + 4, left: Math.max(8, rect.left) })
+        // Clamp so the 320px-wide dropdown never spills off the right edge
+        const maxLeft = window.innerWidth - 320 - 8
+        setDropPos({ top: rect.bottom + 4, left: Math.min(Math.max(8, rect.left), Math.max(8, maxLeft)) })
       }
     }
     setOpen(o => !o)
@@ -126,7 +128,7 @@ export function NotificationBell({ compact = false }: NotificationBellProps) {
     <div
       ref={dropRef}
       style={{ position: 'fixed', top: dropPos.top, left: dropPos.left, zIndex: 200 }}
-      className="w-80 bg-white rounded-xl shadow-2xl border border-slate-200 overflow-hidden"
+      className="w-80 max-w-[calc(100vw-16px)] bg-white rounded-xl shadow-2xl border border-slate-200 overflow-hidden"
     >
       <div className="flex items-center justify-between px-4 py-3 border-b border-slate-100">
         <p className="text-sm font-semibold text-slate-800">Notifications</p>

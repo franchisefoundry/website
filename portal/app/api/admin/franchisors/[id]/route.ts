@@ -54,12 +54,16 @@ export async function DELETE(
 
   const { data: fp } = await admin
     .from('franchisor_profiles')
-    .select('user_id')
+    .select('user_id, profiles(email)')
     .eq('id', id)
     .single()
 
   const { error } = await admin.from('franchisor_profiles').delete().eq('id', id)
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const email = (fp as any)?.profiles?.email as string | undefined
+  if (email) await admin.from('invites').delete().eq('email', email)
 
   if (fp?.user_id) {
     await admin.auth.admin.deleteUser(fp.user_id)

@@ -402,7 +402,7 @@ export default function LeadsClient({ leads }: { leads: Lead[] }) {
               {/* Contact */}
               <div>
                 <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-3">Contact information</p>
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <Field label="First name *">
                     <Input value={form.first_name} onChange={v => set('first_name', v)} placeholder="Jane" />
                   </Field>
@@ -426,7 +426,7 @@ export default function LeadsClient({ leads }: { leads: Lead[] }) {
               {/* Investment */}
               <div>
                 <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-3">Investment</p>
-                <div className="grid grid-cols-3 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                   <Field label="Min budget (£)">
                     <Input value={form.investment_min} onChange={v => set('investment_min', v)} placeholder="50000" type="number" />
                   </Field>

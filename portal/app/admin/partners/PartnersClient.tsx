@@ -222,7 +222,7 @@ export default function PartnersClient({ partners }: Props) {
             </div>
 
             <div className="px-8 py-6 space-y-5">
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs font-semibold text-slate-700 mb-1.5 uppercase tracking-wide">Name *</label>
                   <input value={form.name} onChange={e => {
@@ -240,7 +240,7 @@ export default function PartnersClient({ partners }: Props) {
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs font-semibold text-slate-700 mb-1.5 uppercase tracking-wide">Sector *</label>
                   <select value={form.sector} onChange={e => setField('sector', e.target.value as PartnerSector)}
@@ -336,7 +336,7 @@ export default function PartnersClient({ partners }: Props) {
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs font-semibold text-slate-700 mb-1.5 uppercase tracking-wide">Display order</label>
                   <input type="number" value={form.display_order} onChange={e => setField('display_order', Number(e.target.value))}

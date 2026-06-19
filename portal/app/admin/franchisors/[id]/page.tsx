@@ -69,8 +69,8 @@ export default async function FranchisorDetailPage({ params }: Props) {
         }
       />
 
-      <div className="grid grid-cols-3 gap-6">
-        <div className="col-span-2 space-y-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="lg:col-span-2 space-y-6">
           <Card>
             <CardHeader>
               <div className="flex items-center justify-between">
@@ -82,7 +82,7 @@ export default async function FranchisorDetailPage({ params }: Props) {
               {franchisor.teaser && (
                 <p className="text-sm text-slate-600 mb-6 italic">&ldquo;{franchisor.teaser}&rdquo;</p>
               )}
-              <dl className="grid grid-cols-2 gap-x-8 gap-y-4 text-sm">
+              <dl className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-4 text-sm">
                 <div>
                   <dt className="text-slate-500 mb-0.5">Category</dt>
                   <dd className="font-medium">{franchisor.category || '—'}</dd>
@@ -165,7 +165,7 @@ export default async function FranchisorDetailPage({ params }: Props) {
                           </span>
                         )}
                       </div>
-                      <div className="grid grid-cols-2 gap-3">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <div>
                           <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-wide mb-1">Franchisor status</p>
                           <MatchStatusSelect matchId={m.id} currentStatus={m.status} />
