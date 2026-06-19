@@ -120,7 +120,7 @@ export default async function AdminDashboard() {
       />
 
       {/* Section navigation cards — 3 primary (pipeline) + 2 secondary */}
-      <div className="grid grid-cols-3 gap-4 mb-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
         {sections.slice(0, 3).map(s => (
           <Link
             key={s.href}
@@ -143,7 +143,7 @@ export default async function AdminDashboard() {
           </Link>
         ))}
       </div>
-      <div className="grid grid-cols-2 gap-4 mb-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
         {sections.slice(3).map(s => (
           <Link
             key={s.href}

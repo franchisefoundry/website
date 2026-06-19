@@ -55,7 +55,7 @@ export default async function FranchisorQuestionnairePage({ params }: Props) {
             : 'No answers submitted yet — you can add them below.'
         }
         action={
-          <div className="flex items-center gap-3">
+          <div className="flex flex-wrap items-center gap-2">
             <Link
               href="/admin/questionnaire-template"
               className="text-sm text-slate-500 border border-slate-300 hover:border-slate-400 px-4 py-2 rounded-lg transition-colors"

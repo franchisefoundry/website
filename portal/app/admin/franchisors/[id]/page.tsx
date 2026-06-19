@@ -53,7 +53,7 @@ export default async function FranchisorDetailPage({ params }: Props) {
         title={franchisor.brand_name || 'Incomplete profile'}
         description={profile?.email}
         action={
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             <SendAgreementButton
               franchisorProfileId={id}
               currentStatus={franchisorAgreement?.status ?? null}

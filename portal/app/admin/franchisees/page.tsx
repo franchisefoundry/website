@@ -52,7 +52,7 @@ export default async function FranchiseesPage({
         title="Franchisees"
         description="Everyone in the portal — active, pending and signed."
         action={
-          <div className="flex items-center gap-3">
+          <div className="flex flex-wrap items-center gap-2">
             <ViewToggle current={isKanban ? 'kanban' : 'list'} />
             <InviteFranchiseeButton />
           </div>

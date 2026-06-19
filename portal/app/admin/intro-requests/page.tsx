@@ -19,7 +19,7 @@ export default async function IntroRequestsPage() {
         description="Requests from franchisees and franchisors to be connected with a marketplace partner."
       />
 
-      <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+      <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-x-auto">
         <table className="w-full text-sm">
           <thead className="bg-slate-50 border-b border-slate-200">
             <tr>

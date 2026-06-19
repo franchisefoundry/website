@@ -60,7 +60,7 @@ export default function PrivacyPolicyPage() {
             ].map(([purpose, basis]) => (
               <tr key={purpose} style={{ borderBottom: '1px solid #f1f5f9' }}>
                 <td style={{ padding: '10px 12px', color: '#334155' }}>{purpose}</td>
-                <td style={{ padding: '10px 12px', color: '#64748b', whiteSpace: 'nowrap' }}>{basis}</td>
+                <td style={{ padding: '10px 12px', color: '#64748b' }}>{basis}</td>
               </tr>
             ))}
           </tbody>

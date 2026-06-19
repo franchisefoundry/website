@@ -51,16 +51,16 @@ export default function FranchisorsTable({
         />
       </div>
 
-      <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+      <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-x-auto">
         <table className="w-full text-sm">
           <thead className="bg-slate-50 border-b border-slate-200">
             <tr>
-              <th className="text-left px-6 py-3 text-xs font-medium text-slate-500 uppercase tracking-wide">Brand</th>
-              <th className="text-left px-6 py-3 text-xs font-medium text-slate-500 uppercase tracking-wide">Investment</th>
-              <th className="text-left px-6 py-3 text-xs font-medium text-slate-500 uppercase tracking-wide">Status</th>
-              <th className="text-left px-6 py-3 text-xs font-medium text-slate-500 uppercase tracking-wide">Added</th>
-              <th className="text-left px-6 py-3 text-xs font-medium text-slate-500 uppercase tracking-wide hidden lg:table-cell">Last seen</th>
-              <th className="px-6 py-3" />
+              <th className="text-left px-4 sm:px-6 py-3 text-xs font-medium text-slate-500 uppercase tracking-wide">Brand</th>
+              <th className="text-left px-4 sm:px-6 py-3 text-xs font-medium text-slate-500 uppercase tracking-wide hidden md:table-cell">Investment</th>
+              <th className="text-left px-4 sm:px-6 py-3 text-xs font-medium text-slate-500 uppercase tracking-wide">Status</th>
+              <th className="text-left px-4 sm:px-6 py-3 text-xs font-medium text-slate-500 uppercase tracking-wide hidden sm:table-cell">Added</th>
+              <th className="text-left px-4 sm:px-6 py-3 text-xs font-medium text-slate-500 uppercase tracking-wide hidden lg:table-cell">Last seen</th>
+              <th className="px-4 sm:px-6 py-3" />
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100">
@@ -80,26 +80,26 @@ export default function FranchisorsTable({
                   onClick={() => router.push(`/admin/franchisors/${f.id}`)}
                   className={`hover:bg-slate-50 transition-colors cursor-pointer ${isPendingReview ? 'bg-blue-50/40' : ''}`}
                 >
-                  <td className="px-6 py-3">
+                  <td className="px-4 sm:px-6 py-3">
                     <div className="flex items-center gap-3">
                       <Avatar name={f.brand_name} size="sm" />
-                      <div>
-                        <div className="flex items-center gap-2">
+                      <div className="min-w-0">
+                        <div className="flex items-center gap-2 flex-wrap">
                           <p className="font-medium text-slate-900">{f.brand_name || 'Incomplete profile'}</p>
                           {isPendingReview && (
                             <span className="text-[10px] font-semibold text-blue-600 bg-blue-50 border border-blue-200 rounded-full px-2 py-0.5">Review needed</span>
                           )}
                         </div>
-                        <p className="text-xs text-slate-400">{f.category || p?.email}</p>
+                        <p className="text-xs text-slate-400 truncate">{f.category || p?.email}</p>
                       </div>
                     </div>
                   </td>
-                  <td className="px-6 py-3 text-slate-600">
+                  <td className="px-4 sm:px-6 py-3 text-slate-600 hidden md:table-cell">
                     {formatInvestmentRange(f.investment_min, f.investment_max)}
                   </td>
-                  <td className="px-6 py-3">{statusBadge(f.status ?? 'unknown')}</td>
-                  <td className="px-6 py-3 text-slate-500">{formatDate(f.created_at)}</td>
-                  <td className="px-6 py-3 hidden lg:table-cell">
+                  <td className="px-4 sm:px-6 py-3">{statusBadge(f.status ?? 'unknown')}</td>
+                  <td className="px-4 sm:px-6 py-3 text-slate-500 hidden sm:table-cell">{formatDate(f.created_at)}</td>
+                  <td className="px-4 sm:px-6 py-3 hidden lg:table-cell">
                     <span className="text-slate-500 text-sm">{timeAgo(lastLoginMap[f.user_id ?? ''])}</span>
                   </td>
                   <td className="px-6 py-3" onClick={e => e.stopPropagation()}>

@@ -63,7 +63,7 @@ export default async function CommissionPage() {
           <p className="text-slate-400 text-xs">Commission records appear when a lead signs a franchise agreement.</p>
         </div>
       ) : (
-        <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+        <div className="bg-white rounded-2xl border border-slate-200 overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-slate-100 text-slate-500 text-xs">

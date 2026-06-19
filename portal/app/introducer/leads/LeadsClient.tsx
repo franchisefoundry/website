@@ -289,7 +289,7 @@ export default function LeadsClient({ leads }: { leads: Lead[] }) {
           <p className="text-slate-400 text-xs">Submit your first lead to get started.</p>
         </div>
       ) : (
-        <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+        <div className="bg-white rounded-2xl border border-slate-200 overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-slate-100 text-slate-500 text-xs">
