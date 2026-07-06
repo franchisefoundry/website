@@ -5,31 +5,26 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
   return (
     <div className="min-h-screen" style={{ fontFamily: "var(--font-sora), system-ui, sans-serif" }}>
       {/* Navbar — matches website */}
-      <nav style={{ background: '#3a4a3a', borderBottom: '1px solid rgba(255,255,255,0.08)', position: 'sticky', top: 0, zIndex: 100 }}>
-        <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 40px', height: 72, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <Link href="https://franchisefoundry.co.uk">
-            <Image src="/logo-white.png" alt="Franchise Foundry" width={160} height={42} className="object-contain" priority />
+      <nav className="sticky top-0 z-[100] border-b border-white/10" style={{ background: '#3a4a3a' }}>
+        <div className="max-w-[1280px] mx-auto px-4 sm:px-10 h-16 sm:h-[72px] flex items-center justify-between gap-3">
+          <Link href="https://franchisefoundry.co.uk" className="flex-shrink-0">
+            <Image src="/logo-white.png" alt="Franchise Foundry" width={160} height={42} className="object-contain w-[120px] sm:w-[160px] h-auto" priority />
           </Link>
           <Link
             href="https://franchisefoundry.co.uk"
-            style={{ color: 'rgba(255,255,255,0.75)', textDecoration: 'none', fontSize: '0.9rem', fontWeight: 500 }}
+            className="text-white/75 text-sm font-medium whitespace-nowrap flex-shrink-0 hover:text-white transition-colors"
           >
-            ← Back to website
+            <span className="sm:hidden">← Back</span>
+            <span className="hidden sm:inline">← Back to website</span>
           </Link>
         </div>
       </nav>
       <main>{children}</main>
-      <footer style={{ borderTop: '1px solid rgba(255,255,255,0.08)', padding: '20px 40px', display: 'flex', justifyContent: 'center', gap: 24 }}>
-        <Link
-          href="/privacy"
-          style={{ color: 'rgba(255,255,255,0.45)', fontSize: '0.8rem', textDecoration: 'none' }}
-        >
+      <footer className="flex justify-center gap-6 px-4 sm:px-10 py-5 border-t border-white/10" style={{ background: '#3a4a3a' }}>
+        <Link href="/privacy" className="text-white/50 hover:text-white/80 text-xs transition-colors">
           Privacy Policy
         </Link>
-        <a
-          href="mailto:connect@franchisefoundry.co.uk"
-          style={{ color: 'rgba(255,255,255,0.45)', fontSize: '0.8rem', textDecoration: 'none' }}
-        >
+        <a href="mailto:connect@franchisefoundry.co.uk" className="text-white/50 hover:text-white/80 text-xs transition-colors">
           Contact us
         </a>
       </footer>
