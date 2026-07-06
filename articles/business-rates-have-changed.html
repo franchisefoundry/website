@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Business Rates Have Just Changed. Do You Know What Your Franchise Unit Is Actually Paying? - Franchise Foundry</title>
+    <meta name="description" content="On 31 March 2026 the RHL business rates relief scheme ended and a new multiplier system took its place. Here's what changed, who it affects, and why it matters for franchise unit economics.">
+    <meta property="og:title" content="Business Rates Have Just Changed. Do You Know What Your Franchise Unit Is Actually Paying?">
+    <meta property="og:description" content="On 31 March 2026 the RHL business rates relief scheme ended and a new multiplier system took its place. Here's what changed, who it affects, and why it matters for franchise unit economics.">
+    <meta property="og:image" content="https://franchisefoundry.co.uk/images/copy-of-franchise-foundry-logo-final-2.png">
+    <meta property="og:url" content="https://franchisefoundry.co.uk/articles/business-rates-have-changed.html">
+    <meta property="og:type" content="article">
+    <link rel="icon" type="image/png" href="/images/favicon.png">
+    <link rel="apple-touch-icon" href="/images/favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --green:       #5f725f;
+            --green-deep:  #3a4a3a;
+            --green-dark:  #2a352a;
+            --green-light: #eef3ee;
+            --green-mid:   #d4e0d4;
+            --gold:        #c8924a;
+            --gold-light:  #f0d4a8;
+            --off-white:   #f7f8f5;
+            --text-dark:   #161a16;
+            --text-mid:    #4a5568;
+            --text-light:  #7a8990;
+            --white:       #ffffff;
+            --border:      #e2e8e2;
+            --radius-sm:   8px;
+            --radius-md:   16px;
+            --radius-lg:   24px;
+            --radius-xl:   32px;
+        }
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Sora', system-ui, sans-serif; line-height: 1.6; color: var(--text-dark); background: var(--white); -webkit-font-smoothing: antialiased; }
+
+        .navbar { background: var(--green-deep); padding: 0 40px; position: sticky; top: 0; z-index: 100; border-bottom: 1px solid rgba(255,255,255,0.08); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); }
+        .nav-container { max-width: 1280px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; height: 72px; }
+        .navbar-logo { height: 48px; display: block; }
+        .nav-links { display: flex; gap: 28px; list-style: none; align-items: center; }
+        .nav-links a { color: rgba(255,255,255,0.75); text-decoration: none; font-size: 0.9rem; font-weight: 500; transition: color 0.2s; }
+        .nav-links a:hover, .nav-links a.active { color: white; }
+        .nav-links a.active { font-weight: 600; }
+        .nav-brands { color: var(--gold-light) !important; }
+        .nav-cta { background: var(--gold); color: white !important; padding: 10px 22px; border-radius: var(--radius-sm); font-weight: 600 !important; font-size: 0.88rem !important; transition: background 0.2s, transform 0.15s; }
+        .nav-cta:hover { background: #b07830 !important; transform: translateY(-1px); }
+        .nav-links .nav-login {
+            border: 1px solid rgba(255,255,255,0.35);
+            color: rgba(255,255,255,0.8) !important;
+            padding: 9px 18px;
+            border-radius: 6px;
+            font-weight: 500;
+            font-size: 0.85rem;
+            transition: border-color 0.2s, background 0.2s, color 0.2s;
+        }
+        .nav-links .nav-login:hover {
+            border-color: rgba(255,255,255,0.65);
+            background: rgba(255,255,255,0.08);
+            color: white !important;
+        }
+        @media (max-width: 900px) { .nav-links { display: none; } .navbar-logo { height: 38px; } }
+
+        .nav-hamburger { display: none; flex-direction: column; justify-content: center; gap: 5px; background: none; border: none; cursor: pointer; padding: 8px; flex-shrink: 0; position: relative; z-index: 201; }
+        .nav-hamburger span { display: block; width: 22px; height: 2px; background: rgba(255,255,255,0.9); border-radius: 2px; transition: transform 0.28s cubic-bezier(0.4,0,0.2,1), opacity 0.2s; transform-origin: center; }
+        .nav-hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+        .nav-hamburger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+        .nav-hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+        .nav-mobile-menu { position: fixed; top: 72px; left: 0; right: 0; bottom: 0; background: var(--green-dark); z-index: 99; display: flex; flex-direction: column; padding: 32px 28px 48px; visibility: hidden; opacity: 0; transform: translateY(-10px); transition: opacity 0.26s ease, transform 0.26s ease, visibility 0s linear 0.26s; overflow-y: auto; }
+        .nav-mobile-menu.open { visibility: visible; opacity: 1; transform: translateY(0); transition: opacity 0.26s ease, transform 0.26s ease, visibility 0s; }
+        .nav-mobile-links { list-style: none; padding: 0; margin: 0; flex: 0 0 auto; }
+        .nav-mobile-links li { margin: 0; }
+        .nav-mobile-links a { display: block; padding: 18px 0; color: rgba(255,255,255,0.55); text-decoration: none; font-size: 1.6rem; font-weight: 700; letter-spacing: -0.03em; border-bottom: 1px solid rgba(255,255,255,0.06); transition: color 0.18s; }
+        .nav-mobile-links a:hover { color: rgba(255,255,255,0.85); }
+        .nav-mobile-links a.active { color: white; }
+        .nav-mobile-links .nav-mobile-brands { color: rgba(240,212,168,0.65); }
+        .nav-mobile-cta-wrap { margin-top: 32px; padding-top: 28px; border-top: 1px solid rgba(255,255,255,0.08); }
+        .nav-mobile-cta-btn { display: block; padding: 17px 20px; background: var(--gold); color: white; text-align: center; text-decoration: none; font-weight: 700; font-size: 1.05rem; border-radius: 12px; letter-spacing: -0.01em; transition: background 0.2s, transform 0.15s; }
+        .nav-mobile-cta-btn:hover { background: #b07830; transform: translateY(-1px); }
+        @media (max-width: 900px) { .nav-hamburger { display: flex; } }
+
+        .article-hero { background: var(--green-deep); padding: 80px 40px 72px; position: relative; overflow: hidden; }
+        .article-hero::before { content: ''; position: absolute; top: -200px; right: -200px; width: 600px; height: 600px; background: radial-gradient(circle, rgba(95,114,95,0.3) 0%, transparent 70%); pointer-events: none; }
+        .article-hero-inner { max-width: 800px; margin: 0 auto; position: relative; z-index: 1; }
+        .article-back { display: inline-flex; align-items: center; gap: 8px; color: rgba(255,255,255,0.55); text-decoration: none; font-size: 0.82rem; font-weight: 500; margin-bottom: 28px; transition: color 0.2s; }
+        .article-back:hover { color: rgba(255,255,255,0.9); }
+        .article-category-badge { display: inline-block; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; padding: 5px 14px; border-radius: 100px; background: var(--green-light); color: var(--green); margin-bottom: 20px; }
+        .article-hero h1 { font-size: 3rem; font-weight: 800; color: white; letter-spacing: -0.03em; line-height: 1.1; margin-bottom: 24px; }
+        .article-byline { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
+        .article-byline-text { font-size: 0.88rem; color: rgba(255,255,255,0.6); font-weight: 300; }
+        .article-byline-text strong { color: rgba(255,255,255,0.85); font-weight: 600; }
+        .byline-sep { display: inline-block; width: 3px; height: 3px; background: rgba(255,255,255,0.3); border-radius: 50%; vertical-align: middle; margin: 0 6px; }
+
+        .article-body-wrap { background: var(--off-white); padding: 72px 40px 100px; }
+        .article-body { max-width: 720px; margin: 0 auto; }
+        .article-body p { font-size: 1.05rem; color: var(--text-mid); font-weight: 300; line-height: 1.85; margin-bottom: 28px; }
+        .article-body p:first-child { font-size: 1.15rem; color: var(--text-dark); font-weight: 400; line-height: 1.8; }
+        .article-body h2 { font-size: 1.6rem; font-weight: 700; color: var(--text-dark); letter-spacing: -0.02em; line-height: 1.25; margin-top: 56px; margin-bottom: 20px; }
+        .article-body h2:first-of-type { margin-top: 0; }
+
+        .article-question-list { list-style: none; margin: 28px 0; display: flex; flex-direction: column; gap: 20px; }
+        .article-question-list li { background: white; border: 1.5px solid var(--border); border-left: 4px solid var(--green); border-radius: var(--radius-md); padding: 20px 24px; font-size: 0.97rem; color: var(--text-mid); font-weight: 300; line-height: 1.7; }
+        .article-question-list li strong { display: block; color: var(--text-dark); font-weight: 600; margin-bottom: 6px; font-size: 1rem; }
+
+        .article-divider { border: none; border-top: 1.5px solid var(--border); margin: 56px 0; }
+
+        .article-cta-box { background: var(--green-deep); border-radius: var(--radius-lg); padding: 48px 40px; text-align: center; margin-top: 72px; }
+        .article-cta-box h3 { font-size: 1.5rem; font-weight: 700; color: white; letter-spacing: -0.02em; margin-bottom: 14px; }
+        .article-cta-box p { font-size: 0.95rem !important; color: rgba(255,255,255,0.7) !important; font-weight: 300 !important; line-height: 1.7 !important; max-width: 480px; margin: 0 auto 28px !important; }
+        .btn-gold { background: var(--gold); color: white; padding: 14px 32px; border-radius: var(--radius-sm); text-decoration: none; font-weight: 700; font-size: 0.95rem; display: inline-block; transition: all 0.2s; }
+        .btn-gold:hover { background: #b07830; transform: translateY(-2px); }
+
+        footer { background: var(--green-dark); color: white; padding: 72px 40px 32px; }
+        .footer-grid { max-width: 1280px; margin: 0 auto; display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr; gap: 48px; padding-bottom: 48px; border-bottom: 1px solid rgba(255,255,255,0.08); margin-bottom: 32px; }
+        .footer-logo { height: 34px; margin-bottom: 16px; display: block; }
+        .footer-brand p { font-size: 0.9rem; color: rgba(255,255,255,0.5); line-height: 1.7; font-weight: 300; }
+        .footer-tagline { margin-top: 16px !important; }
+        .footer-tagline em { font-style: normal; font-size: 0.78rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--gold-light); }
+        .footer-col h4 { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.35); margin-bottom: 20px; }
+        .footer-links { list-style: none; }
+        .footer-links li { margin-bottom: 10px; }
+        .footer-col a, .footer-links a, .footer-col p { display: block; font-size: 0.9rem; color: rgba(255,255,255,0.6); text-decoration: none; margin-bottom: 10px; font-weight: 300; transition: color 0.2s; }
+        .footer-col a:hover, .footer-links a:hover { color: white; }
+        .footer-social-links { display: flex; gap: 12px; margin-top: 4px; }
+        .footer-social-links a { display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.2); color: rgba(255,255,255,0.6); transition: all 0.2s; text-decoration: none !important; margin-bottom: 0 !important; }
+        .footer-social-links a:hover { border-color: var(--gold); color: var(--gold); background: rgba(200,146,74,0.08); }
+        .footer-social-links svg { flex-shrink: 0; }
+        .footer-bottom { max-width: 1280px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .footer-bottom p { font-size: 0.82rem; color: rgba(255,255,255,0.3); font-weight: 300; }
+
+        @media (max-width: 900px) { .footer-grid { grid-template-columns: 1fr 1fr; gap: 32px; } }
+        @media (max-width: 768px) { .article-hero { padding: 60px 20px 56px; } .article-hero h1 { font-size: 2.1rem; } .article-body-wrap { padding: 48px 20px 72px; } .article-cta-box { padding: 36px 24px; } }
+        @media (max-width: 640px) { .footer-grid { grid-template-columns: 1fr; } .footer-bottom { flex-direction: column; gap: 8px; text-align: center; } footer { padding: 48px 24px 28px; } }
+        @media (max-width: 480px) { .article-hero h1 { font-size: 1.75rem; } }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="/index.html"><img src="/images/copy-of-franchise-foundry-logo-final-2.png" alt="Franchise Foundry" class="navbar-logo"></a>
+            <ul class="nav-links">
+                <li><a href="/about.html">About Us</a></li>
+                <li><a href="/for-brands.html" class="nav-brands">For Franchise Brands</a></li>
+                <li><a href="/blog.html">Blog</a></li>
+                <li><a href="/contact.html">Contact</a></li>
+                <li><a href="https://portal.franchisefoundry.co.uk/get-matched" class="nav-cta">Find Your Match</a></li>
+                <li><a href="https://portal.franchisefoundry.co.uk/login" class="nav-login">Portal Login</a></li>
+            </ul>
+            <button class="nav-hamburger" id="nav-hamburger" aria-label="Open menu" aria-expanded="false">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </nav>
+
+    <div class="nav-mobile-menu" id="nav-mobile-menu">
+        <ul class="nav-mobile-links">
+            <li><a href="/index.html">Home</a></li>
+            <li><a href="/about.html">About Us</a></li>
+            <li><a href="/for-brands.html" class="nav-mobile-brands">For Franchise Brands</a></li>
+            <li><a href="/contact.html">Contact</a></li>
+            <li><a href="/blog.html">Blog &amp; Insights</a></li>
+            <li><a href="https://portal.franchisefoundry.co.uk/login" style="color:rgba(255,255,255,0.55);font-size:0.85rem;">Portal Login</a></li>
+        </ul>
+        <div class="nav-mobile-cta-wrap">
+            <a href="https://portal.franchisefoundry.co.uk/get-matched" class="nav-mobile-cta-btn">Find Your Match &#8594;</a>
+        </div>
+    </div>
+
+    <section class="article-hero">
+        <div class="article-hero-inner">
+            <a href="/blog.html" class="article-back">&#8592; Back to Blog &amp; Insights</a>
+            <span class="article-category-badge">Industry Insight</span>
+            <h1>Business Rates Have Just Changed. Do You Know What Your Franchise Unit Is Actually Paying?</h1>
+            <div class="article-byline">
+                <span class="article-byline-text"><strong>Franchise Foundry</strong></span>
+                <span class="article-byline-text">18 June 2026</span>
+                <span class="article-byline-text">8 min read</span>
+            </div>
+        </div>
+    </section>
+
+    <div class="article-body-wrap">
+        <div class="article-body">
+            <p>On 31 March 2026, the Retail, Hospitality and Leisure business rates relief scheme ended. If you are currently operating a hospitality franchise, or evaluating one, your rates bill has almost certainly changed. Whether it has gone up or down depends on the specifics of your property, and most operators don't yet know the answer.</p>
+            <p>This article explains what has changed, who it affects, and why it matters for franchise unit economics right now.</p>
+
+            <h2>What just happened</h2>
+
+            <p>Since the pandemic, UK hospitality businesses have benefited from a series of temporary business rates relief schemes. By 2025/26, eligible properties were receiving 40% off their rates bill, up to a cash cap of &pound;110,000 per business. That scheme ended on 31 March 2026.</p>
+            <p>It has been replaced with something structurally different: permanently lower business rates multipliers specifically for retail, hospitality and leisure (RHL) properties. From April 2026, the system works as follows:</p>
+            <ul class="article-question-list">
+                <li><strong>Small business RHL multiplier (rateable value under &pound;51,000):</strong> 38.2p in the pound.</li>
+                <li><strong>Standard RHL multiplier (rateable value &pound;51,000&ndash;&pound;499,999):</strong> 43p in the pound.</li>
+                <li><strong>High-value multiplier (rateable value &pound;500,000+):</strong> 50.8p in the pound &mdash; higher than before.</li>
+            </ul>
+            <p>For context, the equivalent non-RHL multipliers are 43.2p and 48p respectively. So qualifying hospitality properties with a rateable value below &pound;500,000 are sitting 5p below the standard rate, permanently — not as a year-by-year political decision.</p>
+            <p>The government describes this as a tax cut worth nearly &pound;1 billion a year, benefitting over 750,000 qualifying properties. That framing is accurate in aggregate. It is not accurate for every individual property.</p>
+
+            <h2>Why the net impact varies so widely</h2>
+
+            <p>The relief scheme that just ended had two important characteristics. First, it was a percentage discount applied to your bill. Second, it came with a &pound;110,000 cash cap per business, meaning that for multi-site operators, only the first &pound;110,000 of relief across their whole portfolio was claimable.</p>
+            <p>The new multiplier system has no cash cap. Every qualifying property in a chain benefits from the lower rate in full. For large multi-unit franchisees with several sites, this could represent a meaningful improvement. For a single-site operator, the comparison is more nuanced.</p>
+            <p>On top of the multiplier change, 2026 also brought a full revaluation of non-domestic property rateable values — the first since 2023. If your property's rateable value has risen in the revaluation, your bill is being calculated on a higher base number, even with the lower multiplier applied. If it has fallen, you may benefit more than expected.</p>
+            <p>The government has provided a transitional relief package to smooth sharp increases for businesses that would otherwise see a large jump. Qualifying properties losing RHL relief should have had the Supporting Small Business scheme automatically applied. Pubs and live music venues have an additional 15% relief on top, with bills frozen in real terms for the two years following.</p>
+            <p>The point is that your actual rates liability for 2026/27 is the product of at least four variables: your new rateable value, which multiplier you qualify for, whether you are receiving any transitional or supporting small business relief, and whether you are a pub entitled to the additional discount. You cannot know your liability without checking your bill, and you cannot assume your bill is correct without reviewing it.</p>
+
+            <h2>What this means in unit economics terms</h2>
+
+            <p>Business rates typically represent 8&ndash;15% of revenue for a hospitality unit. At the lower end, for a lean QSR or caf&eacute; operation, rates are a manageable fixed cost. At the upper end, for a restaurant with a larger footprint in a high-value location, they become one of the heaviest line items on the P&amp;L, sitting alongside rent and labour as costs that do not flex with trade.</p>
+            <p>The reason this matters for franchise unit economics specifically is that rates are fixed regardless of performance. A royalty of 5&ndash;6% is calculated on gross sales, which means it falls in a quiet month. Your rates bill does not. If your 2026/27 bill has increased — either because the new multiplier structure works less favourably for your property type, or because a revaluation has increased your rateable value — that cost sits on your P&amp;L every month whether the unit is trading well or not.</p>
+            <p>For prospective franchisees currently in due diligence, this is a live issue right now. A franchise financial projection that was prepared before April 2026 may not reflect the correct rates liability. That is not necessarily a franchisor's fault — the revaluation and the multiplier changes landed together, and many projections simply have not been updated. But an outdated rates figure in a unit economics model can be the difference between a projection that works and one that doesn't.</p>
+            <p>The question to ask is simple: what does the rates bill look like for this specific site under the April 2026 multipliers and the new rateable value? If the franchisor cannot answer that with a number — not an estimate, a number — get the answer independently before signing anything.</p>
+
+            <h2>The wider cost context</h2>
+
+            <p>It would be wrong to look at business rates in isolation. The rates change has landed in the same quarter as the April 2026 National Living Wage increase to &pound;12.71 per hour, a 4% rise on top of the 9.8% increase in April 2025. For a hospitality unit employing 15 people at or near the NLW, the cumulative effect of two years of increases represents a significant shift in the labour cost line. Employer National Insurance contributions are now running at 15%, up from 13.8% before April 2025.</p>
+            <p>The combined effect of these changes — rates restructure, NLW increase, NI increase — is that the cost base of a hospitality franchise unit in 2026 looks materially different to a unit modelled in 2024 or early 2025. That is not an argument against franchising. It is an argument for making sure the unit economics you are relying on have been built from current figures, not last year's.</p>
+            <p>The businesses that will struggle in this environment are not necessarily the ones with the weakest brands or the worst locations. They are the ones that signed agreements based on projections that did not account for where costs would be in year two and year three. The ones that will do well are the ones that went in with their eyes open, with a model that assumed a realistic cost base, not the best case.</p>
+
+            <h2>What to check if you are currently operating</h2>
+
+            <p>If you are already running a hospitality franchise unit, three things are worth doing now if you have not done them already:</p>
+            <ul class="article-question-list">
+                <li><strong>Check your new rateable value.</strong> The Valuation Office Agency's online tool allows you to look up your 2026 assessment. If you believe it is too high, a formal challenge is possible, though the window for checking the underlying data is time-sensitive. Engaging a rating agent to review it is worth the cost if your rateable value is significant.</li>
+                <li><strong>Confirm the correct multiplier has been applied.</strong> Your local authority should have applied the right RHL multiplier automatically, but errors occur. Check your 2026/27 bill against the multiplier that should apply to your property type and rateable value.</li>
+                <li><strong>Check for transitional relief.</strong> If your bill has increased sharply following the revaluation, the Supporting Small Business scheme should have been applied automatically. If you are a pub operator, the additional 15% relief and two-year freeze should also be on your bill. If they are not, contact your billing authority.</li>
+            </ul>
+
+            <h2>What to check if you are evaluating a franchise</h2>
+
+            <p>If you are currently in due diligence on a franchise opportunity, ask for the rates figure as a line item in the unit economics model, and ask specifically whether it has been updated to reflect the 2026/27 multipliers and the new rateable value for the site in question. If the figure is based on the 2025/26 relief scheme, it needs to be recalculated.</p>
+            <p>If you are looking at a site that has not yet been identified, build the rates assessment into your site evaluation process before you commit to a location. Rateable values and the resulting liability can vary significantly between two units in the same town, let alone across regions.</p>
+            <p>This is exactly the kind of detail that gets missed when a prospective franchisee is focused on the headline opportunity — the brand, the territory, the revenue projections — and loses sight of the fixed cost base. We run through every line with every candidate before any introduction, and right now that includes a specific check on whether the rates figure is current.</p>
+            <p><em>Franchise Foundry is a franchisee-first matching service for the UK hospitality sector. We work for the buyer, not the brand. If you are evaluating franchise opportunities and want to make sure the unit economics are built from current figures, start with <a href="https://portal.franchisefoundry.co.uk/get-matched">Find Your Match</a> or <a href="/contact.html">get in touch</a> directly.</em></p>
+
+            <div class="article-cta-box">
+                <h3>Want the unit economics checked properly?</h3>
+                <p>We work for the buyer, not the brand. Get in touch and we'll run through the numbers on any opportunity you're considering — no obligation, no agenda.</p>
+                <a href="/contact.html" class="btn-gold">Get in touch</a>
+            </div>
+
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-grid">
+            <div class="footer-brand">
+                <img src="/images/copy-of-franchise-foundry-logo-final-2.png" alt="Franchise Foundry" class="footer-logo">
+                <p>Built by hospitality operators. For people who want to get franchising right.</p>
+                <p class="footer-tagline"><em>Discover. Connect. Franchise.</em></p>
+            </div>
+            <div class="footer-col">
+                <h4>Quick Links</h4>
+                <ul class="footer-links">
+                    <li><a href="/index.html">Home</a></li>
+                    <li><a href="/about.html">About Us</a></li>
+                    <li><a href="https://portal.franchisefoundry.co.uk/get-matched">Find Your Match</a></li>
+                    <li><a href="/for-brands.html">For Franchise Brands</a></li>
+                    <li><a href="/contact.html">Contact Us</a></li>
+                    <li><a href="/blog.html">Blog &amp; Insights</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Company</h4>
+                <a href="/about.html">About Us</a>
+                <a href="/for-brands.html">For Franchise Brands</a>
+                <a href="/blog.html">Blog &amp; Insights</a>
+            </div>
+            <div class="footer-col">
+                <h4>Contact</h4>
+                <p><a href="mailto:connect@franchisefoundry.co.uk">connect@franchisefoundry.co.uk</a></p>
+            </div>
+            <div class="footer-col">
+                <h4>Follow Us</h4>
+                <div class="footer-social-links">
+                    <a href="https://linkedin.com/company/franchisefoundryuk" target="_blank" rel="noopener" aria-label="LinkedIn">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+                    </a>
+                    <a href="https://instagram.com/franchisefoundry" target="_blank" rel="noopener" aria-label="Instagram">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 Franchise Foundry. All rights reserved.</p>
+            <p>Built for hospitality franchise matching.</p>
+        </div>
+    </footer>
+
+    <script>
+    const hamburger = document.getElementById('nav-hamburger');
+    const mobileMenu = document.getElementById('nav-mobile-menu');
+    if (hamburger && mobileMenu) {
+        hamburger.addEventListener('click', () => {
+            const isOpen = mobileMenu.classList.toggle('open');
+            hamburger.classList.toggle('open', isOpen);
+            hamburger.setAttribute('aria-expanded', isOpen);
+            document.body.style.overflow = isOpen ? 'hidden' : '';
+        });
+        mobileMenu.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.remove('open');
+                hamburger.classList.remove('open');
+                hamburger.setAttribute('aria-expanded', 'false');
+                document.body.style.overflow = '';
+            });
+        });
+    }
+    </script>
+
+</body>
+</html>

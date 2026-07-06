@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Why More UK Hospitality Brands Are Turning to Franchising - Franchise Foundry</title>
+    <meta name="description" content="More UK hospitality brands are turning to franchising to fund expansion without carrying the capital risk. Here's why that's happening and what it means if you're the one buying in.">
+    <meta property="og:title" content="Why More UK Hospitality Brands Are Turning to Franchising">
+    <meta property="og:description" content="More UK hospitality brands are turning to franchising to fund expansion without carrying the capital risk. Here's why that's happening and what it means if you're the one buying in.">
+    <meta property="og:image" content="https://franchisefoundry.co.uk/images/copy-of-franchise-foundry-logo-final-2.png">
+    <meta property="og:url" content="https://franchisefoundry.co.uk/articles/why-hospitality-brands-turning-to-franchising.html">
+    <meta property="og:type" content="article">
+    <link rel="icon" type="image/png" href="/images/favicon.png">
+    <link rel="apple-touch-icon" href="/images/favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --green:       #5f725f;
+            --green-deep:  #3a4a3a;
+            --green-dark:  #2a352a;
+            --green-light: #eef3ee;
+            --green-mid:   #d4e0d4;
+            --gold:        #c8924a;
+            --gold-light:  #f0d4a8;
+            --off-white:   #f7f8f5;
+            --text-dark:   #161a16;
+            --text-mid:    #4a5568;
+            --text-light:  #7a8990;
+            --white:       #ffffff;
+            --border:      #e2e8e2;
+            --radius-sm:   8px;
+            --radius-md:   16px;
+            --radius-lg:   24px;
+            --radius-xl:   32px;
+        }
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Sora', system-ui, sans-serif; line-height: 1.6; color: var(--text-dark); background: var(--white); -webkit-font-smoothing: antialiased; }
+
+        .navbar { background: var(--green-deep); padding: 0 40px; position: sticky; top: 0; z-index: 100; border-bottom: 1px solid rgba(255,255,255,0.08); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); }
+        .nav-container { max-width: 1280px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; height: 72px; }
+        .navbar-logo { height: 48px; display: block; }
+        .nav-links { display: flex; gap: 28px; list-style: none; align-items: center; }
+        .nav-links a { color: rgba(255,255,255,0.75); text-decoration: none; font-size: 0.9rem; font-weight: 500; transition: color 0.2s; }
+        .nav-links a:hover, .nav-links a.active { color: white; }
+        .nav-links a.active { font-weight: 600; }
+        .nav-brands { color: var(--gold-light) !important; }
+        .nav-cta { background: var(--gold); color: white !important; padding: 10px 22px; border-radius: var(--radius-sm); font-weight: 600 !important; font-size: 0.88rem !important; transition: background 0.2s, transform 0.15s; }
+        .nav-cta:hover { background: #b07830 !important; transform: translateY(-1px); }
+        .nav-links .nav-login {
+            border: 1px solid rgba(255,255,255,0.35);
+            color: rgba(255,255,255,0.8) !important;
+            padding: 9px 18px;
+            border-radius: 6px;
+            font-weight: 500;
+            font-size: 0.85rem;
+            transition: border-color 0.2s, background 0.2s, color 0.2s;
+        }
+        .nav-links .nav-login:hover {
+            border-color: rgba(255,255,255,0.65);
+            background: rgba(255,255,255,0.08);
+            color: white !important;
+        }
+        @media (max-width: 900px) { .nav-links { display: none; } .navbar-logo { height: 38px; } }
+
+        .nav-hamburger { display: none; flex-direction: column; justify-content: center; gap: 5px; background: none; border: none; cursor: pointer; padding: 8px; flex-shrink: 0; position: relative; z-index: 201; }
+        .nav-hamburger span { display: block; width: 22px; height: 2px; background: rgba(255,255,255,0.9); border-radius: 2px; transition: transform 0.28s cubic-bezier(0.4,0,0.2,1), opacity 0.2s; transform-origin: center; }
+        .nav-hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+        .nav-hamburger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+        .nav-hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+        .nav-mobile-menu { position: fixed; top: 72px; left: 0; right: 0; bottom: 0; background: var(--green-dark); z-index: 99; display: flex; flex-direction: column; padding: 32px 28px 48px; visibility: hidden; opacity: 0; transform: translateY(-10px); transition: opacity 0.26s ease, transform 0.26s ease, visibility 0s linear 0.26s; overflow-y: auto; }
+        .nav-mobile-menu.open { visibility: visible; opacity: 1; transform: translateY(0); transition: opacity 0.26s ease, transform 0.26s ease, visibility 0s; }
+        .nav-mobile-links { list-style: none; padding: 0; margin: 0; flex: 0 0 auto; }
+        .nav-mobile-links li { margin: 0; }
+        .nav-mobile-links a { display: block; padding: 18px 0; color: rgba(255,255,255,0.55); text-decoration: none; font-size: 1.6rem; font-weight: 700; letter-spacing: -0.03em; border-bottom: 1px solid rgba(255,255,255,0.06); transition: color 0.18s; }
+        .nav-mobile-links a:hover { color: rgba(255,255,255,0.85); }
+        .nav-mobile-links a.active { color: white; }
+        .nav-mobile-links .nav-mobile-brands { color: rgba(240,212,168,0.65); }
+        .nav-mobile-cta-wrap { margin-top: 32px; padding-top: 28px; border-top: 1px solid rgba(255,255,255,0.08); }
+        .nav-mobile-cta-btn { display: block; padding: 17px 20px; background: var(--gold); color: white; text-align: center; text-decoration: none; font-weight: 700; font-size: 1.05rem; border-radius: 12px; letter-spacing: -0.01em; transition: background 0.2s, transform 0.15s; }
+        .nav-mobile-cta-btn:hover { background: #b07830; transform: translateY(-1px); }
+        @media (max-width: 900px) { .nav-hamburger { display: flex; } }
+
+        .article-hero { background: var(--green-deep); padding: 80px 40px 72px; position: relative; overflow: hidden; }
+        .article-hero::before { content: ''; position: absolute; top: -200px; right: -200px; width: 600px; height: 600px; background: radial-gradient(circle, rgba(95,114,95,0.3) 0%, transparent 70%); pointer-events: none; }
+        .article-hero-inner { max-width: 800px; margin: 0 auto; position: relative; z-index: 1; }
+        .article-back { display: inline-flex; align-items: center; gap: 8px; color: rgba(255,255,255,0.55); text-decoration: none; font-size: 0.82rem; font-weight: 500; margin-bottom: 28px; transition: color 0.2s; }
+        .article-back:hover { color: rgba(255,255,255,0.9); }
+        .article-category-badge { display: inline-block; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; padding: 5px 14px; border-radius: 100px; background: var(--green-light); color: var(--green); margin-bottom: 20px; }
+        .article-hero h1 { font-size: 3rem; font-weight: 800; color: white; letter-spacing: -0.03em; line-height: 1.1; margin-bottom: 24px; }
+        .article-byline { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
+        .article-byline-text { font-size: 0.88rem; color: rgba(255,255,255,0.6); font-weight: 300; }
+        .article-byline-text strong { color: rgba(255,255,255,0.85); font-weight: 600; }
+        .byline-sep { display: inline-block; width: 3px; height: 3px; background: rgba(255,255,255,0.3); border-radius: 50%; vertical-align: middle; margin: 0 6px; }
+
+        .article-body-wrap { background: var(--off-white); padding: 72px 40px 100px; }
+        .article-body { max-width: 720px; margin: 0 auto; }
+        .article-body p { font-size: 1.05rem; color: var(--text-mid); font-weight: 300; line-height: 1.85; margin-bottom: 28px; }
+        .article-body p:first-child { font-size: 1.15rem; color: var(--text-dark); font-weight: 400; line-height: 1.8; }
+        .article-body h2 { font-size: 1.6rem; font-weight: 700; color: var(--text-dark); letter-spacing: -0.02em; line-height: 1.25; margin-top: 56px; margin-bottom: 20px; }
+        .article-body h2:first-of-type { margin-top: 0; }
+
+        .article-question-list { list-style: none; margin: 28px 0; display: flex; flex-direction: column; gap: 20px; }
+        .article-question-list li { background: white; border: 1.5px solid var(--border); border-left: 4px solid var(--green); border-radius: var(--radius-md); padding: 20px 24px; font-size: 0.97rem; color: var(--text-mid); font-weight: 300; line-height: 1.7; }
+        .article-question-list li strong { display: block; color: var(--text-dark); font-weight: 600; margin-bottom: 6px; font-size: 1rem; }
+
+        .article-divider { border: none; border-top: 1.5px solid var(--border); margin: 56px 0; }
+
+        .article-cta-box { background: var(--green-deep); border-radius: var(--radius-lg); padding: 48px 40px; text-align: center; margin-top: 72px; }
+        .article-cta-box h3 { font-size: 1.5rem; font-weight: 700; color: white; letter-spacing: -0.02em; margin-bottom: 14px; }
+        .article-cta-box p { font-size: 0.95rem !important; color: rgba(255,255,255,0.7) !important; font-weight: 300 !important; line-height: 1.7 !important; max-width: 480px; margin: 0 auto 28px !important; }
+        .btn-gold { background: var(--gold); color: white; padding: 14px 32px; border-radius: var(--radius-sm); text-decoration: none; font-weight: 700; font-size: 0.95rem; display: inline-block; transition: all 0.2s; }
+        .btn-gold:hover { background: #b07830; transform: translateY(-2px); }
+
+        footer { background: var(--green-dark); color: white; padding: 72px 40px 32px; }
+        .footer-grid { max-width: 1280px; margin: 0 auto; display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr; gap: 48px; padding-bottom: 48px; border-bottom: 1px solid rgba(255,255,255,0.08); margin-bottom: 32px; }
+        .footer-logo { height: 34px; margin-bottom: 16px; display: block; }
+        .footer-brand p { font-size: 0.9rem; color: rgba(255,255,255,0.5); line-height: 1.7; font-weight: 300; }
+        .footer-tagline { margin-top: 16px !important; }
+        .footer-tagline em { font-style: normal; font-size: 0.78rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--gold-light); }
+        .footer-col h4 { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.35); margin-bottom: 20px; }
+        .footer-links { list-style: none; }
+        .footer-links li { margin-bottom: 10px; }
+        .footer-col a, .footer-links a, .footer-col p { display: block; font-size: 0.9rem; color: rgba(255,255,255,0.6); text-decoration: none; margin-bottom: 10px; font-weight: 300; transition: color 0.2s; }
+        .footer-col a:hover, .footer-links a:hover { color: white; }
+        .footer-social-links { display: flex; gap: 12px; margin-top: 4px; }
+        .footer-social-links a { display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.2); color: rgba(255,255,255,0.6); transition: all 0.2s; text-decoration: none !important; margin-bottom: 0 !important; }
+        .footer-social-links a:hover { border-color: var(--gold); color: var(--gold); background: rgba(200,146,74,0.08); }
+        .footer-social-links svg { flex-shrink: 0; }
+        .footer-bottom { max-width: 1280px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .footer-bottom p { font-size: 0.82rem; color: rgba(255,255,255,0.3); font-weight: 300; }
+
+        @media (max-width: 900px) { .footer-grid { grid-template-columns: 1fr 1fr; gap: 32px; } }
+        @media (max-width: 768px) { .article-hero { padding: 60px 20px 56px; } .article-hero h1 { font-size: 2.1rem; } .article-body-wrap { padding: 48px 20px 72px; } .article-cta-box { padding: 36px 24px; } }
+        @media (max-width: 640px) { .footer-grid { grid-template-columns: 1fr; } .footer-bottom { flex-direction: column; gap: 8px; text-align: center; } footer { padding: 48px 24px 28px; } }
+        @media (max-width: 480px) { .article-hero h1 { font-size: 1.75rem; } }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="/index.html"><img src="/images/copy-of-franchise-foundry-logo-final-2.png" alt="Franchise Foundry" class="navbar-logo"></a>
+            <ul class="nav-links">
+                <li><a href="/about.html">About Us</a></li>
+                <li><a href="/for-brands.html" class="nav-brands">For Franchise Brands</a></li>
+                <li><a href="/blog.html">Blog</a></li>
+                <li><a href="/contact.html">Contact</a></li>
+                <li><a href="https://portal.franchisefoundry.co.uk/get-matched" class="nav-cta">Find Your Match</a></li>
+                <li><a href="https://portal.franchisefoundry.co.uk/login" class="nav-login">Portal Login</a></li>
+            </ul>
+            <button class="nav-hamburger" id="nav-hamburger" aria-label="Open menu" aria-expanded="false">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </nav>
+
+    <div class="nav-mobile-menu" id="nav-mobile-menu">
+        <ul class="nav-mobile-links">
+            <li><a href="/index.html">Home</a></li>
+            <li><a href="/about.html">About Us</a></li>
+            <li><a href="/for-brands.html" class="nav-mobile-brands">For Franchise Brands</a></li>
+            <li><a href="/contact.html">Contact</a></li>
+            <li><a href="/blog.html">Blog &amp; Insights</a></li>
+            <li><a href="https://portal.franchisefoundry.co.uk/login" style="color:rgba(255,255,255,0.55);font-size:0.85rem;">Portal Login</a></li>
+        </ul>
+        <div class="nav-mobile-cta-wrap">
+            <a href="https://portal.franchisefoundry.co.uk/get-matched" class="nav-mobile-cta-btn">Find Your Match &#8594;</a>
+        </div>
+    </div>
+
+    <section class="article-hero">
+        <div class="article-hero-inner">
+            <a href="/blog.html" class="article-back">&#8592; Back to Blog &amp; Insights</a>
+            <span class="article-category-badge">Industry Insight</span>
+            <h1>Why More UK Hospitality Brands Are Turning to Franchising</h1>
+            <div class="article-byline">
+                <span class="article-byline-text"><strong>Franchise Foundry</strong></span>
+                <span class="article-byline-text">15 June 2026</span>
+                <span class="article-byline-text">7 min read</span>
+            </div>
+        </div>
+    </section>
+
+    <div class="article-body-wrap">
+        <div class="article-body">
+            <p>If you've felt like more hospitality brands are talking about franchising lately, you're not imagining it.</p>
+            <p>2025 was a brutal year for UK hospitality. The British Beer and Pub Association recorded over 4,000 venue closures in 2024, and the sector saw 3,353 insolvencies in 2025. The October 2024 Budget added an estimated &pound;3.4 billion in annual costs to the sector through National Insurance changes, a higher National Living Wage, and a cut to business rates relief that left many operators facing a sharp jump in their rates bill. Around 35% of UK consumers say they plan to cut back on eating and drinking out in 2026 — the third year running that figure has been held.</p>
+            <p>Against that backdrop, a growing number of hospitality brands are reaching for franchising as their next move. Burger King UK announced in December 2025 that it would open around 30 new restaurants a year from 2026 onwards under a new 20-year master franchise agreement. The British Franchise Association's most recent survey shows the UK now has over 1,000 active franchise systems across more than 50,000 units, employing over 770,000 people, and 77% of BFA members say they're confident about their plans for the year ahead, despite everything above.</p>
+            <p>For anyone thinking about buying into a hospitality franchise, this matters. Here's why — and what to watch for.</p>
+
+            <h2>Why brands are choosing franchising right now</h2>
+
+            <p>The logic is straightforward, and it's worth understanding from the franchisor's side because it shapes what you'll be signing up for.</p>
+            <p>Opening a new company-owned site is expensive and getting more so. Rent, rates, fit-out, stamp duty, and working capital all have to be funded before a single customer walks through the door, and in a climate of compressed margins and cautious lending, that's a hard case to make to a board or a bank.</p>
+            <p>Franchising flips that. The franchisee puts up the capital, takes on the lease, hires the team, and carries the site-level risk. The franchisor gets paid an ongoing royalty without funding the expansion themselves. It's a genuinely rational response to a difficult trading environment, which is exactly why it's spreading beyond the QSR brands that have used the model for decades and into full-service restaurants and grab-and-go concepts that previously stuck to company-owned growth.</p>
+            <p>None of this is a criticism of franchising as a model. It's simply useful to understand the direction of travel: more brands are entering the franchise market because it suits them, not necessarily because they've built the infrastructure, support systems, and track record that make a good franchise system. Those two things aren't the same, and the gap between them is where a lot of franchisee disappointment comes from.</p>
+
+            <h2>What this means if you're looking to buy a franchise</h2>
+
+            <ul class="article-question-list">
+                <li><strong>There will be more choice &mdash; including from brands that are new to franchising.</strong> A brand announcing its first franchise sites is not automatically a red flag. Some of the best franchise opportunities in any sector started exactly this way. But a brand with one or two years of franchise experience has a much shorter track record to assess than one that's been recruiting and supporting franchisees for a decade. Ask directly: how many franchised units does this brand currently operate, how long have the longest-running ones been trading, and what does their year-two and year-three performance look like compared to projections?</li>
+                <li><strong>The support infrastructure matters more than ever.</strong> A brand that has spent fifteen years building out training programmes, supply chain relationships, marketing support, and a franchisee community is in a fundamentally different position to one that has decided, this year, that franchising is the way to hit its expansion targets. Both can be good opportunities. But the second requires more scrutiny of what &ldquo;support&rdquo; actually means in practice &mdash; not what the brochure says, but what existing franchisees say when you ask them directly.</li>
+                <li><strong>The wider market conditions don't disappear because the model changes.</strong> The cost pressures driving brands toward franchising &mdash; labour costs, business rates, cautious consumers &mdash; are the same pressures that will sit on your P&amp;L as a franchisee. Franchising doesn't insulate a unit from a 35% cut in consumer eating-out frequency or a higher National Living Wage. It changes who carries the capital risk of expansion. It doesn't change the underlying economics of running the unit day to day.</li>
+                <li><strong>Resilience data still favours franchised and branded operators over independents.</strong> Chains and franchised groups have shown stronger survival rates through the recent wave of closures, helped by economies of scale, brand recognition, and access to capital that independents don't have. That's a genuine structural advantage &mdash; but it's an advantage at the brand level. At the unit level, the same questions apply regardless of how fast the brand is growing: what do the unit economics look like for an average-performing site, what's the combined food and labour cost doing to the bottom line under current wage trajectories, and what happens if footfall doesn't hit projections in year one?</li>
+            </ul>
+
+            <h2>The bigger picture</h2>
+
+            <p>The UK franchise sector still has considerable room to grow compared with markets like the US, which has around 845,000 franchise establishments generating close to $921 billion in output. If 2026 turns out to be the year UK hospitality franchising goes properly mainstream, that's likely to mean more opportunities across more formats — full-service restaurants, grab-and-go, and concepts that have never franchised before, alongside the established QSR names.</p>
+            <p>More opportunities is good news for prospective franchisees. But more brands entering the market for the first time also means more variation in how prepared those brands actually are to support a franchisee network, and the difference between a well-run system and an under-prepared one is not always visible from the outside.</p>
+            <p>This is precisely the gap a proper assessment process exists to close. Before any introduction to a brand, we look at how long they've been franchising, what their existing franchisee network actually says about support and performance, and whether the unit economics stack up under today's cost conditions — not the projections in the pack.</p>
+            <p><em>Franchise Foundry is a franchisee-first matching service for the UK hospitality sector. We work for the buyer, not the brand. If you're exploring franchise opportunities — established or newly launched — start with <a href="https://portal.franchisefoundry.co.uk/get-matched">Find Your Match</a> or <a href="/contact.html">get in touch</a> directly.</em></p>
+
+            <div class="article-cta-box">
+                <h3>Want the unit economics checked properly?</h3>
+                <p>We work for the buyer, not the brand. Get in touch and we'll run through the numbers on any opportunity you're considering — no obligation, no agenda.</p>
+                <a href="/contact.html" class="btn-gold">Get in touch</a>
+            </div>
+
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-grid">
+            <div class="footer-brand">
+                <img src="/images/copy-of-franchise-foundry-logo-final-2.png" alt="Franchise Foundry" class="footer-logo">
+                <p>Built by hospitality operators. For people who want to get franchising right.</p>
+                <p class="footer-tagline"><em>Discover. Connect. Franchise.</em></p>
+            </div>
+            <div class="footer-col">
+                <h4>Quick Links</h4>
+                <ul class="footer-links">
+                    <li><a href="/index.html">Home</a></li>
+                    <li><a href="/about.html">About Us</a></li>
+                    <li><a href="https://portal.franchisefoundry.co.uk/get-matched">Find Your Match</a></li>
+                    <li><a href="/for-brands.html">For Franchise Brands</a></li>
+                    <li><a href="/contact.html">Contact Us</a></li>
+                    <li><a href="/blog.html">Blog &amp; Insights</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Company</h4>
+                <a href="/about.html">About Us</a>
+                <a href="/for-brands.html">For Franchise Brands</a>
+                <a href="/blog.html">Blog &amp; Insights</a>
+            </div>
+            <div class="footer-col">
+                <h4>Contact</h4>
+                <p><a href="mailto:connect@franchisefoundry.co.uk">connect@franchisefoundry.co.uk</a></p>
+            </div>
+            <div class="footer-col">
+                <h4>Follow Us</h4>
+                <div class="footer-social-links">
+                    <a href="https://linkedin.com/company/franchisefoundryuk" target="_blank" rel="noopener" aria-label="LinkedIn">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+                    </a>
+                    <a href="https://instagram.com/franchisefoundry" target="_blank" rel="noopener" aria-label="Instagram">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 Franchise Foundry. All rights reserved.</p>
+            <p>Built for hospitality franchise matching.</p>
+        </div>
+    </footer>
+
+    <script>
+    const hamburger = document.getElementById('nav-hamburger');
+    const mobileMenu = document.getElementById('nav-mobile-menu');
+    if (hamburger && mobileMenu) {
+        hamburger.addEventListener('click', () => {
+            const isOpen = mobileMenu.classList.toggle('open');
+            hamburger.classList.toggle('open', isOpen);
+            hamburger.setAttribute('aria-expanded', isOpen);
+            document.body.style.overflow = isOpen ? 'hidden' : '';
+        });
+        mobileMenu.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.remove('open');
+                hamburger.classList.remove('open');
+                hamburger.setAttribute('aria-expanded', 'false');
+                document.body.style.overflow = '';
+            });
+        });
+    }
+    </script>
+
+</body>
+</html>

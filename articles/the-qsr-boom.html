@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The QSR Boom: Why Fast Food Franchising Is Growing While Casual Dining Struggles - Franchise Foundry</title>
+    <meta name="description" content="In 2024 UK quick service restaurant outlets grew 10% while high-street restaurant brands fell 26%. Here's what that structural shift means if you're evaluating a hospitality franchise.">
+    <meta property="og:title" content="The QSR Boom: Why Fast Food Franchising Is Growing While Casual Dining Struggles">
+    <meta property="og:description" content="In 2024 UK quick service restaurant outlets grew 10% while high-street restaurant brands fell 26%. Here's what that structural shift means if you're evaluating a hospitality franchise.">
+    <meta property="og:image" content="https://franchisefoundry.co.uk/images/copy-of-franchise-foundry-logo-final-2.png">
+    <meta property="og:url" content="https://franchisefoundry.co.uk/articles/the-qsr-boom.html">
+    <meta property="og:type" content="article">
+    <link rel="icon" type="image/png" href="/images/favicon.png">
+    <link rel="apple-touch-icon" href="/images/favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --green:       #5f725f;
+            --green-deep:  #3a4a3a;
+            --green-dark:  #2a352a;
+            --green-light: #eef3ee;
+            --green-mid:   #d4e0d4;
+            --gold:        #c8924a;
+            --gold-light:  #f0d4a8;
+            --off-white:   #f7f8f5;
+            --text-dark:   #161a16;
+            --text-mid:    #4a5568;
+            --text-light:  #7a8990;
+            --white:       #ffffff;
+            --border:      #e2e8e2;
+            --radius-sm:   8px;
+            --radius-md:   16px;
+            --radius-lg:   24px;
+            --radius-xl:   32px;
+        }
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Sora', system-ui, sans-serif; line-height: 1.6; color: var(--text-dark); background: var(--white); -webkit-font-smoothing: antialiased; }
+
+        .navbar { background: var(--green-deep); padding: 0 40px; position: sticky; top: 0; z-index: 100; border-bottom: 1px solid rgba(255,255,255,0.08); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); }
+        .nav-container { max-width: 1280px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; height: 72px; }
+        .navbar-logo { height: 48px; display: block; }
+        .nav-links { display: flex; gap: 28px; list-style: none; align-items: center; }
+        .nav-links a { color: rgba(255,255,255,0.75); text-decoration: none; font-size: 0.9rem; font-weight: 500; transition: color 0.2s; }
+        .nav-links a:hover, .nav-links a.active { color: white; }
+        .nav-links a.active { font-weight: 600; }
+        .nav-brands { color: var(--gold-light) !important; }
+        .nav-cta { background: var(--gold); color: white !important; padding: 10px 22px; border-radius: var(--radius-sm); font-weight: 600 !important; font-size: 0.88rem !important; transition: background 0.2s, transform 0.15s; }
+        .nav-cta:hover { background: #b07830 !important; transform: translateY(-1px); }
+        .nav-links .nav-login {
+            border: 1px solid rgba(255,255,255,0.35);
+            color: rgba(255,255,255,0.8) !important;
+            padding: 9px 18px;
+            border-radius: 6px;
+            font-weight: 500;
+            font-size: 0.85rem;
+            transition: border-color 0.2s, background 0.2s, color 0.2s;
+        }
+        .nav-links .nav-login:hover {
+            border-color: rgba(255,255,255,0.65);
+            background: rgba(255,255,255,0.08);
+            color: white !important;
+        }
+        @media (max-width: 900px) { .nav-links { display: none; } .navbar-logo { height: 38px; } }
+
+        .nav-hamburger { display: none; flex-direction: column; justify-content: center; gap: 5px; background: none; border: none; cursor: pointer; padding: 8px; flex-shrink: 0; position: relative; z-index: 201; }
+        .nav-hamburger span { display: block; width: 22px; height: 2px; background: rgba(255,255,255,0.9); border-radius: 2px; transition: transform 0.28s cubic-bezier(0.4,0,0.2,1), opacity 0.2s; transform-origin: center; }
+        .nav-hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+        .nav-hamburger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+        .nav-hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+        .nav-mobile-menu { position: fixed; top: 72px; left: 0; right: 0; bottom: 0; background: var(--green-dark); z-index: 99; display: flex; flex-direction: column; padding: 32px 28px 48px; visibility: hidden; opacity: 0; transform: translateY(-10px); transition: opacity 0.26s ease, transform 0.26s ease, visibility 0s linear 0.26s; overflow-y: auto; }
+        .nav-mobile-menu.open { visibility: visible; opacity: 1; transform: translateY(0); transition: opacity 0.26s ease, transform 0.26s ease, visibility 0s; }
+        .nav-mobile-links { list-style: none; padding: 0; margin: 0; flex: 0 0 auto; }
+        .nav-mobile-links li { margin: 0; }
+        .nav-mobile-links a { display: block; padding: 18px 0; color: rgba(255,255,255,0.55); text-decoration: none; font-size: 1.6rem; font-weight: 700; letter-spacing: -0.03em; border-bottom: 1px solid rgba(255,255,255,0.06); transition: color 0.18s; }
+        .nav-mobile-links a:hover { color: rgba(255,255,255,0.85); }
+        .nav-mobile-links a.active { color: white; }
+        .nav-mobile-links .nav-mobile-brands { color: rgba(240,212,168,0.65); }
+        .nav-mobile-cta-wrap { margin-top: 32px; padding-top: 28px; border-top: 1px solid rgba(255,255,255,0.08); }
+        .nav-mobile-cta-btn { display: block; padding: 17px 20px; background: var(--gold); color: white; text-align: center; text-decoration: none; font-weight: 700; font-size: 1.05rem; border-radius: 12px; letter-spacing: -0.01em; transition: background 0.2s, transform 0.15s; }
+        .nav-mobile-cta-btn:hover { background: #b07830; transform: translateY(-1px); }
+        @media (max-width: 900px) { .nav-hamburger { display: flex; } }
+
+        .article-hero { background: var(--green-deep); padding: 80px 40px 72px; position: relative; overflow: hidden; }
+        .article-hero::before { content: ''; position: absolute; top: -200px; right: -200px; width: 600px; height: 600px; background: radial-gradient(circle, rgba(95,114,95,0.3) 0%, transparent 70%); pointer-events: none; }
+        .article-hero-inner { max-width: 800px; margin: 0 auto; position: relative; z-index: 1; }
+        .article-back { display: inline-flex; align-items: center; gap: 8px; color: rgba(255,255,255,0.55); text-decoration: none; font-size: 0.82rem; font-weight: 500; margin-bottom: 28px; transition: color 0.2s; }
+        .article-back:hover { color: rgba(255,255,255,0.9); }
+        .article-category-badge { display: inline-block; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; padding: 5px 14px; border-radius: 100px; background: var(--green-light); color: var(--green); margin-bottom: 20px; }
+        .article-hero h1 { font-size: 3rem; font-weight: 800; color: white; letter-spacing: -0.03em; line-height: 1.1; margin-bottom: 24px; }
+        .article-byline { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
+        .article-byline-text { font-size: 0.88rem; color: rgba(255,255,255,0.6); font-weight: 300; }
+        .article-byline-text strong { color: rgba(255,255,255,0.85); font-weight: 600; }
+        .byline-sep { display: inline-block; width: 3px; height: 3px; background: rgba(255,255,255,0.3); border-radius: 50%; vertical-align: middle; margin: 0 6px; }
+
+        .article-body-wrap { background: var(--off-white); padding: 72px 40px 100px; }
+        .article-body { max-width: 720px; margin: 0 auto; }
+        .article-body p { font-size: 1.05rem; color: var(--text-mid); font-weight: 300; line-height: 1.85; margin-bottom: 28px; }
+        .article-body p:first-child { font-size: 1.15rem; color: var(--text-dark); font-weight: 400; line-height: 1.8; }
+        .article-body h2 { font-size: 1.6rem; font-weight: 700; color: var(--text-dark); letter-spacing: -0.02em; line-height: 1.25; margin-top: 56px; margin-bottom: 20px; }
+        .article-body h2:first-of-type { margin-top: 0; }
+
+        .article-question-list { list-style: none; margin: 28px 0; display: flex; flex-direction: column; gap: 20px; }
+        .article-question-list li { background: white; border: 1.5px solid var(--border); border-left: 4px solid var(--green); border-radius: var(--radius-md); padding: 20px 24px; font-size: 0.97rem; color: var(--text-mid); font-weight: 300; line-height: 1.7; }
+        .article-question-list li strong { display: block; color: var(--text-dark); font-weight: 600; margin-bottom: 6px; font-size: 1rem; }
+
+        .article-divider { border: none; border-top: 1.5px solid var(--border); margin: 56px 0; }
+
+        .article-cta-box { background: var(--green-deep); border-radius: var(--radius-lg); padding: 48px 40px; text-align: center; margin-top: 72px; }
+        .article-cta-box h3 { font-size: 1.5rem; font-weight: 700; color: white; letter-spacing: -0.02em; margin-bottom: 14px; }
+        .article-cta-box p { font-size: 0.95rem !important; color: rgba(255,255,255,0.7) !important; font-weight: 300 !important; line-height: 1.7 !important; max-width: 480px; margin: 0 auto 28px !important; }
+        .btn-gold { background: var(--gold); color: white; padding: 14px 32px; border-radius: var(--radius-sm); text-decoration: none; font-weight: 700; font-size: 0.95rem; display: inline-block; transition: all 0.2s; }
+        .btn-gold:hover { background: #b07830; transform: translateY(-2px); }
+
+        footer { background: var(--green-dark); color: white; padding: 72px 40px 32px; }
+        .footer-grid { max-width: 1280px; margin: 0 auto; display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr; gap: 48px; padding-bottom: 48px; border-bottom: 1px solid rgba(255,255,255,0.08); margin-bottom: 32px; }
+        .footer-logo { height: 34px; margin-bottom: 16px; display: block; }
+        .footer-brand p { font-size: 0.9rem; color: rgba(255,255,255,0.5); line-height: 1.7; font-weight: 300; }
+        .footer-tagline { margin-top: 16px !important; }
+        .footer-tagline em { font-style: normal; font-size: 0.78rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--gold-light); }
+        .footer-col h4 { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.35); margin-bottom: 20px; }
+        .footer-links { list-style: none; }
+        .footer-links li { margin-bottom: 10px; }
+        .footer-col a, .footer-links a, .footer-col p { display: block; font-size: 0.9rem; color: rgba(255,255,255,0.6); text-decoration: none; margin-bottom: 10px; font-weight: 300; transition: color 0.2s; }
+        .footer-col a:hover, .footer-links a:hover { color: white; }
+        .footer-social-links { display: flex; gap: 12px; margin-top: 4px; }
+        .footer-social-links a { display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.2); color: rgba(255,255,255,0.6); transition: all 0.2s; text-decoration: none !important; margin-bottom: 0 !important; }
+        .footer-social-links a:hover { border-color: var(--gold); color: var(--gold); background: rgba(200,146,74,0.08); }
+        .footer-social-links svg { flex-shrink: 0; }
+        .footer-bottom { max-width: 1280px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .footer-bottom p { font-size: 0.82rem; color: rgba(255,255,255,0.3); font-weight: 300; }
+
+        @media (max-width: 900px) { .footer-grid { grid-template-columns: 1fr 1fr; gap: 32px; } }
+        @media (max-width: 768px) { .article-hero { padding: 60px 20px 56px; } .article-hero h1 { font-size: 2.1rem; } .article-body-wrap { padding: 48px 20px 72px; } .article-cta-box { padding: 36px 24px; } }
+        @media (max-width: 640px) { .footer-grid { grid-template-columns: 1fr; } .footer-bottom { flex-direction: column; gap: 8px; text-align: center; } footer { padding: 48px 24px 28px; } }
+        @media (max-width: 480px) { .article-hero h1 { font-size: 1.75rem; } }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="/index.html"><img src="/images/copy-of-franchise-foundry-logo-final-2.png" alt="Franchise Foundry" class="navbar-logo"></a>
+            <ul class="nav-links">
+                <li><a href="/about.html">About Us</a></li>
+                <li><a href="/for-brands.html" class="nav-brands">For Franchise Brands</a></li>
+                <li><a href="/blog.html">Blog</a></li>
+                <li><a href="/contact.html">Contact</a></li>
+                <li><a href="https://portal.franchisefoundry.co.uk/get-matched" class="nav-cta">Find Your Match</a></li>
+                <li><a href="https://portal.franchisefoundry.co.uk/login" class="nav-login">Portal Login</a></li>
+            </ul>
+            <button class="nav-hamburger" id="nav-hamburger" aria-label="Open menu" aria-expanded="false">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </nav>
+
+    <div class="nav-mobile-menu" id="nav-mobile-menu">
+        <ul class="nav-mobile-links">
+            <li><a href="/index.html">Home</a></li>
+            <li><a href="/about.html">About Us</a></li>
+            <li><a href="/for-brands.html" class="nav-mobile-brands">For Franchise Brands</a></li>
+            <li><a href="/contact.html">Contact</a></li>
+            <li><a href="/blog.html">Blog &amp; Insights</a></li>
+            <li><a href="https://portal.franchisefoundry.co.uk/login" style="color:rgba(255,255,255,0.55);font-size:0.85rem;">Portal Login</a></li>
+        </ul>
+        <div class="nav-mobile-cta-wrap">
+            <a href="https://portal.franchisefoundry.co.uk/get-matched" class="nav-mobile-cta-btn">Find Your Match &#8594;</a>
+        </div>
+    </div>
+
+    <section class="article-hero">
+        <div class="article-hero-inner">
+            <a href="/blog.html" class="article-back">&#8592; Back to Blog &amp; Insights</a>
+            <span class="article-category-badge">Industry Insight</span>
+            <h1>The QSR Boom: Why Fast Food Franchising Is Growing While Casual Dining Struggles</h1>
+            <div class="article-byline">
+                <span class="article-byline-text"><strong>Franchise Foundry</strong></span>
+                <span class="article-byline-text">27 May 2026</span>
+                <span class="article-byline-text">7 min read</span>
+            </div>
+        </div>
+    </section>
+
+    <div class="article-body-wrap">
+        <div class="article-body">
+            <p>In 2024, quick service restaurant outlets in the UK grew by 10%. In the same year, high-street restaurant brands declined by 26%.</p>
+            <p>That is not a blip. It is a structural shift, and if you are considering a hospitality franchise, it is the single most important market dynamic to understand right now.</p>
+
+            <h2>What the numbers actually show</h2>
+
+            <p>The UK QSR market is currently valued at approximately &pound;35.77 billion and is growing at a compound annual rate of 5.23%, with projections pointing to &pound;48.56 billion by 2031. While that top-line figure is impressive, the more telling number is the divergence between QSR and the rest of the hospitality sector.</p>
+            <p>Casual dining — the mid-market sit-down restaurant — is in structural retreat. Rising rents, stubbornly high labour costs, and a consumer base that has become more deliberate about discretionary spending have compressed margins to the point where many operators simply cannot make the model work. The wave of high-street closures over the past three years has hit independent and branded casual dining venues hardest.</p>
+            <p>Meanwhile, the QSR format has not just held its own — it has grown. Understanding why matters both for franchisees evaluating entry points and for franchise brands planning where to expand.</p>
+
+            <h2>Why QSR is outperforming</h2>
+
+            <ul class="article-question-list">
+                <li><strong>The cost structure works differently.</strong> A QSR unit carries lower labour costs relative to revenue than a full-service restaurant. There is no front-of-house waiting team, the menu is engineered for speed and consistency, and the operational model is built to function with less management overhead. When the National Living Wage rises — and it has risen 69.6% since 2016 — QSR operators feel the pressure, but they feel it less acutely than their sit-down competitors.</li>
+                <li><strong>Delivery economics are better.</strong> QSR formats were built for speed and portability before delivery platforms existed. The food travels well, the average order value is structured for platform economics, and the largest brands have invested in owned delivery infrastructure that partially insulates franchisees from the 15&ndash;30% platform commission that is destroying margins elsewhere in the sector.</li>
+                <li><strong>Value perception is doing a lot of work.</strong> 66% of British adults reported increased cost of living pressure by March 2025, and 29% are actively seeking discounts when eating out. Consumers have not stopped eating out — out-of-home market participation actually hit a post-pandemic high of 59.5% in August 2024 — but they are choosing more deliberately. A QSR visit feels affordable and justifiable in a way that a &pound;60 casual dining bill increasingly does not.</li>
+                <li><strong>Loyalty infrastructure.</strong> The major QSR brands have invested heavily in digital ordering, loyalty schemes, and data. McDonald's, Greggs, and Domino's all have active loyalty programmes with millions of enrolled users. For a franchisee, this brand equity is not abstract — it translates directly into repeat footfall that an independent operator cannot replicate.</li>
+            </ul>
+
+            <h2>What this means for prospective franchisees</h2>
+
+            <p>The QSR opportunity is real, but it spans an enormous range of investment levels and risk profiles. That &pound;35 billion market contains everything from a Subway unit (entry investment from around &pound;120,000) to a McDonald's (which can require close to &pound;1.8 million). Both are technically QSR franchises. They are not the same decision.</p>
+            <p>A few things that are worth understanding before you look at any specific brand:</p>
+            <ul class="article-question-list">
+                <li><strong>Investment range and payback period vary enormously.</strong> An entry-level QSR franchise might deliver payback in three to four years under reasonable trading conditions. A premium brand at a high-capex location needs that location to perform from day one. The gap between best-case and realistic projections is widest at the upper end of the investment range.</li>
+                <li><strong>Royalties are calculated on turnover, not profit.</strong> A 5% royalty on &pound;600,000 of annual sales is &pound;30,000, payable whether the unit made money that year or not. Build this into your unit economics before you look at any franchisor's projections, not after.</li>
+                <li><strong>Delivery strategy differs significantly between brands.</strong> Some QSR franchisors have invested in owned app infrastructure and give franchisees a meaningful margin advantage on delivery orders. Others still rely heavily on third-party platforms, and the commission structure erodes what looks like a healthy top line. Ask specifically about the delivery channel economics and what the franchisee net margin looks like on a platform order versus a direct order.</li>
+                <li><strong>Location dependency is high.</strong> QSR performance is closely correlated with footfall, and footfall is correlated with location. The difference in trading performance between a strong and a weak site for the same brand can be the difference between a profitable unit and a struggling one. Understand the franchisor's site selection process and what their track record looks like across different location types.</li>
+            </ul>
+
+            <h2>What this means for franchisors</h2>
+
+            <p>If you are a QSR brand or a food franchise concept with QSR characteristics, the market tailwind is real. But growth conditions also attract poor-fit franchisees — people who see the headline numbers, believe the sector is can't-miss, and underestimate what running a QSR unit actually requires.</p>
+            <p>The brands that are building durable networks in this environment are the ones doing proper assessment. Not just financial qualification, but operational profiling — understanding whether a candidate has the temperament, the management instincts, and the realistic expectations to run a food operation under current cost conditions.</p>
+            <p>The cost of a failed placement runs to &pound;15,000&ndash;&pound;25,000 in direct recruitment costs alone, before you factor in the brand damage, the management time, and the exit and refranchising costs. In a growing market, it is tempting to move fast. The brands that are winning long-term are the ones that are moving carefully.</p>
+
+            <h2>A note on the casual dining comparison</h2>
+
+            <p>It would be easy to read this piece as an argument that casual dining is finished and QSR is a safe bet. Neither is true.</p>
+            <p>There are casual dining franchise concepts with strong unit economics, well-run networks, and a clear consumer proposition that works in 2026. The sector-level decline masks genuine winners. And there are QSR concepts with weak franchisee support, poor unit economics at the franchisee level, and a brand proposition that is neither here nor there.</p>
+            <p>The format is a tailwind, not a guarantee. The question that matters is always: what do the unit economics look like for an average-performing site in this specific network, and what happens to those economics over the next three years as labour costs continue to rise?</p>
+            <p>That is the question we start with for every candidate we work with, regardless of format.</p>
+            <p><em>Franchise Foundry is a franchisee-first matching service for the UK hospitality sector. We work for the buyer, not the brand. If you are evaluating franchise opportunities in QSR or elsewhere in hospitality, start with <a href="https://portal.franchisefoundry.co.uk/get-matched">Find Your Match</a> or <a href="/contact.html">get in touch</a> directly.</em></p>
+
+            <div class="article-cta-box">
+                <h3>Want the unit economics checked properly?</h3>
+                <p>We work for the buyer, not the brand. Get in touch and we'll run through the numbers on any opportunity you're considering — no obligation, no agenda.</p>
+                <a href="/contact.html" class="btn-gold">Get in touch</a>
+            </div>
+
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-grid">
+            <div class="footer-brand">
+                <img src="/images/copy-of-franchise-foundry-logo-final-2.png" alt="Franchise Foundry" class="footer-logo">
+                <p>Built by hospitality operators. For people who want to get franchising right.</p>
+                <p class="footer-tagline"><em>Discover. Connect. Franchise.</em></p>
+            </div>
+            <div class="footer-col">
+                <h4>Quick Links</h4>
+                <ul class="footer-links">
+                    <li><a href="/index.html">Home</a></li>
+                    <li><a href="/about.html">About Us</a></li>
+                    <li><a href="https://portal.franchisefoundry.co.uk/get-matched">Find Your Match</a></li>
+                    <li><a href="/for-brands.html">For Franchise Brands</a></li>
+                    <li><a href="/contact.html">Contact Us</a></li>
+                    <li><a href="/blog.html">Blog &amp; Insights</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Company</h4>
+                <a href="/about.html">About Us</a>
+                <a href="/for-brands.html">For Franchise Brands</a>
+                <a href="/blog.html">Blog &amp; Insights</a>
+            </div>
+            <div class="footer-col">
+                <h4>Contact</h4>
+                <p><a href="mailto:connect@franchisefoundry.co.uk">connect@franchisefoundry.co.uk</a></p>
+            </div>
+            <div class="footer-col">
+                <h4>Follow Us</h4>
+                <div class="footer-social-links">
+                    <a href="https://linkedin.com/company/franchisefoundryuk" target="_blank" rel="noopener" aria-label="LinkedIn">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+                    </a>
+                    <a href="https://instagram.com/franchisefoundry" target="_blank" rel="noopener" aria-label="Instagram">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 Franchise Foundry. All rights reserved.</p>
+            <p>Built for hospitality franchise matching.</p>
+        </div>
+    </footer>
+
+    <script>
+    const hamburger = document.getElementById('nav-hamburger');
+    const mobileMenu = document.getElementById('nav-mobile-menu');
+    if (hamburger && mobileMenu) {
+        hamburger.addEventListener('click', () => {
+            const isOpen = mobileMenu.classList.toggle('open');
+            hamburger.classList.toggle('open', isOpen);
+            hamburger.setAttribute('aria-expanded', isOpen);
+            document.body.style.overflow = isOpen ? 'hidden' : '';
+        });
+        mobileMenu.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.remove('open');
+                hamburger.classList.remove('open');
+                hamburger.setAttribute('aria-expanded', 'false');
+                document.body.style.overflow = '';
+            });
+        });
+    }
+    </script>
+
+</body>
+</html>
