@@ -9,7 +9,7 @@ export async function middleware(request: NextRequest) {
   if (pathname.startsWith('/get-matched')) {
     const ref = request.nextUrl.searchParams.get('ref')
     const res = NextResponse.next()
-    if (ref && /^[a-z0-9]{4,16}$/i.test(ref)) {
+    if (ref && /^[a-z0-9-]{3,30}$/i.test(ref)) {
       res.cookies.set('ff_ref', ref.toLowerCase(), {
         maxAge: 60 * 60 * 24 * 30, // 30 days
         path: '/',

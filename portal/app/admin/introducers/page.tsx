@@ -2,15 +2,25 @@ import { createAdminClient } from '@/lib/supabase/admin'
 import { PageHeader } from '@/components/page-header'
 import InviteAgentButton from './InviteIntroducerButton'
 import AgentsTable from './AgentsTable'
+import { ensureReferralCode } from '@/lib/referral'
 
 export default async function AdminIntroducersPage() {
   const admin = createAdminClient()
 
   const { data: introducers } = await admin
     .from('profiles')
-    .select('id, full_name, email, phone, created_at')
+    .select('id, full_name, email, phone, referral_code, created_at')
     .eq('role', 'introducer')
     .order('created_at', { ascending: false })
+
+  // Ensure every agent has a referral code so the admin can share it immediately
+  await Promise.all(
+    (introducers ?? [])
+      .filter(a => !a.referral_code)
+      .map(async a => {
+        a.referral_code = await ensureReferralCode(admin, a.id)
+      }),
+  )
 
   // Get lead counts per agent
   const { data: leadCounts } = await admin
