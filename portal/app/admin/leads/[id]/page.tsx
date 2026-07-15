@@ -54,11 +54,20 @@ export default async function LeadDetailPage({ params }: { params: Promise<{ id:
 
   const typedMatches = (matches ?? []) as LeadMatch[]
 
+  // Lead source — resolve the referring agent if this came via a referral link
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const introducerId = (typedLead as any).introducer_id as string | null
+  let sourceLabel = 'Matching platform'
+  if (introducerId) {
+    const { data: agent } = await admin.from('profiles').select('full_name').eq('id', introducerId).single()
+    sourceLabel = agent?.full_name ? `Agent referral — ${agent.full_name}` : 'Agent referral'
+  }
+
   return (
     <div>
       <PageHeader
         title={typedLead.full_name}
-        description={`Lead · ${new Date(typedLead.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}`}
+        description={`Lead · ${new Date(typedLead.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })} · Source: ${sourceLabel}`}
         action={<DeleteLeadButton leadId={id} redirectAfter />}
       />
 

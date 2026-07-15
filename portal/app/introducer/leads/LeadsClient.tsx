@@ -305,7 +305,14 @@ export default function LeadsClient({ leads }: { leads: Lead[] }) {
               {filteredLeads.map(lead => (
                 <tr key={lead.id} className="border-b border-slate-50 hover:bg-slate-50 transition-colors">
                   <td className="px-4 py-3">
-                    <p className="font-medium text-slate-800">{lead.first_name} {lead.last_name}</p>
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <p className="font-medium text-slate-800">{lead.first_name} {lead.last_name}</p>
+                      {lead.source === 'referral_link' && (
+                        <span className="text-[10px] font-semibold text-violet-700 bg-violet-50 border border-violet-200 rounded-full px-2 py-0.5">
+                          Via your link
+                        </span>
+                      )}
+                    </div>
                     <p className="text-xs text-slate-400">{lead.email}</p>
                   </td>
                   <td className="px-4 py-3 text-slate-500 hidden sm:table-cell">{lead.location ?? '—'}</td>
@@ -323,31 +330,37 @@ export default function LeadsClient({ leads }: { leads: Lead[] }) {
                     {new Date(lead.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
                   </td>
                   <td className="px-4 py-3 text-right">
-                    <div className="flex items-center justify-end gap-2">
-                      {lead.status === 'submitted' && (
+                    {lead.source === 'referral_link' ? (
+                      // Read-only: referral-link leads are handled by the FF team via
+                      // the main pipeline; the agent just gets attribution + commission.
+                      <span className="text-xs text-slate-400">FF team handling</span>
+                    ) : (
+                      <div className="flex items-center justify-end gap-2">
+                        {lead.status === 'submitted' && (
+                          <button
+                            onClick={() => handleSendInvite(lead)}
+                            disabled={invitingId === lead.id}
+                            className="text-xs px-2.5 py-1 bg-sky-50 text-sky-700 border border-sky-200 rounded-lg hover:bg-sky-100 transition-colors disabled:opacity-50 flex items-center gap-1"
+                          >
+                            {invitingId === lead.id ? (
+                              <>
+                                <svg className="animate-spin w-3 h-3" fill="none" viewBox="0 0 24 24">
+                                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                                </svg>
+                                Sending…
+                              </>
+                            ) : 'Send invite'}
+                          </button>
+                        )}
                         <button
-                          onClick={() => handleSendInvite(lead)}
-                          disabled={invitingId === lead.id}
-                          className="text-xs px-2.5 py-1 bg-sky-50 text-sky-700 border border-sky-200 rounded-lg hover:bg-sky-100 transition-colors disabled:opacity-50 flex items-center gap-1"
+                          onClick={() => { setNotesLead(lead); setNotesText(lead.introducer_notes ?? '') }}
+                          className="text-xs text-brand-green hover:underline"
                         >
-                          {invitingId === lead.id ? (
-                            <>
-                              <svg className="animate-spin w-3 h-3" fill="none" viewBox="0 0 24 24">
-                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                              </svg>
-                              Sending…
-                            </>
-                          ) : 'Send invite'}
+                          Notes
                         </button>
-                      )}
-                      <button
-                        onClick={() => { setNotesLead(lead); setNotesText(lead.introducer_notes ?? '') }}
-                        className="text-xs text-brand-green hover:underline"
-                      >
-                        Notes
-                      </button>
-                    </div>
+                      </div>
+                    )}
                   </td>
                 </tr>
               ))}

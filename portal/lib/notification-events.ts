@@ -41,6 +41,7 @@ export const NOTIFICATION_EVENTS: NotificationEvent[] = [
   { key: 'marketplace_unlocked', role: 'franchisee', label: 'Marketplace unlocked',     description: 'You gain access to the partner marketplace.',       defaultEmail: true },
 
   // ── Introducer ─────────────────────────────────────────────────────────────
+  { key: 'referral_lead',  role: 'introducer', label: 'New referral lead',     description: 'Someone joins the matching platform via your referral link.', defaultEmail: true },
   { key: 'lead_accepted',  role: 'introducer', label: 'Lead accepted invite',  description: 'A lead you referred registers on the portal.',      defaultEmail: true },
   { key: 'lead_matched',   role: 'introducer', label: 'Lead matched',          description: 'A lead you referred is matched with a brand.',       defaultEmail: true },
   { key: 'lead_signed',    role: 'introducer', label: 'Lead signed (commission due)', description: 'A lead you referred signs — commission is due.', defaultEmail: true },

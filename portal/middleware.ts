@@ -4,6 +4,21 @@ import { NextResponse, type NextRequest } from 'next/server'
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
 
+  // Capture an agent referral code on the matching platform and persist it as a
+  // cookie so /api/leads can attribute the lead when the visitor later unlocks.
+  if (pathname.startsWith('/get-matched')) {
+    const ref = request.nextUrl.searchParams.get('ref')
+    const res = NextResponse.next()
+    if (ref && /^[a-z0-9]{4,16}$/i.test(ref)) {
+      res.cookies.set('ff_ref', ref.toLowerCase(), {
+        maxAge: 60 * 60 * 24 * 30, // 30 days
+        path: '/',
+        sameSite: 'lax',
+      })
+    }
+    return res
+  }
+
   // Public routes — always allow through without auth checks.
   // These are reached by unauthenticated users by design (invite acceptance,
   // password reset, account setup). Note: /api/auth/delete-account is NOT here —

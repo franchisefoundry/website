@@ -190,6 +190,12 @@ export default async function AdminDashboard() {
                 <div>
                   <p className="text-sm font-medium text-slate-900">{lead.full_name}</p>
                   <p className="text-xs text-slate-400">{lead.email}</p>
+                  {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+                  {(lead as any).introducer_id && (
+                    <span className="inline-block mt-1 text-[10px] font-semibold text-violet-700 bg-violet-50 border border-violet-200 rounded-full px-1.5 py-0.5">
+                      Agent referral
+                    </span>
+                  )}
                 </div>
                 <div className="flex items-center gap-2">
                   {lead.status === 'meeting_requested' && (
