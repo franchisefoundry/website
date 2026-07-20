@@ -30,8 +30,7 @@ export async function PATCH(request: NextRequest) {
 
     const { error } = await admin
       .from('franchisor_questionnaires')
-      .update(updates)
-      .eq('franchisor_id', franchisorId)
+      .upsert({ franchisor_id: franchisorId, ...updates }, { onConflict: 'franchisor_id' })
 
     if (error) {
       console.error('Questionnaire update error:', error)
