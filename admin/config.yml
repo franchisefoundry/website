@@ -7,6 +7,28 @@ public_folder: "/images"
 
 collections:
 
+  # ── Articles / Blog ───────────────────────────────────────────────────────
+  # Each article is a markdown file in content/articles/. The build step
+  # (build-articles.mjs) turns these into real /articles/<slug>.html pages and
+  # adds them to the blog listing on deploy.
+  - name: "articles"
+    label: "Articles"
+    label_singular: "Article"
+    folder: "content/articles"
+    create: true
+    slug: "{{slug}}"
+    summary: "{{title}} — {{date}}"
+    sortable_fields: ["date", "title"]
+    fields:
+      - { label: "Title", name: "title", widget: "string" }
+      - { label: "Category", name: "category", widget: "select", default: "Industry Insight",
+          options: ["Industry Insight", "Franchise Advice", "Market Analysis", "Guides"] }
+      - { label: "Author", name: "author", widget: "string", default: "Franchise Foundry" }
+      - { label: "Publish date", name: "date", widget: "datetime" }
+      - { label: "Short excerpt (shown on the blog card + as the SEO description)", name: "excerpt", widget: "text" }
+      - { label: "Cover image (optional)", name: "coverImage", widget: "image", required: false }
+      - { label: "Body", name: "body", widget: "markdown" }
+
   # ── Franchise Partners ────────────────────────────────────────────────────
   # All partners are stored in a single file so the matching algorithm and
   # the CMS always stay in sync.
