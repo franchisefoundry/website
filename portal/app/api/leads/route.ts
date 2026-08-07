@@ -24,8 +24,13 @@ export async function POST(request: NextRequest) {
       investment_min, investment_max, liquid_capital,
       preferred_locations, operator_model, experience,
       full_time_available, multi_site_interest, timeline_months,
-      sectors, format_types, goals,
+      sectors, format_types, goals, heard_about_us,
     } = body
+
+    // Free-text, capped — where the lead heard about us (self-reported)
+    const safeHeardAbout = typeof heard_about_us === 'string' && heard_about_us.trim()
+      ? heard_about_us.trim().slice(0, 200)
+      : null
 
     // ── Required field validation ──────────────────────────────────────────────
     const nameClean = typeof full_name === 'string' ? full_name.trim() : ''
@@ -71,6 +76,7 @@ export async function POST(request: NextRequest) {
         sectors:              Array.isArray(sectors) && sectors.length ? sectors : ['food-beverage'],
         format_types:         Array.isArray(format_types) ? format_types : [],
         goals:                safeGoals,
+        heard_about_us:       safeHeardAbout,
         status:               'meeting_requested',
         introducer_id:        introducerId,
         source:               introducerId ? 'agent_referral' : 'matching_platform',

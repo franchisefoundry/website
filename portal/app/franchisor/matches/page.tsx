@@ -42,6 +42,7 @@ export default async function FranchisorMatchesPage() {
           )
         `)
         .eq('franchisor_id', brandProfile.id)
+        .eq('franchisor_revealed', true)
         .in('status', ['suggested', 'shown', 'interested', 'intro_made'])
         .order('score', { ascending: false })
     : { data: [] }

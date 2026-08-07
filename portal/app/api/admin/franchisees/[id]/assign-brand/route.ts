@@ -41,7 +41,7 @@ export async function POST(
 
   if (profileError) return NextResponse.json({ error: profileError.message }, { status: 500 })
 
-  // Create a match record for this pairing
+  // Ensure a match record exists for this pairing (created by scoring, or here)
   const { error: matchError } = await admin
     .from('matches')
     .upsert(
@@ -57,6 +57,19 @@ export async function POST(
     )
 
   if (matchError) return NextResponse.json({ error: matchError.message }, { status: 500 })
+
+  // Reveal the match to the franchisor — the ONLY place this flag gets set true,
+  // so auto-scored matches never appear in a franchisor's portal. Done as an
+  // explicit update so it also applies to a pre-existing (auto-created) match
+  // without clobbering its score/status.
+  await admin
+    .from('matches')
+    .update({
+      franchisor_revealed: true,
+      ...(rank === 1 ? { pipeline_stage: 'match_assigned' } : {}),
+    })
+    .eq('franchisee_id', franchiseeId)
+    .eq('franchisor_id', franchisor_id)
 
   // For primary assignments only: notify both sides
   if (rank === 1) {

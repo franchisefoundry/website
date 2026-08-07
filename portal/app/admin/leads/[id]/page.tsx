@@ -127,6 +127,14 @@ export default async function LeadDetailPage({ params }: { params: Promise<{ id:
                 <span className="text-slate-400">Timeline</span>
                 <p className="text-slate-800">{typedLead.timeline_months ? `${typedLead.timeline_months} months` : '—'}</p>
               </div>
+              {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+              {(typedLead as any).heard_about_us && (
+                <div>
+                  <span className="text-slate-400">Heard about us</span>
+                  {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+                  <p className="text-slate-800">{(typedLead as any).heard_about_us}</p>
+                </div>
+              )}
             </div>
           </div>
 

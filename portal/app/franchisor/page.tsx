@@ -39,6 +39,7 @@ export default async function FranchisorDashboard() {
         .from('matches')
         .select('id, status, franchisee_profiles(profiles!franchisee_profiles_user_id_fkey(role))')
         .eq('franchisor_id', brandProfile.id)
+        .eq('franchisor_revealed', true)
         .in('status', ['suggested', 'shown', 'interested', 'intro_made'])
     : { data: [] }
 

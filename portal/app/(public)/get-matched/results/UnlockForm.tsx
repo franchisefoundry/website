@@ -17,8 +17,21 @@ interface QuizData {
   goals: string
 }
 
+const HEARD_OPTIONS = [
+  'Google search',
+  'Social media (Facebook / Instagram)',
+  'LinkedIn',
+  'Referred by a friend or colleague',
+  'Franchise exhibition or event',
+  'Franchise directory or website',
+  'An agent / introducer',
+  'Other',
+]
+
 export default function UnlockForm({ quizData, matchCount }: { quizData: QuizData; matchCount: number }) {
   const [form, setForm] = useState({ full_name: '', email: '', phone: '' })
+  const [heardAbout, setHeardAbout] = useState('')
+  const [heardAboutOther, setHeardAboutOther] = useState('')
   const [terms, setTerms] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
@@ -58,6 +71,7 @@ export default function UnlockForm({ quizData, matchCount }: { quizData: QuizDat
           preferred_locations: quizData.preferred_locations,
           sectors: ['food-beverage'],
           goals: [quizData.goals, quizData.other_location ? `Preferred area: ${quizData.other_location}` : ''].filter(Boolean).join('\n\n'),
+          heard_about_us: heardAbout === 'Other' ? (heardAboutOther.trim() || 'Other') : (heardAbout || null),
           status: 'meeting_requested',
         }),
       })
@@ -128,6 +142,47 @@ export default function UnlockForm({ quizData, matchCount }: { quizData: QuizDat
             />
           </div>
         ))}
+
+        {/* Where did you hear about us */}
+        <div>
+          <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em', color: 'rgba(255,255,255,0.5)', marginBottom: 8 }}>
+            Where did you hear about us?
+          </label>
+          <select
+            value={heardAbout}
+            onChange={e => { setHeardAbout(e.target.value); setError(null) }}
+            style={{
+              width: '100%', boxSizing: 'border-box',
+              background: 'rgba(255,255,255,0.06)',
+              border: '1px solid rgba(255,255,255,0.12)',
+              borderRadius: 10, padding: '12px 16px',
+              fontSize: '1rem', color: heardAbout ? 'white' : 'rgba(255,255,255,0.4)',
+              fontFamily: "var(--font-sora), sans-serif", outline: 'none',
+              appearance: 'none', WebkitAppearance: 'none',
+            }}
+          >
+            <option value="" style={{ color: '#333' }}>Please select…</option>
+            {HEARD_OPTIONS.map(opt => (
+              <option key={opt} value={opt} style={{ color: '#333' }}>{opt}</option>
+            ))}
+          </select>
+          {heardAbout === 'Other' && (
+            <input
+              type="text"
+              value={heardAboutOther}
+              onChange={e => setHeardAboutOther(e.target.value)}
+              placeholder="Please tell us where"
+              style={{
+                width: '100%', boxSizing: 'border-box', marginTop: 10,
+                background: 'rgba(255,255,255,0.06)',
+                border: '1px solid rgba(255,255,255,0.12)',
+                borderRadius: 10, padding: '12px 16px',
+                fontSize: '1rem', color: 'white',
+                fontFamily: "var(--font-sora), sans-serif", outline: 'none',
+              }}
+            />
+          )}
+        </div>
 
         <label style={{ display: 'flex', gap: 12, alignItems: 'flex-start', cursor: 'pointer' }}>
           <input type="checkbox" checked={terms} onChange={e => { setTerms(e.target.checked); setError(null) }}
