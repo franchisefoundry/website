@@ -4,9 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Import Article from PDF — Franchise Foundry</title>
+  <meta name="robots" content="noindex">
   <link rel="icon" type="image/png" href="/images/favicon.png">
   <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
   <style>
     :root { --green:#3a4a3a; --green-mid:#5f725f; --gold:#c8924a; --off:#f7f8f5; --border:#e2e8e2; --text:#161a16; --muted:#6b7280; }
     * { margin:0; padding:0; box-sizing:border-box; }
@@ -14,24 +14,25 @@
     .wrap { max-width:640px; margin:0 auto; padding:56px 24px 80px; }
     .logo { height:40px; margin-bottom:32px; }
     h1 { font-size:1.6rem; font-weight:700; letter-spacing:-0.02em; margin-bottom:8px; }
-    .sub { color:var(--muted); font-size:0.95rem; margin-bottom:32px; }
+    .sub { color:var(--muted); font-size:0.95rem; margin-bottom:28px; }
     .card { background:#fff; border:1px solid var(--border); border-radius:16px; padding:28px; }
-    .drop { border:2px dashed #cbd5cb; border-radius:12px; padding:40px 24px; text-align:center; cursor:pointer; transition:border-color .2s, background .2s; }
+    label.fld { display:block; font-size:0.78rem; font-weight:700; text-transform:uppercase; letter-spacing:0.06em; color:var(--muted); margin-bottom:8px; }
+    input[type=password] { width:100%; padding:12px 14px; border:1px solid #cbd5cb; border-radius:10px; font-family:inherit; font-size:0.95rem; outline:none; }
+    input[type=password]:focus { border-color:var(--gold); }
+    .drop { border:2px dashed #cbd5cb; border-radius:12px; padding:40px 24px; text-align:center; cursor:pointer; transition:border-color .2s, background .2s; margin-top:20px; }
     .drop:hover, .drop.over { border-color:var(--gold); background:#fbf6ee; }
     .drop p { color:var(--muted); font-size:0.9rem; }
     .drop strong { color:var(--green); }
     input[type=file] { display:none; }
-    .btn { display:inline-flex; align-items:center; justify-content:center; gap:8px; background:var(--green); color:#fff; border:none; border-radius:10px; padding:13px 24px; font-family:inherit; font-size:0.95rem; font-weight:600; cursor:pointer; transition:background .2s; }
-    .btn:hover { background:#2a352a; }
+    .btn { display:inline-flex; align-items:center; justify-content:center; gap:8px; background:var(--gold); color:#fff; border:none; border-radius:10px; padding:13px 24px; font-family:inherit; font-size:0.95rem; font-weight:600; cursor:pointer; transition:background .2s; }
+    .btn:hover { background:#b07830; }
     .btn:disabled { opacity:.6; cursor:not-allowed; }
-    .btn-gold { background:var(--gold); } .btn-gold:hover { background:#b07830; }
-    .row { margin-top:20px; display:flex; gap:12px; align-items:center; }
+    .row { margin-top:18px; display:flex; gap:12px; align-items:center; flex-wrap:wrap; }
     .file-name { font-size:0.9rem; color:var(--green); font-weight:600; }
     .msg { margin-top:20px; padding:14px 16px; border-radius:10px; font-size:0.9rem; }
     .msg.err { background:#fef2f2; border:1px solid #fecaca; color:#b91c1c; }
     .msg.ok { background:#ecfdf5; border:1px solid #a7f3d0; color:#065f46; }
     .msg.info { background:#eff6ff; border:1px solid #bfdbfe; color:#1e40af; }
-    .gate { text-align:center; padding:20px 0; }
     a.link { color:var(--gold); font-weight:600; text-decoration:none; } a.link:hover { text-decoration:underline; }
     .steps { font-size:0.82rem; color:var(--muted); margin-top:24px; line-height:1.7; }
   </style>
@@ -42,37 +43,32 @@
     <h1>Import an article from a PDF</h1>
     <p class="sub">Drop in a PDF and we'll draft the article for you — title, summary and formatted body. It lands in the CMS as a <strong>draft</strong> so you can tweak it before publishing.</p>
 
-    <div class="card" id="app">
-      <div class="gate" id="gate">
-        <p class="sub" style="margin:0 0 16px;">Please log in to continue.</p>
-        <button class="btn" onclick="netlifyIdentity.open()">Log in</button>
+    <div class="card">
+      <label class="fld" for="key">Access key</label>
+      <input type="password" id="key" placeholder="Enter the shared access key" autocomplete="off">
+
+      <label class="drop" id="drop">
+        <p><strong>Click to choose a PDF</strong> or drag it here</p>
+        <p style="margin-top:6px;font-size:0.8rem;">Text-based PDFs only (not scans)</p>
+        <input type="file" id="file" accept="application/pdf">
+      </label>
+
+      <div class="row" id="fileRow" style="display:none;">
+        <span class="file-name" id="fileName"></span>
+        <button class="btn" id="go">Draft the article →</button>
       </div>
 
-      <div id="tool" style="display:none;">
-        <label class="drop" id="drop">
-          <p><strong>Click to choose a PDF</strong> or drag it here</p>
-          <p style="margin-top:6px;font-size:0.8rem;">Text-based PDFs only (not scans)</p>
-          <input type="file" id="file" accept="application/pdf">
-        </label>
+      <div id="out"></div>
 
-        <div class="row" id="fileRow" style="display:none;">
-          <span class="file-name" id="fileName"></span>
-          <button class="btn btn-gold" id="go">Draft the article →</button>
-        </div>
-
-        <div id="out"></div>
-
-        <p class="steps">
-          What happens: the PDF text is read → Claude drafts a clean article → it's saved as a draft in
-          <a href="/admin/#/collections/articles" class="link">CMS → Articles</a>. Open it there, make any tweaks, untick <em>Draft</em>, and Publish.
-        </p>
-      </div>
+      <p class="steps">
+        What happens: the PDF text is read → Claude drafts a clean article → it's saved as a draft in
+        <a href="/admin/#/collections/articles" class="link">CMS → Articles</a>. Open it there, make any tweaks, untick <em>Draft</em>, and Publish.
+      </p>
     </div>
   </div>
 
   <script>
-    const gate = document.getElementById('gate')
-    const tool = document.getElementById('tool')
+    const keyInput = document.getElementById('key')
     const fileInput = document.getElementById('file')
     const drop = document.getElementById('drop')
     const fileRow = document.getElementById('fileRow')
@@ -81,14 +77,9 @@
     const out = document.getElementById('out')
     let selectedFile = null
 
-    function refreshAuth() {
-      const user = netlifyIdentity.currentUser()
-      gate.style.display = user ? 'none' : 'block'
-      tool.style.display = user ? 'block' : 'none'
-    }
-    netlifyIdentity.on('init', refreshAuth)
-    netlifyIdentity.on('login', () => { netlifyIdentity.close(); refreshAuth() })
-    netlifyIdentity.on('logout', refreshAuth)
+    // Remember the key for the session so it isn't re-typed each time
+    keyInput.value = sessionStorage.getItem('ff_import_key') || ''
+    keyInput.addEventListener('input', () => sessionStorage.setItem('ff_import_key', keyInput.value))
 
     ;['dragover','dragenter'].forEach(e => drop.addEventListener(e, ev => { ev.preventDefault(); drop.classList.add('over') }))
     ;['dragleave','drop'].forEach(e => drop.addEventListener(e, ev => { ev.preventDefault(); drop.classList.remove('over') }))
@@ -107,15 +98,14 @@
 
     go.addEventListener('click', async () => {
       if (!selectedFile) return
+      if (!keyInput.value.trim()) { showMsg('err', 'Please enter the access key.'); return }
       go.disabled = true
       showMsg('info', 'Reading the PDF and drafting the article… this can take 10–20 seconds.')
       try {
         const b64 = await fileToBase64(selectedFile)
-        const user = netlifyIdentity.currentUser()
-        const token = user && (await user.jwt())
         const res = await fetch('/.netlify/functions/import-article', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+          headers: { 'Content-Type': 'application/json', 'x-import-key': keyInput.value.trim() },
           body: JSON.stringify({ pdf_base64: b64 }),
         })
         const data = await res.json()
@@ -135,8 +125,6 @@
         r.readAsDataURL(file)
       })
     }
-
-    netlifyIdentity.init()
   </script>
 </body>
 </html>

@@ -24,16 +24,19 @@ function slugify(s) {
     .replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 60) || 'untitled'
 }
 
-export const handler = async (event, context) => {
+export const handler = async (event) => {
   if (event.httpMethod !== 'POST') return json(405, { error: 'Method not allowed' })
-
-  // Must be a logged-in Netlify Identity user (same login as the CMS)
-  const user = context.clientContext && context.clientContext.user
-  if (!user) return json(401, { error: 'Please log in first.' })
 
   const env = process.env
   if (!env.ANTHROPIC_API_KEY) return json(500, { error: 'ANTHROPIC_API_KEY is not configured.' })
   if (!env.GITHUB_TOKEN || !env.GITHUB_REPO) return json(500, { error: 'GitHub access is not configured.' })
+
+  // Access-key gate (Sveltia uses GitHub OAuth, so there's no Netlify Identity to
+  // reuse here). The key is a shared secret set as IMPORT_PASSWORD in Netlify.
+  const key = event.headers['x-import-key'] || event.headers['X-Import-Key']
+  if (!env.IMPORT_PASSWORD || key !== env.IMPORT_PASSWORD) {
+    return json(401, { error: 'Incorrect or missing access key.' })
+  }
 
   let payload
   try { payload = JSON.parse(event.body || '{}') } catch { return json(400, { error: 'Invalid request.' }) }
