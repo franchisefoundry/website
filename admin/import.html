@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Import Article from PDF — Franchise Foundry</title>
+  <link rel="icon" type="image/png" href="/images/favicon.png">
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+  <style>
+    :root { --green:#3a4a3a; --green-mid:#5f725f; --gold:#c8924a; --off:#f7f8f5; --border:#e2e8e2; --text:#161a16; --muted:#6b7280; }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { font-family:'Sora',system-ui,sans-serif; background:var(--off); color:var(--text); line-height:1.6; }
+    .wrap { max-width:640px; margin:0 auto; padding:56px 24px 80px; }
+    .logo { height:40px; margin-bottom:32px; }
+    h1 { font-size:1.6rem; font-weight:700; letter-spacing:-0.02em; margin-bottom:8px; }
+    .sub { color:var(--muted); font-size:0.95rem; margin-bottom:32px; }
+    .card { background:#fff; border:1px solid var(--border); border-radius:16px; padding:28px; }
+    .drop { border:2px dashed #cbd5cb; border-radius:12px; padding:40px 24px; text-align:center; cursor:pointer; transition:border-color .2s, background .2s; }
+    .drop:hover, .drop.over { border-color:var(--gold); background:#fbf6ee; }
+    .drop p { color:var(--muted); font-size:0.9rem; }
+    .drop strong { color:var(--green); }
+    input[type=file] { display:none; }
+    .btn { display:inline-flex; align-items:center; justify-content:center; gap:8px; background:var(--green); color:#fff; border:none; border-radius:10px; padding:13px 24px; font-family:inherit; font-size:0.95rem; font-weight:600; cursor:pointer; transition:background .2s; }
+    .btn:hover { background:#2a352a; }
+    .btn:disabled { opacity:.6; cursor:not-allowed; }
+    .btn-gold { background:var(--gold); } .btn-gold:hover { background:#b07830; }
+    .row { margin-top:20px; display:flex; gap:12px; align-items:center; }
+    .file-name { font-size:0.9rem; color:var(--green); font-weight:600; }
+    .msg { margin-top:20px; padding:14px 16px; border-radius:10px; font-size:0.9rem; }
+    .msg.err { background:#fef2f2; border:1px solid #fecaca; color:#b91c1c; }
+    .msg.ok { background:#ecfdf5; border:1px solid #a7f3d0; color:#065f46; }
+    .msg.info { background:#eff6ff; border:1px solid #bfdbfe; color:#1e40af; }
+    .gate { text-align:center; padding:20px 0; }
+    a.link { color:var(--gold); font-weight:600; text-decoration:none; } a.link:hover { text-decoration:underline; }
+    .steps { font-size:0.82rem; color:var(--muted); margin-top:24px; line-height:1.7; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <img src="/images/copy-of-franchise-foundry-logo-final-2.png" alt="Franchise Foundry" class="logo">
+    <h1>Import an article from a PDF</h1>
+    <p class="sub">Drop in a PDF and we'll draft the article for you — title, summary and formatted body. It lands in the CMS as a <strong>draft</strong> so you can tweak it before publishing.</p>
+
+    <div class="card" id="app">
+      <div class="gate" id="gate">
+        <p class="sub" style="margin:0 0 16px;">Please log in to continue.</p>
+        <button class="btn" onclick="netlifyIdentity.open()">Log in</button>
+      </div>
+
+      <div id="tool" style="display:none;">
+        <label class="drop" id="drop">
+          <p><strong>Click to choose a PDF</strong> or drag it here</p>
+          <p style="margin-top:6px;font-size:0.8rem;">Text-based PDFs only (not scans)</p>
+          <input type="file" id="file" accept="application/pdf">
+        </label>
+
+        <div class="row" id="fileRow" style="display:none;">
+          <span class="file-name" id="fileName"></span>
+          <button class="btn btn-gold" id="go">Draft the article →</button>
+        </div>
+
+        <div id="out"></div>
+
+        <p class="steps">
+          What happens: the PDF text is read → Claude drafts a clean article → it's saved as a draft in
+          <a href="/admin/#/collections/articles" class="link">CMS → Articles</a>. Open it there, make any tweaks, untick <em>Draft</em>, and Publish.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const gate = document.getElementById('gate')
+    const tool = document.getElementById('tool')
+    const fileInput = document.getElementById('file')
+    const drop = document.getElementById('drop')
+    const fileRow = document.getElementById('fileRow')
+    const fileName = document.getElementById('fileName')
+    const go = document.getElementById('go')
+    const out = document.getElementById('out')
+    let selectedFile = null
+
+    function refreshAuth() {
+      const user = netlifyIdentity.currentUser()
+      gate.style.display = user ? 'none' : 'block'
+      tool.style.display = user ? 'block' : 'none'
+    }
+    netlifyIdentity.on('init', refreshAuth)
+    netlifyIdentity.on('login', () => { netlifyIdentity.close(); refreshAuth() })
+    netlifyIdentity.on('logout', refreshAuth)
+
+    ;['dragover','dragenter'].forEach(e => drop.addEventListener(e, ev => { ev.preventDefault(); drop.classList.add('over') }))
+    ;['dragleave','drop'].forEach(e => drop.addEventListener(e, ev => { ev.preventDefault(); drop.classList.remove('over') }))
+    drop.addEventListener('drop', ev => { if (ev.dataTransfer.files[0]) pick(ev.dataTransfer.files[0]) })
+    fileInput.addEventListener('change', () => { if (fileInput.files[0]) pick(fileInput.files[0]) })
+
+    function pick(f) {
+      if (f.type !== 'application/pdf') { showMsg('err', 'Please choose a PDF file.'); return }
+      selectedFile = f
+      fileName.textContent = f.name
+      fileRow.style.display = 'flex'
+      out.innerHTML = ''
+    }
+
+    function showMsg(kind, html) { out.innerHTML = `<div class="msg ${kind}">${html}</div>` }
+
+    go.addEventListener('click', async () => {
+      if (!selectedFile) return
+      go.disabled = true
+      showMsg('info', 'Reading the PDF and drafting the article… this can take 10–20 seconds.')
+      try {
+        const b64 = await fileToBase64(selectedFile)
+        const user = netlifyIdentity.currentUser()
+        const token = user && (await user.jwt())
+        const res = await fetch('/.netlify/functions/import-article', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+          body: JSON.stringify({ pdf_base64: b64 }),
+        })
+        const data = await res.json()
+        if (!res.ok) { showMsg('err', data.error || 'Something went wrong.'); go.disabled = false; return }
+        showMsg('ok', `Draft created: <strong>${data.title}</strong>.<br><a class="link" href="/admin/#/collections/articles">Open it in the CMS to tweak & publish →</a>`)
+      } catch (e) {
+        showMsg('err', 'Upload failed: ' + e.message)
+        go.disabled = false
+      }
+    })
+
+    function fileToBase64(file) {
+      return new Promise((resolve, reject) => {
+        const r = new FileReader()
+        r.onload = () => resolve(String(r.result).split(',')[1])
+        r.onerror = reject
+        r.readAsDataURL(file)
+      })
+    }
+
+    netlifyIdentity.init()
+  </script>
+</body>
+</html>

@@ -47,6 +47,12 @@ for (const file of files) {
   const raw = readFileSync(join(ARTICLES_SRC, file), 'utf8')
   const { data, content } = matter(raw)
 
+  // Drafts (e.g. freshly imported from PDF) stay in the CMS but off the live site
+  if (data.draft) {
+    console.log(`[build-articles] skipped draft: ${file}`)
+    continue
+  }
+
   const slug = (data.slug || file.replace(/\.md$/, '')).toLowerCase().replace(/[^a-z0-9-]/g, '-')
   const title = data.title || 'Untitled'
   const description = data.description || data.excerpt || ''

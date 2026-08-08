@@ -27,6 +27,7 @@ collections:
       - { label: "Publish date", name: "date", widget: "datetime" }
       - { label: "Short excerpt (shown on the blog card + as the SEO description)", name: "excerpt", widget: "text" }
       - { label: "Cover image (optional)", name: "coverImage", widget: "image", required: false }
+      - { label: "Draft (hidden from the live site until unticked)", name: "draft", widget: "boolean", default: false, required: false }
       - { label: "Body", name: "body", widget: "markdown" }
 
   # ── Franchise Partners ────────────────────────────────────────────────────
