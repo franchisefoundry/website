@@ -1,5 +1,6 @@
 backend:
-  name: git-gateway
+  name: github
+  repo: franchisefoundry/website
   branch: main
 
 media_folder: "images"
