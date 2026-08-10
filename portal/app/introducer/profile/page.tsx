@@ -3,6 +3,7 @@ import { createAdminClient } from '@/lib/supabase/admin'
 import { PageHeader } from '@/components/page-header'
 import { Card } from '@/components/ui/card'
 import NotificationSettingsCard from '@/components/NotificationSettingsCard'
+import PushNotificationsCard from '@/components/PushNotificationsCard'
 import ReferralLinkCard from '@/components/introducer/ReferralLinkCard'
 import { ensureReferralCode, referralLink } from '@/lib/referral'
 
@@ -49,6 +50,7 @@ export default async function IntroducerProfilePage() {
       <div>
         <h2 className="text-base font-bold text-slate-900 mb-4">Notifications</h2>
         <NotificationSettingsCard role="introducer" initialPrefs={profile?.notification_prefs ?? null} />
+        <PushNotificationsCard role="introducer" initialPushPrefs={profile?.push_prefs ?? null} />
       </div>
     </div>
   )

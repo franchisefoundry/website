@@ -48,11 +48,26 @@ export const NOTIFICATION_EVENTS: NotificationEvent[] = [
   { key: 'commission_paid', role: 'introducer', label: 'Commission paid',      description: 'A commission payment has been marked as paid.',      defaultEmail: true },
 ]
 
-const BY_KEY = new Map(NOTIFICATION_EVENTS.map(e => [e.key, e]))
+/**
+ * Team announcements — a broadcast channel available to every role. Admins send
+ * these via the broadcast tool; each user can still opt out per channel. Not in
+ * NOTIFICATION_EVENTS because it isn't role-specific; it's appended for all roles.
+ */
+export const ANNOUNCEMENT_EVENT: NotificationEvent = {
+  key: 'announcements',
+  role: 'admin',
+  label: 'Announcements',
+  description: 'Important updates and messages from the Franchise Foundry team.',
+  defaultEmail: true,
+}
+
+const BY_KEY = new Map(
+  [...NOTIFICATION_EVENTS, ANNOUNCEMENT_EVENT].map(e => [e.key, e]),
+)
 
 /** Returns the events relevant to a given role, in display order. */
 export function eventsForRole(role: string): NotificationEvent[] {
-  return NOTIFICATION_EVENTS.filter(e => e.role === role)
+  return [...NOTIFICATION_EVENTS.filter(e => e.role === role), ANNOUNCEMENT_EVENT]
 }
 
 /**
@@ -61,6 +76,19 @@ export function eventsForRole(role: string): NotificationEvent[] {
  * their registry default when the user hasn't set an explicit preference.
  */
 export function shouldEmail(prefs: Record<string, boolean> | null | undefined, key: string): boolean {
+  const event = BY_KEY.get(key)
+  if (!event) return false
+  if (prefs && key in prefs) return prefs[key]
+  return event.defaultEmail
+}
+
+/**
+ * Decides whether to send a push notification for an event given a user's saved
+ * push prefs. Mirrors shouldEmail: known events fall back to the registry
+ * default (reusing defaultEmail as the sensible default) when the user hasn't
+ * set an explicit push preference; unknown events never push.
+ */
+export function shouldPush(prefs: Record<string, boolean> | null | undefined, key: string): boolean {
   const event = BY_KEY.get(key)
   if (!event) return false
   if (prefs && key in prefs) return prefs[key]

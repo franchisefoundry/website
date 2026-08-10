@@ -1,6 +1,7 @@
 import { createAdminClient } from '@/lib/supabase/admin'
-import { shouldEmail } from '@/lib/notification-events'
+import { shouldEmail, shouldPush } from '@/lib/notification-events'
 import { sendNotificationEmail } from '@/lib/email/notification-email'
+import { sendPush } from '@/lib/push'
 
 interface NotifyArgs {
   /** Recipient user id */
@@ -30,14 +31,26 @@ export async function notify({ userId, event, title, body, link }: NotifyArgs) {
     link: link ?? null,
   })
 
-  // 2. Email (gated by preference)
+  // 2. Email + push (each gated by its own preference)
   const { data: profile } = await admin
     .from('profiles')
-    .select('email, full_name, notification_prefs')
+    .select('email, full_name, notification_prefs, push_prefs')
     .eq('id', userId)
     .single()
 
-  if (!profile?.email) return
+  if (!profile) return
+
+  // Push — never blocks email; no-ops if the user has no devices or push is
+  // unconfigured. Separate toggle from email (profiles.push_prefs).
+  if (shouldPush(profile.push_prefs as Record<string, boolean> | null, event)) {
+    try {
+      await sendPush(userId, { title, body, link, tag: event })
+    } catch (err) {
+      console.error('[notify] push failed for', event, '-', err)
+    }
+  }
+
+  if (!profile.email) return
 
   if (shouldEmail(profile.notification_prefs as Record<string, boolean> | null, event)) {
     try {
