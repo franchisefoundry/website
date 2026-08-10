@@ -20,7 +20,7 @@ export const metadata: Metadata = {
   appleWebApp: {
     capable: true,
     statusBarStyle: 'default',
-    title: 'FF Portal',
+    title: 'Franchise Foundry',
   },
   icons: {
     apple: '/icon-192.png',
