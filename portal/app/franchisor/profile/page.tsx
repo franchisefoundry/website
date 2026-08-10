@@ -3,6 +3,7 @@ import { PageHeader } from '@/components/page-header'
 import AccountSettingsCard from '@/components/AccountSettingsCard'
 import NotificationSettingsCard from '@/components/NotificationSettingsCard'
 import PushNotificationsCard from '@/components/PushNotificationsCard'
+import InstallAppCard from '@/components/pwa/InstallAppCard'
 import FranchisorPersonalForm from './personal-form'
 
 export default async function FranchisorProfilePage() {
@@ -22,6 +23,10 @@ export default async function FranchisorProfilePage() {
         description="Update your personal details and account settings."
       />
       <FranchisorPersonalForm profile={profile} />
+      <div>
+        <h2 className="text-base font-bold text-slate-900 mb-4">App</h2>
+        <InstallAppCard />
+      </div>
       <div>
         <h2 className="text-base font-bold text-slate-900 mb-4">Notifications</h2>
         <NotificationSettingsCard role="franchisor" initialPrefs={profile?.notification_prefs ?? null} />

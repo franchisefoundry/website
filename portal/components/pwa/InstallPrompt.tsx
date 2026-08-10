@@ -44,16 +44,28 @@ export function InstallPrompt() {
     const dismissedAt = Number(localStorage.getItem(DISMISS_KEY) || 0)
     if (dismissedAt && Date.now() - dismissedAt < DISMISS_MS) return
 
-    const onBip = (e: Event) => {
-      e.preventDefault()
-      setDeferred(e as BIPEvent)
+    // The prompt is captured globally by RegisterSW; read it (it may already be
+    // available) and stay in sync via the custom events it dispatches.
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const existing = (window as any).__ffInstallPrompt as BIPEvent | undefined
+    if (existing) setDeferred(existing)
+
+    const onInstallable = () => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      setDeferred((window as any).__ffInstallPrompt as BIPEvent)
     }
-    window.addEventListener('beforeinstallprompt', onBip)
+    const onInstalled = () => dismiss()
+    window.addEventListener('ff:installable', onInstallable)
+    window.addEventListener('ff:appinstalled', onInstalled)
 
     // iOS never fires beforeinstallprompt — show manual guidance instead.
     if (isIos()) setShowIos(true)
 
-    return () => window.removeEventListener('beforeinstallprompt', onBip)
+    return () => {
+      window.removeEventListener('ff:installable', onInstallable)
+      window.removeEventListener('ff:appinstalled', onInstalled)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const dismiss = () => {
@@ -66,6 +78,8 @@ export function InstallPrompt() {
     if (!deferred) return
     await deferred.prompt()
     await deferred.userChoice.catch(() => {})
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    ;(window as any).__ffInstallPrompt = null
     dismiss()
   }
 
