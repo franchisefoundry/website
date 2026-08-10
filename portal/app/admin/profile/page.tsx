@@ -4,6 +4,7 @@ import AccountSettingsCard from '@/components/AccountSettingsCard'
 import NotificationSettingsCard from '@/components/NotificationSettingsCard'
 import PushNotificationsCard from '@/components/PushNotificationsCard'
 import BroadcastCard from '@/components/BroadcastCard'
+import InstallAppCard from '@/components/pwa/InstallAppCard'
 import AdminPersonalForm from './personal-form'
 
 export default async function AdminProfilePage() {
@@ -23,6 +24,10 @@ export default async function AdminProfilePage() {
         description="Update your personal details and account settings."
       />
       <AdminPersonalForm profile={profile} />
+      <div>
+        <h2 className="text-base font-bold text-slate-900 mb-4">App</h2>
+        <InstallAppCard />
+      </div>
       <div>
         <h2 className="text-base font-bold text-slate-900 mb-4">Notifications</h2>
         <NotificationSettingsCard role="admin" initialPrefs={profile?.notification_prefs ?? null} />

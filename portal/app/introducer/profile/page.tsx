@@ -4,6 +4,7 @@ import { PageHeader } from '@/components/page-header'
 import { Card } from '@/components/ui/card'
 import NotificationSettingsCard from '@/components/NotificationSettingsCard'
 import PushNotificationsCard from '@/components/PushNotificationsCard'
+import InstallAppCard from '@/components/pwa/InstallAppCard'
 import ReferralLinkCard from '@/components/introducer/ReferralLinkCard'
 import { ensureReferralCode, referralLink } from '@/lib/referral'
 
@@ -47,6 +48,10 @@ export default async function IntroducerProfilePage() {
         <ReferralLinkCard link={referralLink(code)} referredCount={referredCount ?? 0} />
       )}
 
+      <div>
+        <h2 className="text-base font-bold text-slate-900 mb-4">App</h2>
+        <InstallAppCard />
+      </div>
       <div>
         <h2 className="text-base font-bold text-slate-900 mb-4">Notifications</h2>
         <NotificationSettingsCard role="introducer" initialPrefs={profile?.notification_prefs ?? null} />
