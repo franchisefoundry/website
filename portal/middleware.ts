@@ -34,6 +34,8 @@ export async function middleware(request: NextRequest) {
     '/api/leads',
     '/api/auth/invite',           // generates the on-demand magic link from a token
     '/api/auth/forgot-password',  // sends the Resend-backed reset email
+    '/sw.js',                     // service worker must load before login (PWA + push)
+    '/manifest.webmanifest',      // web app manifest — read by the browser pre-auth
   ]
   if (publicPaths.some(p => pathname.startsWith(p))) {
     return NextResponse.next()
