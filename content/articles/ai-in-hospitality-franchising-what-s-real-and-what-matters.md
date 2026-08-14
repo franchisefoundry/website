@@ -1,9 +1,10 @@
 ---
 title: "AI in Hospitality Franchising: What's Real and What Matters"
-category: "Industry Insight"
-author: "Franchise Foundry"
-date: 2026-08-14T12:58:10.383Z
-excerpt: "AI is reshaping UK hospitality franchising, but the hype outpaces reality for many franchisees. Here's what AI actually delivers, what it doesn't, and what to ask before you sign."
+category: Industry Insight
+author: Franchise Foundry
+date: 2026-08-14T13:59
+excerpt: AI is reshaping UK hospitality franchising, but the hype outpaces reality for many franchisees. Here's what AI actually delivers, what it doesn't, and what to ask before you sign.
+coverImage: ''
 draft: true
 ---
 
@@ -69,13 +70,9 @@ The question to ask is not "does this brand use AI?" — most will say yes — b
 If you are evaluating a hospitality franchise, technology infrastructure is now a legitimate part of the diligence process:
 
 1. **What scheduling and labour management tools are provided, and what is the franchisee cost?** If labour is being optimised at the network level, you should be seeing measurably lower labour cost percentages than the sector average. Ask for the data.
-
 2. **What does the direct digital ordering infrastructure look like?** What percentage of network revenue goes through owned channels vs third-party platforms? The margin difference can be 15–30 percentage points of that revenue stream.
-
 3. **What is the food waste percentage across the network?** A network using AI-driven stock management should be able to show this improving over time.
-
 4. **What technology training and onboarding support is provided?** A brand that provides tools without adequate support is providing tools that will not be used properly.
-
 5. **What is on the technology roadmap for the next two years?** Brands investing in this area will have a plan. Brands that are not will struggle to answer the question.
 
 ## The bottom line
