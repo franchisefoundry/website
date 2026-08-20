@@ -3,15 +3,11 @@
 import { useState, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
-import type { Partner, PartnerFeature, PartnerSector, PartnerAudience } from '@/lib/supabase/types'
+import type { Partner, PartnerFeature, PartnerCategory, PartnerAudience } from '@/lib/supabase/types'
+import { PARTNER_CATEGORIES } from '@/lib/partner-categories'
 
-const SECTORS: { value: PartnerSector; label: string }[] = [
-  { value: 'finance',  label: 'Finance' },
-  { value: 'property', label: 'Property' },
-  { value: 'tech',     label: 'Tech' },
-  { value: 'legal',    label: 'Legal' },
-  { value: 'other',    label: 'Other' },
-]
+const CATEGORIES: { value: PartnerCategory; label: string }[] =
+  PARTNER_CATEGORIES.map(c => ({ value: c.value, label: c.label }))
 
 const AUDIENCES: { value: PartnerAudience; label: string }[] = [
   { value: 'franchisee', label: 'Franchisees only' },
@@ -22,12 +18,15 @@ const AUDIENCES: { value: PartnerAudience; label: string }[] = [
 type FormState = {
   name: string
   slug: string
-  sector: PartnerSector
+  category: PartnerCategory
   audience: PartnerAudience
   tagline: string
   description: string
   logo_url: string
   features: PartnerFeature[]
+  offer_text: string
+  website: string
+  location: string
   is_active: boolean
   display_order: number
 }
@@ -35,12 +34,15 @@ type FormState = {
 const emptyForm = (): FormState => ({
   name: '',
   slug: '',
-  sector: 'other',
+  category: 'other',
   audience: 'both',
   tagline: '',
   description: '',
   logo_url: '',
   features: [{ label: '', value: '' }],
+  offer_text: '',
+  website: '',
+  location: '',
   is_active: true,
   display_order: 99,
 })
@@ -49,12 +51,15 @@ function partnerToForm(p: Partner): FormState {
   return {
     name: p.name,
     slug: p.slug,
-    sector: p.sector,
+    category: p.category,
     audience: p.audience,
     tagline: p.tagline ?? '',
     description: p.description ?? '',
     logo_url: p.logo_url ?? '',
     features: p.features?.length ? p.features : [{ label: '', value: '' }],
+    offer_text: p.offer_text ?? '',
+    website: p.website ?? '',
+    location: p.location ?? '',
     is_active: p.is_active,
     display_order: p.display_order,
   }
@@ -161,7 +166,7 @@ export default function PartnersClient({ partners }: Props) {
     router.refresh()
   }
 
-  const sectorLabel = (s: string) => SECTORS.find(x => x.value === s)?.label ?? s
+  const categoryLabel = (c: string) => CATEGORIES.find(x => x.value === c)?.label ?? c
 
   return (
     <div className="space-y-6">
@@ -178,7 +183,7 @@ export default function PartnersClient({ partners }: Props) {
           <thead className="bg-slate-50 border-b border-slate-200">
             <tr>
               <th className="text-left px-6 py-3 text-xs font-medium text-slate-500 uppercase tracking-wide">Partner</th>
-              <th className="text-left px-6 py-3 text-xs font-medium text-slate-500 uppercase tracking-wide">Sector</th>
+              <th className="text-left px-6 py-3 text-xs font-medium text-slate-500 uppercase tracking-wide">Category</th>
               <th className="text-left px-6 py-3 text-xs font-medium text-slate-500 uppercase tracking-wide">Audience</th>
               <th className="text-left px-6 py-3 text-xs font-medium text-slate-500 uppercase tracking-wide">Status</th>
               <th className="px-6 py-3" />
@@ -194,7 +199,7 @@ export default function PartnersClient({ partners }: Props) {
                   <p className="font-medium text-slate-900">{p.name}</p>
                   <p className="text-xs text-slate-400">{p.tagline}</p>
                 </td>
-                <td className="px-6 py-3 capitalize text-slate-600">{sectorLabel(p.sector)}</td>
+                <td className="px-6 py-3 text-slate-600">{categoryLabel(p.category)}</td>
                 <td className="px-6 py-3 capitalize text-slate-600">{p.audience}</td>
                 <td className="px-6 py-3">
                   <button onClick={() => toggleActive(p)}
@@ -242,10 +247,10 @@ export default function PartnersClient({ partners }: Props) {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1.5 uppercase tracking-wide">Sector *</label>
-                  <select value={form.sector} onChange={e => setField('sector', e.target.value as PartnerSector)}
+                  <label className="block text-xs font-semibold text-slate-700 mb-1.5 uppercase tracking-wide">Category *</label>
+                  <select value={form.category} onChange={e => setField('category', e.target.value as PartnerCategory)}
                     className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-green">
-                    {SECTORS.map(s => <option key={s.value} value={s.value}>{s.label}</option>)}
+                    {CATEGORIES.map(c => <option key={c.value} value={c.value}>{c.label}</option>)}
                   </select>
                 </div>
                 <div>
@@ -269,6 +274,29 @@ export default function PartnersClient({ partners }: Props) {
                 <textarea value={form.description} onChange={e => setField('description', e.target.value)} rows={3}
                   className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-green resize-none"
                   placeholder="Longer description shown after the card tagline" />
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 mb-1.5 uppercase tracking-wide">Foundry deal <span className="font-normal text-slate-400 normal-case">(member-only offer)</span></label>
+                <input value={form.offer_text} onChange={e => setField('offer_text', e.target.value)}
+                  className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-green"
+                  placeholder="e.g. Arrangement fee waived · save ~£1,500" />
+                <p className="text-xs text-slate-400 mt-1">Shown as a gold “deal” badge on the card. Leave blank if there’s no offer.</p>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-semibold text-slate-700 mb-1.5 uppercase tracking-wide">Website</label>
+                  <input value={form.website} onChange={e => setField('website', e.target.value)}
+                    className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-green"
+                    placeholder="e.g. capitalforge.co.uk" />
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-slate-700 mb-1.5 uppercase tracking-wide">Location</label>
+                  <input value={form.location} onChange={e => setField('location', e.target.value)}
+                    className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-green"
+                    placeholder="e.g. Manchester · UK-wide" />
+                </div>
               </div>
 
               <div>

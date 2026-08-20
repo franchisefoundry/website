@@ -52,7 +52,7 @@ export default async function IntroRequestsPage() {
                   </td>
                   <td className="px-6 py-3">
                     <p className="font-medium text-slate-900">{partner?.name}</p>
-                    <p className="text-xs text-slate-400 capitalize">{partner?.sector}</p>
+                    <p className="text-xs text-slate-400 capitalize">{partner?.category}</p>
                   </td>
                   <td className="px-6 py-3 max-w-xs">
                     <p className="text-slate-600 text-xs line-clamp-2">{r.message || '—'}</p>

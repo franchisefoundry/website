@@ -47,7 +47,16 @@ export const FRANCHISEE_PIPELINE_STAGES: { value: FranchiseePipelineStage; label
 ]
 
 export type MatchStatus = 'suggested' | 'shown' | 'interested' | 'intro_made' | 'declined'
-export type PartnerSector = 'finance' | 'property' | 'tech' | 'legal' | 'other'
+export type PartnerCategory =
+  | 'funding'
+  | 'property'
+  | 'legal'
+  | 'accounting'
+  | 'technology'
+  | 'insurance'
+  | 'marketing'
+  | 'recruitment'
+  | 'other'
 export type PartnerAudience = 'franchisee' | 'franchisor' | 'both'
 export type IntroStatus = 'pending' | 'sent' | 'completed'
 
@@ -153,12 +162,15 @@ export interface Partner {
   id: string
   name: string
   slug: string
-  sector: PartnerSector
+  category: PartnerCategory
   audience: PartnerAudience
   tagline: string | null
   description: string | null
   logo_url: string | null
   features: PartnerFeature[]
+  offer_text: string | null
+  website: string | null
+  location: string | null
   is_active: boolean
   display_order: number
   created_at: string
