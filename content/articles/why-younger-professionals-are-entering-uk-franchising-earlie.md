@@ -1,10 +1,10 @@
 ---
 title: Why younger professionals are entering UK franchising earlier
-status: "Draft"
-featured: false
+status: Published
+featured: true
+date: 2026-08-18T14:01
 category: Industry Insight
 author: Franchise Foundry
-date: 2026-08-18T14:01
 excerpt: New data shows UK franchisees are getting younger, with professionals under 35 entering the sector earlier than ever. Hospitality franchising is leading the trend—and it could suit your ambitions.
 coverImage: ''
 ---
