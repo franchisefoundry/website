@@ -82,10 +82,15 @@ for (const file of files) {
   console.log(`[build-articles] built articles/${slug}.html`)
 }
 
-// Sort newest first and render cards into the blog grid
+// Sort newest first. The newest article becomes the featured headline; the
+// rest fill the grid. Both regions are driven entirely from the CMS, so
+// publishing a newer article in Sveltia automatically promotes it to the top.
 built.sort((a, b) => new Date(b.date) - new Date(a.date))
 
-const cards = built.map(a => {
+const featured = built[0] || null
+const rest = built.slice(1)
+
+const cards = rest.map(a => {
   const catClass = CATEGORY_CLASS[a.category] || 'cat-industry'
   return `                <article class="article-card reveal">
                     <span class="article-category ${catClass}">${esc(a.category)}</span>
@@ -98,17 +103,49 @@ const cards = built.map(a => {
                 </article>`
 }).join('\n\n')
 
-let blog = readFileSync(BLOG, 'utf8')
-const START = '<!-- CMS-ARTICLES:START -->'
-const END = '<!-- CMS-ARTICLES:END -->'
-if (blog.includes(START) && blog.includes(END)) {
-  const before = blog.slice(0, blog.indexOf(START) + START.length)
-  const after = blog.slice(blog.indexOf(END))
-  blog = `${before}\n${cards ? cards + '\n\n                ' : '                '}${after}`
-  writeFileSync(BLOG, blog)
-  console.log(`[build-articles] injected ${built.length} card(s) into blog.html`)
-} else {
-  console.warn('[build-articles] blog.html markers not found — skipped card injection.')
+const featuredHtml = featured ? `                <article class="featured-article reveal">
+                    <div class="featured-article-left">
+                        <div class="featured-label"><span class="featured-label-dot"></span> Featured Article</div>
+                        <span class="featured-category">${esc(featured.category)}</span>
+                        <h2>${esc(featured.title)}</h2>
+                    </div>
+                    <div class="featured-article-right">
+                        <p>${esc(featured.excerpt)}</p>
+                        <div class="featured-article-footer">
+                            <span class="featured-meta">${esc(formatDate(featured.date))} &nbsp;·&nbsp; ${esc(featured.readTime)}</span>
+                            <a href="articles/${featured.slug}.html" class="btn-green">Read article &rarr;</a>
+                        </div>
+                    </div>
+                </article>` : ''
+
+// Replace the content between a START/END marker pair, preserving indentation.
+function injectBetween(html, startMarker, endMarker, inner) {
+  if (!html.includes(startMarker) || !html.includes(endMarker)) {
+    console.warn(`[build-articles] markers ${startMarker} not found — skipped.`)
+    return { html, ok: false }
+  }
+  const before = html.slice(0, html.indexOf(startMarker) + startMarker.length)
+  const after = html.slice(html.indexOf(endMarker))
+  return { html: `${before}\n${inner ? inner + '\n\n                ' : '                '}${after}`, ok: true }
 }
 
-console.log(`[build-articles] done — ${built.length} article(s).`)
+let blog = readFileSync(BLOG, 'utf8')
+
+// Featured headline (newest article) — only replace if there is one to show,
+// so an empty CMS never wipes a hand-written fallback headline.
+if (featured) {
+  const res = injectBetween(blog, '<!-- CMS-FEATURED:START -->', '<!-- CMS-FEATURED:END -->', featuredHtml)
+  blog = res.html
+  if (res.ok) console.log(`[build-articles] featured: ${featured.slug}`)
+}
+
+// Remaining articles → grid cards
+{
+  const res = injectBetween(blog, '<!-- CMS-ARTICLES:START -->', '<!-- CMS-ARTICLES:END -->', cards)
+  blog = res.html
+  if (res.ok) console.log(`[build-articles] injected ${rest.length} card(s) into blog.html`)
+}
+
+writeFileSync(BLOG, blog)
+
+console.log(`[build-articles] done — ${built.length} article(s) (1 featured, ${rest.length} in grid).`)
