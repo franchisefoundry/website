@@ -6,7 +6,7 @@
     <title>Why Most Franchisees Underestimate Their First Year - Franchise Foundry</title>
     <meta name="description" content="The first twelve months of a franchise are harder than the brochure suggests. Here's what actually catches people out - and how to prepare for the specific challenges, not the general ones.">
     <meta property="og:title" content="Why Most Franchisees Underestimate Their First Year">
-    <meta property="og:description" content="The first twelve months are harder than the brochure suggests. Here's what catches people out - and how to prepare differently.">
+    <meta property="og:description" content="The first twelve months of a franchise are harder than the brochure suggests. Here's what actually catches people out - and how to prepare for the specific challenges, not the general ones.">
     <meta property="og:image" content="https://franchisefoundry.co.uk/images/copy-of-franchise-foundry-logo-final-2.png">
     <meta property="og:url" content="https://franchisefoundry.co.uk/articles/why-franchisees-underestimate-first-year.html">
     <meta property="og:type" content="article">
@@ -92,6 +92,7 @@
         .article-byline { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
         .article-byline-text { font-size: 0.88rem; color: rgba(255,255,255,0.6); font-weight: 300; }
         .article-byline-text strong { color: rgba(255,255,255,0.85); font-weight: 600; }
+        .byline-sep { display: inline-block; width: 3px; height: 3px; background: rgba(255,255,255,0.3); border-radius: 50%; vertical-align: middle; margin: 0 6px; }
 
         .article-body-wrap { background: var(--off-white); padding: 72px 40px 100px; }
         .article-body { max-width: 720px; margin: 0 auto; }
@@ -99,13 +100,18 @@
         .article-body p:first-child { font-size: 1.15rem; color: var(--text-dark); font-weight: 400; line-height: 1.8; }
         .article-body h2 { font-size: 1.6rem; font-weight: 700; color: var(--text-dark); letter-spacing: -0.02em; line-height: 1.25; margin-top: 56px; margin-bottom: 20px; }
         .article-body h2:first-of-type { margin-top: 0; }
+        .article-body ul, .article-body ol { margin: 0 0 28px; padding-left: 22px; }
+        .article-body li { font-size: 1.05rem; color: var(--text-mid); font-weight: 300; line-height: 1.8; margin-bottom: 14px; padding-left: 4px; }
+        .article-body li::marker { color: var(--green); }
+        .article-body li strong { color: var(--text-dark); font-weight: 600; }
+        .article-body a { color: var(--green); text-decoration: underline; text-underline-offset: 2px; }
+        .article-body a:hover { color: var(--green-deep); }
+        .article-body blockquote { border-left: 4px solid var(--green); background: white; margin: 0 0 28px; padding: 18px 24px; border-radius: var(--radius-md); color: var(--text-mid); font-weight: 300; }
+        .article-body h3 { font-size: 1.2rem; font-weight: 700; color: var(--text-dark); margin: 40px 0 14px; }
 
-        .article-callout { background: white; border: 1.5px solid var(--border); border-left: 4px solid var(--gold); border-radius: var(--radius-md); padding: 28px 32px; margin: 36px 0; }
-        .article-callout p { margin: 0; font-size: 1rem !important; color: var(--text-dark) !important; font-weight: 500 !important; line-height: 1.7 !important; font-style: italic; }
-
-        .article-checklist { list-style: none; margin: 28px 0; display: flex; flex-direction: column; gap: 14px; }
-        .article-checklist li { display: flex; gap: 14px; align-items: flex-start; font-size: 1rem; color: var(--text-mid); font-weight: 300; line-height: 1.65; }
-        .article-checklist li::before { content: ''; display: block; flex-shrink: 0; width: 20px; height: 20px; margin-top: 2px; background: var(--green-light); border-radius: 50%; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%235f725f' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: center; background-size: 12px; }
+        .article-question-list { list-style: none; margin: 28px 0; display: flex; flex-direction: column; gap: 20px; }
+        .article-question-list li { background: white; border: 1.5px solid var(--border); border-left: 4px solid var(--green); border-radius: var(--radius-md); padding: 20px 24px; font-size: 0.97rem; color: var(--text-mid); font-weight: 300; line-height: 1.7; }
+        .article-question-list li strong { display: block; color: var(--text-dark); font-weight: 600; margin-bottom: 6px; font-size: 1rem; }
 
         .article-divider { border: none; border-top: 1.5px solid var(--border); margin: 56px 0; }
 
@@ -180,53 +186,36 @@
             <div class="article-byline">
                 <span class="article-byline-text"><strong>Franchise Foundry</strong></span>
                 <span class="article-byline-text">7 April 2026</span>
-                <span class="article-byline-text">5 min read</span>
+                <span class="article-byline-text">3 min read</span>
             </div>
         </div>
     </section>
 
     <div class="article-body-wrap">
         <div class="article-body">
-
-            <p>There is a version of franchising that gets talked about a lot: proven systems, established brand, lower risk than going it alone. That version is true. But there is another version that does not get discussed enough - the version where the first twelve months are significantly harder than the prospective franchisee expected.</p>
-
-            <p>This is not a cautionary tale. It is a preparation guide. Because the franchisees who navigate their first year well are not the ones who got lucky - they are the ones who prepared for a different set of challenges than the brochure described.</p>
-
-            <h2>The gap between training and trading</h2>
-
-            <p>Almost every franchise system has a training programme. Most of them are good. But there is an irreducible gap between learning how to run a franchise and actually running one, and that gap tends to hit hardest in months two to four - once the franchisor's launch support has stepped back and the day-to-day reality has set in.</p>
-
-            <p>The things that catch new franchisees off guard are rarely the operational processes (the training covers those). They are the softer, less documented challenges: managing staff who were in place before you arrived, handling your first difficult customer complaint without a manager above you to escalate to, or realising that your local marketing needs more active management than you anticipated.</p>
-
-            <div class="article-callout">
-                <p>"The franchisees who navigate year one well are not the ones who got lucky - they are the ones who prepared for a different set of challenges."</p>
-            </div>
-
-            <h2>Cash flow is not just an opening problem</h2>
-
-            <p>Most prospective franchisees build a cash flow model. Fewer build one that accounts for the reality that revenue in months one to three is typically lower than projected, because footfall, repeat custom, and word of mouth take time to develop, while costs are fully live from day one.</p>
-
-            <p>The practical implication is straightforward: your working capital buffer should be sized for a slower ramp than your projections suggest. A common benchmark among experienced multi-unit operators is to ensure you could sustain six months of operation at 70% of projected revenue without needing to draw on personal assets. If your current funding position does not clear that bar, it is worth revisiting before signing.</p>
-
-            <h2>Your relationship with the franchisor is a partnership, not a guarantee</h2>
-
-            <p>Franchisees who perform well in year one tend to engage actively with their franchisor - not just reactively (calling when something goes wrong) but proactively (attending regional meetings, using the support channels, asking questions before problems develop). The system is there to be used.</p>
-
-            <p>At the same time, it is worth being clear-eyed about what franchisors can and cannot do. They can give you the brand, the system, and the support. They cannot make your local market respond the way the model projects, manage your team for you, or substitute for your own judgement as a business owner. The franchisee who thrives is the one who combines the franchisor's system with their own active ownership.</p>
-
-            <h2>What good preparation actually looks like</h2>
-
-            <ul class="article-checklist">
-                <li><strong>Before signing:</strong> spend time with existing franchisees - not just the ones the franchisor introduces you to, but others you find independently. Ask them specifically about year one, and listen for the things they wish they had known.</li>
-                <li><strong>Before launch:</strong> build a detailed 90-day operational plan that goes beyond the franchisor's launch checklist. What will you do in week three when the opening buzz has faded? What is your local marketing plan for month two?</li>
-                <li><strong>After launch:</strong> establish a weekly rhythm of reviewing your numbers, even when trading is going well. The franchisees who catch problems early are the ones who are looking for them.</li>
-            </ul>
-
-            <p>Year one in a franchise is hard in specific, predictable ways. Preparing for those specific challenges - rather than the general ones - makes the difference.</p>
+<p>There is a version of franchising that gets talked about a lot: proven systems, established brand, lower risk than going it alone. That version is true. But there is another version that does not get discussed enough - the version where the first twelve months are significantly harder than the prospective franchisee expected.</p>
+<p>This is not a cautionary tale. It is a preparation guide. Because the franchisees who navigate their first year well are not the ones who got lucky - they are the ones who prepared for a different set of challenges than the brochure described.</p>
+<h2>The gap between training and trading</h2>
+<p>Almost every franchise system has a training programme. Most of them are good. But there is an irreducible gap between learning how to run a franchise and actually running one, and that gap tends to hit hardest in months two to four - once the franchisor&#39;s launch support has stepped back and the day-to-day reality has set in.</p>
+<p>The things that catch new franchisees off guard are rarely the operational processes (the training covers those). They are the softer, less documented challenges: managing staff who were in place before you arrived, handling your first difficult customer complaint without a manager above you to escalate to, or realising that your local marketing needs more active management than you anticipated.</p>
+<p>&quot;The franchisees who navigate year one well are not the ones who got lucky - they are the ones who prepared for a different set of challenges.&quot;</p>
+<h2>Cash flow is not just an opening problem</h2>
+<p>Most prospective franchisees build a cash flow model. Fewer build one that accounts for the reality that revenue in months one to three is typically lower than projected, because footfall, repeat custom, and word of mouth take time to develop, while costs are fully live from day one.</p>
+<p>The practical implication is straightforward: your working capital buffer should be sized for a slower ramp than your projections suggest. A common benchmark among experienced multi-unit operators is to ensure you could sustain six months of operation at 70% of projected revenue without needing to draw on personal assets. If your current funding position does not clear that bar, it is worth revisiting before signing.</p>
+<h2>Your relationship with the franchisor is a partnership, not a guarantee</h2>
+<p>Franchisees who perform well in year one tend to engage actively with their franchisor - not just reactively (calling when something goes wrong) but proactively (attending regional meetings, using the support channels, asking questions before problems develop). The system is there to be used.</p>
+<p>At the same time, it is worth being clear-eyed about what franchisors can and cannot do. They can give you the brand, the system, and the support. They cannot make your local market respond the way the model projects, manage your team for you, or substitute for your own judgement as a business owner. The franchisee who thrives is the one who combines the franchisor&#39;s system with their own active ownership.</p>
+<h2>What good preparation actually looks like</h2>
+<ul>
+<li><strong>Before signing:</strong> spend time with existing franchisees - not just the ones the franchisor introduces you to, but others you find independently. Ask them specifically about year one, and listen for the things they wish they had known.</li>
+<li><strong>Before launch:</strong> build a detailed 90-day operational plan that goes beyond the franchisor&#39;s launch checklist. What will you do in week three when the opening buzz has faded? What is your local marketing plan for month two?</li>
+<li><strong>After launch:</strong> establish a weekly rhythm of reviewing your numbers, even when trading is going well. The franchisees who catch problems early are the ones who are looking for them.</li>
+</ul>
+<p>Year one in a franchise is hard in specific, predictable ways. Preparing for those specific challenges - rather than the general ones - makes the difference.</p>
 
             <div class="article-cta-box">
-                <h3>We help you prepare before you sign</h3>
-                <p>Our process puts the unit economics and year-one reality front and centre - before you ever sit across from a franchisor. Get in touch to find out how.</p>
+                <h3>Want the unit economics checked properly?</h3>
+                <p>We work for the buyer, not the brand. Get in touch and we'll run through the numbers on any opportunity you're considering — no obligation, no agenda.</p>
                 <a href="/contact.html" class="btn-gold">Get in touch</a>
             </div>
 

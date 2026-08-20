@@ -6,7 +6,7 @@
     <title>What UK Franchisors Are Not Required to Tell You - Franchise Foundry</title>
     <meta name="description" content="The UK has no mandatory franchise disclosure law. What a franchisor shares before you sign depends entirely on them - here's what to ask for, and how to read it.">
     <meta property="og:title" content="What UK Franchisors Are Not Required to Tell You">
-    <meta property="og:description" content="The UK has no mandatory franchise disclosure law. Here's what to ask for, and how to find out what you need to know anyway.">
+    <meta property="og:description" content="The UK has no mandatory franchise disclosure law. What a franchisor shares before you sign depends entirely on them - here's what to ask for, and how to read it.">
     <meta property="og:image" content="https://franchisefoundry.co.uk/images/copy-of-franchise-foundry-logo-final-2.png">
     <meta property="og:url" content="https://franchisefoundry.co.uk/articles/what-franchisors-not-required-to-tell-you.html">
     <meta property="og:type" content="article">
@@ -92,6 +92,7 @@
         .article-byline { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
         .article-byline-text { font-size: 0.88rem; color: rgba(255,255,255,0.6); font-weight: 300; }
         .article-byline-text strong { color: rgba(255,255,255,0.85); font-weight: 600; }
+        .byline-sep { display: inline-block; width: 3px; height: 3px; background: rgba(255,255,255,0.3); border-radius: 50%; vertical-align: middle; margin: 0 6px; }
 
         .article-body-wrap { background: var(--off-white); padding: 72px 40px 100px; }
         .article-body { max-width: 720px; margin: 0 auto; }
@@ -99,12 +100,18 @@
         .article-body p:first-child { font-size: 1.15rem; color: var(--text-dark); font-weight: 400; line-height: 1.8; }
         .article-body h2 { font-size: 1.6rem; font-weight: 700; color: var(--text-dark); letter-spacing: -0.02em; line-height: 1.25; margin-top: 56px; margin-bottom: 20px; }
         .article-body h2:first-of-type { margin-top: 0; }
+        .article-body ul, .article-body ol { margin: 0 0 28px; padding-left: 22px; }
+        .article-body li { font-size: 1.05rem; color: var(--text-mid); font-weight: 300; line-height: 1.8; margin-bottom: 14px; padding-left: 4px; }
+        .article-body li::marker { color: var(--green); }
+        .article-body li strong { color: var(--text-dark); font-weight: 600; }
+        .article-body a { color: var(--green); text-decoration: underline; text-underline-offset: 2px; }
+        .article-body a:hover { color: var(--green-deep); }
+        .article-body blockquote { border-left: 4px solid var(--green); background: white; margin: 0 0 28px; padding: 18px 24px; border-radius: var(--radius-md); color: var(--text-mid); font-weight: 300; }
+        .article-body h3 { font-size: 1.2rem; font-weight: 700; color: var(--text-dark); margin: 40px 0 14px; }
 
-        .article-callout { background: white; border: 1.5px solid var(--border); border-left: 4px solid var(--gold); border-radius: var(--radius-md); padding: 28px 32px; margin: 36px 0; }
-        .article-callout-title { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold); margin-bottom: 16px; }
-        .article-checklist { list-style: none; margin: 12px 0 0; display: flex; flex-direction: column; gap: 12px; }
-        .article-checklist li { display: flex; gap: 12px; align-items: flex-start; font-size: 0.95rem; color: var(--text-mid); font-weight: 300; line-height: 1.65; }
-        .article-checklist li::before { content: ''; display: block; flex-shrink: 0; width: 20px; height: 20px; margin-top: 1px; background: var(--green-light); border-radius: 50%; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%235f725f' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: center; background-size: 12px; }
+        .article-question-list { list-style: none; margin: 28px 0; display: flex; flex-direction: column; gap: 20px; }
+        .article-question-list li { background: white; border: 1.5px solid var(--border); border-left: 4px solid var(--green); border-radius: var(--radius-md); padding: 20px 24px; font-size: 0.97rem; color: var(--text-mid); font-weight: 300; line-height: 1.7; }
+        .article-question-list li strong { display: block; color: var(--text-dark); font-weight: 600; margin-bottom: 6px; font-size: 1rem; }
 
         .article-divider { border: none; border-top: 1.5px solid var(--border); margin: 56px 0; }
 
@@ -179,57 +186,37 @@
             <div class="article-byline">
                 <span class="article-byline-text"><strong>Franchise Foundry</strong></span>
                 <span class="article-byline-text">14 April 2026</span>
-                <span class="article-byline-text">6 min read</span>
+                <span class="article-byline-text">3 min read</span>
             </div>
         </div>
     </section>
 
     <div class="article-body-wrap">
         <div class="article-body">
-
-            <p>Here is something that surprises many people looking at franchise opportunities in the UK: there is no legal requirement for a franchisor to give you a Franchise Disclosure Document. None. Unlike the United States, Australia, or several European markets, the UK has no mandatory pre-sale disclosure regime for franchising.</p>
-
-            <p>That means whether you receive detailed financial information before signing - and how reliable it is - depends entirely on the brand in front of you. Some franchisors are transparent and thorough. Others share the minimum they can get away with. As a prospective franchisee, the burden of uncovering what you need to know falls largely on you.</p>
-
-            <h2>What to ask for, and why</h2>
-
-            <p>Even without a legal obligation to provide disclosure, any franchisor worth joining should be willing to share the following before you sign anything:</p>
-
-            <div class="article-callout">
-                <div class="article-callout-title">The disclosure checklist</div>
-                <ul class="article-checklist">
-                    <li>A full written breakdown of all fees - not just the headline franchise fee, but ongoing royalties, marketing fund contributions, technology platform fees, and any other recurring costs.</li>
-                    <li>Financial performance data from the existing network: average unit revenues, typical margins, or at minimum a range. Ask specifically whether these figures come from company-owned units or franchisee-operated ones, and how long the units in the dataset have been trading.</li>
-                    <li>Franchisee turnover in the past three years - how many franchisees have left the network, and under what circumstances. Voluntary exits, failed units, and buy-backs all tell different stories.</li>
-                    <li>Contact details for current franchisees - not a curated shortlist of the brand's strongest performers, but a full list from which you can choose who to speak to.</li>
-                </ul>
-            </div>
-
-            <p>A franchisor who is reluctant to provide any of these things is giving you useful information. Transparency tends to correlate with the quality of the opportunity.</p>
-
-            <h2>How to read financial projections without being misled</h2>
-
-            <p>If you do receive financial performance figures, two questions will tell you most of what you need to know about how much weight to put on them.</p>
-
-            <p>First: what is the data based on? Figures drawn from the top-performing units, from brand-owned locations, or from a single flagship site are not a reliable guide to what you should expect in a new territory. You want median figures across the full franchisee network, from units that have been trading for at least twelve months. If the franchisor cannot or will not tell you this, treat any projections with caution.</p>
-
-            <p>Second: what costs are excluded? Projected revenue figures often do not account for your specific local costs - rent, business rates, and staffing - or for the reality that most units trade below their steady-state level for the first three to six months. Build your own model using your actual cost assumptions, and sense-check it against what existing franchisees tell you they earn.</p>
-
-            <h2>When the information is thin: what to do</h2>
-
-            <p>If a franchisor provides limited disclosure, or none at all, you have two options: walk away, or do the diligence yourself. The latter is possible, but it requires more work and more scepticism.</p>
-
-            <p>Start with the franchise agreement. Have it reviewed by a solicitor with franchise-specific experience - not a general commercial lawyer. The agreement is the binding document; everything else is context. A franchise specialist will know what to look for: unreasonable termination provisions, territory definitions that give you less protection than you expect, and renewal terms that favour the franchisor.</p>
-
-            <p>Then speak to franchisees, particularly those who have left the network. Former franchisees are often more candid than current ones, and their experience of how the franchisor behaved when things got difficult is more useful than any financial projection.</p>
-
-            <hr class="article-divider">
-
-            <p>No amount of enthusiasm for a brand substitutes for this groundwork. The franchisees who regret their investment are rarely the ones who did too much due diligence.</p>
+<p>Here is something that surprises many people looking at franchise opportunities in the UK: there is no legal requirement for a franchisor to give you a Franchise Disclosure Document. None. Unlike the United States, Australia, or several European markets, the UK has no mandatory pre-sale disclosure regime for franchising.</p>
+<p>That means whether you receive detailed financial information before signing - and how reliable it is - depends entirely on the brand in front of you. Some franchisors are transparent and thorough. Others share the minimum they can get away with. As a prospective franchisee, the burden of uncovering what you need to know falls largely on you.</p>
+<h2>What to ask for, and why</h2>
+<p>Even without a legal obligation to provide disclosure, any franchisor worth joining should be willing to share the following before you sign anything:</p>
+<ul>
+<li>A full written breakdown of all fees - not just the headline franchise fee, but ongoing royalties, marketing fund contributions, technology platform fees, and any other recurring costs.</li>
+<li>Financial performance data from the existing network: average unit revenues, typical margins, or at minimum a range. Ask specifically whether these figures come from company-owned units or franchisee-operated ones, and how long the units in the dataset have been trading.</li>
+<li>Franchisee turnover in the past three years - how many franchisees have left the network, and under what circumstances. Voluntary exits, failed units, and buy-backs all tell different stories.</li>
+<li>Contact details for current franchisees - not a curated shortlist of the brand&#39;s strongest performers, but a full list from which you can choose who to speak to.</li>
+</ul>
+<p>A franchisor who is reluctant to provide any of these things is giving you useful information. Transparency tends to correlate with the quality of the opportunity.</p>
+<h2>How to read financial projections without being misled</h2>
+<p>If you do receive financial performance figures, two questions will tell you most of what you need to know about how much weight to put on them.</p>
+<p>First: what is the data based on? Figures drawn from the top-performing units, from brand-owned locations, or from a single flagship site are not a reliable guide to what you should expect in a new territory. You want median figures across the full franchisee network, from units that have been trading for at least twelve months. If the franchisor cannot or will not tell you this, treat any projections with caution.</p>
+<p>Second: what costs are excluded? Projected revenue figures often do not account for your specific local costs - rent, business rates, and staffing - or for the reality that most units trade below their steady-state level for the first three to six months. Build your own model using your actual cost assumptions, and sense-check it against what existing franchisees tell you they earn.</p>
+<h2>When the information is thin: what to do</h2>
+<p>If a franchisor provides limited disclosure, or none at all, you have two options: walk away, or do the diligence yourself. The latter is possible, but it requires more work and more scepticism.</p>
+<p>Start with the franchise agreement. Have it reviewed by a solicitor with franchise-specific experience - not a general commercial lawyer. The agreement is the binding document; everything else is context. A franchise specialist will know what to look for: unreasonable termination provisions, territory definitions that give you less protection than you expect, and renewal terms that favour the franchisor.</p>
+<p>Then speak to franchisees, particularly those who have left the network. Former franchisees are often more candid than current ones, and their experience of how the franchisor behaved when things got difficult is more useful than any financial projection.</p>
+<p>No amount of enthusiasm for a brand substitutes for this groundwork. The franchisees who regret their investment are rarely the ones who did too much due diligence.</p>
 
             <div class="article-cta-box">
-                <h3>We do this diligence before you ever meet a brand</h3>
-                <p>We only introduce candidates to franchisors whose numbers and support models we've already interrogated. Get in touch to find out how we work.</p>
+                <h3>Want the unit economics checked properly?</h3>
+                <p>We work for the buyer, not the brand. Get in touch and we'll run through the numbers on any opportunity you're considering — no obligation, no agenda.</p>
                 <a href="/contact.html" class="btn-gold">Get in touch</a>
             </div>
 
