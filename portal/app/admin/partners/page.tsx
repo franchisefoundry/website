@@ -10,13 +10,21 @@ export default async function AdminPartnersPage() {
     .select('*')
     .order('display_order', { ascending: true })
 
+  const { count: introRequestCount } = await admin
+    .from('intro_requests')
+    .select('*', { count: 'exact', head: true })
+    .eq('status', 'pending')
+
   return (
     <div>
       <PageHeader
         title="Marketplace partners"
         description="Trusted supply chain partners shown in the franchisee and franchisor marketplace."
       />
-      <PartnersClient partners={(partners ?? []) as Partner[]} />
+      <PartnersClient
+        partners={(partners ?? []) as Partner[]}
+        introRequestCount={introRequestCount ?? 0}
+      />
     </div>
   )
 }
