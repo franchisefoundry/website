@@ -1,10 +1,11 @@
 ---
 title: "What your royalty is actually costing you each month"
+status: "Published"
+featured: false
 category: "Franchise Advice"
 author: "Franchise Foundry"
 date: 2026-04-28T09:00:00.000Z
 excerpt: "A 6% royalty on a £600,000 turnover unit costs £36,000 a year. Every year. Whether you had a good month or a terrible one. Here's what that really means."
-draft: false
 ---
 
 Here's a number worth sitting with before you sign anything: a 6% royalty on a £600,000 turnover unit costs £36,000 a year. Every year. Whether you had a good month or a terrible one. Whether you're profitable or not.

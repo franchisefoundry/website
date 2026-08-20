@@ -18,17 +18,47 @@ collections:
     folder: "content/articles"
     create: true
     slug: "{{slug}}"
-    summary: "{{title}} — {{date}}"
-    sortable_fields: ["date", "title"]
+    # Each row shows its status + date so live and draft articles are easy to tell apart.
+    summary: "{{status}}  ·  {{title}}  ·  {{date}}"
+    sortable_fields: ["date", "title", "status"]
+    # Quick views: see everything, only what's live, or only drafts.
+    view_filters:
+      - label: "🟢 Live on the website"
+        field: status
+        pattern: "Published"
+      - label: "✏️ Drafts (not yet live)"
+        field: status
+        pattern: "Draft"
     fields:
       - { label: "Title", name: "title", widget: "string" }
+
+      # ── Publishing ──────────────────────────────────────────────────────────
+      - label: "Status"
+        name: "status"
+        widget: "select"
+        options: ["Draft", "Published"]
+        default: "Draft"
+        hint: "Draft = only you can see it here. Set to Published and press Save to put it live on the website."
+
+      - label: "Feature as the blog headline"
+        name: "featured"
+        widget: "boolean"
+        default: false
+        required: false
+        hint: "Shows this article large at the top of the blog. If more than one is featured, the newest wins."
+
+      # ── Ordering ────────────────────────────────────────────────────────────
+      - label: "Publish date  —  controls the order on the site"
+        name: "date"
+        widget: "datetime"
+        hint: "Articles are shown newest-first on the blog. To move one higher or lower, change this date."
+
+      # ── Content ─────────────────────────────────────────────────────────────
       - { label: "Category", name: "category", widget: "select", default: "Industry Insight",
           options: ["Industry Insight", "Franchise Advice", "Market Analysis", "Guides"] }
       - { label: "Author", name: "author", widget: "string", default: "Franchise Foundry" }
-      - { label: "Publish date", name: "date", widget: "datetime" }
       - { label: "Short excerpt (shown on the blog card + as the SEO description)", name: "excerpt", widget: "text" }
       - { label: "Cover image (optional)", name: "coverImage", widget: "image", required: false }
-      - { label: "Draft (hidden from the live site until unticked)", name: "draft", widget: "boolean", default: false, required: false }
       - { label: "Body", name: "body", widget: "markdown" }
 
   # ── Franchise Partners ────────────────────────────────────────────────────

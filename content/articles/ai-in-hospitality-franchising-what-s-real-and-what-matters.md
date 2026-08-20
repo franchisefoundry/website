@@ -1,11 +1,12 @@
 ---
 title: "AI in Hospitality Franchising: What's Real and What Matters"
+status: "Draft"
+featured: false
 category: Industry Insight
 author: Franchise Foundry
 date: 2026-08-17T16:52
 excerpt: AI is reshaping UK hospitality franchising, but the hype outpaces reality for many franchisees. Here's what AI actually delivers, what it doesn't, and what to ask before you sign.
 coverImage: ''
-draft: true
 ---
 
 Artificial intelligence is the most talked-about topic in UK franchising right now. Franchise leaders have named it their second-highest operational priority for 2026, just behind consistency across networks. A study from Access Hospitality found that 28% of UK and Ireland hospitality operators are already implementing AI tools across multiple departments, with a further 20% actively exploring adoption.

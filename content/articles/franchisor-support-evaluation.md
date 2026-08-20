@@ -1,10 +1,11 @@
 ---
 title: "How to Evaluate Franchisor Support Before You Sign"
+status: "Published"
+featured: false
 category: "Franchise Advice"
 author: "Franchise Foundry"
 date: 2026-04-21T09:00:00.000Z
 excerpt: "Franchisor support sounds reassuring in every sales pitch. Here are the specific questions that cut through the brochure and reveal what franchisees actually experience."
-draft: false
 ---
 
 Franchisor support is mentioned in almost every franchise recruitment conversation. Training programmes, field visits, dedicated helplines, head office teams - it all sounds reassuring. The problem is that every franchisor describes their support in broadly positive terms, regardless of what franchisees actually experience once they are operating.

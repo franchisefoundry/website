@@ -1,10 +1,11 @@
 ---
 title: "Business Rates Reset: What Your Hospitality Franchise Unit Actually Owes"
+status: "Draft"
+featured: false
 category: "Franchise Advice"
 author: "Franchise Foundry"
 date: 2026-08-08T12:47:26.091Z
 excerpt: "From April 2026, business rates relief for hospitality changed fundamentally. Your bill may have shifted significantly. Here's what you need to check right now."
-draft: true
 ---
 
 ## What changed on 31 March 2026

@@ -1,10 +1,11 @@
 ---
 title: "Delivery Platforms Are Eating Your Margins. Here's the Maths."
+status: "Published"
+featured: false
 category: "Franchise Advice"
 author: "Franchise Foundry"
 date: 2026-05-13T09:00:00.000Z
 excerpt: "Uber Eats, Just Eat and Deliveroo charge 15-30% commission — often your entire net margin. Here's the maths every hospitality franchisee should run before signing a delivery-dependent agreement."
-draft: false
 ---
 
 You've probably been told that getting your brand on Uber Eats or Just Eat is a no-brainer. More orders. More revenue. More customers discovering you. And on the surface, the logic seems sound.

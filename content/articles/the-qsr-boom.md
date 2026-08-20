@@ -1,10 +1,11 @@
 ---
 title: "The QSR Boom: Why Fast Food Franchising Is Growing While Casual Dining Struggles"
+status: "Published"
+featured: false
 category: "Industry Insight"
 author: "Franchise Foundry"
 date: 2026-05-27T09:00:00.000Z
 excerpt: "In 2024 UK quick service restaurant outlets grew 10% while high-street restaurant brands fell 26%. Here's what that structural shift means if you're evaluating a hospitality franchise."
-draft: false
 ---
 
 In 2024, quick service restaurant outlets in the UK grew by 10%. In the same year, high-street restaurant brands declined by 26%.

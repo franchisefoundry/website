@@ -47,9 +47,12 @@ for (const file of files) {
   const raw = readFileSync(join(ARTICLES_SRC, file), 'utf8')
   const { data, content } = matter(raw)
 
-  // Drafts (e.g. freshly imported from PDF) stay in the CMS but off the live site
-  if (data.draft) {
-    console.log(`[build-articles] skipped draft: ${file}`)
+  // Only "Published" articles go live. Anything else (Draft, or a freshly
+  // imported PDF) stays in the CMS but off the website.
+  // Back-compat: older files used `draft: true` instead of `status`.
+  const status = data.status || (data.draft ? 'Draft' : 'Published')
+  if (String(status).toLowerCase() !== 'published') {
+    console.log(`[build-articles] skipped ${status.toLowerCase()}: ${file}`)
     continue
   }
 
@@ -78,17 +81,19 @@ for (const file of files) {
     .replace('{{BODY}}', bodyHtml)
 
   writeFileSync(join(OUT_DIR, `${slug}.html`), html)
-  built.push({ slug, title, description, category, date, readTime, excerpt: data.excerpt || description })
+  built.push({ slug, title, description, category, date, readTime, featured: data.featured === true, excerpt: data.excerpt || description })
   console.log(`[build-articles] built articles/${slug}.html`)
 }
 
-// Sort newest first. The newest article becomes the featured headline; the
-// rest fill the grid. Both regions are driven entirely from the CMS, so
-// publishing a newer article in Sveltia automatically promotes it to the top.
+// Newest first. The headline is whichever article is marked "Feature as the
+// blog headline" (newest wins if several are); if none is flagged, the newest
+// published article is used. The rest fill the grid. All CMS-driven, so the
+// team controls order (via date) and the headline (via the Featured toggle).
 built.sort((a, b) => new Date(b.date) - new Date(a.date))
 
-const featured = built[0] || null
-const rest = built.slice(1)
+const pinned = built.filter(a => a.featured)
+const featured = pinned[0] || built[0] || null
+const rest = built.filter(a => a !== featured)
 
 const cards = rest.map(a => {
   const catClass = CATEGORY_CLASS[a.category] || 'cat-industry'

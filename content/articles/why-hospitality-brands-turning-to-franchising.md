@@ -1,10 +1,11 @@
 ---
 title: "Why More UK Hospitality Brands Are Turning to Franchising"
+status: "Published"
+featured: false
 category: "Industry Insight"
 author: "Franchise Foundry"
 date: 2026-06-15T09:00:00.000Z
 excerpt: "More UK hospitality brands are turning to franchising to fund expansion without carrying the capital risk. Here's why that's happening and what it means if you're the one buying in."
-draft: false
 ---
 
 If you've felt like more hospitality brands are talking about franchising lately, you're not imagining it.

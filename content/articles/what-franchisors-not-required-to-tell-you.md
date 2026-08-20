@@ -1,10 +1,11 @@
 ---
 title: "What UK Franchisors Are Not Required to Tell You"
+status: "Published"
+featured: false
 category: "Franchise Advice"
 author: "Franchise Foundry"
 date: 2026-04-14T09:00:00.000Z
 excerpt: "The UK has no mandatory franchise disclosure law. What a franchisor shares before you sign depends entirely on them - here's what to ask for, and how to read it."
-draft: false
 ---
 
 Here is something that surprises many people looking at franchise opportunities in the UK: there is no legal requirement for a franchisor to give you a Franchise Disclosure Document. None. Unlike the United States, Australia, or several European markets, the UK has no mandatory pre-sale disclosure regime for franchising.

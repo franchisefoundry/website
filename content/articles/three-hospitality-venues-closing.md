@@ -1,10 +1,11 @@
 ---
 title: "Three Hospitality Venues a Day Are Closing. Here's What the Data Tells Us About Franchising"
+status: "Published"
+featured: false
 category: "Industry Insight"
 author: "Franchise Foundry"
 date: 2026-07-02T09:00:00.000Z
 excerpt: "By the end of March 2026 the UK was losing more than three licensed venues a day. Here's an honest account of what the closure data actually tells us about hospitality franchising."
-draft: false
 ---
 
 By the end of March 2026, the UK had 98,609 licensed hospitality premises. That sounds like a lot. It is also 305 fewer than there were in December 2025 — a net loss of more than three venues every single day through the first quarter of the year alone.

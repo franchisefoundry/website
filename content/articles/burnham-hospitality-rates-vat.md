@@ -1,10 +1,11 @@
 ---
 title: "A New Prime Minister and Two Big Promises for Hospitality. Here's What They're Actually Worth."
+status: "Published"
+featured: true
 category: "Industry Insight"
 author: "Franchise Foundry"
 date: 2026-07-23T09:00:00.000Z
 excerpt: "A 20% business rates cut looks close to confirmed. A 10% hospitality VAT rate does not. Here's what Burnham's hospitality agenda is actually worth in your P&L - and what to model in the meantime."
-draft: false
 ---
 
 Andy Burnham became Prime Minister on 21 July 2026. Within 48 hours, hospitality had his attention in a way it hasn't had from Downing Street in years.

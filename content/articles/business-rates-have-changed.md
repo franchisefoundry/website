@@ -1,10 +1,11 @@
 ---
 title: "Business Rates Have Just Changed. Do You Know What Your Franchise Unit Is Actually Paying?"
+status: "Published"
+featured: false
 category: "Industry Insight"
 author: "Franchise Foundry"
 date: 2026-06-18T09:00:00.000Z
 excerpt: "On 31 March 2026 the RHL business rates relief scheme ended and a new multiplier system took its place. Here's what changed, who it affects, and why it matters for franchise unit economics."
-draft: false
 ---
 
 On 31 March 2026, the Retail, Hospitality and Leisure business rates relief scheme ended. If you are currently operating a hospitality franchise, or evaluating one, your rates bill has almost certainly changed. Whether it has gone up or down depends on the specifics of your property, and most operators don't yet know the answer.

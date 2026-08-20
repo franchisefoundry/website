@@ -1,5 +1,7 @@
 ---
 title: "How to Read a Franchise Disclosure Document Before You Sign"
+status: "Published"
+featured: false
 category: "Franchise Advice"
 author: "Franchise Foundry"
 date: 2026-07-24T09:00:00.000Z

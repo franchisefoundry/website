@@ -1,10 +1,11 @@
 ---
 title: "Why Most Franchisees Underestimate Their First Year"
+status: "Published"
+featured: false
 category: "Franchise Advice"
 author: "Franchise Foundry"
 date: 2026-04-07T09:00:00.000Z
 excerpt: "The first twelve months of a franchise are harder than the brochure suggests. Here's what actually catches people out - and how to prepare for the specific challenges, not the general ones."
-draft: false
 ---
 
 There is a version of franchising that gets talked about a lot: proven systems, established brand, lower risk than going it alone. That version is true. But there is another version that does not get discussed enough - the version where the first twelve months are significantly harder than the prospective franchisee expected.
