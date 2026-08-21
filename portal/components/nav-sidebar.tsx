@@ -8,10 +8,11 @@ import { createClient } from '@/lib/supabase/client'
 import { cn, initials } from '@/lib/utils'
 import type { Profile } from '@/lib/supabase/types'
 import { NotificationBell } from '@/components/notification-bell'
+import { CommandPalette } from '@/components/command-palette'
 import {
   DashboardIcon, LeadsIcon, FranchiseeIcon, FranchisorIcon,
   MatchIcon, AgreementIcon, MarketplaceIcon, AgentIcon,
-  QuestionnaireIcon, SignOutIcon, PlusIcon,
+  QuestionnaireIcon, SignOutIcon, PlusIcon, SearchIcon,
 } from '@/components/icons'
 
 // ── Nav type system ──────────────────────────────────────────────────────────
@@ -226,6 +227,9 @@ export function NavSidebar({ profile, brands, activeBrandId }: NavSidebarProps) 
 
   return (
     <>
+      {/* ── ⌘K command palette (keyboard + button trigger) ── */}
+      <CommandPalette role={profile.role} />
+
       {/* ── Mobile top bar ─────────────────────────────── */}
       <div className="fixed top-0 left-0 right-0 h-14 flex items-center justify-between px-4 md:hidden z-30 border-b border-white/10"
         style={{ background: 'linear-gradient(160deg, #3a4a3a 0%, #2d3d2d 100%)' }}>
@@ -272,6 +276,18 @@ export function NavSidebar({ profile, brands, activeBrandId }: NavSidebarProps) 
               ×
             </button>
           </div>
+        </div>
+
+        {/* ── Search / ⌘K trigger ─────────────────────── */}
+        <div className="px-3 pt-3 flex-shrink-0">
+          <button
+            onClick={() => { setMobileOpen(false); window.dispatchEvent(new Event('ff:cmdk')) }}
+            className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm text-white/50 hover:text-white bg-white/[0.06] hover:bg-white/10 border border-white/10 transition-colors"
+          >
+            <SearchIcon className="w-4 h-4 flex-shrink-0" />
+            <span className="flex-1 text-left">Search…</span>
+            <kbd className="text-[10px] font-medium text-white/45 bg-white/10 border border-white/10 rounded px-1.5 py-0.5 leading-none">⌘K</kbd>
+          </button>
         </div>
 
         {/* ── Brand switcher ─────────────────────────── */}

@@ -2,16 +2,44 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ─────────────────────────────────────────────────────────────────────────
+   Design tokens — Phase 0 foundation (refined from the existing identity).
+   Neutrals carry a faint green bias so they read as chosen, not default.
+   Gold is an accent used sparingly (one primary action / highlight per view).
+   ───────────────────────────────────────────────────────────────────────── */
+:root {
+  --ff-ground:     #f4f5f0;  /* warm off-white app background */
+  --ff-surface:    #ffffff;  /* cards, panels */
+  --ff-surface-2:  #fafbf7;  /* subtle inset */
+  --ff-ink:        #1b211a;  /* primary text (green-black) */
+  --ff-ink-2:      #59615a;  /* secondary text */
+  --ff-ink-3:      #8a918a;  /* faint text / captions */
+  --ff-border:     #e3e6df;  /* hairline borders */
+  --ff-border-2:   #eceee8;  /* softer dividers */
+  --ff-green:      #3a4a3a;
+  --ff-green-deep: #2b382b;
+  --ff-green-soft: #eef3ee;
+  --ff-gold:       #c8924a;  /* accent */
+  --ff-gold-ink:   #a2762f;  /* accent text on light */
+  --ff-gold-soft:  #f2e9d8;
+  /* semantic (separate from the accent) */
+  --ff-ok:   #3f8a52;  --ff-ok-bg:   #e8f3ec;
+  --ff-warn: #a6721a;  --ff-warn-bg: #faf0dc;
+  --ff-crit: #b64f2c;  --ff-crit-bg: #fae7df;
+}
+
 @layer base {
   * {
     box-sizing: border-box;
   }
   body {
     font-family: var(--font-sora), system-ui, sans-serif;
-    @apply text-slate-800 bg-slate-50;
+    background: var(--ff-ground);
+    @apply text-slate-800;
+    -webkit-font-smoothing: antialiased;
   }
   h1, h2, h3, h4 {
-    @apply font-semibold;
+    @apply font-semibold tracking-tight;
   }
 }
 
