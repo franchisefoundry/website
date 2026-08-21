@@ -16,6 +16,22 @@ const config: Config = {
           gold: '#d4a574',
           'gold-light': '#e8c9a0',
         },
+        // Warm, green-biased neutral ramp mapped over Tailwind's cool `slate`.
+        // The app already uses slate consistently, so this quietly warms every
+        // screen at once — reads as chosen, not a default cool grey.
+        slate: {
+          50:  '#f6f7f2',
+          100: '#eef0e9',
+          200: '#e3e6df',
+          300: '#cdd2c8',
+          400: '#9aa196',
+          500: '#6c746a',
+          600: '#59615a',
+          700: '#414a41',
+          800: '#2b322b',
+          900: '#1b211a',
+          950: '#121711',
+        },
         // Phase 0 design tokens (map to CSS variables in globals.css)
         ground:    'var(--ff-ground)',
         surface:   'var(--ff-surface)',
