@@ -43,73 +43,59 @@ export default async function AdminDashboard() {
   const hour = new Date().getHours()
   const greeting = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening'
 
-  const sections = [
+  // ── Metric tiles (scannable at a glance) ──────────────────────────────────
+  const metrics = [
     {
       title: 'Leads',
       href: '/admin/leads',
-      description: 'Quiz submissions from the public matching form.',
       count: leadCount ?? 0,
-      alert: meetingRequestCount ? `${meetingRequestCount} requesting a meeting` : null,
-      alertColour: 'text-amber-700 bg-amber-50',
-      icon: (
-        <div className="w-9 h-9 rounded-xl bg-red-50 flex items-center justify-center">
-          <LeadsIcon className="w-4 h-4 text-red-500" />
-        </div>
-      ),
+      iconBg: 'bg-red-50 text-red-500',
+      icon: <LeadsIcon className="w-4 h-4" />,
     },
     {
       title: 'Franchisees',
       href: '/admin/franchisees',
-      description: 'People with portal access ready to be matched.',
       count: franchiseeCount ?? 0,
-      alert: null,
-      alertColour: '',
-      icon: (
-        <div className="w-9 h-9 rounded-xl bg-brand-green/10 flex items-center justify-center">
-          <FranchiseeIcon className="w-4 h-4 text-brand-green" />
-        </div>
-      ),
+      iconBg: 'bg-brand-green/10 text-brand-green',
+      icon: <FranchiseeIcon className="w-4 h-4" />,
     },
     {
       title: 'Franchisors',
       href: '/admin/franchisors',
-      description: 'Brands on the platform.',
       count: franchisorCount ?? 0,
-      alert: pendingReviewCount ? `${pendingReviewCount} pending review` : null,
-      alertColour: 'text-blue-700 bg-blue-50',
-      icon: (
-        <div className="w-9 h-9 rounded-xl bg-brand-gold/10 flex items-center justify-center">
-          <FranchisorIcon className="w-4 h-4 text-brand-gold" />
-        </div>
-      ),
+      iconBg: 'bg-brand-gold/15 text-brand-gold',
+      icon: <FranchisorIcon className="w-4 h-4" />,
     },
     {
       title: 'Matches',
       href: '/admin/matches',
-      description: 'Franchisees assigned to a specific brand.',
       count: suggestedMatchCount ?? 0,
-      alert: null,
-      alertColour: '',
-      icon: (
-        <div className="w-8 h-8 rounded-xl bg-violet-50 flex items-center justify-center">
-          <MatchIcon className="w-4 h-4 text-violet-600" />
-        </div>
-      ),
+      iconBg: 'bg-violet-50 text-violet-600',
+      icon: <MatchIcon className="w-4 h-4" />,
     },
     {
-      title: 'Marketplace Intros',
+      title: 'Intros',
       href: '/admin/intro-requests',
-      description: 'Partner introduction requests from franchisees and franchisors.',
       count: pendingIntroCount ?? 0,
-      alert: pendingIntroCount ? `${pendingIntroCount} pending` : null,
-      alertColour: 'text-purple-700 bg-purple-50',
-      icon: (
-        <div className="w-8 h-8 rounded-xl bg-blue-50 flex items-center justify-center">
-          <PartnerIcon className="w-4 h-4 text-blue-600" />
-        </div>
-      ),
+      iconBg: 'bg-blue-50 text-blue-600',
+      icon: <PartnerIcon className="w-4 h-4" />,
     },
   ]
+
+  // ── Items actually needing action (surfaced above the fold) ───────────────
+  const attention = [
+    meetingRequestCount
+      ? { label: 'meeting request', href: '/admin/leads', count: meetingRequestCount }
+      : null,
+    pendingReviewCount
+      ? { label: 'brand pending review', href: '/admin/franchisors', count: pendingReviewCount }
+      : null,
+    pendingIntroCount
+      ? { label: 'intro request', href: '/admin/intro-requests', count: pendingIntroCount }
+      : null,
+  ].filter(Boolean) as { label: string; href: string; count: number }[]
+
+  const totalAttention = attention.reduce((n, a) => n + a.count, 0)
 
   return (
     <div>
@@ -119,77 +105,104 @@ export default async function AdminDashboard() {
         action={<InviteUserButton />}
       />
 
-      {/* Section navigation cards — 3 primary (pipeline) + 2 secondary */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
-        {sections.slice(0, 3).map(s => (
-          <Link
-            key={s.href}
-            href={s.href}
-            className="bg-white rounded-2xl border border-slate-200 p-5 hover:border-brand-green hover:shadow-sm transition-all group"
-          >
-            <div className="flex items-start justify-between mb-3">
-              {s.icon}
-              <span className="text-3xl font-bold tracking-tight text-slate-900 group-hover:text-brand-green transition-colors">
-                {s.count}
-              </span>
+      {/* ── Needs attention ─────────────────────────────────────────────── */}
+      {totalAttention > 0 ? (
+        <div
+          className="mb-6 flex flex-col gap-3 rounded-2xl border p-4 sm:flex-row sm:items-center sm:justify-between"
+          style={{ borderColor: 'var(--ff-gold)', background: 'var(--ff-gold-soft)' }}
+        >
+          <div className="flex items-center gap-3">
+            <div
+              className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 text-white"
+              style={{ background: 'var(--ff-gold-ink)' }}
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+                <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+              </svg>
             </div>
-            <p className="text-sm font-semibold text-slate-800 mb-0.5">{s.title}</p>
-            <p className="text-xs text-slate-400 leading-snug">{s.description}</p>
-            {s.alert && (
-              <p className={`mt-2 text-xs font-medium px-2 py-0.5 rounded-full inline-block ${s.alertColour}`}>
-                {s.alert}
+            <div>
+              <p className="text-sm font-semibold text-ink">Needs your attention</p>
+              <p className="text-xs text-ink-2">
+                {totalAttention} {totalAttention === 1 ? 'item is' : 'items are'} waiting on you.
               </p>
-            )}
-          </Link>
-        ))}
-      </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
-        {sections.slice(3).map(s => (
+            </div>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {attention.map(a => (
+              <Link
+                key={a.href}
+                href={a.href}
+                className="inline-flex items-center gap-1.5 rounded-xl bg-surface border border-line px-3 py-1.5 text-xs font-medium text-ink shadow-[0_1px_2px_rgba(27,33,26,0.04)] transition-all hover:shadow hover:-translate-y-px"
+              >
+                <span className="inline-flex items-center justify-center min-w-5 h-5 px-1.5 rounded-full text-white text-[11px] font-bold tabular-nums" style={{ background: 'var(--ff-gold-ink)' }}>
+                  {a.count}
+                </span>
+                {a.count === 1 ? a.label : `${a.label}s`}
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-ink-3">
+                  <path d="M9 18l6-6-6-6" />
+                </svg>
+              </Link>
+            ))}
+          </div>
+        </div>
+      ) : (
+        <div className="mb-6 flex items-center gap-3 rounded-2xl border border-line bg-surface p-4 shadow-[0_1px_2px_rgba(27,33,26,0.04)]">
+          <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0" style={{ background: 'var(--ff-green-soft)', color: 'var(--ff-green)' }}>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M20 6L9 17l-5-5" />
+            </svg>
+          </div>
+          <p className="text-sm text-ink-2">
+            <span className="font-semibold text-ink">You&apos;re all caught up.</span> Nothing needs review right now.
+          </p>
+        </div>
+      )}
+
+      {/* ── Metric tiles ────────────────────────────────────────────────── */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 mb-8">
+        {metrics.map(m => (
           <Link
-            key={s.href}
-            href={s.href}
-            className="bg-white rounded-2xl border border-slate-200 p-4 hover:border-brand-green hover:shadow-sm transition-all group flex items-center gap-4"
+            key={m.href}
+            href={m.href}
+            className="group bg-surface rounded-2xl border border-line p-4 shadow-[0_1px_2px_rgba(27,33,26,0.04)] transition-all duration-200 hover:-translate-y-px hover:shadow-[0_6px_20px_rgba(27,33,26,0.07)] hover:border-line"
           >
-            <div className="shrink-0">
-              {s.icon}
+            <div className="flex items-center justify-between mb-4">
+              <div className={`w-9 h-9 rounded-xl flex items-center justify-center ${m.iconBg}`}>
+                {m.icon}
+              </div>
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-ink-3 opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all">
+                <path d="M9 18l6-6-6-6" />
+              </svg>
             </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-semibold text-slate-800 mb-0.5">{s.title}</p>
-              <p className="text-xs text-slate-400 leading-snug">{s.description}</p>
-              {s.alert && (
-                <p className={`mt-1 text-xs font-medium px-2 py-0.5 rounded-full inline-block ${s.alertColour}`}>
-                  {s.alert}
-                </p>
-              )}
-            </div>
-            <span className="text-2xl font-bold tracking-tight text-slate-900 group-hover:text-brand-green transition-colors shrink-0">
-              {s.count}
-            </span>
+            <p className="text-3xl font-bold tracking-tight text-ink tabular-nums leading-none">{m.count}</p>
+            <p className="text-sm text-ink-2 mt-1.5">{m.title}</p>
           </Link>
         ))}
       </div>
 
+      {/* ── Detail lists ────────────────────────────────────────────────── */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Recent leads needing attention */}
-        <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
-          <div className="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
-            <h2 className="text-sm font-semibold text-slate-900">Leads needing attention</h2>
-            <Link href="/admin/leads" className="text-xs text-brand-green hover:underline">View all</Link>
+        <div className="bg-surface rounded-2xl border border-line shadow-[0_1px_2px_rgba(27,33,26,0.04)] overflow-hidden">
+          <div className="px-5 py-4 border-b border-line-2 flex items-center justify-between">
+            <h2 className="text-sm font-semibold text-ink">Leads needing attention</h2>
+            <Link href="/admin/leads" className="text-xs font-medium text-brand-green hover:underline">View all</Link>
           </div>
-          <div className="divide-y divide-slate-50">
+          <div className="divide-y divide-line-2">
             {!recentLeads?.length ? (
-              <p className="px-5 py-6 text-sm text-slate-400 text-center">No leads yet.</p>
+              <p className="px-5 py-10 text-sm text-ink-3 text-center">No leads yet.</p>
             ) : recentLeads.map(lead => (
               <Link
                 key={lead.id}
                 href={`/admin/leads/${lead.id}`}
-                className={`flex items-center justify-between px-5 py-3 hover:bg-slate-50 transition-colors border-l-2 ${
-                  lead.status === 'meeting_requested' ? 'border-red-400' : 'border-transparent hover:border-brand-green'
+                className={`flex items-center justify-between gap-3 px-5 py-3 hover:bg-surface-2 transition-colors border-l-2 ${
+                  lead.status === 'meeting_requested' ? 'border-red-400' : 'border-transparent'
                 }`}
               >
-                <div>
-                  <p className="text-sm font-medium text-slate-900">{lead.full_name}</p>
-                  <p className="text-xs text-slate-400">{lead.email}</p>
+                <div className="min-w-0">
+                  <p className="text-sm font-medium text-ink truncate">{lead.full_name}</p>
+                  <p className="text-xs text-ink-3 truncate">{lead.email}</p>
                   {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                   {(lead as any).introducer_id && (
                     <span className="inline-block mt-1 text-[10px] font-semibold text-violet-700 bg-violet-50 border border-violet-200 rounded-full px-1.5 py-0.5">
@@ -197,13 +210,13 @@ export default async function AdminDashboard() {
                     </span>
                   )}
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 shrink-0">
                   {lead.status === 'meeting_requested' && (
                     <span className="px-2 py-0.5 bg-amber-50 text-amber-700 text-xs font-medium rounded-full">
                       Meeting requested
                     </span>
                   )}
-                  <span className="text-xs text-slate-400">{formatDate(lead.created_at)}</span>
+                  <span className="text-xs text-ink-3 tabular-nums">{formatDate(lead.created_at)}</span>
                 </div>
               </Link>
             ))}
@@ -211,14 +224,14 @@ export default async function AdminDashboard() {
         </div>
 
         {/* Brands pending review */}
-        <div className="bg-white rounded-2xl border border-slate-200">
-          <div className="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
-            <h2 className="text-sm font-semibold text-slate-900">Brands pending review</h2>
-            <Link href="/admin/franchisors" className="text-xs text-brand-green hover:underline">View all</Link>
+        <div className="bg-surface rounded-2xl border border-line shadow-[0_1px_2px_rgba(27,33,26,0.04)] overflow-hidden">
+          <div className="px-5 py-4 border-b border-line-2 flex items-center justify-between">
+            <h2 className="text-sm font-semibold text-ink">Brands pending review</h2>
+            <Link href="/admin/franchisors" className="text-xs font-medium text-brand-green hover:underline">View all</Link>
           </div>
-          <div className="divide-y divide-slate-50">
+          <div className="divide-y divide-line-2">
             {!pendingReviews?.length ? (
-              <p className="px-5 py-6 text-sm text-slate-400 text-center">No brands pending review.</p>
+              <p className="px-5 py-10 text-sm text-ink-3 text-center">No brands pending review.</p>
             ) : pendingReviews.map(f => {
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
               const p = f.profiles as any
@@ -226,15 +239,15 @@ export default async function AdminDashboard() {
                 <Link
                   key={f.id}
                   href={`/admin/franchisors/${f.id}`}
-                  className="flex items-center justify-between px-5 py-3 hover:bg-slate-50 transition-colors"
+                  className="flex items-center justify-between gap-3 px-5 py-3 hover:bg-surface-2 transition-colors"
                 >
-                  <div>
-                    <p className="text-sm font-medium text-slate-900">{f.brand_name || 'Unnamed brand'}</p>
-                    <p className="text-xs text-slate-400">{p?.email}</p>
+                  <div className="min-w-0">
+                    <p className="text-sm font-medium text-ink truncate">{f.brand_name || 'Unnamed brand'}</p>
+                    <p className="text-xs text-ink-3 truncate">{p?.email}</p>
                   </div>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 shrink-0">
                     {statusBadge(f.status)}
-                    <span className="text-xs text-slate-400">{formatDate(f.created_at)}</span>
+                    <span className="text-xs text-ink-3 tabular-nums">{formatDate(f.created_at)}</span>
                   </div>
                 </Link>
               )
