@@ -1,10 +1,10 @@
 ---
 title: "AI in Hospitality Franchising: What's Real and What Matters"
-status: "Draft"
+status: Published
 featured: false
+date: 2026-08-17T16:52
 category: Industry Insight
 author: Franchise Foundry
-date: 2026-08-17T16:52
 excerpt: AI is reshaping UK hospitality franchising, but the hype outpaces reality for many franchisees. Here's what AI actually delivers, what it doesn't, and what to ask before you sign.
 coverImage: ''
 ---
