@@ -90,7 +90,7 @@ export default function FranchiseesCards({ franchisees }: { franchisees: Franchi
                 className="text-left bg-surface border border-line rounded-2xl p-[17px] shadow-[0_1px_2px_rgba(27,33,26,0.04)] hover:-translate-y-0.5 hover:shadow-[0_8px_22px_rgba(27,33,26,0.08)] hover:border-[#d6dace] transition-all"
               >
                 <div className="flex items-center gap-3 mb-3.5">
-                  <Avatar name={f.full_name} size="md" />
+                  <Avatar name={f.full_name} size="lg" />
                   <div className="min-w-0 flex-1">
                     <p className="text-sm font-semibold text-ink leading-tight truncate">{f.full_name || 'Pending setup'}</p>
                     <p className="text-xs text-ink-3 truncate">{f.email || '—'}</p>

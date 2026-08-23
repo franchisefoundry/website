@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Modal } from '@/components/ui/modal'
 import { Button } from '@/components/ui/button'
+import { Avatar } from '@/components/ui/Avatar'
 import { referralLink } from '@/lib/referral'
 import { toast } from '@/lib/toast'
 
@@ -117,62 +118,50 @@ export default function AgentsTable({
 
   return (
     <>
-      <div className="bg-white rounded-2xl border border-slate-200 overflow-x-auto">
-        <table className="w-full text-sm">
-          <thead>
-            <tr className="border-b border-slate-100 text-slate-500 text-xs">
-              <th className="text-left px-4 py-3 font-medium">Name</th>
-              <th className="text-left px-4 py-3 font-medium hidden md:table-cell">Email</th>
-              <th className="text-left px-4 py-3 font-medium hidden lg:table-cell">Mobile</th>
-              <th className="text-left px-4 py-3 font-medium">Total leads</th>
-              <th className="text-left px-4 py-3 font-medium hidden sm:table-cell">Not invited</th>
-              <th className="text-left px-4 py-3 font-medium hidden sm:table-cell">Active</th>
-              <th className="text-left px-4 py-3 font-medium hidden lg:table-cell">Joined</th>
-              <th className="px-4 py-3" />
-            </tr>
-          </thead>
-          <tbody>
-            {agents.map(agent => {
-              const counts = countsByAgent[agent.id] ?? { total: 0, pending: 0, active: 0 }
-              return (
-                <tr key={agent.id} className="border-b border-slate-50 hover:bg-slate-50 transition-colors">
-                  <td className="px-4 py-3">
-                    <p className="font-medium text-slate-800">{agent.full_name ?? '—'}</p>
-                    <p className="text-xs text-slate-400 md:hidden">{agent.email}</p>
-                  </td>
-                  <td className="px-4 py-3 text-slate-500 hidden md:table-cell">{agent.email}</td>
-                  <td className="px-4 py-3 text-slate-500 hidden lg:table-cell">{agent.phone ?? '—'}</td>
-                  <td className="px-4 py-3 text-slate-800 font-medium">{counts.total}</td>
-                  <td className="px-4 py-3 hidden sm:table-cell">
-                    {counts.pending > 0
-                      ? <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-amber-50 text-amber-700">{counts.pending}</span>
-                      : <span className="text-slate-400">0</span>}
-                  </td>
-                  <td className="px-4 py-3 text-slate-600 hidden sm:table-cell">{counts.active}</td>
-                  <td className="px-4 py-3 text-slate-400 text-xs hidden lg:table-cell">
-                    {new Date(agent.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
-                  </td>
-                  <td className="px-4 py-3 text-right">
-                    <div className="inline-flex items-center gap-4">
-                      <button
-                        onClick={() => openReferral(agent)}
-                        className="text-xs text-brand-green hover:text-brand-green/80 font-medium transition-colors whitespace-nowrap"
-                      >
-                        Referral link
-                      </button>
-                      <button
-                        onClick={() => { setConfirmId(agent.id); setDeleteError(null) }}
-                        className="text-xs text-red-500 hover:text-red-700 hover:underline transition-colors"
-                      >
-                        Remove
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              )
-            })}
-          </tbody>
-        </table>
+      <div className="grid gap-4" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(290px, 1fr))' }}>
+        {agents.map(agent => {
+          const counts = countsByAgent[agent.id] ?? { total: 0, pending: 0, active: 0 }
+          return (
+            <div
+              key={agent.id}
+              className="bg-surface border border-line rounded-2xl p-[17px] shadow-[0_1px_2px_rgba(27,33,26,0.04)] hover:-translate-y-0.5 hover:shadow-[0_8px_22px_rgba(27,33,26,0.08)] hover:border-[#d6dace] transition-all"
+            >
+              <div className="flex items-center gap-3 mb-3">
+                <Avatar name={agent.full_name} size="lg" />
+                <div className="min-w-0 flex-1">
+                  <p className="text-sm font-semibold text-ink leading-tight truncate">{agent.full_name ?? '—'}</p>
+                  <p className="text-xs text-ink-3 truncate">
+                    Code <span className="font-mono text-ink-2">{agent.referral_code ?? '—'}</span>
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex gap-1.5 border-t border-line-2 pt-3">
+                {([['Leads', counts.total], ['Active', counts.active], ['Not invited', counts.pending]] as const).map(([l, v]) => (
+                  <div key={l} className="flex-1">
+                    <p className="text-[15px] font-bold text-ink tabular-nums leading-none">{v}</p>
+                    <p className="text-[10.5px] text-ink-3 mt-1">{l}</p>
+                  </div>
+                ))}
+              </div>
+
+              <div className="flex gap-2 mt-3.5">
+                <button
+                  onClick={() => openReferral(agent)}
+                  className="flex-1 text-xs font-medium text-ink-2 border border-line bg-surface hover:bg-surface-2 rounded-lg py-2 transition-colors"
+                >
+                  Referral link
+                </button>
+                <button
+                  onClick={() => { setConfirmId(agent.id); setDeleteError(null) }}
+                  className="text-xs font-medium text-red-600 border border-line hover:bg-red-50 rounded-lg px-3 py-2 transition-colors"
+                >
+                  Remove
+                </button>
+              </div>
+            </div>
+          )
+        })}
       </div>
 
       {/* Referral link modal */}
