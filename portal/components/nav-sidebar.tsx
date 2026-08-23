@@ -12,7 +12,7 @@ import { CommandPalette } from '@/components/command-palette'
 import {
   DashboardIcon, LeadsIcon, FranchiseeIcon, FranchisorIcon,
   MatchIcon, AgreementIcon, MarketplaceIcon, AgentIcon,
-  QuestionnaireIcon, SignOutIcon, PlusIcon, SearchIcon,
+  QuestionnaireIcon, SignOutIcon, SearchIcon,
 } from '@/components/icons'
 
 // ── Nav type system ──────────────────────────────────────────────────────────
@@ -29,49 +29,22 @@ function isDivider(item: NavItem): item is NavDivider {
 }
 
 // ── Nav definitions ──────────────────────────────────────────────────────────
+// Grouped like the confirmed CRM design — Network / Workspace / Business.
 const adminNav: NavItem[] = [
-  { sectionLabel: 'Pipeline' },
-  { label: 'Dashboard',   href: '/admin',       icon: <DashboardIcon className="w-4 h-4" /> },
-  { label: 'Leads',       href: '/admin/leads', icon: <LeadsIcon className="w-4 h-4" /> },
-  {
-    label: 'Franchisees',
-    icon: <FranchiseeIcon className="w-4 h-4" />,
-    children: [
-      { label: 'Franchisees', href: '/admin/franchisees',         icon: <FranchiseeIcon className="w-3.5 h-3.5" /> },
-      { label: 'Invites',     href: '/admin/franchisees/invites', icon: <PlusIcon className="w-3.5 h-3.5" /> },
-    ],
-  },
-  { sectionLabel: 'Brands' },
-  {
-    label: 'Franchisors',
-    icon: <FranchisorIcon className="w-4 h-4" />,
-    children: [
-      { label: 'Franchisors',    href: '/admin/franchisors',            icon: <FranchisorIcon className="w-3.5 h-3.5" /> },
-      { label: 'Questionnaires', href: '/admin/questionnaires',         icon: <QuestionnaireIcon className="w-3.5 h-3.5" /> },
-      { label: 'Questions',      href: '/admin/questionnaire-template', icon: <QuestionnaireIcon className="w-3.5 h-3.5" /> },
-      { label: 'Invites',        href: '/admin/franchisors/invites',    icon: <PlusIcon className="w-3.5 h-3.5" /> },
-    ],
-  },
-  { label: 'Matches',    href: '/admin/matches',    icon: <MatchIcon className="w-4 h-4" /> },
-  { label: 'Agreements', href: '/admin/agreements', icon: <AgreementIcon className="w-4 h-4" /> },
-  { sectionLabel: 'More' },
-  {
-    label: 'Agents',
-    icon: <AgentIcon className="w-4 h-4" />,
-    children: [
-      { label: 'Agents',  href: '/admin/introducers',         icon: <AgentIcon className="w-3.5 h-3.5" /> },
-      { label: 'Leads',   href: '/admin/introducer-leads',    icon: <LeadsIcon className="w-3.5 h-3.5" /> },
-      { label: 'Invites', href: '/admin/introducers/invites', icon: <PlusIcon className="w-3.5 h-3.5" /> },
-    ],
-  },
-  {
-    label: 'Marketplace',
-    icon: <MarketplaceIcon className="w-4 h-4" />,
-    children: [
-      { label: 'Partners', href: '/admin/partners',      icon: <MarketplaceIcon className="w-3.5 h-3.5" /> },
-      { label: 'Intros',   href: '/admin/intro-requests', icon: <MatchIcon className="w-3.5 h-3.5" /> },
-    ],
-  },
+  { label: 'Home', href: '/admin', icon: <DashboardIcon className="w-4 h-4" /> },
+  { sectionLabel: 'Network' },
+  { label: 'Franchisees', href: '/admin/franchisees',  icon: <FranchiseeIcon className="w-4 h-4" /> },
+  { label: 'Brands',      href: '/admin/franchisors',  icon: <FranchisorIcon className="w-4 h-4" /> },
+  { label: 'Agents',      href: '/admin/introducers',  icon: <AgentIcon className="w-4 h-4" /> },
+  { label: 'Leads',       href: '/admin/leads',        icon: <LeadsIcon className="w-4 h-4" /> },
+  { sectionLabel: 'Workspace' },
+  { label: 'Marketplace',    href: '/admin/partners',       icon: <MarketplaceIcon className="w-4 h-4" /> },
+  { label: 'Intro requests', href: '/admin/intro-requests', icon: <MatchIcon className="w-4 h-4" /> },
+  { label: 'Matches',        href: '/admin/matches',        icon: <MatchIcon className="w-4 h-4" /> },
+  { label: 'Agreements',     href: '/admin/agreements',     icon: <AgreementIcon className="w-4 h-4" /> },
+  { sectionLabel: 'Business' },
+  { label: 'Questionnaires', href: '/admin/questionnaires',         icon: <QuestionnaireIcon className="w-4 h-4" /> },
+  { label: 'Questions',      href: '/admin/questionnaire-template', icon: <QuestionnaireIcon className="w-4 h-4" /> },
 ]
 
 const franchiseeNav: NavItem[] = [
