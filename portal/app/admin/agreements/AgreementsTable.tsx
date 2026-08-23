@@ -79,93 +79,57 @@ export default function AgreementsTable({
 
   if (allRows.length === 0) {
     return (
-      <div className="bg-white rounded-xl border border-slate-200 p-8 text-center text-slate-400 text-sm">
-        No franchisors onboarded yet.
-      </div>
+      <div className="text-center py-16 text-ink-3 text-sm">No franchisors onboarded yet.</div>
     )
   }
 
   return (
-    <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-x-auto">
-      <table className="w-full text-sm">
-        <thead className="bg-slate-50 border-b border-slate-200">
-          <tr>
-            <th className="text-left px-6 py-3 text-xs font-medium text-slate-500 uppercase tracking-wide">Franchisor</th>
-            <th className="text-left px-6 py-3 text-xs font-medium text-slate-500 uppercase tracking-wide">Status</th>
-            <th className="text-left px-6 py-3 text-xs font-medium text-slate-500 uppercase tracking-wide hidden md:table-cell">Sent</th>
-            <th className="text-left px-6 py-3 text-xs font-medium text-slate-500 uppercase tracking-wide hidden md:table-cell">Signed by</th>
-            <th className="px-6 py-3" />
-          </tr>
-        </thead>
-        <tbody className="divide-y divide-slate-100">
-          {allRows.map(row => {
-            const fp = row.franchisor
-            const p = fp.profiles
-            const name = fp.brand_name || p?.full_name || 'Unnamed'
-            const a = row.agreement
+    <div className="grid gap-4" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))' }}>
+      {allRows.map(row => {
+        const fp = row.franchisor
+        const p = fp.profiles
+        const name = fp.brand_name || p?.full_name || 'Unnamed'
+        const a = row.agreement
+        return (
+          <div key={fp.id} className="bg-surface border border-line rounded-2xl p-[17px] shadow-[0_1px_2px_rgba(27,33,26,0.04)]">
+            <div className="flex items-center gap-3 mb-3">
+              <Avatar name={name} size="lg" square />
+              <div className="min-w-0 flex-1">
+                <p className="text-sm font-semibold text-ink truncate">{name}</p>
+                <p className="text-xs text-ink-3 truncate">{p?.email}</p>
+              </div>
+            </div>
 
-            return (
-              <tr key={fp.id} className="hover:bg-slate-50 transition-colors">
-                <td className="px-6 py-3">
-                  <div className="flex items-center gap-3">
-                    <Avatar name={name} size="sm" />
-                    <div>
-                      <p className="font-medium text-slate-900">{name}</p>
-                      <p className="text-xs text-slate-400">{p?.email}</p>
-                    </div>
-                  </div>
-                </td>
-                <td className="px-6 py-3">
-                  {a ? agreementStatusBadge(a.status) : agreementStatusBadge('not_sent')}
-                </td>
-                <td className="px-6 py-3 text-slate-500 hidden md:table-cell">
-                  {a?.sent_at ? formatDate(a.sent_at) : '—'}
-                </td>
-                <td className="px-6 py-3 text-slate-500 hidden md:table-cell">
-                  {a?.status === 'signed' ? (
-                    <span>
-                      <span className="text-slate-800 font-medium">{a.signer_name}</span>
-                      {a.signed_at && (
-                        <span className="text-xs text-slate-400 ml-1">{timeAgo(a.signed_at)}</span>
-                      )}
-                    </span>
-                  ) : '—'}
-                </td>
-                <td className="px-6 py-3 text-right">
-                  <div className="flex items-center justify-end gap-2">
-                    {a?.status === 'signed' && a.signed_pdf_path && (
-                      <a
-                        href={`/api/admin/agreements/download/${a.id}`}
-                        className="text-xs text-brand-green hover:underline font-medium"
-                      >
-                        Download PDF
-                      </a>
-                    )}
-                    {(!a || a.status === 'not_sent') && (
-                      <button
-                        onClick={() => sendAgreement(fp.id)}
-                        disabled={sending === fp.id || !hasTemplate}
-                        className="text-xs bg-brand-green hover:bg-brand-green-dark text-white font-medium px-3 py-1.5 rounded-lg transition-colors disabled:opacity-50"
-                      >
-                        {sending === fp.id ? 'Sending…' : 'Send agreement'}
-                      </button>
-                    )}
-                    {a?.status === 'sent' && (
-                      <button
-                        onClick={() => sendAgreement(fp.id)}
-                        disabled={sending === fp.id}
-                        className="text-xs text-slate-500 hover:text-slate-700 font-medium px-3 py-1.5 rounded-lg border border-slate-200 hover:bg-slate-50 transition-colors disabled:opacity-50"
-                      >
-                        {sending === fp.id ? 'Resending…' : 'Resend'}
-                      </button>
-                    )}
-                  </div>
-                </td>
-              </tr>
-            )
-          })}
-        </tbody>
-      </table>
+            <div className="mb-3">{a ? agreementStatusBadge(a.status) : agreementStatusBadge('not_sent')}</div>
+
+            <div className="text-xs text-ink-2 space-y-1 mb-3.5">
+              <div className="flex justify-between"><span className="text-ink-3">Sent</span><span>{a?.sent_at ? formatDate(a.sent_at) : '—'}</span></div>
+              <div className="flex justify-between">
+                <span className="text-ink-3">Signed by</span>
+                <span>{a?.status === 'signed' ? `${a.signer_name}${a.signed_at ? ` · ${timeAgo(a.signed_at)}` : ''}` : '—'}</span>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2 pt-3 border-t border-line-2">
+              {a?.status === 'signed' && a.signed_pdf_path && (
+                <a href={`/api/admin/agreements/download/${a.id}`} className="text-xs font-medium text-ff-green hover:underline">Download PDF</a>
+              )}
+              {(!a || a.status === 'not_sent') && (
+                <button onClick={() => sendAgreement(fp.id)} disabled={sending === fp.id || !hasTemplate}
+                  className="text-xs bg-ff-green hover:brightness-110 text-white font-medium px-3.5 py-2 rounded-xl transition-all disabled:opacity-50">
+                  {sending === fp.id ? 'Sending…' : 'Send agreement'}
+                </button>
+              )}
+              {a?.status === 'sent' && (
+                <button onClick={() => sendAgreement(fp.id)} disabled={sending === fp.id}
+                  className="text-xs text-ink-2 font-medium px-3.5 py-2 rounded-xl border border-line hover:bg-surface-2 transition-colors disabled:opacity-50">
+                  {sending === fp.id ? 'Resending…' : 'Resend'}
+                </button>
+              )}
+            </div>
+          </div>
+        )
+      })}
     </div>
   )
 }
