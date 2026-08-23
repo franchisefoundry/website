@@ -1,0 +1,835 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Foundry CRM</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ground:#f4f5f0;--surface:#fff;--surface2:#fafbf7;
+  --ink:#1b211a;--ink2:#59615a;--ink3:#8a918a;
+  --line:#e3e6df;--line2:#eceee8;
+  --green:#3a4a3a;--green-mid:#4c6350;--green-deep:#2b382b;--green-soft:#e9f0ea;
+  --gold:#c8924a;--gold-ink:#a2762f;--gold-soft:#f2e9d8;
+  --ok:#3f8a52;--ok-bg:#e8f3ec;--warn:#a6721a;--warn-bg:#faf0dc;
+  --crit:#b64f2c;--crit-bg:#fae7df;--info:#2563eb;--info-bg:#eff6ff;
+  --violet:#7c3aed;--violet-bg:#f5f3ff;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{font-family:'Sora',system-ui,sans-serif;background:var(--ground);color:var(--ink);-webkit-font-smoothing:antialiased;font-size:14px}
+a{color:inherit;text-decoration:none}
+::-webkit-scrollbar{width:9px;height:9px}::-webkit-scrollbar-thumb{background:#d6d9d1;border-radius:99px;border:2px solid var(--surface)}
+.app{display:flex;min-height:100vh}
+.side{width:230px;flex-shrink:0;background:linear-gradient(168deg,#3a4a3a,#2b382b);color:#fff;display:flex;flex-direction:column;position:sticky;top:0;height:100vh;padding:16px 12px}
+.brand{display:flex;align-items:center;gap:9px;font-weight:700;letter-spacing:.03em;font-size:13px;padding:6px 8px 14px;border-bottom:1px solid rgba(255,255,255,.1)}
+.brand .mk{width:24px;height:24px;border-radius:7px;background:linear-gradient(135deg,var(--gold),#e8c9a0);display:grid;place-items:center;color:#2b382b;font-weight:800;font-size:13px}
+.search{display:flex;align-items:center;gap:8px;margin:12px 4px 8px;padding:9px 11px;border-radius:11px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.55);font-size:12px;cursor:pointer}
+.search kbd{margin-left:auto;font-size:10px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.12);border-radius:4px;padding:1px 5px;font-family:inherit}
+.navwrap{flex:1;overflow-y:auto;padding:4px}
+.seclbl{font-size:10px;font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:rgba(255,255,255,.28);padding:16px 10px 5px}
+.nav{display:flex;align-items:center;gap:11px;padding:10px 11px;border-radius:10px;font-size:13.5px;font-weight:500;color:rgba(255,255,255,.72);cursor:pointer;transition:.15s}
+.nav:hover{background:rgba(255,255,255,.09);color:#fff}
+.nav.active{background:#fff;color:var(--green);box-shadow:0 1px 2px rgba(0,0,0,.15)}
+.nav svg{width:17px;height:17px;flex-shrink:0;opacity:.85}.nav.active svg{opacity:1}
+.nav .badge{margin-left:auto;font-size:10px;font-weight:700;background:var(--gold);color:#2b382b;border-radius:99px;min-width:18px;height:18px;display:grid;place-items:center;padding:0 5px}
+.userbox{border-top:1px solid rgba(255,255,255,.1);padding:12px 6px 4px;margin-top:6px}
+.userrow{display:flex;align-items:center;gap:10px;padding:6px 8px;border-radius:10px}
+.uava{width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.2);display:grid;place-items:center;font-size:12px;font-weight:600}
+.userrow .nm{font-size:12px;font-weight:500}.userrow .rl{font-size:10px;color:rgba(255,255,255,.4)}
+
+.main{flex:1;min-width:0}
+.content{max-width:1080px;margin:0 auto;padding:28px 32px 60px}
+.content.wide{max-width:1180px}
+.phead{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:20px;flex-wrap:wrap}
+h1{font-size:22px;font-weight:700;letter-spacing:-.02em}
+.psub{font-size:13.5px;color:var(--ink2);margin-top:3px}
+.btn{display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:500;padding:9px 14px;border-radius:11px;border:1px solid transparent;cursor:pointer;transition:.15s;font-family:inherit;white-space:nowrap}
+.btn-p{background:var(--green);color:#fff;box-shadow:0 1px 2px rgba(27,33,26,.14)}.btn-p:hover{filter:brightness(1.12)}
+.btn-s{background:var(--surface);color:var(--ink2);border-color:var(--line)}.btn-s:hover{background:var(--surface2)}
+.btn-sm{padding:6px 10px;font-size:12px;border-radius:9px}.btn-ic{padding:8px;border-radius:10px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:15px;box-shadow:0 1px 2px rgba(27,33,26,.04)}
+.av{border-radius:50%;display:grid;place-items:center;font-weight:600;flex-shrink:0;color:#fff}.av.sq{border-radius:10px}
+
+/* KPI stat bar */
+.kpibar{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-bottom:24px}
+.kpi{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px 15px;box-shadow:0 1px 2px rgba(27,33,26,.04)}
+.kpi .kn{font-size:22px;font-weight:700;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.kpi .kl{font-size:11px;color:var(--ink3);margin-top:1px}
+.kpi .kd{display:inline-flex;align-items:center;gap:3px;font-size:11px;font-weight:600;margin-top:7px;padding:2px 6px;border-radius:99px}
+.kd.up{color:var(--ok);background:var(--ok-bg)}.kd.dn{color:var(--crit);background:var(--crit-bg)}.kd.fl{color:var(--ink3);background:#eef0e9}
+
+/* HOME action center */
+.home-grid{display:grid;grid-template-columns:1fr 320px;gap:22px;align-items:start}
+.grouplbl{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink3);margin:22px 0 10px}.grouplbl:first-child{margin-top:0}
+.act{display:flex;align-items:center;gap:13px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:13px 15px;margin-bottom:9px;transition:.15s;cursor:pointer}
+.act:hover{border-color:#d3d7cd;box-shadow:0 4px 14px rgba(27,33,26,.06);transform:translateY(-1px)}
+.act-ic{width:38px;height:38px;border-radius:11px;display:grid;place-items:center;flex-shrink:0}
+.act-t{font-size:13.5px;font-weight:600}.act-s{font-size:12px;color:var(--ink2);margin-top:2px}
+.act-r{margin-left:auto;display:flex;align-items:center;gap:10px;flex-shrink:0}
+.feed{padding:4px 0}
+.feeditem{display:flex;gap:11px;padding:11px 16px;border-bottom:1px solid var(--line2)}.feeditem:last-child{border-bottom:none}
+.feed-d{width:8px;height:8px;border-radius:50%;margin-top:5px;flex-shrink:0}
+.feed-t{font-size:12.5px;line-height:1.35}.feed-time{font-size:11px;color:var(--ink3);margin-top:2px}
+
+/* toolbar + filters */
+.listbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:18px}
+.tbsearch{display:flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--line);border-radius:11px;padding:8px 12px;font-size:13px;color:var(--ink3);min-width:220px;flex:1;max-width:340px}
+.tbsearch input{border:none;outline:none;background:none;font-family:inherit;font-size:13px;color:var(--ink);flex:1}
+.seg{display:inline-flex;background:var(--surface);border:1px solid var(--line);border-radius:11px;padding:3px;gap:2px;flex-wrap:wrap}
+.seg button{border:none;background:none;font-family:inherit;font-size:12.5px;font-weight:500;color:var(--ink2);padding:6px 11px;border-radius:8px;cursor:pointer}
+.seg button.on{background:var(--green);color:#fff}
+
+/* CARD GRID (network view) */
+.cardgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:16px}
+.ncard{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:17px;cursor:pointer;transition:.16s;position:relative;box-shadow:0 1px 2px rgba(27,33,26,.04)}
+.ncard:hover{transform:translateY(-2px);box-shadow:0 8px 22px rgba(27,33,26,.08);border-color:#d6dace}
+.ncard.upd{border-color:#e6cfa6}
+.nb{position:absolute;top:14px;right:14px;display:inline-flex;align-items:center;gap:4px;background:var(--gold);color:#2b382b;font-size:10.5px;font-weight:700;border-radius:99px;padding:2px 8px;box-shadow:0 1px 3px rgba(200,146,74,.4)}
+.nc-head{display:flex;gap:12px;align-items:center;margin-bottom:14px}
+.nc-nm{font-size:15px;font-weight:600;line-height:1.2}
+.nc-sub{font-size:12px;color:var(--ink3);margin-top:2px}
+.nc-stats{display:flex;gap:6px;border-top:1px solid var(--line2);padding-top:12px}
+.nc-stat{flex:1}
+.nc-stat .sv{font-size:15px;font-weight:700;font-variant-numeric:tabular-nums}
+.nc-stat .sl{font-size:10.5px;color:var(--ink3);margin-top:1px}
+.nc-upd{margin-top:12px;background:var(--gold-soft);border-radius:10px;padding:8px 11px;font-size:11.5px;color:var(--gold-ink);font-weight:500;display:flex;align-items:center;gap:7px}
+.nc-foot{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:13px}
+.progress{height:6px;border-radius:99px;background:var(--line);overflow:hidden;width:100%;margin-top:6px}
+.progress i{display:block;height:100%;background:var(--green);border-radius:99px}
+
+/* page tabs (marketplace) */
+.ptabs{display:flex;gap:4px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:4px;margin-bottom:20px;width:fit-content}
+.ptab{padding:8px 16px;border-radius:9px;font-size:13px;font-weight:500;color:var(--ink2);cursor:pointer}
+.ptab.on{background:var(--green);color:#fff}
+
+.pill{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:600;padding:3px 9px;border-radius:99px;white-space:nowrap}
+.p-ok{background:var(--ok-bg);color:var(--ok)}.p-warn{background:var(--warn-bg);color:var(--warn)}
+.p-crit{background:var(--crit-bg);color:var(--crit)}.p-info{background:var(--info-bg);color:var(--info)}
+.p-green{background:var(--green-soft);color:var(--green)}.p-violet{background:var(--violet-bg);color:var(--violet)}
+.p-mute{background:#eef0e9;color:var(--ink2)}
+.dotg{width:7px;height:7px;border-radius:50%;background:currentColor}
+.score{font-size:12px;font-weight:700;color:var(--green);background:var(--green-soft);border-radius:8px;padding:2px 7px;font-variant-numeric:tabular-nums}
+.reveal{display:inline-flex;align-items:center;gap:5px;font-size:10.5px;color:var(--violet);background:var(--violet-bg);border:1px solid #ddd6fe;border-radius:99px;padding:1px 7px;font-weight:600}
+.why{display:flex;gap:6px;flex-wrap:wrap}
+.why span{font-size:11px;background:var(--green-soft);color:var(--green);border-radius:99px;padding:3px 9px;font-weight:500;display:inline-flex;align-items:center;gap:4px}
+
+/* DRAWER + record shared */
+.drawer-bg{position:fixed;inset:0;background:rgba(20,25,20,.30);opacity:0;pointer-events:none;transition:.25s;z-index:55}
+.drawer-bg.open{opacity:1;pointer-events:auto}
+.drawer{position:fixed;top:0;right:0;height:100vh;width:min(500px,96vw);background:var(--surface);border-left:1px solid var(--line);box-shadow:-20px 0 60px rgba(0,0,0,.16);transform:translateX(100%);transition:transform .3s cubic-bezier(.32,.72,0,1);z-index:60;display:flex;flex-direction:column}
+.drawer.open{transform:none}
+.dw-top{display:flex;align-items:center;gap:8px;padding:14px 18px;border-bottom:1px solid var(--line2)}
+.dw-top .btn-ic{color:var(--ink3)}
+.dw-crumb{font-size:12px;color:var(--ink3)}
+.dw-head{padding:18px 22px 16px;border-bottom:1px solid var(--line2)}
+.dw-id{display:flex;gap:14px;align-items:center}
+.dw-name{font-size:18px;font-weight:700;letter-spacing:-.01em}
+.dw-meta{font-size:12.5px;color:var(--ink2);margin-top:2px}
+.dw-actions{display:flex;gap:8px;margin-top:15px;flex-wrap:wrap}
+.dw-tabs{display:flex;gap:2px;padding:0 22px;border-bottom:1px solid var(--line2);overflow-x:auto}
+.dw-tab{padding:12px 4px;margin-right:18px;font-size:13px;font-weight:500;color:var(--ink3);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;white-space:nowrap}
+.dw-tab.on{color:var(--ink);border-color:var(--green)}
+.dw-body{flex:1;overflow-y:auto;padding:20px 22px}
+.dw-sec{margin-bottom:24px}
+.dw-sec-t{font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--ink3);margin-bottom:11px}
+.field{display:flex;justify-content:space-between;gap:16px;padding:9px 8px;border-radius:8px;font-size:13px;transition:.12s}
+.field:hover{background:var(--surface2)}
+.field .k{color:var(--ink2)}.field .v{font-weight:500;text-align:right;display:flex;align-items:center;gap:7px}
+.field .pen{opacity:0;transition:.12s}.field:hover .pen{opacity:.5}
+.brandcard{border:1px solid var(--line);border-radius:13px;padding:14px;margin-bottom:12px}
+.bc-top{display:flex;align-items:center;gap:13px}
+.mini-step{display:flex;align-items:center;gap:4px;margin-top:6px}
+.ms{flex:1;height:6px;border-radius:99px;background:var(--line)}
+.ms.done{background:var(--green)}.ms.now{background:var(--green);box-shadow:0 0 0 3px var(--green-soft)}
+.mslabels{display:flex;justify-content:space-between;margin-top:8px;font-size:10.5px;color:var(--ink3)}
+.mslabels .now{color:var(--green);font-weight:700}
+.optrow{border-radius:9px}
+.optrow .whypanel{display:none;padding:0 8px 10px}
+.optrow.open .whypanel{display:block}
+.chev{display:inline-block;transition:transform .16s;color:var(--ink3)}
+.optrow.open .chev{transform:rotate(90deg)}
+.tl-i{position:relative;padding:0 0 16px 18px}
+.tl-i:before{content:"";position:absolute;left:0;top:3px;width:9px;height:9px;border-radius:50%;background:var(--green);box-shadow:0 0 0 3px var(--green-soft)}
+.tl-i:after{content:"";position:absolute;left:4px;top:12px;bottom:-3px;width:1.5px;background:var(--line)}
+.tl-i:last-child:after{display:none}
+.tl-t{font-size:13px;font-weight:500}.tl-d{font-size:11.5px;color:var(--ink3);margin-top:1px}
+
+/* Chat */
+.chat{display:flex;flex-direction:column;gap:10px;margin-bottom:14px}
+.msg{max-width:82%;padding:9px 13px;border-radius:14px;font-size:13px;line-height:1.4}
+.msg .mt{font-size:10.5px;color:var(--ink3);margin-top:4px}
+.msg.them{background:var(--surface2);border:1px solid var(--line2);border-bottom-left-radius:5px;align-self:flex-start}
+.msg.me{background:var(--green);color:#fff;border-bottom-right-radius:5px;align-self:flex-end}
+.msg.me .mt{color:rgba(255,255,255,.6)}
+.pushnote{display:flex;align-items:center;gap:8px;font-size:11.5px;color:var(--ink3);background:var(--surface2);border:1px solid var(--line2);border-radius:10px;padding:8px 11px;margin-bottom:14px}
+.composer{display:flex;gap:8px;align-items:flex-end;border:1px solid var(--line);border-radius:13px;padding:8px;background:var(--surface)}
+.composer textarea{flex:1;border:none;outline:none;resize:none;font-family:inherit;font-size:13px;color:var(--ink);max-height:80px}
+
+/* Full page record */
+.recgrid{display:grid;grid-template-columns:1fr 360px;gap:22px;align-items:start}
+.rechero{display:flex;gap:16px;align-items:center}
+
+/* Chat hub */
+.chathub{display:grid;grid-template-columns:310px 1fr;background:var(--surface);border:1px solid var(--line);border-radius:16px;overflow:hidden;box-shadow:0 1px 2px rgba(27,33,26,.04);height:calc(100vh - 180px);min-height:460px}
+.convlist{border-right:1px solid var(--line2);overflow-y:auto}
+.conv{display:flex;gap:11px;align-items:center;padding:13px 15px;border-bottom:1px solid var(--line2);cursor:pointer;transition:.12s}
+.conv:hover{background:var(--surface2)}.conv.on{background:var(--green-soft)}
+.conv-main{min-width:0;flex:1}
+.conv-nm{font-size:13px;font-weight:600;display:flex;align-items:center;gap:7px}
+.conv-last{font-size:11.5px;color:var(--ink3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px}
+.conv-time{font-size:10.5px;color:var(--ink3)}
+.unread{width:8px;height:8px;border-radius:50%;background:var(--gold);flex-shrink:0}
+.convmain{display:flex;flex-direction:column;min-width:0}
+.convhead{display:flex;align-items:center;gap:11px;padding:14px 18px;border-bottom:1px solid var(--line2)}
+.convbody{flex:1;overflow-y:auto;padding:18px}
+.convfoot{padding:12px 16px;border-top:1px solid var(--line2)}
+
+.cmdk-bg{position:fixed;inset:0;background:rgba(0,0,0,.45);backdrop-filter:blur(2px);display:none;align-items:flex-start;justify-content:center;padding-top:13vh;z-index:80}
+.cmdk{width:min(560px,92vw);background:var(--surface);border:1px solid var(--line);border-radius:16px;box-shadow:0 24px 60px rgba(0,0,0,.3);overflow:hidden}
+.cmdk-in{display:flex;align-items:center;gap:10px;padding:15px 18px;border-bottom:1px solid var(--line2)}
+.cmdk-in input{flex:1;border:none;outline:none;font-family:inherit;font-size:15px;color:var(--ink)}
+.cmdk-list{max-height:340px;overflow:auto;padding:8px}
+.cmdk-row{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:10px;cursor:pointer;font-size:13.5px;font-weight:500}
+.cmdk-row:hover,.cmdk-row.on{background:var(--green-soft)}
+.cmdk-ic{width:28px;height:28px;border-radius:8px;background:var(--surface2);display:grid;place-items:center;color:var(--ink2)}
+.cmdk-sub{font-size:11px;color:var(--ink3);margin-left:auto}
+
+@media(max-width:1000px){.kpibar{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:900px){
+  .side{position:fixed;left:0;top:0;z-index:40;transform:translateX(-100%);transition:.25s}.side.open{transform:none}
+  .home-grid,.recgrid{grid-template-columns:1fr}.content{padding:16px 14px 50px}.mobtop{display:flex!important}
+  .hide-sm{display:none!important}.chathub{grid-template-columns:1fr}.convlist{display:none}
+}
+.mobtop{display:none;align-items:center;justify-content:space-between;padding:12px 16px;background:linear-gradient(168deg,#3a4a3a,#2b382b);color:#fff;position:sticky;top:0;z-index:20}
+.mobtoggle{background:rgba(255,255,255,.1);border:none;color:#fff;width:36px;height:36px;border-radius:9px;cursor:pointer;font-size:18px}
+.demo-tag{position:fixed;left:14px;bottom:14px;background:var(--ink);color:#fff;font-size:11px;font-weight:600;padding:6px 11px;border-radius:99px;opacity:.85;z-index:30}
+.doc{background:var(--surface);border:1px solid var(--line);border-radius:15px;box-shadow:0 1px 2px rgba(27,33,26,.04);padding:30px 34px}
+.doc h2{font-size:18px;font-weight:700;text-align:center}
+.clause{padding:13px 0;border-top:1px solid var(--line2);position:relative}
+.clause:hover .edit{opacity:.55!important}
+.clause h4{font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--green);margin-bottom:6px}
+.clause p{font-size:13px;line-height:1.6;color:var(--ink2)}
+.signrow{display:flex;align-items:center;gap:11px;padding:11px 0;border-top:1px solid var(--line2)}
+.signrow:first-child{border-top:none}
+.mhero{border-radius:16px;color:#fff;padding:42px 34px;background:linear-gradient(135deg,#3a4a3a,#2b382b)}
+.mhero h2{font-size:30px;font-weight:700;letter-spacing:-.02em}
+@media(max-width:900px){.mhero h2{font-size:22px}.mhero p{max-width:100%!important}}
+.ctxmenu{position:fixed;z-index:75;background:var(--surface);border:1px solid var(--line);border-radius:12px;box-shadow:0 12px 34px rgba(27,33,26,.16);padding:6px;min-width:210px;display:none}
+.ctxmenu .cm-h{font-size:11px;color:var(--ink3);padding:6px 10px 5px;font-weight:600;border-bottom:1px solid var(--line2);margin-bottom:4px}
+.ctxmenu button{display:flex;align-items:center;gap:10px;width:100%;text-align:left;border:none;background:none;font-family:inherit;font-size:13px;color:var(--ink);padding:9px 10px;border-radius:8px;cursor:pointer}
+.ctxmenu button:hover{background:var(--surface2)}
+.ctxmenu button.cm-danger{color:var(--crit)}.ctxmenu button.cm-danger:hover{background:var(--crit-bg)}
+.modal-bg{position:fixed;inset:0;background:rgba(20,25,20,.42);z-index:90;display:none;align-items:center;justify-content:center;padding:20px}
+.modal{background:var(--surface);border-radius:18px;width:min(430px,100%);box-shadow:0 24px 60px rgba(0,0,0,.3);overflow:hidden}
+.md-h{font-size:16px;font-weight:600;padding:20px 22px 0}
+.md-b{padding:12px 22px 18px}.md-b p{font-size:13px;color:var(--ink2);line-height:1.55}
+.md-f{display:flex;justify-content:flex-end;gap:10px;padding:14px 22px;border-top:1px solid var(--line2);background:var(--surface2)}
+.md-lbl{display:block;font-size:12px;font-weight:600;color:var(--ink2);margin-bottom:5px}
+.md-input{width:100%;border:1px solid var(--line);border-radius:10px;padding:9px 11px;font-family:inherit;font-size:13px;color:var(--ink);background:var(--surface);outline:none;resize:none}
+.md-input:focus{border-color:var(--green)}
+.btn-danger{background:var(--crit);color:#fff}.btn-danger:hover{filter:brightness(1.06)}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;font-size:13px;font-weight:500;padding:11px 18px;border-radius:99px;box-shadow:0 8px 24px rgba(0,0,0,.25);z-index:100;display:none}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="side" id="side">
+    <div class="brand"><span class="mk">F</span> FRANCHISE FOUNDRY</div>
+    <div class="search" onclick="openCmdk()"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg> Search… <kbd>⌘K</kbd></div>
+    <div class="navwrap" id="nav"></div>
+    <div class="userbox"><div class="userrow"><div class="uava">HB</div><div><div class="nm">Harry Banff</div><div class="rl">Administrator</div></div></div></div>
+  </aside>
+  <div class="main">
+    <div class="mobtop"><div style="font-weight:700;font-size:13px;letter-spacing:.03em">FRANCHISE FOUNDRY</div><button class="mobtoggle" onclick="document.getElementById('side').classList.toggle('open')">☰</button></div>
+    <div class="content" id="view"></div>
+  </div>
+</div>
+<div class="drawer-bg" id="drawerbg" onclick="closeDrawer()"></div>
+<div class="drawer" id="drawer"></div>
+<div id="menubg" onclick="closeMenu()" style="position:fixed;inset:0;z-index:72;display:none"></div>
+<div id="ctxmenu" class="ctxmenu"></div>
+<div class="modal-bg" id="modalbg" onclick="if(event.target===this)closeModal()"><div class="modal" id="modal"></div></div>
+<div class="toast" id="toast"></div>
+<div class="cmdk-bg" id="cmdkbg" onclick="if(event.target===this)closeCmdk()">
+  <div class="cmdk"><div class="cmdk-in"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8a918a" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg><input id="cmdkin" placeholder="Search people, brands, or jump to…" oninput="renderCmdk()" onkeydown="cmdkKey(event)"><kbd style="font-size:11px;color:#8a918a;border:1px solid var(--line);border-radius:5px;padding:2px 6px">esc</kbd></div><div class="cmdk-list" id="cmdklist"></div></div>
+</div>
+<div class="demo-tag">◆ CRM demo v5 — sample data</div>
+
+<script>
+const I={
+  home:'<path d="M3 10.5L12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/>',
+  leads:'<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>',
+  for:'<path d="M3 21h18M5 21V7l8-4v18M19 21V10l-6-3"/><path d="M9 9v.01M9 12v.01M9 15v.01"/>',
+  agent:'<circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 0 0-16 0"/>',
+  market:'<path d="M3 9l1-5h16l1 5M4 9v11h16V9M4 9h16"/><path d="M9 22V12h6v10"/>',
+  agr:'<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M9 13l2 2 4-4"/>',
+  chats:'<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>',
+  chart:'<path d="M3 3v18h18"/><rect x="7" y="11" width="3" height="7"/><rect x="12" y="7" width="3" height="11"/><rect x="17" y="4" width="3" height="14"/>',
+  dl:'<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/>',
+  wallet:'<path d="M3 7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M16 13h3M3 9h18"/>',
+  clip:'<path d="M21 11.5l-8.5 8.5a5 5 0 0 1-7-7l8.5-8.5a3.5 3.5 0 0 1 5 5l-8.5 8.5a2 2 0 0 1-3-3l7.8-7.8"/>',
+  map:'<path d="M9 20l-6 2V6l6-2 6 2 6-2v16l-6 2-6-2z"/><path d="M9 4v16M15 6v16"/>',
+  gear:'<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-2.7 1.1V21a2 2 0 0 1-4 0v-.1a1.6 1.6 0 0 0-2.7-1.1l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0-1.1-2.7H3a2 2 0 0 1 0-4h.1a1.6 1.6 0 0 0 1.1-2.7l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.6 1.6 0 0 0 2.7-1.1V3a2 2 0 0 1 4 0v.1a1.6 1.6 0 0 0 2.7 1.1l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0-1.1 2.7H21a2 2 0 0 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1z"/>',
+  tag:'<path d="M20 10l-8-8H4v8l8 8z"/><circle cx="7.5" cy="7.5" r="1.3"/>',
+  archive:'<rect x="3" y="4" width="18" height="4" rx="1"/><path d="M5 8v11a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8M10 12h4"/>',
+  trash:'<path d="M3 6h18M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2M19 6l-1 14a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1L5 6M10 11v6M14 11v6"/>',
+  resend:'<path d="M21 2v6h-6M3 12a9 9 0 0 1 15-6.7L21 8M3 22v-6h6M21 12a9 9 0 0 1-15 6.7L3 16"/>',
+  cal:'<rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>',
+  doc:'<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/>',
+  eye:'<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>',
+  pen:'<path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/>',
+  mail:'<rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 7l-10 6L2 7"/>',
+  chat:'<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>',
+  send:'<path d="M22 2L11 13M22 2l-7 20-4-9-9-4z"/>',
+  x:'<path d="M18 6L6 18M6 6l12 12"/>',dots:'<circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/>',
+  expand:'<path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/>',
+  arrow:'<path d="M5 12h14M13 6l6 6-6 6"/>',check:'<path d="M20 6L9 17l-5-5"/>',
+  chevR:'<path d="M9 18l6-6-6-6"/>',bell:'<path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/>',
+  up:'<path d="M12 19V5M5 12l7-7 7 7"/>',dn:'<path d="M12 5v14M19 12l-7 7-7-7"/>',
+  bolt:'<path d="M13 2L3 14h9l-1 8 10-12h-9z"/>',spark:'<path d="M12 2v4M12 18v4M2 12h4M18 12h4M5 5l2.5 2.5M16.5 16.5L19 19M19 5l-2.5 2.5M7.5 16.5L5 19"/>'
+};
+function ico(k,s){return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"'+(s?' style="width:'+s+'px;height:'+s+'px"':'')+'>'+I[k]+'</svg>'}
+const AVC=['#3a4a3a','#7c3aed','#2563eb','#a2762f','#3f8a52','#b64f2c','#59615a'];
+function avc(n){let h=0;for(const c of n)h=(h*31+c.charCodeAt(0))%AVC.length;return AVC[h]}
+const inits=n=>n.split(' ').map(x=>x[0]).join('').slice(0,2);
+function avatar(n,size,sq){return `<div class="av ${sq?'sq':''}" style="width:${size}px;height:${size}px;background:${avc(n)};font-size:${Math.round(size*0.38)}px">${inits(n)}</div>`}
+
+const NAV=[
+  {id:'home',label:'Home',ic:'home'},
+  {s:'Network'},
+  {id:'franchisees',label:'Franchisees',ic:'leads',badge:3},
+  {id:'brands',label:'Brands',ic:'for',badge:2},
+  {id:'agents',label:'Agents',ic:'agent',badge:1},
+  {id:'territories',label:'Territories',ic:'map'},
+  {s:'Workspace'},
+  {id:'marketplace',label:'Marketplace',ic:'market',badge:1},
+  {id:'resales',label:'Resales',ic:'tag'},
+  {id:'messages',label:'Messages',ic:'chats',badge:2},
+  {id:'agreements',label:'Agreements',ic:'agr'},
+  {s:'Business'},
+  {id:'analytics',label:'Analytics',ic:'chart'},
+  {id:'finance',label:'Finance',ic:'wallet'},
+  {id:'settings',label:'Settings',ic:'gear'},
+];
+let current='home';
+function renderNav(){document.getElementById('nav').innerHTML=NAV.map(n=>n.s?'<div class="seclbl">'+n.s+'</div>':`<div class="nav${n.id===current?' active':''}" onclick="go('${n.id}')">${ico(n.ic)}${n.label}${n.badge?'<span class="badge">'+n.badge+'</span>':''}</div>`).join('')}
+function go(id){current=id;closeDrawer();renderNav();render();document.getElementById('side').classList.remove('open');window.scrollTo(0,0)}
+
+const STAGES=['New','Contacted','Matched','Introduced','Agreement','Live'];
+const CAND=[
+  {n:'Sarah Whitfield',e:'sarah.w@gmail.com',loc:'Manchester',budget:'£75k–100k',stage:2,brand:'Creams Café',score:92,src:'Agent · J. Doyle',ref:1,flag:'Meeting requested',last:'2h ago',why:['Budget aligned','Manchester territory open','F&B experience','Owner-operator']},
+  {n:'Priya Nair',e:'priya.nair@icloud.com',loc:'London',budget:'£100k+',stage:0,brand:null,score:null,src:'Quiz',last:'1d ago'},
+  {n:'James Okoro',e:'j.okoro@outlook.com',loc:'Birmingham',budget:'£40k–60k',stage:2,brand:'Chapati Man',score:84,src:'Quiz',last:'3h ago',why:['Budget aligned','Midlands territory','Quick-service fit']},
+  {n:'Ben Carter',e:'ben.c@gmail.com',loc:'Leeds',budget:'£75k–100k',stage:3,brand:'Creams Café',score:90,src:'Quiz',last:'5h ago',why:['Budget aligned','Yorkshire territory','Hospitality background']},
+  {n:'Nadia Yusuf',e:'nadia@outlook.com',loc:'London',budget:'£50k–75k',stage:3,brand:'PG Fast Food',score:81,src:'Agent · M. Ree',ref:1,flag:'Awaiting brand reply',last:'1d ago',why:['London territory','Fast-food interest','Multi-unit ambition']},
+  {n:'Greg Hall',e:'greg.hall@me.com',loc:'Sheffield',budget:'£30k–45k',stage:4,brand:'Chapati Man',score:88,src:'Quiz',flag:'Chase signature',last:'4d ago',why:['Budget aligned','Sheffield territory','Sector match']},
+  {n:'Aisha Khan',e:'aisha.k@gmail.com',loc:'Bristol',budget:'£60k–75k',stage:1,brand:null,score:null,src:'Quiz',last:'2d ago'},
+  {n:'David Mensah',e:'d.mensah@yahoo.com',loc:'Glasgow',budget:'£40k–60k',stage:1,brand:'Cafe2U',score:79,src:'Quiz',last:'2d ago',why:['Budget aligned','Van-based / mobile','Scotland coverage']},
+  {n:'Sofia Marin',e:'sofia.m@gmail.com',loc:'Cardiff',budget:'£15k–30k',stage:5,brand:'Cafe2U',score:86,src:'Quiz',last:'1w ago',why:['Low entry cost','Wales territory','Flexible hours']},
+];
+const BRANDS=[
+  {n:'Creams Café',c:'Jemma Rowe',e:'jemma@creamscafe.co.uk',fee:'£30k',cands:6,st:'review',d:'2 Aug',prog:100,updates:['Questionnaire submitted','2 new candidates']},
+  {n:'PG Fast Food',c:'Omar Patel',e:'ops@pgfastfood.com',fee:'£45k',cands:3,st:'review',d:'29 Jul',prog:100,updates:['Questionnaire submitted']},
+  {n:'Chapati Man',c:'Ravi Shah',e:'ravi@chapatiman.com',fee:'£22k',cands:9,st:'active',d:'20 Jul',prog:100,updates:['New message']},
+  {n:'Cafe2U',c:'Lisa Grant',e:'lisa@cafe2u.co.uk',fee:'£18k',cands:4,st:'active',d:'12 Jul',prog:80,updates:[]},
+  {n:'Bright Cleaning Co',c:'Neil Frost',e:'neil@brightclean.co',fee:'£15k',cands:2,st:'draft',d:'8 Jul',prog:35,updates:[]},
+  {n:'GreenLeaf Juice Bar',c:'Tara Singh',e:'tara@greenleaf.co',fee:'£26k',cands:5,st:'active',d:'2 Jul',prog:100,updates:[]},
+];
+const AGENTS=[
+  {n:'Jack Doyle',e:'jack@doyleintros.com',code:'JACKD',leads:14,intros:5,conv:36,comm:'£4,250',st:'active',updates:['1 new referral']},
+  {n:'Maria Ree',e:'maria.ree@gmail.com',code:'MARIA10',leads:8,intros:2,conv:25,comm:'£1,600',st:'active',updates:[]},
+  {n:'Sam Ford',e:'sam@fordpartners.co',code:'SAMF',leads:3,intros:0,conv:0,comm:'£0',st:'pending',updates:[]},
+];
+const PARTNERS=[
+  {n:'Lloyds Business Banking',cat:'Finance',desc:'Franchise-friendly business accounts & lending.',intros:12,st:'active'},
+  {n:'Rundle Legal',cat:'Legal',desc:'Franchise agreement & lease review.',intros:7,st:'active'},
+  {n:'BrightSign Media',cat:'Marketing',desc:'Local launch campaigns & social.',intros:4,st:'active'},
+  {n:'ShopFit Direct',cat:'Fit-out',desc:'Turnkey unit fit-out & signage.',intros:2,st:'paused'},
+  {n:'Adept Insurance',cat:'Insurance',desc:'Cover tailored to food & retail franchises.',intros:6,st:'active'},
+];
+const MKT_REQUESTS=[
+  {who:'Ben Carter',type:'Franchisee',partner:'Lloyds Business Banking',need:'Finance for £75k fit-out',at:'2h ago'},
+  {who:'Creams Café',type:'Franchisor',partner:'BrightSign Media',need:'Launch campaign for 2 new sites',at:'1d ago'},
+];
+const AGR=[{brand:'Chapati Man',who:'Ravi Shah',st:'signed',d:'Signed 18 Jul'},{brand:'Cafe2U',who:'Lisa Grant',st:'sent',d:'Sent 10 Jul'},{brand:'Creams Café',who:'Jemma Rowe',st:'draft',d:'Draft'}];
+
+const stMap={review:['p-gold','Pending review'],active:['p-ok','Active'],draft:['p-mute','Draft'],pending:['p-warn','Pending'],paused:['p-mute','Paused'],signed:['p-ok','Signed'],sent:['p-info','Awaiting signature']};
+const stagePill=['p-info','p-mute','p-green','p-violet','p-warn','p-ok'];
+function pill(st){const m=stMap[st]||['p-mute',st];return `<span class="pill ${m[0]}"><span class="dotg"></span>${m[1]}</span>`}
+function candPill(s){return `<span class="pill ${stagePill[s]}"><span class="dotg"></span>${STAGES[s]}</span>`}
+function head(t,s,a){return `<div class="phead"><div><h1>${t}</h1><div class="psub">${s}</div></div>${a?'<div style="display:flex;gap:8px">'+a+'</div>':''}</div>`}
+function gmail(e){return `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(e)}`}
+
+const MSGS={};
+function seedMsgs(){
+  MSGS['cand0']=[{them:1,who:'Sarah',t:'Thanks for the intro — Creams looks great. Could we chat availability?',at:'Mon 10:02'},{them:0,t:'Of course. Jemma has slots Thursday afternoon — shall I book?',at:'Mon 10:15'},{them:1,t:'Thursday after 2pm would be ideal 🙌',at:'Mon 10:20'}];
+  MSGS['cand5']=[{them:0,t:'Hi Greg — the agreement is in your portal to review & sign.',at:'Thu 09:00'},{them:1,who:'Greg',t:'Got it, reviewing with my accountant this week.',at:'Thu 12:40'}];
+  MSGS['brand2']=[{them:1,who:'Ravi',t:'Any update on the Sheffield candidate?',at:'Tue 15:10'},{them:0,t:'Greg is reviewing the agreement now — will confirm this week.',at:'Tue 15:30'}];
+  MSGS['brand0']=[{them:1,who:'Jemma',t:'Can we prioritise Manchester candidates?',at:'Mon 09:12'}];
+  MSGS['agent0']=[{them:1,who:'Jack',t:'Just sent over a new referral — Manchester, £80k budget.',at:'Tue 14:00'},{them:0,t:'Great, thanks Jack — I\'ll get them into the pipeline and keep you posted on commission.',at:'Tue 14:12'}];
+}
+function getMsgs(key){return MSGS[key]||[]}
+function convParse(key){const isA=key.startsWith('agent');const isP=key.startsWith('partner');const isB=key.startsWith('brand');const i=+key.replace(/\D/g,'');const o=isA?AGENTS[i]:isP?PARTNERS[i]:isB?BRANDS[i]:CAND[i];const contact=isB?o.c:o.n;return{isA,isP,isB,i,name:o.n,who:contact.split(' ')[0],sq:isB||isP,kind:isA?'Agent':isP?'Marketplace partner':isB?'Franchisor':'Franchisee'}}
+function openPartnerChat(i){const k='partner'+i;if(!MSGS[k])MSGS[k]=[{them:1,who:PARTNERS[i].n.split(' ')[0],t:'Hi — happy to help with any introductions from your network.',at:'Recent'}];convKey=k;go('messages')}
+function sendMsg(key,type,i){const ta=document.getElementById('composer');if(!ta||!ta.value.trim())return;(MSGS[key]=MSGS[key]||[]).push({them:0,t:ta.value.trim(),at:'Just now'});ta.value='';if(current==='messages'){render();}else if(current==='record'){render();}else{document.getElementById('drawer').innerHTML=drawerFor(type,i)}}
+
+// ── HOME (stats + action center) ──
+const KPIS=[['Activity','128','+18%','up'],['New leads','24','+12%','up'],['New brands','3','+1','up'],['New matches','14','+22%','up'],['Intros made','8','−3%','dn'],['Active agents','5','+2','up']];
+const ACTIONS=[
+  {g:'Today',ic:'cal',tone:['var(--crit-bg)','var(--crit)'],t:'Book meeting with Sarah Whitfield',s:'Requested a call · 92% match to Creams Café',btn:'Book',open:0},
+  {g:'Today',ic:'doc',tone:['var(--warn-bg)','var(--warn)'],t:'Review Creams Café questionnaire',s:'Submitted 2 Aug · 6 candidates waiting',btn:'Review',openB:0},
+  {g:'Today',ic:'eye',tone:['var(--info-bg)','var(--info)'],t:'Reveal match to Priya Nair',s:'PG Fast Food · 88% fit · not yet shown',btn:'Reveal',open:1},
+  {g:'This week',ic:'pen',tone:['var(--warn-bg)','var(--warn)'],t:'Chase Greg Hall’s agreement',s:'Chapati Man · sent 4 days ago, unsigned',btn:'Open',open:5},
+];
+const FEED=[['var(--ok)','<b>James Okoro</b> replied — interested in Chapati Man','20 min ago'],['var(--violet)','<b>Ben Carter</b> introduced to Creams Café','2h ago'],['var(--gold-ink)','New lead <b>Priya Nair</b> from the matching quiz','5h ago'],['var(--info)','<b>Jack Doyle</b> referred a new candidate','Yesterday'],['var(--ok)','<b>Sofia Marin</b> signed with Cafe2U','2 days ago']];
+function vHome(){
+  const groups=[...new Set(ACTIONS.map(a=>a.g))];
+  return head('Good afternoon, Harry','You have 3 things to action today.')+`
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px"><span style="font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink3)">This month</span><span class="va" onclick="go('analytics')">View analytics ›</span></div>
+  <div class="kpibar" style="grid-template-columns:repeat(4,1fr);margin-bottom:24px">${KPIS.slice(0,4).map(k=>`<div class="kpi" style="cursor:pointer" onclick="go('analytics')"><div class="kn">${k[1]}</div><div class="kl">${k[0]}</div><div class="kd ${k[3]}">${ico(k[3]==='up'?'up':'dn',11)}${k[2]}</div></div>`).join('')}</div>
+  <div class="home-grid">
+    <div>${groups.map(g=>`<div class="grouplbl">${g}</div>`+ACTIONS.filter(a=>a.g===g).map(a=>{const click=a.open!=null?`openRecord('cand',${a.open})`:`openRecord('brand',${a.openB})`;return `<div class="act" onclick="${click}"><div class="act-ic" style="background:${a.tone[0]};color:${a.tone[1]}">${ico(a.ic,18)}</div><div style="min-width:0"><div class="act-t">${a.t}</div><div class="act-s">${a.s}</div></div><div class="act-r"><button class="btn btn-p btn-sm" onclick="event.stopPropagation();${click}">${a.btn}</button></div></div>`}).join('')).join('')}</div>
+    <div class="card feed"><div style="padding:14px 16px 6px;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink3)">Recent activity</div>${FEED.map(f=>`<div class="feeditem"><span class="feed-d" style="background:${f[0]}"></span><div><div class="feed-t">${f[1]}</div><div class="feed-time">${f[2]}</div></div></div>`).join('')}</div>
+  </div>`;
+}
+
+// ── ANALYTICS (C1) ──
+function vAnalytics(){
+  const MONTHS=['Mar','Apr','May','Jun','Jul','Aug'];const ACT=[72,85,64,98,110,128];const mx=Math.max(...ACT);
+  const stageCounts=STAGES.map((s,k)=>CAND.filter(c=>c.stage===k).length);const smax=Math.max(...stageCounts,1);
+  const cats=[...new Set(PARTNERS.map(p=>p.cat))];
+  const hbar=(l,v,max,color)=>`<div style="margin-bottom:11px"><div style="display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:5px"><span>${l}</span><span style="font-weight:700" class="tnum">${v}</span></div><div class="progress" style="margin:0"><i style="width:${Math.round(v/max*100)}%;background:${color||'var(--green)'}"></i></div></div>`;
+  const byIntros=[...AGENTS].sort((a,b)=>b.intros-a.intros);
+  const mini=(t,rows)=>`<div class="card" style="padding:18px"><div class="dw-sec-t">${t}</div><div style="font-size:13px;color:var(--ink2)">${rows.map(r=>`<div style="display:flex;justify-content:space-between;padding:5px 0"><span>${r[0]}</span><b style="color:var(--ink)">${r[1]}</b></div>`).join('')}</div></div>`;
+  return head('Analytics','Performance across the network · this month vs last')+`
+  <div class="kpibar" style="margin-bottom:24px">${KPIS.map(k=>`<div class="kpi"><div class="kn">${k[1]}</div><div class="kl">${k[0]}</div><div class="kd ${k[3]}">${ico(k[3]==='up'?'up':'dn',11)}${k[2]}</div></div>`).join('')}</div>
+  <div class="recgrid" style="grid-template-columns:1fr 1fr">
+    <div class="card" style="padding:20px"><div class="dw-sec-t">Activity — last 6 months</div>
+      <div style="display:flex;align-items:flex-end;gap:12px;height:170px;padding-top:10px">${ACT.map((v,i)=>`<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%"><span class="tnum" style="font-size:11px;font-weight:700;margin-bottom:5px">${v}</span><div style="width:62%;background:${i===ACT.length-1?'var(--green)':'var(--green-soft)'};border-radius:6px 6px 0 0;height:${Math.round(v/mx*100)}%"></div><span style="font-size:10.5px;color:var(--ink3);margin-top:7px">${MONTHS[i]}</span></div>`).join('')}</div></div>
+    <div class="card" style="padding:20px"><div class="dw-sec-t">Franchisee funnel</div>${STAGES.map((s,k)=>hbar(s,stageCounts[k],smax)).join('')}</div>
+  </div>
+  <div class="recgrid" style="grid-template-columns:1fr 1fr;margin-top:22px">
+    <div class="card" style="padding:20px"><div class="dw-sec-t">Top agents by intros</div>${byIntros.map(a=>`<div class="field"><span class="k" style="display:flex;align-items:center;gap:9px">${avatar(a.n,26)}${a.n}</span><span class="v">${a.intros} intros · ${a.comm}</span></div>`).join('')}</div>
+    <div class="card" style="padding:20px"><div class="dw-sec-t">Marketplace intros by category</div>${cats.map(c=>{const v=PARTNERS.filter(p=>p.cat===c).reduce((n,p)=>n+p.intros,0);return hbar(c,v,25,'var(--gold-ink)')}).join('')}</div>
+  </div>
+  <div class="recgrid" style="grid-template-columns:repeat(3,1fr);margin-top:22px">
+    ${mini('Brands',[['Total',BRANDS.length],['Active',BRANDS.filter(b=>b.st==='active').length],['Pending review',BRANDS.filter(b=>b.st==='review').length],['New this month','+3']])}
+    ${mini('Matches',[['Made this month','14'],['Avg fit score','85%'],['Reveal → interested','62%'],['Avg time to match','3.2 days']])}
+    ${mini('Agents',[['Active',AGENTS.filter(a=>a.st==='active').length],['Leads referred',AGENTS.reduce((n,a)=>n+a.leads,0)],['Intros made',AGENTS.reduce((n,a)=>n+a.intros,0)],['Commission owed','£5,850']])}
+  </div>
+  <div class="recgrid" style="grid-template-columns:1.4fr 1fr;margin-top:22px">
+    <div class="card" style="padding:20px"><div class="dw-sec-t">Lead source ROI</div><table style="width:100%;border-collapse:collapse;font-size:13px"><thead><tr>${['Source','Leads','Signings','Revenue'].map((h,k)=>`<th style="text-align:${k>0?'right':'left'};font-size:10.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--ink3);padding:8px 6px">${h}</th>`).join('')}</tr></thead><tbody>${[['Matching quiz',52,9,'£24,300'],['Agent referrals',25,5,'£13,500'],['Google / SEO',18,2,'£5,400'],['Events',6,1,'£2,700']].map(r=>`<tr style="border-top:1px solid var(--line2)"><td style="padding:9px 6px;font-weight:500">${r[0]}</td><td style="padding:9px 6px;text-align:right">${r[1]}</td><td style="padding:9px 6px;text-align:right">${r[2]}</td><td style="padding:9px 6px;text-align:right;font-weight:700">${r[3]}</td></tr>`).join('')}</tbody></table></div>
+    <div class="card" style="padding:20px"><div class="dw-sec-t">Pipeline forecast</div><div style="font-size:30px;font-weight:700;letter-spacing:-.02em">£18,400</div><div style="font-size:12.5px;color:var(--ink2);margin-top:2px">weighted value of open deals</div><div style="margin-top:16px">${[['Agreement stage','£9,600','78%'],['Introduced','£6,200','45%'],['Matched','£2,600','20%']].map(f=>`<div style="margin-bottom:11px"><div style="display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:4px"><span>${f[0]}</span><b>${f[1]}</b></div><div class="progress" style="margin:0"><i style="width:${f[2]}"></i></div></div>`).join('')}</div></div>
+  </div>`;
+}
+
+// ── FINANCE (C7) ──
+const REV=[
+  {brand:'Chapati Man',fee:'£22,000',pct:15,signed:1,collected:'£22,000',earned:3300,st:'paid'},
+  {brand:'Cafe2U',fee:'£18,000',pct:15,signed:1,collected:'£18,000',earned:2700,st:'invoiced'},
+  {brand:'Creams Café',fee:'£30,000',pct:12,signed:0,collected:'—',earned:0,st:'pending'},
+  {brand:'GreenLeaf Juice Bar',fee:'£26,000',pct:15,signed:1,collected:'£26,000',earned:3900,st:'paid'},
+];
+const PAYOUTS=[
+  {agent:'Jack Doyle',owed:1250,paid:3000,st:'part'},
+  {agent:'Maria Ree',owed:1600,paid:0,st:'owed'},
+  {agent:'Sam Ford',owed:0,paid:0,st:'clear'},
+];
+const INVOICES=[
+  {ref:'INV-0042',party:'Chapati Man',dir:'out',amt:'£3,300',st:'paid',d:'18 Jul'},
+  {ref:'INV-0043',party:'Cafe2U',dir:'out',amt:'£2,700',st:'sent',d:'10 Jul'},
+  {ref:'PAY-0011',party:'Jack Doyle',dir:'in',amt:'£3,000',st:'paid',d:'5 Jul'},
+  {ref:'INV-0044',party:'GreenLeaf Juice Bar',dir:'out',amt:'£3,900',st:'overdue',d:'2 Jul'},
+];
+const finMap={paid:['p-ok','Paid'],invoiced:['p-info','Invoiced'],pending:['p-mute','Pending'],sent:['p-info','Sent'],overdue:['p-crit','Overdue'],owed:['p-warn','Owed'],part:['p-warn','Part-paid'],clear:['p-mute','Settled']};
+function finPill(s){const m=finMap[s]||['p-mute',s];return `<span class="pill ${m[0]}">${m[1]}</span>`}
+let finTab='overview';
+function setFinTab(t){finTab=t;render()}
+function vFinance(){
+  const earned=REV.reduce((n,r)=>n+r.earned,0);
+  const owed=PAYOUTS.reduce((n,p)=>n+p.owed,0);
+  const outstanding=INVOICES.filter(i=>i.st==='sent'||i.st==='overdue').length;
+  const kpi=(n,l,d,cls)=>`<div class="kpi"><div class="kn">${n}</div><div class="kl">${l}</div>${d?`<div class="kd ${cls}">${d}</div>`:''}</div>`;
+  const tab=(id,l)=>`<div class="ptab ${finTab===id?'on':''}" onclick="setFinTab('${id}')">${l}</div>`;
+  let body='';
+  if(finTab==='overview'){
+    body=`<div class="kpibar" style="grid-template-columns:repeat(4,1fr);margin-bottom:24px">${kpi('£12,600','Revenue booked (YTD)','+22%','up')}${kpi('£'+owed.toLocaleString(),'Owed to agents','',' ')}${kpi('£6,750','Net after payouts','+16%','up')}${kpi(outstanding,'Invoices outstanding','',' ')}</div>
+    <div class="recgrid" style="grid-template-columns:1fr 1fr">
+      <div class="card" style="padding:20px"><div class="dw-sec-t">Balance</div>
+        <div class="field"><span class="k">Revenue from franchisors</span><span class="v">£12,600</span></div>
+        <div class="field"><span class="k">Agent commissions</span><span class="v" style="color:var(--crit)">− £5,850</span></div>
+        <div class="field"><span class="k">Marketplace referral income</span><span class="v">£0</span></div>
+        <div class="field" style="border-top:1px solid var(--line);margin-top:4px;padding-top:12px"><span class="k" style="font-weight:700;color:var(--ink)">Net this year</span><span class="v" style="font-weight:700">£6,750</span></div></div>
+      <div class="card" style="padding:20px"><div class="dw-sec-t">Needs attention</div>
+        <div class="act" style="cursor:pointer;margin-bottom:9px" onclick="setFinTab('invoices')"><div class="act-ic" style="background:var(--crit-bg);color:var(--crit)">${ico('wallet',18)}</div><div><div class="act-t">1 invoice overdue</div><div class="act-s">GreenLeaf Juice Bar · £3,900</div></div></div>
+        <div class="act" style="cursor:pointer" onclick="setFinTab('payouts')"><div class="act-ic" style="background:var(--warn-bg);color:var(--warn)">${ico('agent',18)}</div><div><div class="act-t">£2,850 owed to agents</div><div class="act-s">Maria Ree £1,600 · Jack Doyle £1,250</div></div></div></div>
+    </div>`;
+  } else if(finTab==='revenue'){
+    body=`<div class="psub" style="margin:-6px 0 14px">Our % is set per franchisor — tie-in with each brand's agreement. Revenue books when the franchisee signs.</div>
+    <div class="card" style="padding:6px 4px"><table style="width:100%;border-collapse:collapse;font-size:13px"><thead><tr>${['Franchisor','Franchise fee','Our %','Signed','Collected','We earn','Status'].map(h=>`<th style="text-align:left;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink3);padding:11px 14px">${h}</th>`).join('')}</tr></thead><tbody>${REV.map(r=>`<tr style="border-top:1px solid var(--line2)"><td style="padding:12px 14px;font-weight:500">${r.brand}</td><td style="padding:12px 14px">${r.fee}</td><td style="padding:12px 14px"><span class="score" style="background:#eef0e9;color:var(--ink2)">${r.pct}% ${ico('pen',11)}</span></td><td style="padding:12px 14px">${r.signed}</td><td style="padding:12px 14px">${r.collected}</td><td style="padding:12px 14px;font-weight:700">£${r.earned.toLocaleString()}</td><td style="padding:12px 14px">${finPill(r.st)}</td></tr>`).join('')}</tbody></table></div>`;
+  } else if(finTab==='payouts'){
+    body=`<div class="psub" style="margin:-6px 0 14px">Commission owed and paid to referral agents.</div>
+    <div class="card" style="padding:6px 4px"><table style="width:100%;border-collapse:collapse;font-size:13px"><thead><tr>${['Agent','Owed','Paid to date','Status',''].map(h=>`<th style="text-align:left;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink3);padding:11px 14px">${h}</th>`).join('')}</tr></thead><tbody>${PAYOUTS.map(p=>`<tr style="border-top:1px solid var(--line2)"><td style="padding:12px 14px;font-weight:500;display:flex;align-items:center;gap:9px">${avatar(p.agent,28)}${p.agent}</td><td style="padding:12px 14px;font-weight:700">£${p.owed.toLocaleString()}</td><td style="padding:12px 14px">£${p.paid.toLocaleString()}</td><td style="padding:12px 14px">${finPill(p.st)}</td><td style="padding:12px 14px;text-align:right">${p.owed?'<button class="btn btn-p btn-sm">Mark paid</button>':''}</td></tr>`).join('')}</tbody></table></div>`;
+  } else {
+    body=`<div style="display:flex;justify-content:space-between;align-items:center;margin:-6px 0 14px"><div class="psub">Invoices in and out. Attach a PDF and we'll notify you on status changes.</div><button class="btn btn-p btn-sm">${ico('clip',14)} Upload invoice</button></div>
+    <div class="card" style="padding:6px 4px"><table style="width:100%;border-collapse:collapse;font-size:13px"><thead><tr>${['Reference','Party','Direction','Amount','Date','Status','File'].map(h=>`<th style="text-align:left;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink3);padding:11px 14px">${h}</th>`).join('')}</tr></thead><tbody>${INVOICES.map(v=>`<tr style="border-top:1px solid var(--line2)"><td style="padding:12px 14px;font-weight:500;font-family:ui-monospace,monospace">${v.ref}</td><td style="padding:12px 14px">${v.party}</td><td style="padding:12px 14px">${v.dir==='out'?'<span class="pill p-info">Outbound</span>':'<span class="pill p-mute">Payout</span>'}</td><td style="padding:12px 14px;font-weight:700">${v.amt}</td><td style="padding:12px 14px;color:var(--ink3)">${v.d}</td><td style="padding:12px 14px">${finPill(v.st)}</td><td style="padding:12px 14px"><button class="btn btn-s btn-sm">${ico('clip',13)}</button></td></tr>`).join('')}</tbody></table></div>`;
+  }
+  return head('Finance','Revenue, agent payouts and invoices in one place')+`
+  <div class="ptabs">${tab('overview','Overview')}${tab('revenue','Revenue')}${tab('payouts','Agent payouts')}${tab('invoices','Invoices')}</div>${body}`;
+}
+
+// ── FRANCHISEES (cards, action-forward) ──
+function nextAction(c){if(c.flag==='Meeting requested')return'Book';if(c.flag==='Chase signature')return'Chase';if(c.stage<=1)return c.brand?'Review':'Match';if(c.stage===2)return'Introduce';if(c.stage===3)return'Follow up';return'View'}
+function fcard(c,i){
+  return `<div class="ncard ${c.flag?'upd':''}" onclick="openRecord('cand',${i})">
+    ${c.flag?`<span class="nb" style="background:var(--crit);color:#fff">${ico('bell',11)} Action</span>`:''}
+    <div class="nc-head">${avatar(c.n,44)}<div style="min-width:0"><div class="nc-nm">${c.n}</div><div class="nc-sub">${c.loc} · ${c.budget}</div></div></div>
+    <div style="display:flex;align-items:center;gap:7px;margin-bottom:4px">${candPill(c.stage)}${c.ref?'<span class="reveal">Referral</span>':''}</div>
+    <div style="font-size:12.5px;color:var(--ink2);margin-top:8px">${c.brand?`Matched to <b style="color:var(--ink);font-weight:600">${c.brand}</b> · <span class="score">${c.score}%</span>`:'<span style="color:var(--ink3)">Not yet matched</span>'}</div>
+    ${c.why?`<div class="why" style="margin-top:10px">${c.why.slice(0,2).map(w=>`<span>${ico('check',11)}${w}</span>`).join('')}</div>`:''}
+    <div class="nc-foot"><span style="font-size:11px;color:var(--ink3)">Updated ${c.last}</span><button class="btn btn-p btn-sm" onclick="event.stopPropagation();openRecord('cand',${i})">${nextAction(c)}</button></div>
+  </div>`;
+}
+function feeTable(list){
+  const th=(h,r)=>`<th style="text-align:${r?'right':'left'};font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink3);padding:12px 16px;background:var(--surface2);border-bottom:1px solid var(--line2);white-space:nowrap">${h}</th>`;
+  return `<div style="overflow-x:auto;border:1px solid var(--line);border-radius:15px;box-shadow:0 1px 2px rgba(27,33,26,.04)"><table style="width:100%;border-collapse:collapse;background:var(--surface);font-size:13px;min-width:720px">
+    <thead><tr>${th('Name')}${th('Stage')}${th('Matched brand')}${th('Fit',1)}${th('Budget')}${th('Source')}${th('Last')}${th('')}</tr></thead>
+    <tbody>${list.map(x=>{const c=x.c;return `<tr style="border-bottom:1px solid var(--line2);cursor:pointer;${c.flag?'box-shadow:inset 3px 0 0 var(--crit)':''}" onclick="openRecord('cand',${x.i})" onmouseover="this.style.background='var(--surface2)'" onmouseout="this.style.background=''">
+      <td style="padding:11px 16px"><div style="display:flex;align-items:center;gap:10px">${avatar(c.n,30)}<div><div style="font-weight:500">${c.n}</div><div style="font-size:11.5px;color:var(--ink3)">${c.loc}</div></div></div></td>
+      <td style="padding:11px 16px">${candPill(c.stage)}</td>
+      <td style="padding:11px 16px">${c.brand||'<span style="color:var(--ink3)">Unmatched</span>'}${c.ref?' <span class="reveal">ref</span>':''}</td>
+      <td style="padding:11px 16px;text-align:right">${c.score?`<span class="score">${c.score}%</span>`:'<span style="color:var(--ink3)">—</span>'}</td>
+      <td style="padding:11px 16px;font-variant-numeric:tabular-nums">${c.budget}</td>
+      <td style="padding:11px 16px;color:var(--ink2)">${c.src}</td>
+      <td style="padding:11px 16px;color:var(--ink3);font-variant-numeric:tabular-nums">${c.last}</td>
+      <td style="padding:11px 16px;text-align:right"><button class="btn btn-s btn-sm" onclick="event.stopPropagation();openRecord('cand',${x.i})">${nextAction(c)}</button></td></tr>`}).join('')}</tbody></table></div>`;
+}
+let feeFilter='all',feeView='cards';
+function setFeeFilter(f){feeFilter=f;render()}
+function setFeeView(v){feeView=v;render()}
+function vFranchisees(){
+  const needs=CAND.filter(c=>c.flag).length;
+  let list=CAND.map((c,i)=>({c,i})).filter(x=>!x.c._deleted);
+  list=feeFilter==='archived'?list.filter(x=>x.c._archived):list.filter(x=>!x.c._archived);
+  if(feeFilter==='needs')list=list.filter(x=>x.c.flag);
+  else if(feeFilter==='unmatched')list=list.filter(x=>!x.c.brand);
+  else if(feeFilter.startsWith('stage:'))list=list.filter(x=>x.c.stage===+feeFilter.split(':')[1]);
+  const sb=(f,l)=>`<button class="${feeFilter===f?'on':''}" onclick="setFeeFilter('${f}')">${l}</button>`;
+  const vb=(v,l)=>`<button class="${feeView===v?'on':''}" onclick="setFeeView('${v}')">${l}</button>`;
+  const empty='<div style="color:var(--ink3);padding:20px">No franchisees at this stage.</div>';
+  return head('Franchisees',`${CAND.length} in the network · ${needs} need action`,'<button class="btn btn-s btn-sm">Import</button><button class="btn btn-p btn-sm">+ New franchisee</button>')+`
+  <div class="listbar"><div class="tbsearch">${ico('leads',15)}<input placeholder="Search franchisees…"></div>
+    <div class="seg">${sb('all','All')}${sb('needs','Needs action')}${sb('unmatched','Unmatched')}${sb('archived','Archived')}</div>
+    <div class="seg">${STAGES.map((s,k)=>sb('stage:'+k,s)).join('')}</div>
+    <div class="seg" style="margin-left:auto">${vb('cards','Cards')}${vb('table','Table')}</div></div>
+  ${list.length?(feeView==='table'?feeTable(list):`<div class="cardgrid">${list.map(x=>fcard(x.c,x.i)).join('')}</div>`):empty}`;
+}
+
+// ── BRANDS (network cards + updates filter) ──
+function bcard(b,i){
+  const u=b.updates.length;
+  return `<div class="ncard ${u?'upd':''}" onclick="openRecord('brand',${i})">
+    ${u?`<span class="nb">${ico('bell',11)} ${u}</span>`:''}
+    <div class="nc-head">${avatar(b.n,44,1)}<div style="min-width:0"><div class="nc-nm">${b.n}</div><div class="nc-sub">${b.c}</div></div></div>
+    <div>${pill(b.st)}</div>
+    ${u?`<div class="nc-upd">${ico('spark',13)} ${b.updates[0]}${u>1?` · +${u-1} more`:''}</div>`:''}
+    <div class="nc-stats" style="margin-top:14px"><div class="nc-stat"><div class="sv">${b.fee}</div><div class="sl">Fee</div></div><div class="nc-stat"><div class="sv">${b.cands}</div><div class="sl">Candidates</div></div><div class="nc-stat"><div class="sv">${b.prog}%</div><div class="sl">Profile</div></div></div>
+  </div>`;
+}
+function brandTable(list){
+  const th=(h,r)=>`<th style="text-align:${r?'right':'left'};font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink3);padding:12px 16px;background:var(--surface2);border-bottom:1px solid var(--line2);white-space:nowrap">${h}</th>`;
+  return `<div style="overflow-x:auto;border:1px solid var(--line);border-radius:15px;box-shadow:0 1px 2px rgba(27,33,26,.04)"><table style="width:100%;border-collapse:collapse;background:var(--surface);font-size:13px;min-width:740px">
+    <thead><tr>${th('Brand')}${th('Contact')}${th('Status')}${th('Fee')}${th('Candidates',1)}${th('Profile',1)}${th('Updates')}${th('')}</tr></thead>
+    <tbody>${list.map(x=>{const b=x.b;const na=b.st==='review'?'Review':b.st==='draft'?'Finish setup':'Open';return `<tr style="border-bottom:1px solid var(--line2);cursor:pointer;${b.st==='review'?'box-shadow:inset 3px 0 0 var(--gold)':''}" onclick="openRecord('brand',${x.i})" onmouseover="this.style.background='var(--surface2)'" onmouseout="this.style.background=''">
+      <td style="padding:11px 16px"><div style="display:flex;align-items:center;gap:10px">${avatar(b.n,30,1)}<div style="font-weight:500">${b.n}</div></div></td>
+      <td style="padding:11px 16px;color:var(--ink2)">${b.c}</td>
+      <td style="padding:11px 16px">${pill(b.st)}</td>
+      <td style="padding:11px 16px;font-variant-numeric:tabular-nums">${b.fee}</td>
+      <td style="padding:11px 16px;text-align:right;font-variant-numeric:tabular-nums">${b.cands}</td>
+      <td style="padding:11px 16px;text-align:right;font-variant-numeric:tabular-nums">${b.prog}%</td>
+      <td style="padding:11px 16px">${b.updates.length?`<span class="pill" style="background:var(--gold-soft);color:var(--gold-ink)">${b.updates.length} new</span>`:'<span style="color:var(--ink3)">—</span>'}</td>
+      <td style="padding:11px 16px;text-align:right"><button class="btn btn-s btn-sm" onclick="event.stopPropagation();openRecord('brand',${x.i})">${na}</button></td></tr>`}).join('')}</tbody></table></div>`;
+}
+let brandFilter='all',brandView='cards';
+function setBrandFilter(f){brandFilter=f;render()}
+function setBrandView(v){brandView=v;render()}
+function vBrands(){
+  let list=BRANDS.map((b,i)=>({b,i})).filter(x=>!x.b._deleted&&!x.b._archived);
+  if(brandFilter==='updates')list=list.filter(x=>x.b.updates.length);
+  if(brandFilter==='review')list=list.filter(x=>x.b.st==='review');
+  if(brandFilter==='active')list=list.filter(x=>x.b.st==='active');
+  const withU=BRANDS.filter(b=>b.updates.length).length;
+  const bf=(f,l)=>`<button class="${brandFilter===f?'on':''}" onclick="setBrandFilter('${f}')">${l}</button>`;
+  const vb=(v,l)=>`<button class="${brandView===v?'on':''}" onclick="setBrandView('${v}')">${l}</button>`;
+  return head('Brands',`${BRANDS.length} brands in the network · ${withU} with updates`,'<button class="btn btn-p btn-sm">+ Add brand</button>')+`
+  <div class="listbar"><div class="tbsearch">${ico('for',15)}<input placeholder="Search brands…"></div>
+  <div class="seg">${bf('all','All')}${bf('updates','Has updates')}${bf('review','Pending review')}${bf('active','Active')}</div>
+  <div class="seg" style="margin-left:auto">${vb('cards','Cards')}${vb('table','Table')}</div></div>
+  ${list.length?(brandView==='table'?brandTable(list):`<div class="cardgrid">${list.map(x=>bcard(x.b,x.i)).join('')}</div>`):'<div style="color:var(--ink3);padding:20px">No brands match this filter.</div>'}`;
+}
+
+// ── AGENTS (cards with agent metrics) ──
+function acard(a,i){
+  const u=a.updates.length;
+  return `<div class="ncard ${u?'upd':''}" onclick="openRecord('agent',${i})">
+    ${u?`<span class="nb">${ico('bell',11)} ${u}</span>`:''}
+    <div class="nc-head">${avatar(a.n,44)}<div style="min-width:0"><div class="nc-nm">${a.n}</div><div class="nc-sub">Code <b style="color:var(--ink2);font-family:ui-monospace,monospace">${a.code}</b></div></div></div>
+    <div>${pill(a.st)}</div>
+    ${u?`<div class="nc-upd">${ico('spark',13)} ${a.updates[0]}</div>`:''}
+    <div class="nc-stats" style="margin-top:14px"><div class="nc-stat"><div class="sv">${a.leads}</div><div class="sl">Leads</div></div><div class="nc-stat"><div class="sv">${a.intros}</div><div class="sl">Intros</div></div><div class="nc-stat"><div class="sv">${a.conv}%</div><div class="sl">Convert</div></div><div class="nc-stat"><div class="sv">${a.comm}</div><div class="sl">Commission</div></div></div>
+  </div>`;
+}
+function vAgents(){
+  return head('Agents',`${AGENTS.length} introducers`,'<button class="btn btn-p btn-sm">+ Invite agent</button>')+`
+  <div class="listbar"><div class="tbsearch">${ico('agent',15)}<input placeholder="Search agents…"></div><div class="seg"><button class="on">All</button><button>Active</button><button>Pending</button></div></div>
+  <div class="cardgrid">${AGENTS.map((a,i)=>({a,i})).filter(x=>!x.a._deleted&&!x.a._archived).map(x=>acard(x.a,x.i)).join('')}</div>`;
+}
+function drawerAgent(i){
+  const a=AGENTS[i];const key='agent'+i;const tab=(id,l)=>`<div class="dw-tab ${dwTab===id?'on':''}" onclick="setTab('${id}','agent',${i})">${l}</div>`;
+  let body=dwTab==='chat'?chatBlock(key,'agent',i,a.n.split(' ')[0]):`<div class="dw-sec"><div class="dw-sec-t">Performance</div>
+    <div class="field"><span class="k">Referral code</span><span class="v" style="font-family:ui-monospace,monospace">${a.code}</span></div>
+    <div class="field"><span class="k">Leads referred</span><span class="v">${a.leads}</span></div>
+    <div class="field"><span class="k">Intros made</span><span class="v">${a.intros}</span></div>
+    <div class="field"><span class="k">Conversion</span><span class="v">${a.conv}%</span></div>
+    <div class="field"><span class="k">Commission owed</span><span class="v">${a.comm}</span></div></div>
+    <div class="dw-sec"><div class="dw-sec-t">Referred candidates</div>${CAND.filter(c=>c.ref).slice(0,2).map(c=>`<div class="field" style="cursor:pointer" onclick="openRecord('cand',${CAND.indexOf(c)})"><span class="k" style="display:flex;align-items:center;gap:9px">${avatar(c.n,26)}${c.n}</span><span class="v">${candPill(c.stage)}</span></div>`).join('')}</div>`;
+  return `<div class="dw-top"><button class="btn btn-ic btn-s" onclick="closeDrawer()">${ico('x',16)}</button><span class="dw-crumb" style="flex:1">Agents / ${a.n}</span>${menuBtn('agent',i)}</div>
+  <div class="dw-head"><div class="dw-id">${avatar(a.n,50)}<div style="flex:1"><div class="dw-name">${a.n}</div><div class="dw-meta">${a.e}</div><div style="margin-top:7px">${pill(a.st)}</div></div></div>
+  <div class="dw-actions">${a.st==='pending'?`<button class="btn btn-p btn-sm" onclick="resendInvite('agent',${i})">${ico('resend',14)} Resend invite</button>`:'<button class="btn btn-p btn-sm">Send referral code</button>'}<a class="btn btn-s btn-sm" href="${gmail(a.e)}" target="_blank" rel="noopener">${ico('mail',15)}Email</a><button class="btn btn-s btn-sm" onclick="setTab('chat','agent',${i})">${ico('chat',15)}Message</button></div></div>
+  <div class="dw-tabs">${tab('overview','Overview')}${tab('chat','Messages')}</div>
+  <div class="dw-body">${body}</div>`;
+}
+
+// ── MARKETPLACE (two views) ──
+let mktTab='requests';
+function setMktTab(t){mktTab=t;render()}
+function vMarketplace(){
+  const cats=[...new Set(PARTNERS.map(p=>p.cat))];
+  return head('Marketplace','Introduction requests and the partner directory')+`
+  <div class="ptabs"><div class="ptab ${mktTab==='requests'?'on':''}" onclick="setMktTab('requests')">Requests ${MKT_REQUESTS.length?`<span class="score" style="margin-left:6px;background:var(--gold-soft);color:var(--gold-ink)">${MKT_REQUESTS.length}</span>`:''}</div><div class="ptab ${mktTab==='directory'?'on':''}" onclick="setMktTab('directory')">Directory</div></div>
+  ${mktTab==='requests'?
+    (MKT_REQUESTS.map(r=>`<div class="act" style="cursor:default"><div class="act-ic" style="background:var(--info-bg);color:var(--info)">${ico('market',18)}</div><div style="min-width:0"><div class="act-t">${r.who} → ${r.partner}</div><div class="act-s">${r.type} · ${r.need} · ${r.at}</div></div><div class="act-r"><button class="btn btn-s btn-sm" onclick="openPartnerChat(${PARTNERS.findIndex(p=>p.n===r.partner)})">${ico('chat',13)} Message</button><button class="btn btn-s btn-sm">Decline</button><button class="btn btn-p btn-sm">Approve intro</button></div></div>`).join('')||'<div class="card" style="padding:20px;color:var(--ink3)">No pending requests.</div>')
+    :
+    `<div class="psub" style="margin:-6px 0 16px">This is the directory your franchisees and franchisors browse. Manage partners here.</div>`+cats.map(cat=>`<div class="grouplbl">${cat}</div><div class="cardgrid">${PARTNERS.filter(p=>p.cat===cat).map(p=>`<div class="ncard"><div class="nc-head">${avatar(p.n,44,1)}<div style="min-width:0"><div class="nc-nm" style="font-size:14px">${p.n}</div><div class="nc-sub">${p.cat}</div></div></div><div style="font-size:12.5px;color:var(--ink2);min-height:34px">${p.desc}</div><div class="nc-foot"><span style="font-size:11px;color:var(--ink3)">${p.intros} intros made</span><span style="display:flex;gap:6px;align-items:center">${pill(p.st)}<button class="btn btn-s btn-sm" onclick="event.stopPropagation();openPartnerChat(${PARTNERS.indexOf(p)})">${ico('chat',13)}</button><button class="btn btn-s btn-sm" onclick="event.stopPropagation()">Manage</button></span></div></div>`).join('')}</div>`).join('')
+  }`;
+}
+
+// ── MESSAGES hub ──
+let convKey=null;
+function vMessages(){
+  const keys=Object.keys(MSGS);
+  if(!convKey||!MSGS[convKey])convKey=keys[0];
+  const convs=keys.map(k=>{const m=convParse(k);const ms=MSGS[k];const last=ms[ms.length-1];return{k,...m,last:last.t,at:last.at,unread:last.them===1}});
+  const cur=convParse(convKey);const ms=getMsgs(convKey);
+  return head('Messages','All conversations across franchisees, brands and agents')+`
+  <div class="chathub">
+    <div class="convlist">${convs.map(c=>`<div class="conv ${c.k===convKey?'on':''}" onclick="openConv('${c.k}')">${avatar(c.name,38,c.sq)}<div class="conv-main"><div class="conv-nm">${c.name}${c.unread?'<span class="unread"></span>':''}</div><div class="conv-last">${c.last}</div></div><span class="conv-time">${c.at}</span></div>`).join('')}</div>
+    <div class="convmain">
+      <div class="convhead">${avatar(cur.name,38,cur.sq)}<div style="flex:1"><div style="font-weight:600;font-size:14px">${cur.name}</div><div style="font-size:11.5px;color:var(--ink3)">${cur.isP?'Marketplace partner':cur.isA?'Agent · portal + app':(cur.isB?'Franchisor':'Franchisee')+' · portal + app'}</div></div>${cur.isP?'<button class="btn btn-s btn-sm" onclick="go(\'marketplace\')">View partner</button>':`<button class="btn btn-s btn-sm" onclick="openRecord('${cur.isA?'agent':cur.isB?'brand':'cand'}',${cur.i})">Open record</button>`}</div>
+      <div class="convbody"><div class="pushnote">${ico('bell',15)} ${cur.isP?`Messages email ${cur.who} at ${cur.name}.`:`Replies reach ${cur.who} in their portal inbox and push to the Foundry app.`}</div><div class="chat">${ms.map(m=>`<div class="msg ${m.them?'them':'me'}">${m.t}<div class="mt">${m.them?(m.who||cur.who):'You'} · ${m.at}</div></div>`).join('')}</div></div>
+      <div class="convfoot"><div class="composer"><textarea id="composer" rows="1" placeholder="Message ${cur.who}…"></textarea><button class="btn btn-p btn-ic" onclick="sendMsg('${convKey}','${cur.isA?'agent':cur.isP?'partner':cur.isB?'brand':'cand'}',${cur.i})">${ico('send',16)}</button></div></div>
+    </div>
+  </div>`;
+}
+function openConv(k){convKey=k;render()}
+
+// ── Record builders (drawer + full page) ──
+let dwTab='overview';
+function stepEl(stage){return `<div class="mini-step">${STAGES.map((s,k)=>`<div class="ms ${k<stage?'done':''} ${k===stage?'now':''}"></div>`).join('')}</div><div class="mslabels">${STAGES.map((s,k)=>`<span class="${k===stage?'now':''}">${s}</span>`).join('')}</div>`}
+function genWhy(name){return ['Budget aligned','Territory available','Sector match','Timeframe fits'].slice(0,3)}
+function matchBlock(c){
+  const others=c.brand?[['Chapati Man',(c.score||80)-8],['Cafe2U',(c.score||80)-15]]:[['Creams Café',88],['Chapati Man',82],['Cafe2U',74]];
+  return `${c.brand?`<div class="brandcard"><div class="bc-top">${avatar(c.brand,40,1)}<div style="flex:1"><div style="font-weight:600;font-size:14px">${c.brand}</div><div class="progress"><i style="width:${c.score}%"></i></div></div><div style="text-align:right"><div class="score" style="margin-bottom:6px">${c.score}% fit</div><button class="btn btn-p btn-sm">Introduce</button></div></div>
+    <div style="font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink3);margin:2px 2px 7px">Why they match</div>
+    <div class="why">${(c.why||genWhy(c.brand)).map(w=>`<span>${ico('check',11)}${w}</span>`).join('')}</div></div>`:''}
+    <div style="font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink3);margin:${c.brand?'18px':'0'} 2px 6px">${c.brand?'Other options':'Best matches'}</div>
+    ${others.map(m=>`<div class="optrow"><div class="field" style="cursor:pointer" onclick="this.closest('.optrow').classList.toggle('open')"><span class="k" style="display:flex;align-items:center;gap:6px"><span class="chev">${ico('chevR',13)}</span>${m[0]}</span><span class="v"><span class="score" style="background:#eef0e9;color:var(--ink2)">${m[1]}%</span><button class="btn btn-s btn-sm" onclick="event.stopPropagation()">Assign</button></span></div><div class="whypanel"><div class="why">${genWhy(m[0]).map(w=>`<span>${ico('check',11)}${w}</span>`).join('')}</div></div></div>`).join('')}`;
+}
+function detailsBlock(c){return [['Budget',c.budget],['Location',c.loc],['Timeframe','Within 3 months'],['Experience','Managed a team'],['Sector','Food & beverage'],['Source',c.src],['Owner','Harry B.']].map(r=>`<div class="field"><span class="k">${r[0]}</span><span class="v">${r[1]} <span class="pen">${ico('pen',12)}</span></span></div>`).join('')}
+function activityBlock(c){return `<div>${c.flag?`<div class="tl-i"><div class="tl-t">${c.flag}</div><div class="tl-d">Today · flagged for you</div></div>`:''}<div class="tl-i"><div class="tl-t">Moved to ${STAGES[c.stage]}</div><div class="tl-d">2 Aug · by Harry</div></div>${c.brand?`<div class="tl-i"><div class="tl-t">Matched to ${c.brand}</div><div class="tl-d">1 Aug · ${c.score}% fit</div></div>`:''}<div class="tl-i"><div class="tl-t">Email sent — intro pack</div><div class="tl-d">31 Jul</div></div><div class="tl-i"><div class="tl-t">Quiz submitted</div><div class="tl-d">31 Jul</div></div></div>`}
+function chatBlock(key,type,i,who){const ms=getMsgs(key);return `<div class="pushnote">${ico('bell',15)} Replies reach ${who} in their portal inbox and push to the Foundry app.</div><div class="chat">${ms.length?ms.map(m=>`<div class="msg ${m.them?'them':'me'}">${m.t}<div class="mt">${m.them?(m.who||who):'You'} · ${m.at}</div></div>`).join(''):'<div style="text-align:center;color:var(--ink3);font-size:12.5px;padding:20px">No messages yet.</div>'}</div><div class="composer"><textarea id="composer" rows="1" placeholder="Message ${who}…"></textarea><button class="btn btn-p btn-ic" onclick="sendMsg('${key}','${type}',${i})">${ico('send',16)}</button></div>`}
+
+function drawerCand(i){
+  const c=CAND[i];const key='cand'+i;const tab=(id,l)=>`<div class="dw-tab ${dwTab===id?'on':''}" onclick="setTab('${id}','cand',${i})">${l}</div>`;
+  let body=dwTab==='overview'?`<div class="dw-sec"><div class="dw-sec-t">Journey</div>${stepEl(c.stage)}</div><div class="dw-sec"><div class="dw-sec-t">${c.brand?'Matched brand':'Best matches'}</div>${matchBlock(c)}</div><div class="dw-sec"><div class="dw-sec-t">Details</div>${detailsBlock(c)}</div>`:dwTab==='activity'?`<div class="dw-sec">${activityBlock(c)}</div>`:chatBlock(key,'cand',i,c.n.split(' ')[0]);
+  return `<div class="dw-top"><button class="btn btn-ic btn-s" onclick="closeDrawer()">${ico('x',16)}</button><span class="dw-crumb">Franchisees / ${c.n}</span><button class="btn btn-ic btn-s" style="margin-left:auto" title="Open full page" onclick="openFull('cand',${i})">${ico('expand',15)}</button>${menuBtn('cand',i)}</div>
+  <div class="dw-head"><div class="dw-id">${avatar(c.n,50)}<div style="flex:1"><div class="dw-name">${c.n}</div><div class="dw-meta">${c.e} · ${c.loc}</div><div style="margin-top:7px;display:flex;gap:7px">${candPill(c.stage)}${c.ref?'<span class="reveal">'+c.src+'</span>':''}</div></div></div>
+    <div class="dw-actions">${c.flag==='Meeting requested'?'<button class="btn btn-p btn-sm">'+ico('cal',15)+'Book meeting</button>':'<button class="btn btn-p btn-sm">Advance stage '+ico('arrow',15)+'</button>'}<a class="btn btn-s btn-sm" href="${gmail(c.e)}" target="_blank" rel="noopener">${ico('mail',15)}Email</a><button class="btn btn-s btn-sm" onclick="setTab('chat','cand',${i})">${ico('chat',15)}Message</button></div></div>
+  <div class="dw-tabs">${tab('overview','Overview')}${tab('activity','Activity')}${tab('chat','Messages')}</div><div class="dw-body">${body}</div>`;
+}
+function drawerBrand(i){
+  const b=BRANDS[i];const key='brand'+i;const matched=CAND.filter(c=>c.brand===b.n);const tab=(id,l)=>`<div class="dw-tab ${dwTab===id?'on':''}" onclick="setTab('${id}','brand',${i})">${l}</div>`;
+  let body;
+  if(dwTab==='overview')body=`<div class="dw-sec"><div class="dw-sec-t">Profile</div>${[['Franchise fee',b.fee],['Total investment','£85k–120k'],['Sector','Food & beverage'],['Territories','12 available'],['Support','4-week training'],['Established','2014']].map(r=>`<div class="field"><span class="k">${r[0]}</span><span class="v">${r[1]} <span class="pen">${ico('pen',12)}</span></span></div>`).join('')}</div><div class="dw-sec"><div class="dw-sec-t">Candidates matched (${matched.length})</div>${matched.map(c=>`<div class="field" style="cursor:pointer" onclick="openRecord('cand',${CAND.indexOf(c)})"><span class="k" style="display:flex;align-items:center;gap:9px">${avatar(c.n,26)}${c.n}</span><span class="v"><span class="score">${c.score}%</span></span></div>`).join('')||'<div style="color:var(--ink3);font-size:12.5px;padding:6px">None yet</div>'}</div>`;
+  else if(dwTab==='questionnaire')body=`<div class="dw-sec">${b.st==='review'?'<div class="act" style="background:var(--warn-bg);border-color:var(--warn);margin-bottom:14px;cursor:default"><div style="flex:1"><div class="act-t">Awaiting your review</div><div class="act-s">Sample shows 3 of 24 questions</div></div><div style="display:flex;gap:6px"><button class="btn btn-s btn-sm">Request info</button><button class="btn btn-p btn-sm">Approve</button></div></div>':''}${[['How do you support new franchisees?','Full 4-week onboarding at HQ, then a dedicated area manager for the first year.'],['What makes an ideal franchisee?','Hands-on operators who love hospitality — sector experience a plus, not required.'],['Typical time to open?','10–14 weeks from signed agreement to launch.']].map(q=>`<div style="padding:12px 0;border-bottom:1px solid var(--line2)"><div style="font-size:12px;font-weight:600;color:var(--ink2);margin-bottom:4px">${q[0]}</div><div style="font-size:13px">${q[1]}</div></div>`).join('')}</div>`;
+  else if(dwTab==='chat')body=chatBlock(key,'brand',i,b.c.split(' ')[0]);
+  else body=`<div class="dw-sec"><div class="tl-i"><div class="tl-t">${b.st==='review'?'Submitted for review':'Profile approved'}</div><div class="tl-d">${b.d}</div></div><div class="tl-i"><div class="tl-t">Questionnaire completed</div><div class="tl-d">${b.d}</div></div></div>`;
+  return `<div class="dw-top"><button class="btn btn-ic btn-s" onclick="closeDrawer()">${ico('x',16)}</button><span class="dw-crumb">Brands / ${b.n}</span><button class="btn btn-ic btn-s" style="margin-left:auto" title="Open full page" onclick="openFull('brand',${i})">${ico('expand',15)}</button>${menuBtn('brand',i)}</div>
+  <div class="dw-head"><div class="dw-id">${avatar(b.n,50,1)}<div style="flex:1"><div class="dw-name">${b.n}</div><div class="dw-meta">${b.c} · ${b.e}</div><div style="margin-top:7px">${pill(b.st)}</div></div></div>
+    <div class="dw-actions">${b.st==='review'?'<button class="btn btn-p btn-sm">Approve profile</button>':'<button class="btn btn-p btn-sm">Edit brand</button>'}<a class="btn btn-s btn-sm" href="${gmail(b.e)}" target="_blank" rel="noopener">${ico('mail',15)}Email</a>${b.st==='draft'?`<button class="btn btn-s btn-sm" onclick="resendInvite('brand',${i})">${ico('resend',14)} Resend invite</button>`:''}<button class="btn btn-s btn-sm" onclick="setTab('chat','brand',${i})">${ico('chat',15)}Message</button></div></div>
+  <div class="dw-tabs">${tab('overview','Overview')}${tab('questionnaire','Questionnaire')}${tab('chat','Messages')}${tab('activity','Activity')}</div><div class="dw-body">${body}</div>`;
+}
+function drawerFor(type,i){return type==='cand'?drawerCand(i):type==='brand'?drawerBrand(i):drawerAgent(i)}
+function openRecord(type,i){dwTab='overview';document.getElementById('drawer').innerHTML=drawerFor(type,i);document.getElementById('drawer').classList.add('open');document.getElementById('drawerbg').classList.add('open')}
+function closeDrawer(){document.getElementById('drawer').classList.remove('open');document.getElementById('drawerbg').classList.remove('open')}
+function setTab(t,type,i){dwTab=t;document.getElementById('drawer').innerHTML=drawerFor(type,i)}
+
+let recordCtx=null,prevList='franchisees';
+function openFull(type,i){prevList=type==='cand'?'franchisees':'brands';recordCtx={type,i};current='record';dwTab='overview';closeDrawer();renderNav();render();window.scrollTo(0,0)}
+function vRecord(){
+  const {type,i}=recordCtx;
+  if(type==='cand'){const c=CAND[i];return `<div style="margin-bottom:14px"><span class="btn btn-s btn-sm" onclick="go('${prevList}')">‹ Back</span></div>
+    <div class="phead"><div class="rechero">${avatar(c.n,54)}<div><h1>${c.n}</h1><div class="psub">${c.e} · ${c.loc} · ${c.budget}</div><div style="margin-top:8px;display:flex;gap:7px">${candPill(c.stage)}${c.ref?'<span class="reveal">'+c.src+'</span>':''}</div></div></div><div style="display:flex;gap:8px">${c.flag==='Meeting requested'?'<button class="btn btn-p">'+ico('cal',15)+'Book meeting</button>':'<button class="btn btn-p">Advance stage '+ico('arrow',15)+'</button>'}<a class="btn btn-s" href="${gmail(c.e)}" target="_blank" rel="noopener">${ico('mail',15)}Email</a></div></div>
+    <div class="card" style="padding:16px 20px;margin-bottom:22px"><div class="dw-sec-t" style="margin-bottom:9px">Journey</div>${stepEl(c.stage)}</div>
+    <div class="recgrid">
+      <div>
+        <div class="card" style="padding:20px;margin-bottom:22px"><div class="dw-sec-t">${c.brand?'Matched brand':'Best matches'}</div>${matchBlock(c)}</div>
+        <div class="card" style="padding:20px;margin-bottom:22px"><div class="dw-sec-t">Financial qualification</div><div class="field"><span class="k">Budget</span><span class="v">${c.budget}</span></div><div class="field"><span class="k">Proof of funds</span><span class="v"><span class="pill p-ok">Verified</span></span></div><div class="field"><span class="k">Finance pre-approval</span><span class="v">Up to £90k</span></div><div class="field"><span class="k">Affordability</span><span class="v"><span class="pill p-ok">Strong</span></span></div></div>
+        <div class="card" style="padding:20px;margin-bottom:22px"><div class="dw-sec-t">Details</div>${detailsBlock(c)}</div>
+        <div class="card" style="padding:20px"><div class="dw-sec-t">Documents</div>${['Proof of funds.pdf','Photo ID.pdf'].map(d=>`<div class="field"><span class="k" style="display:flex;align-items:center;gap:8px">${ico('doc',14)}${d}</span><span class="v"><button class="btn btn-s btn-sm">${ico('dl',13)}</button></span></div>`).join('')}<button class="btn btn-s btn-sm" style="margin-top:10px">${ico('clip',13)} Upload document</button></div>
+      </div>
+      <div>
+        ${c.stage>=4?`<div class="card" style="padding:20px;margin-bottom:22px"><div class="dw-sec-t">Onboarding <span class="pill p-mute" style="font-size:9.5px;padding:2px 8px;margin-left:6px;vertical-align:middle">Build later</span></div>${[['Agreement signed',c.stage>=4],['Site selected',c.stage>=5],['Training booked',c.stage>=5],['Launch date set',false]].map(o=>`<div class="field"><span class="k" style="display:flex;align-items:center;gap:8px"><span style="color:${o[1]?'var(--ok)':'var(--ink3)'}">${o[1]?ico('check',15):'○'}</span>${o[0]}</span></div>`).join('')}</div>`:''}
+        <div class="card" style="padding:20px;margin-bottom:22px"><div class="dw-sec-t">Validation call <span class="pill p-mute" style="font-size:9.5px;padding:2px 8px;margin-left:6px;vertical-align:middle">Build later</span></div><div style="font-size:12.5px;color:var(--ink2);margin-bottom:10px">Let ${c.n.split(' ')[0]} speak to an existing franchisee for reassurance.</div><div class="field"><span class="k" style="display:flex;align-items:center;gap:9px">${avatar('Greg Hall',26)}Greg Hall · Sheffield</span><span class="v"><button class="btn btn-s btn-sm">Arrange</button></span></div></div>
+        <div class="card" style="padding:20px;margin-bottom:22px"><div class="dw-sec-t">Nurture <span class="pill p-mute" style="font-size:9.5px;padding:2px 8px;margin-left:6px;vertical-align:middle">Build later</span></div><div class="field"><span class="k">Sequence</span><span class="v">Post-quiz welcome</span></div><div class="field"><span class="k">Progress</span><span class="v">Step 2 of 3</span></div><div class="field"><span class="k">Next email</span><span class="v">in 2 days</span></div></div>
+        <div class="card" style="padding:20px;margin-bottom:22px"><div class="dw-sec-t">Messages</div>${chatBlock('cand'+i,'cand',i,c.n.split(' ')[0])}</div>
+        <div class="card" style="padding:20px"><div class="dw-sec-t">Activity</div>${activityBlock(c)}</div>
+      </div></div>`;
+  } else {const b=BRANDS[i];const matched=CAND.filter(c=>c.brand===b.n);const terr=[['Manchester','open'],['Leeds','open'],['London — Central','taken'],['Birmingham','open'],['Glasgow','reserved']];return `<div style="margin-bottom:14px"><span class="btn btn-s btn-sm" onclick="go('${prevList}')">‹ Back</span></div>
+    <div class="phead"><div class="rechero">${avatar(b.n,54,1)}<div><h1>${b.n}</h1><div class="psub">${b.c} · ${b.e}</div><div style="margin-top:8px">${pill(b.st)}</div></div></div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn btn-s" onclick="openRecord('brand',${i});setTab('questionnaire','brand',${i})">${ico('doc',15)} Review profile &amp; questionnaire${b.st==='review'?' <span class="pill p-warn" style="margin-left:2px">1</span>':''}</button><button class="btn btn-s" onclick="openMicrosite(${i})">${ico('eye',15)} View microsite <span class="pill p-mute" style="font-size:9px;padding:1px 6px;margin-left:2px">Later</span></button><a class="btn btn-s" href="${gmail(b.e)}" target="_blank" rel="noopener">${ico('mail',15)}Email</a>${b.st==='review'?'<button class="btn btn-p">Approve</button>':'<button class="btn btn-p">Edit brand</button>'}</div></div>
+    <div class="recgrid">
+      <div>
+        <div class="card" style="padding:20px;margin-bottom:22px"><div class="dw-sec-t">Snapshot</div>${[['Franchise fee',b.fee],['Total investment','£85k–120k'],['Sector','Food & beverage'],['Support','4-week training'],['Established','2014'],['Profile complete',b.prog+'%']].map(r=>`<div class="field"><span class="k">${r[0]}</span><span class="v">${r[1]}</span></div>`).join('')}</div>
+        <div class="card" style="padding:20px;margin-bottom:22px"><div class="dw-sec-t">Candidates matched (${matched.length})</div>${matched.map(c=>`<div class="field" style="cursor:pointer" onclick="openFull('cand',${CAND.indexOf(c)})"><span class="k" style="display:flex;align-items:center;gap:9px">${avatar(c.n,26)}${c.n}</span><span class="v"><span class="score">${c.score}%</span></span></div>`).join('')||'<div style="color:var(--ink3);font-size:12.5px">None yet</div>'}</div>
+        <div class="card" style="padding:20px"><div class="dw-sec-t">Territories</div>${terr.map(t=>`<div class="field"><span class="k">${t[0]}</span><span class="v">${t[1]==='taken'?'<span class="pill p-mute">Taken</span>':t[1]==='reserved'?'<span class="pill p-warn">Reserved</span>':'<span class="pill p-ok">Available</span>'}</span></div>`).join('')}</div>
+      </div>
+      <div>
+        <div class="card" style="padding:20px;margin-bottom:22px"><div class="dw-sec-t">Agreement</div><div style="display:flex;align-items:center;justify-content:space-between"><div><div style="font-size:13px;font-weight:600">${b.st==='active'?'Signed':'Not started'}</div><div style="font-size:11.5px;color:var(--ink3)">${b.st==='active'?'18 Jul 2026':'Create when ready'}</div></div><button class="btn btn-s btn-sm" onclick="go('agreements')">Open</button></div></div>
+        <div class="card" style="padding:20px;margin-bottom:22px"><div class="dw-sec-t">Documents</div>${['Franchise prospectus.pdf','Brand guidelines.pdf','Unit P&L model.xlsx'].map(d=>`<div class="field"><span class="k" style="display:flex;align-items:center;gap:8px">${ico('doc',14)}${d}</span><span class="v"><button class="btn btn-s btn-sm">${ico('dl',13)}</button></span></div>`).join('')}</div>
+        <div class="card" style="padding:20px;margin-bottom:22px"><div class="dw-sec-t">Lead feedback <span class="pill p-mute" style="font-size:9.5px;padding:2px 8px;margin-left:6px;vertical-align:middle">Build later</span></div><div style="font-size:12.5px;color:var(--ink2);margin-bottom:10px">How ${b.c.split(' ')[0]} rated recent candidates.</div>${[['Sarah Whitfield','Great fit — booking a call','up'],['Ben Carter','Not enough capital','down']].map(f=>`<div class="field"><span class="k">${f[0]}</span><span class="v" style="color:${f[2]==='up'?'var(--ok)':'var(--crit)'};font-size:12px">${f[1]}</span></div>`).join('')}</div>
+        <div class="card" style="padding:20px"><div class="dw-sec-t">Messages</div>${chatBlock('brand'+i,'brand',i,b.c.split(' ')[0])}</div>
+      </div></div>`;
+  }
+}
+
+function vAgreements(){const gr=(l,arr)=>arr.length?`<div class="grouplbl">${l}</div><div class="cardgrid">${arr.map(a=>{const i=AGR.indexOf(a);return `<div class="ncard" onclick="openAgreement(${i})"><div class="nc-head">${avatar(a.brand,44,1)}<div><div class="nc-nm" style="font-size:14px">${a.brand}</div><div class="nc-sub">Franchise Agreement</div></div></div><div>${pill(a.st)}</div><div class="nc-foot"><span style="font-size:11px;color:var(--ink3)">${a.who} · ${a.d}</span><button class="btn btn-s btn-sm" onclick="event.stopPropagation();openAgreement(${i})">Open</button></div></div>`}).join('')}</div>`:'';
+  return head('Agreements','Build, send, e-sign and track franchise agreements','<button class="btn btn-p btn-sm">+ New agreement</button>')+`${gr('Awaiting signature',AGR.filter(a=>a.st==='sent'))}${gr('Drafts',AGR.filter(a=>a.st==='draft'))}${gr('Signed',AGR.filter(a=>a.st==='signed'))}`;}
+
+// ── TERRITORIES (C6) ──
+const REGIONS=[['London',1,4],['South East',3,5],['South West',4,4],['West Midlands',2,6],['East Midlands',4,3],['North West',3,5],['Yorkshire',4,5],['North East',5,3],['Scotland',4,4],['Wales',3,3],['East of England',3,4],['N. Ireland',5,2]];
+function vTerritories(){
+  return head('Territories','Where brands are expanding — assign candidates by location')+`
+  <div class="listbar"><div class="seg"><button class="on">All brands</button><button>Most availability</button></div><span class="count-note" style="margin-left:auto">Heat map · greener = more openings</span></div>
+  <div class="cardgrid" style="grid-template-columns:repeat(auto-fill,minmax(190px,1fr))">
+  ${REGIONS.map(r=>{const lvl=r[1]>=4?'high':r[1]>=2?'mid':'low';const bg=lvl==='high'?'var(--green-soft)':lvl==='mid'?'#f3ead9':'#f7e7e1';const bar=lvl==='high'?'var(--green)':lvl==='mid'?'var(--gold-ink)':'var(--crit)';return `<div class="ncard" style="background:${bg}" onclick="alert('${r[0]} — brands expanding here + candidates in the area. Full interactive UK map in the build.')"><div style="font-size:15px;font-weight:700">${r[0]}</div><div style="font-size:12px;color:var(--ink2);margin-top:3px">${r[1]} brands with openings</div><div style="display:flex;gap:3px;margin-top:12px">${Array.from({length:6}).map((_,k)=>`<div style="flex:1;height:6px;border-radius:99px;background:${k<r[1]?bar:'rgba(0,0,0,.08)'}"></div>`).join('')}</div><div style="font-size:11px;color:var(--ink3);margin-top:9px">${r[2]} territories mapped</div></div>`}).join('')}
+  </div>
+  <div class="card" style="padding:16px 18px;margin-top:18px;color:var(--ink2);font-size:13px">${ico('map',15)} A full interactive UK map is planned — this heat grid shows the concept: click a region to see expanding brands and nearby candidates.</div>`;
+}
+
+// ── SETTINGS: matching weights + nurture (C6) ──
+const WEIGHTS=[['Budget fit',35],['Location / territory',25],['Sector interest',20],['Experience',12],['Timeframe',8]];
+const SEQUENCES=[['Cold lead nurture','5 emails over 14 days','Active',42],['Post-quiz welcome','3 emails over 5 days','Active',88],['Re-engage dormant','2 emails + 1 SMS','Paused',17]];
+function vSettings(){
+  return head('Settings','Matching model and automation')+`
+  <div class="recgrid" style="grid-template-columns:1fr 1fr">
+    <div class="card" style="padding:20px"><div class="dw-sec-t">Match weighting</div><div class="psub" style="margin:-4px 0 16px">Tune what drives the fit score — totals 100%.</div>
+      ${WEIGHTS.map(w=>`<div style="margin-bottom:16px"><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:7px"><span>${w[0]}</span><b>${w[1]}%</b></div><div style="height:8px;border-radius:99px;background:var(--line);position:relative"><div style="position:absolute;inset:0 auto 0 0;width:${Math.min(w[1]*2.2,100)}%;background:var(--green);border-radius:99px"></div><div style="position:absolute;top:50%;left:${Math.min(w[1]*2.2,100)}%;transform:translate(-50%,-50%);width:16px;height:16px;border-radius:50%;background:#fff;border:2px solid var(--green);box-shadow:0 1px 3px rgba(0,0,0,.25)"></div></div></div>`).join('')}
+      <button class="btn btn-p btn-sm" style="margin-top:4px">Save weighting</button></div>
+    <div class="card" style="padding:20px"><div class="dw-sec-t">Nurture sequences</div><div class="psub" style="margin:-4px 0 16px">Automated email / SMS drips for leads.</div>
+      ${SEQUENCES.map(s=>`<div class="field"><span class="k"><div style="font-weight:600;color:var(--ink)">${s[0]}</div><div style="font-size:11.5px;color:var(--ink3)">${s[1]} · ${s[3]} enrolled</div></span><span class="v">${s[2]==='Active'?'<span class="pill p-ok">Active</span>':'<span class="pill p-mute">Paused</span>'}</span></div>`).join('')}
+      <button class="btn btn-s btn-sm" style="margin-top:14px">+ New sequence</button></div>
+  </div>`;
+}
+
+// ── RESALES (C6) ──
+const RESALES=[
+  {brand:'Creams Café',loc:'Nottingham',price:'£145,000',turnover:'£310k/yr',reason:'Owner relocating',st:'available'},
+  {brand:'Cafe2U',loc:'Bristol',price:'£38,000',turnover:'£95k/yr',reason:'Retirement',st:'available'},
+  {brand:'Chapati Man',loc:'Leicester',price:'£62,000',turnover:'£140k/yr',reason:'New venture',st:'under_offer'},
+];
+function vResales(){
+  return head('Resales','Existing franchises for resale across the network','<button class="btn btn-p btn-sm">+ List a resale</button>')+`
+  <div class="listbar"><div class="tbsearch">${ico('for',15)}<input placeholder="Search resales…"></div><div class="seg"><button class="on">All</button><button>Available</button><button>Under offer</button></div></div>
+  <div class="cardgrid">${RESALES.map(r=>`<div class="ncard"><div class="nc-head">${avatar(r.brand,44,1)}<div><div class="nc-nm" style="font-size:14px">${r.brand}</div><div class="nc-sub">${r.loc}</div></div></div><div class="nc-stats" style="margin-top:2px;border:none;padding-top:4px"><div class="nc-stat"><div class="sv">${r.price}</div><div class="sl">Asking price</div></div><div class="nc-stat"><div class="sv">${r.turnover}</div><div class="sl">Turnover</div></div></div><div style="font-size:12px;color:var(--ink2);margin-top:10px">Reason: ${r.reason}</div><div class="nc-foot">${r.st==='available'?'<span class="pill p-ok">Available</span>':'<span class="pill p-warn">Under offer</span>'}<button class="btn btn-s btn-sm">View listing</button></div></div>`).join('')}</div>
+  <div class="card" style="padding:16px 18px;margin-top:18px;color:var(--ink3);font-size:12.5px">${ico('tag',14)} Resales are a common secondary revenue line — brokering existing franchise sales alongside new territories.</div>`;
+}
+
+// ── MICROSITE preview (C6) ──
+let microCtx=0;
+function openMicrosite(i){microCtx=i;current='microsite';renderNav();render();window.scrollTo(0,0)}
+function vMicrosite(){
+  const b=BRANDS[microCtx];
+  return `<div style="margin-bottom:14px;display:flex;justify-content:space-between;align-items:center"><span class="btn btn-s btn-sm" onclick="openFull('brand',${microCtx})">‹ Back to brand</span><span class="pill p-mute">Public microsite preview</span></div>
+  <div class="mhero"><div style="font-size:12px;letter-spacing:.15em;text-transform:uppercase;opacity:.65;margin-bottom:12px">Franchise opportunity</div><h2>Own a ${b.n} franchise</h2><p style="max-width:60%;margin-top:12px;opacity:.85;font-size:14px">Join a proven brand with full training and a protected territory. Investment from ${b.fee}.</p><button class="btn" style="background:var(--gold);color:#2b382b;margin-top:22px;font-weight:600">Register your interest</button></div>
+  <div class="card" style="padding:26px 30px;margin-top:20px">
+    <div style="display:flex;gap:20px;text-align:center;padding-bottom:22px;border-bottom:1px solid var(--line2);flex-wrap:wrap">${[['Franchise fee',b.fee],['Total investment','£85k–120k'],['Territories','12 available'],['Training','4 weeks']].map(s=>`<div style="flex:1;min-width:120px"><div style="font-size:22px;font-weight:700">${s[1]}</div><div style="font-size:12px;color:var(--ink3);margin-top:2px">${s[0]}</div></div>`).join('')}</div>
+    <div style="padding:22px 0;border-bottom:1px solid var(--line2)"><h3 style="font-size:15px;font-weight:700;margin-bottom:8px">About ${b.n}</h3><p style="font-size:13.5px;line-height:1.7;color:var(--ink2)">Established in 2014, ${b.n} has become one of the UK's best-loved food &amp; beverage brands. We're now expanding through carefully selected franchise partners who share our passion for hospitality.</p></div>
+    <div style="padding:22px 0 0"><div style="background:var(--surface2);border-radius:12px;padding:18px"><p style="font-size:14px;font-style:italic;line-height:1.6">"Best decision I ever made — the support from day one was incredible."</p><div style="font-size:12px;color:var(--ink3);margin-top:8px">— Existing franchisee, Sheffield</div></div></div>
+  </div>
+  <div class="card" style="padding:16px 18px;margin-top:16px;color:var(--ink3);font-size:12.5px">${ico('eye',14)} This public page is generated from the brand's profile — leads who register flow straight into your pipeline.</div>`;
+}
+
+// ── AGREEMENT builder + e-sign (C6) ──
+let agrCtx=0;
+function openAgreement(i){agrCtx=i;current='agrdoc';renderNav();render();window.scrollTo(0,0)}
+function vAgreement(){
+  const a=AGR[agrCtx];const signed=a.st==='signed';
+  const clauses=[['1. Parties',`This Franchise Agreement is made between Franchise Foundry Ltd (on behalf of ${a.brand}) and ${a.who}.`],['2. Grant of franchise',`${a.brand} grants the Franchisee the right to operate one franchised outlet within the agreed territory for an initial term of five (5) years.`],['3. Fees','Initial franchise fee as per Schedule 1, plus a management service fee of 6% of gross weekly sales, payable monthly.'],['4. Territory','The Franchisee is granted an exclusive territory defined in Schedule 1, subject to minimum performance targets.'],['5. Obligations','The Franchisee shall operate strictly in accordance with the Operations Manual and maintain brand standards at all times.'],['6. Term & renewal','Renewable for further five-year terms subject to good standing and a renewal fee.']];
+  const comments=[{who:a.who,t:'Can we extend the initial term to 7 years?',at:'1 Aug'},{who:'Harry Banff',t:'Noted — I\'ll adjust clause 2 and re-issue.',at:'1 Aug',me:1}];
+  return `<div style="margin-bottom:14px"><span class="btn btn-s btn-sm" onclick="go('agreements')">‹ Back to agreements</span></div>
+  <div class="phead"><div><h1>${a.brand} — Franchise Agreement</h1><div class="psub">${a.who} · ${a.d}</div></div><div>${pill(a.st)}</div></div>
+  <div class="recgrid">
+    <div class="doc"><h2>Franchise Agreement</h2><div style="text-align:center;color:var(--ink3);font-size:12.5px;margin:4px 0 22px">${a.brand} · Prepared by Franchise Foundry</div>
+      ${clauses.map(c=>`<div class="clause"><span class="edit btn btn-s btn-sm" style="position:absolute;right:0;top:11px;opacity:0">${ico('pen',12)} Edit</span><h4>${c[0]}</h4><p>${c[1]}</p></div>`).join('')}</div>
+    <div>
+      <div class="card" style="padding:16px 18px;margin-bottom:16px"><div class="dw-sec-t">Actions</div><div style="display:flex;flex-direction:column;gap:8px">${a.st==='draft'?'<button class="btn btn-p">Send for e-signature</button>':a.st==='sent'?'<button class="btn btn-p">Send reminder</button>':'<button class="btn btn-s">Duplicate</button>'}<button class="btn btn-s">${ico('pen',15)} Edit clauses</button><button class="btn btn-s">${ico('dl',15)} Download PDF</button><button class="btn btn-s">Add clause from library</button></div></div>
+      <div class="card" style="padding:16px 18px;margin-bottom:16px"><div class="dw-sec-t">E-signature</div>
+        <div class="signrow"><span style="color:var(--ok)">${ico('check',16)}</span><div style="flex:1"><div style="font-size:13px;font-weight:600">Franchise Foundry</div><div style="font-size:11.5px;color:var(--ink3)">Signed · 1 Aug</div></div><span class="pill p-ok">Signed</span></div>
+        <div class="signrow"><span style="width:16px;text-align:center;color:${signed?'var(--ok)':'var(--ink3)'}">${signed?ico('check',16):'○'}</span><div style="flex:1"><div style="font-size:13px;font-weight:600">${a.who}</div><div style="font-size:11.5px;color:var(--ink3)">${signed?'Signed · 18 Jul':a.st==='sent'?'Awaiting signature':'Not sent'}</div></div>${signed?'<span class="pill p-ok">Signed</span>':a.st==='sent'?'<span class="pill p-warn">Awaiting</span>':'<span class="pill p-mute">—</span>'}</div>
+        ${!signed?'<div style="height:6px;border-radius:99px;background:var(--line);margin-top:12px"><div style="width:50%;height:100%;background:var(--green);border-radius:99px"></div></div><div style="font-size:11px;color:var(--ink3);margin-top:6px">1 of 2 signatures</div>':''}</div>
+      <div class="card" style="padding:16px 18px"><div class="dw-sec-t">Comments</div><div class="chat">${comments.map(c=>`<div class="msg ${c.me?'me':'them'}">${c.t}<div class="mt">${c.me?'You':c.who} · ${c.at}</div></div>`).join('')}</div><div class="composer"><textarea rows="1" placeholder="Add a comment…"></textarea><button class="btn btn-p btn-ic">${ico('send',16)}</button></div></div>
+    </div>
+  </div>`;
+}
+
+// ── Archive / Delete / Resend (admin actions) ──
+function recArr(type){return type==='cand'?CAND:type==='brand'?BRANDS:AGENTS}
+function recName(type,i){return recArr(type)[i].n}
+function menuBtn(type,i){return `<button class="btn btn-ic btn-s" title="More" onclick="event.stopPropagation();recordMenu(event,'${type}',${i})">${ico('dots',16)}</button>`}
+let menuCtx=null;
+function recordMenu(ev,type,i){ev.stopPropagation();menuCtx={type,i};const b=ev.currentTarget.getBoundingClientRect();const m=document.getElementById('ctxmenu');
+  m.innerHTML=`<div class="cm-h">${recName(type,i)}</div><button onclick="openArchive()">${ico('archive',15)} Archive…</button><button class="cm-danger" onclick="openDelete()">${ico('trash',15)} Delete</button>`;
+  m.style.display='block';m.style.top=(b.bottom+6)+'px';m.style.left=Math.max(12,Math.min(b.left,window.innerWidth-224))+'px';document.getElementById('menubg').style.display='block';}
+function closeMenu(){document.getElementById('ctxmenu').style.display='none';document.getElementById('menubg').style.display='none'}
+const ARCH_REASONS=['No longer active','Withdrew / not proceeding','Duplicate record','Not the right fit','Signed elsewhere','Other'];
+function showModal(){document.getElementById('modalbg').style.display='flex'}
+function closeModal(){document.getElementById('modalbg').style.display='none'}
+function openArchive(){closeMenu();const {type,i}=menuCtx;
+  document.getElementById('modal').innerHTML=`<div class="md-h">Archive ${recName(type,i)}</div><div class="md-b"><p style="margin-bottom:14px">Archiving keeps the record but removes it from active lists. A reason is required.</p><label class="md-lbl">Reason</label><select id="archreason" class="md-input">${ARCH_REASONS.map(r=>`<option>${r}</option>`).join('')}</select><label class="md-lbl" style="margin-top:12px">Note (optional)</label><textarea id="archnote" class="md-input" rows="2" placeholder="Add context…"></textarea></div><div class="md-f"><button class="btn btn-s" onclick="closeModal()">Cancel</button><button class="btn btn-p" onclick="doArchive()">Archive</button></div>`;showModal();}
+function doArchive(){const {type,i}=menuCtx;const a=recArr(type)[i];a._archived=true;a._archiveReason=document.getElementById('archreason').value;closeModal();closeDrawer();if(current==='record')go(type==='cand'?'franchisees':type==='brand'?'brands':'agents');else render();toast(`${a.n} archived · ${a._archiveReason}`);}
+function openDelete(){closeMenu();const {type,i}=menuCtx;
+  document.getElementById('modal').innerHTML=`<div class="md-h">Delete ${recName(type,i)}?</div><div class="md-b"><p>This permanently deletes the record and all its associated data. This cannot be undone.</p></div><div class="md-f"><button class="btn btn-s" onclick="closeModal()">Cancel</button><button class="btn btn-danger" onclick="doDelete()">Delete permanently</button></div>`;showModal();}
+function doDelete(){const {type,i}=menuCtx;const a=recArr(type)[i];const nm=a.n;a._deleted=true;closeModal();closeDrawer();if(current==='record')go(type==='cand'?'franchisees':type==='brand'?'brands':'agents');else render();toast(`${nm} deleted`);}
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.style.display='block';clearTimeout(window._tt);window._tt=setTimeout(()=>t.style.display='none',2800);}
+function resendInvite(type,i){toast(`Invite re-sent to ${recName(type,i)}`);}
+
+function render(){const v=document.getElementById('view');v.className='content'+(current==='record'||current==='agrdoc'||current==='microsite'?' wide':'');closeMenu();const map={home:vHome,analytics:vAnalytics,finance:vFinance,franchisees:vFranchisees,brands:vBrands,agents:vAgents,territories:vTerritories,marketplace:vMarketplace,resales:vResales,messages:vMessages,agreements:vAgreements,settings:vSettings,record:vRecord,agrdoc:vAgreement,microsite:vMicrosite};v.innerHTML=(map[current]||vHome)()}
+
+const CMDS=[['Home','home','home','view'],['Analytics','chart','analytics','view'],['Finance','wallet','finance','view'],['Territories','map','territories','view'],['Resales','tag','resales','view'],['Settings','gear','settings','view'],['Franchisees','leads','franchisees','view'],['Brands','for','brands','view'],['Agents','agent','agents','view'],['Marketplace','market','marketplace','view'],['Messages','chats','messages','view'],['Agreements','agr','agreements','view'],...CAND.map((c,i)=>[c.n,'leads','cand:'+i,'franchisee']),...BRANDS.map((b,i)=>[b.n,'for','brand:'+i,'brand'])];
+let cmdkSel=0;
+function openCmdk(){document.getElementById('cmdkbg').style.display='flex';document.getElementById('cmdkin').value='';cmdkSel=0;renderCmdk();setTimeout(()=>document.getElementById('cmdkin').focus(),30)}
+function closeCmdk(){document.getElementById('cmdkbg').style.display='none'}
+function cmdkFiltered(){const q=(document.getElementById('cmdkin').value||'').toLowerCase();return CMDS.filter(c=>c[0].toLowerCase().includes(q)).slice(0,8)}
+function cmdkRun(c){closeCmdk();if(c[2].startsWith('cand:'))openRecord('cand',+c[2].split(':')[1]);else if(c[2].startsWith('brand:'))openRecord('brand',+c[2].split(':')[1]);else go(c[2])}
+function renderCmdk(){const list=cmdkFiltered();document.getElementById('cmdklist').innerHTML=list.map((c,i)=>`<div class="cmdk-row ${i===cmdkSel?'on':''}" onclick="cmdkRun(cmdkFiltered()[${i}])"><span class="cmdk-ic">${ico(c[1],15)}</span>${c[0]}<span class="cmdk-sub">${c[3]}</span></div>`).join('')||'<div style="padding:20px;text-align:center;color:var(--ink3);font-size:13px">No matches</div>'}
+function cmdkKey(e){const list=cmdkFiltered();if(e.key==='ArrowDown'){cmdkSel=Math.min(cmdkSel+1,list.length-1);renderCmdk()}if(e.key==='ArrowUp'){cmdkSel=Math.max(cmdkSel-1,0);renderCmdk()}if(e.key==='Enter'&&list[cmdkSel])cmdkRun(list[cmdkSel]);if(e.key==='Escape')closeCmdk()}
+document.addEventListener('keydown',e=>{if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='k'){e.preventDefault();document.getElementById('cmdkbg').style.display==='flex'?closeCmdk():openCmdk()}if(e.key==='Escape')closeDrawer()});
+
+seedMsgs();renderNav();render();
+</script>
+</body>
+</html>
