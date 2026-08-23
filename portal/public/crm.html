@@ -257,7 +257,7 @@ h1{font-size:22px;font-weight:700;letter-spacing:-.02em}
 <div class="cmdk-bg" id="cmdkbg" onclick="if(event.target===this)closeCmdk()">
   <div class="cmdk"><div class="cmdk-in"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8a918a" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg><input id="cmdkin" placeholder="Search people, brands, or jump to…" oninput="renderCmdk()" onkeydown="cmdkKey(event)"><kbd style="font-size:11px;color:#8a918a;border:1px solid var(--line);border-radius:5px;padding:2px 6px">esc</kbd></div><div class="cmdk-list" id="cmdklist"></div></div>
 </div>
-<div class="demo-tag">◆ CRM demo v5 — sample data</div>
+<div class="demo-tag" onclick="showDataNotes()" style="cursor:pointer">● LIVE admin data · what's wired ›</div>
 
 <script>
 const I={
@@ -315,42 +315,12 @@ const NAV=[
   {id:'finance',label:'Finance',ic:'wallet'},
   {id:'settings',label:'Settings',ic:'gear'},
 ];
-let current='home';
+let current='franchisees';
 function renderNav(){document.getElementById('nav').innerHTML=NAV.map(n=>n.s?'<div class="seclbl">'+n.s+'</div>':`<div class="nav${n.id===current?' active':''}" onclick="go('${n.id}')">${ico(n.ic)}${n.label}${n.badge?'<span class="badge">'+n.badge+'</span>':''}</div>`).join('')}
 function go(id){current=id;closeDrawer();renderNav();render();document.getElementById('side').classList.remove('open');window.scrollTo(0,0)}
 
-const STAGES=['New','Contacted','Matched','Introduced','Agreement','Live'];
-const CAND=[
-  {n:'Sarah Whitfield',e:'sarah.w@gmail.com',loc:'Manchester',budget:'£75k–100k',stage:2,brand:'Creams Café',score:92,src:'Agent · J. Doyle',ref:1,flag:'Meeting requested',last:'2h ago',why:['Budget aligned','Manchester territory open','F&B experience','Owner-operator']},
-  {n:'Priya Nair',e:'priya.nair@icloud.com',loc:'London',budget:'£100k+',stage:0,brand:null,score:null,src:'Quiz',last:'1d ago'},
-  {n:'James Okoro',e:'j.okoro@outlook.com',loc:'Birmingham',budget:'£40k–60k',stage:2,brand:'Chapati Man',score:84,src:'Quiz',last:'3h ago',why:['Budget aligned','Midlands territory','Quick-service fit']},
-  {n:'Ben Carter',e:'ben.c@gmail.com',loc:'Leeds',budget:'£75k–100k',stage:3,brand:'Creams Café',score:90,src:'Quiz',last:'5h ago',why:['Budget aligned','Yorkshire territory','Hospitality background']},
-  {n:'Nadia Yusuf',e:'nadia@outlook.com',loc:'London',budget:'£50k–75k',stage:3,brand:'PG Fast Food',score:81,src:'Agent · M. Ree',ref:1,flag:'Awaiting brand reply',last:'1d ago',why:['London territory','Fast-food interest','Multi-unit ambition']},
-  {n:'Greg Hall',e:'greg.hall@me.com',loc:'Sheffield',budget:'£30k–45k',stage:4,brand:'Chapati Man',score:88,src:'Quiz',flag:'Chase signature',last:'4d ago',why:['Budget aligned','Sheffield territory','Sector match']},
-  {n:'Aisha Khan',e:'aisha.k@gmail.com',loc:'Bristol',budget:'£60k–75k',stage:1,brand:null,score:null,src:'Quiz',last:'2d ago'},
-  {n:'David Mensah',e:'d.mensah@yahoo.com',loc:'Glasgow',budget:'£40k–60k',stage:1,brand:'Cafe2U',score:79,src:'Quiz',last:'2d ago',why:['Budget aligned','Van-based / mobile','Scotland coverage']},
-  {n:'Sofia Marin',e:'sofia.m@gmail.com',loc:'Cardiff',budget:'£15k–30k',stage:5,brand:'Cafe2U',score:86,src:'Quiz',last:'1w ago',why:['Low entry cost','Wales territory','Flexible hours']},
-];
-const BRANDS=[
-  {n:'Creams Café',c:'Jemma Rowe',e:'jemma@creamscafe.co.uk',fee:'£30k',cands:6,st:'review',d:'2 Aug',prog:100,updates:['Questionnaire submitted','2 new candidates']},
-  {n:'PG Fast Food',c:'Omar Patel',e:'ops@pgfastfood.com',fee:'£45k',cands:3,st:'review',d:'29 Jul',prog:100,updates:['Questionnaire submitted']},
-  {n:'Chapati Man',c:'Ravi Shah',e:'ravi@chapatiman.com',fee:'£22k',cands:9,st:'active',d:'20 Jul',prog:100,updates:['New message']},
-  {n:'Cafe2U',c:'Lisa Grant',e:'lisa@cafe2u.co.uk',fee:'£18k',cands:4,st:'active',d:'12 Jul',prog:80,updates:[]},
-  {n:'Bright Cleaning Co',c:'Neil Frost',e:'neil@brightclean.co',fee:'£15k',cands:2,st:'draft',d:'8 Jul',prog:35,updates:[]},
-  {n:'GreenLeaf Juice Bar',c:'Tara Singh',e:'tara@greenleaf.co',fee:'£26k',cands:5,st:'active',d:'2 Jul',prog:100,updates:[]},
-];
-const AGENTS=[
-  {n:'Jack Doyle',e:'jack@doyleintros.com',code:'JACKD',leads:14,intros:5,conv:36,comm:'£4,250',st:'active',updates:['1 new referral']},
-  {n:'Maria Ree',e:'maria.ree@gmail.com',code:'MARIA10',leads:8,intros:2,conv:25,comm:'£1,600',st:'active',updates:[]},
-  {n:'Sam Ford',e:'sam@fordpartners.co',code:'SAMF',leads:3,intros:0,conv:0,comm:'£0',st:'pending',updates:[]},
-];
-const PARTNERS=[
-  {n:'Lloyds Business Banking',cat:'Finance',desc:'Franchise-friendly business accounts & lending.',intros:12,st:'active'},
-  {n:'Rundle Legal',cat:'Legal',desc:'Franchise agreement & lease review.',intros:7,st:'active'},
-  {n:'BrightSign Media',cat:'Marketing',desc:'Local launch campaigns & social.',intros:4,st:'active'},
-  {n:'ShopFit Direct',cat:'Fit-out',desc:'Turnkey unit fit-out & signage.',intros:2,st:'paused'},
-  {n:'Adept Insurance',cat:'Insurance',desc:'Cover tailored to food & retail franchises.',intros:6,st:'active'},
-];
+let STAGES=['New Enquiry','Profile Complete','Matches Sent','Brand Shortlisted','Meeting Booked','Intro Made','Agreement Sent','Signed'];
+let CAND=[], BRANDS=[], AGENTS=[], PARTNERS=[];
 const MKT_REQUESTS=[
   {who:'Ben Carter',type:'Franchisee',partner:'Lloyds Business Banking',need:'Finance for £75k fit-out',at:'2h ago'},
   {who:'Creams Café',type:'Franchisor',partner:'BrightSign Media',need:'Launch campaign for 2 new sites',at:'1d ago'},
@@ -358,7 +328,7 @@ const MKT_REQUESTS=[
 const AGR=[{brand:'Chapati Man',who:'Ravi Shah',st:'signed',d:'Signed 18 Jul'},{brand:'Cafe2U',who:'Lisa Grant',st:'sent',d:'Sent 10 Jul'},{brand:'Creams Café',who:'Jemma Rowe',st:'draft',d:'Draft'}];
 
 const stMap={review:['p-gold','Pending review'],active:['p-ok','Active'],draft:['p-mute','Draft'],pending:['p-warn','Pending'],paused:['p-mute','Paused'],signed:['p-ok','Signed'],sent:['p-info','Awaiting signature']};
-const stagePill=['p-info','p-mute','p-green','p-violet','p-warn','p-ok'];
+const stagePill=['p-info','p-mute','p-green','p-green','p-violet','p-warn','p-warn','p-ok'];
 function pill(st){const m=stMap[st]||['p-mute',st];return `<span class="pill ${m[0]}"><span class="dotg"></span>${m[1]}</span>`}
 function candPill(s){return `<span class="pill ${stagePill[s]}"><span class="dotg"></span>${STAGES[s]}</span>`}
 function head(t,s,a){return `<div class="phead"><div><h1>${t}</h1><div class="psub">${s}</div></div>${a?'<div style="display:flex;gap:8px">'+a+'</div>':''}</div>`}
@@ -819,7 +789,8 @@ function resendInvite(type,i){toast(`Invite re-sent to ${recName(type,i)}`);}
 
 function render(){const v=document.getElementById('view');v.className='content'+(current==='record'||current==='agrdoc'||current==='microsite'?' wide':'');closeMenu();const map={home:vHome,analytics:vAnalytics,finance:vFinance,franchisees:vFranchisees,brands:vBrands,agents:vAgents,territories:vTerritories,marketplace:vMarketplace,resales:vResales,messages:vMessages,agreements:vAgreements,settings:vSettings,record:vRecord,agrdoc:vAgreement,microsite:vMicrosite};v.innerHTML=(map[current]||vHome)()}
 
-const CMDS=[['Home','home','home','view'],['Analytics','chart','analytics','view'],['Finance','wallet','finance','view'],['Territories','map','territories','view'],['Resales','tag','resales','view'],['Settings','gear','settings','view'],['Franchisees','leads','franchisees','view'],['Brands','for','brands','view'],['Agents','agent','agents','view'],['Marketplace','market','marketplace','view'],['Messages','chats','messages','view'],['Agreements','agr','agreements','view'],...CAND.map((c,i)=>[c.n,'leads','cand:'+i,'franchisee']),...BRANDS.map((b,i)=>[b.n,'for','brand:'+i,'brand'])];
+let CMDS=[];
+function buildCmds(){CMDS=[['Home','home','home','view'],['Analytics','chart','analytics','view'],['Finance','wallet','finance','view'],['Territories','map','territories','view'],['Resales','tag','resales','view'],['Settings','gear','settings','view'],['Franchisees','leads','franchisees','view'],['Brands','for','brands','view'],['Agents','agent','agents','view'],['Marketplace','market','marketplace','view'],['Messages','chats','messages','view'],['Agreements','agr','agreements','view'],...CAND.map((c,i)=>[c.n,'leads','cand:'+i,'franchisee']),...BRANDS.map((b,i)=>[b.n,'for','brand:'+i,'brand'])];}
 let cmdkSel=0;
 function openCmdk(){document.getElementById('cmdkbg').style.display='flex';document.getElementById('cmdkin').value='';cmdkSel=0;renderCmdk();setTimeout(()=>document.getElementById('cmdkin').focus(),30)}
 function closeCmdk(){document.getElementById('cmdkbg').style.display='none'}
@@ -829,7 +800,43 @@ function renderCmdk(){const list=cmdkFiltered();document.getElementById('cmdklis
 function cmdkKey(e){const list=cmdkFiltered();if(e.key==='ArrowDown'){cmdkSel=Math.min(cmdkSel+1,list.length-1);renderCmdk()}if(e.key==='ArrowUp'){cmdkSel=Math.max(cmdkSel-1,0);renderCmdk()}if(e.key==='Enter'&&list[cmdkSel])cmdkRun(list[cmdkSel]);if(e.key==='Escape')closeCmdk()}
 document.addEventListener('keydown',e=>{if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='k'){e.preventDefault();document.getElementById('cmdkbg').style.display==='flex'?closeCmdk():openCmdk()}if(e.key==='Escape')closeDrawer()});
 
-seedMsgs();renderNav();render();
+async function loadRealData(){
+  renderNav();
+  document.getElementById('view').innerHTML='<div style="padding:60px 20px;text-align:center;color:var(--ink3)">Loading live data…</div>';
+  try{
+    const r=await fetch('/api/admin/crm-data',{cache:'no-store'});
+    if(!r.ok) throw new Error('HTTP '+r.status);
+    const d=await r.json();
+    CAND=d.CAND||[]; BRANDS=d.BRANDS||[]; AGENTS=d.AGENTS||[]; PARTNERS=d.PARTNERS||[];
+    if(Array.isArray(d.STAGES)&&d.STAGES.length) STAGES=d.STAGES;
+    window.__CRM_META=d.meta||null;
+    buildCmds(); render();
+  }catch(e){
+    document.getElementById('view').innerHTML='<div style="padding:60px 20px;text-align:center;color:var(--crit)">Could not load live data — '+e.message+'.<br><span style="color:var(--ink3);font-size:12px">Make sure you are signed in as an admin.</span></div>';
+  }
+}
+function showDataNotes(){
+  const m=window.__CRM_META, c=m?m.counts:null;
+  document.getElementById('modal').innerHTML=`<div class="md-h">Live data — what's wired</div><div class="md-b" style="max-height:68vh;overflow:auto">
+  <p style="margin-bottom:6px">The confirmed v5 admin design running on <b>real Supabase data</b>${c?` — ${c.franchisees} franchisees, ${c.brands} brands, ${c.agents} agents, ${c.partners} partners`:''}.</p>
+  <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--ink3);margin:14px 0 6px">Wired to real data</div>
+  <ul style="font-size:13px;line-height:1.7;padding-left:18px">
+   <li><b>Franchisees, Brands, Agents</b> — real records, statuses, match counts, agent metrics.</li>
+   <li><b>Marketplace › Directory</b> — real partners. <b>Journey</b> — real 8-stage pipeline.</li></ul>
+  <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--warn);margin:16px 0 6px">Still sample / not yet factored in</div>
+  <ul style="font-size:13px;line-height:1.7;padding-left:18px">
+   <li><b>Home KPIs, activity feed, Analytics, Finance, Territories, Resales</b> — sample (no backend yet).</li>
+   <li><b>Messages</b> — sample chats. <b>Agreements</b> — sample (real model is a versioned template).</li>
+   <li><b>Match scores are flat (~12)</b> and <b>why-they-match chips</b> aren't stored — matching needs recalibration.</li>
+   <li><b>Profile % and "updates" badges</b> are computed, not stored. <b>Lead source/referral flags</b> not shown.</li>
+   <li><b>Leads</b> (pre-portal quiz) are a separate table — not merged here.</li>
+   <li>Not yet in this view: <b>Impersonate/View-as, questionnaire review & template editor, run-matching, invites/resend, documents, meeting notes, broadcast</b>.</li>
+   <li><b>Archive/Delete</b> are demo-only — must also revoke portal access + remove from matching when built.</li></ul>
+  <p style="font-size:12px;color:var(--ink3);margin-top:12px">The 3 client-facing portals (franchisee / brand / agent) are unchanged and out of scope for this admin view.</p>
+  </div><div class="md-f"><button class="btn btn-p" onclick="closeModal()">Got it</button></div>`;
+  showModal();
+}
+seedMsgs();loadRealData();
 </script>
 </body>
 </html>
