@@ -1,5 +1,6 @@
 import { createAdminClient } from '@/lib/supabase/admin'
 import { PageHeader } from '@/components/page-header'
+import { Avatar } from '@/components/ui/Avatar'
 import Link from 'next/link'
 import type { Lead } from '@/lib/supabase/types'
 import DeleteLeadButton from './DeleteLeadButton'
@@ -31,52 +32,43 @@ function SourceBadge({ lead, agentNames }: { lead: Lead; agentNames: Record<stri
   return <span className="text-xs text-slate-400">Matching platform</span>
 }
 
-function LeadsTable({ leads, agentNames }: { leads: Lead[]; agentNames: Record<string, string> }) {
+function LeadsGrid({ leads, agentNames }: { leads: Lead[]; agentNames: Record<string, string> }) {
   return (
-    <div className="bg-white rounded-2xl border border-slate-200 overflow-x-auto">
-      <table className="w-full text-sm">
-        <thead>
-          <tr className="border-b border-slate-100 text-slate-500 text-xs">
-            <th className="text-left px-4 py-3 font-medium">Name</th>
-            <th className="text-left px-4 py-3 font-medium hidden md:table-cell">Email</th>
-            <th className="text-left px-4 py-3 font-medium hidden lg:table-cell">Budget</th>
-            <th className="text-left px-4 py-3 font-medium">Source</th>
-            <th className="text-left px-4 py-3 font-medium">Status</th>
-            <th className="text-left px-4 py-3 font-medium hidden sm:table-cell">Date</th>
-            <th className="px-4 py-3" />
-          </tr>
-        </thead>
-        <tbody>
-          {leads.map(lead => (
-            <tr key={lead.id} className="border-b border-slate-50 hover:bg-slate-50 transition-colors">
-              <td className="px-4 py-3 font-medium text-slate-800">{lead.full_name}</td>
-              <td className="px-4 py-3 text-slate-500 hidden md:table-cell">{lead.email}</td>
-              <td className="px-4 py-3 text-slate-500 hidden lg:table-cell">
-                {lead.investment_min && lead.investment_max
-                  ? `£${lead.investment_min.toLocaleString()} – £${lead.investment_max.toLocaleString()}`
-                  : '—'}
-              </td>
-              <td className="px-4 py-3"><SourceBadge lead={lead} agentNames={agentNames} /></td>
-              <td className="px-4 py-3">
-                <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${STATUS_STYLES[lead.status] ?? 'bg-slate-100 text-slate-500'}`}>
-                  {STATUS_LABELS[lead.status] ?? lead.status}
-                </span>
-              </td>
-              <td className="px-4 py-3 text-slate-400 hidden sm:table-cell">
-                {new Date(lead.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
-              </td>
-              <td className="px-4 py-3 text-right">
-                <div className="flex items-center justify-end gap-3">
-                  <Link href={`/admin/leads/${lead.id}`} className="text-brand-green text-xs font-medium hover:underline">
-                    View →
-                  </Link>
-                  <DeleteLeadButton leadId={lead.id} />
-                </div>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+    <div className="grid gap-4" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(290px, 1fr))' }}>
+      {leads.map(lead => (
+        <div key={lead.id} className="bg-surface border border-line rounded-2xl p-[17px] shadow-[0_1px_2px_rgba(27,33,26,0.04)] hover:-translate-y-0.5 hover:shadow-[0_8px_22px_rgba(27,33,26,0.08)] hover:border-[#d6dace] transition-all">
+          <div className="flex items-center gap-3 mb-3">
+            <Avatar name={lead.full_name} size="lg" />
+            <div className="min-w-0 flex-1">
+              <p className="text-sm font-semibold text-ink leading-tight truncate">{lead.full_name}</p>
+              <p className="text-xs text-ink-3 truncate">{lead.email}</p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2 mb-2.5 flex-wrap">
+            <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${STATUS_STYLES[lead.status] ?? 'bg-slate-100 text-slate-500'}`}>
+              {STATUS_LABELS[lead.status] ?? lead.status}
+            </span>
+            <SourceBadge lead={lead} agentNames={agentNames} />
+          </div>
+
+          <p className="text-xs text-ink-2">
+            {lead.investment_min && lead.investment_max
+              ? `£${lead.investment_min.toLocaleString()} – £${lead.investment_max.toLocaleString()}`
+              : 'Budget not specified'}
+          </p>
+
+          <div className="flex items-center justify-between mt-3 pt-3 border-t border-line-2">
+            <span className="text-xs text-ink-3">
+              {new Date(lead.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
+            </span>
+            <div className="flex items-center gap-3">
+              <Link href={`/admin/leads/${lead.id}`} className="text-ff-green text-xs font-medium hover:underline">View →</Link>
+              <DeleteLeadButton leadId={lead.id} />
+            </div>
+          </div>
+        </div>
+      ))}
     </div>
   )
 }
@@ -116,7 +108,7 @@ export default async function AdminLeadsPage() {
           No active leads. Share the <strong className="text-slate-600">/get-matched</strong> link to start collecting.
         </div>
       ) : (
-        <LeadsTable leads={activeLeads} agentNames={agentNames} />
+        <LeadsGrid leads={activeLeads} agentNames={agentNames} />
       )}
 
       {/* Archived — converted & rejected */}
@@ -125,7 +117,7 @@ export default async function AdminLeadsPage() {
           <h2 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">
             Archived ({archivedLeads.length})
           </h2>
-          <LeadsTable leads={archivedLeads} agentNames={agentNames} />
+          <LeadsGrid leads={archivedLeads} agentNames={agentNames} />
         </div>
       )}
     </div>
