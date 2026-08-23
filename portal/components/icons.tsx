@@ -398,3 +398,14 @@ export function TrashIcon({ className }: IconProps) {
     </svg>
   )
 }
+
+export function ChartIcon({ className }: IconProps) {
+  return (
+    <svg className={className} {...defaults}>
+      <path d="M3 3v18h18" />
+      <rect x="7" y="11" width="3" height="7" />
+      <rect x="12" y="7" width="3" height="11" />
+      <rect x="17" y="4" width="3" height="14" />
+    </svg>
+  )
+}

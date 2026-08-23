@@ -12,7 +12,7 @@ import { CommandPalette } from '@/components/command-palette'
 import {
   DashboardIcon, LeadsIcon, FranchiseeIcon, FranchisorIcon,
   MatchIcon, AgreementIcon, MarketplaceIcon, AgentIcon,
-  QuestionnaireIcon, SignOutIcon, SearchIcon,
+  QuestionnaireIcon, SignOutIcon, SearchIcon, ChartIcon,
 } from '@/components/icons'
 
 // ── Nav type system ──────────────────────────────────────────────────────────
@@ -43,6 +43,7 @@ const adminNav: NavItem[] = [
   { label: 'Matches',        href: '/admin/matches',        icon: <MatchIcon className="w-4 h-4" /> },
   { label: 'Agreements',     href: '/admin/agreements',     icon: <AgreementIcon className="w-4 h-4" /> },
   { sectionLabel: 'Business' },
+  { label: 'Analytics',      href: '/admin/analytics',              icon: <ChartIcon className="w-4 h-4" /> },
   { label: 'Questionnaires', href: '/admin/questionnaires',         icon: <QuestionnaireIcon className="w-4 h-4" /> },
   { label: 'Questions',      href: '/admin/questionnaire-template', icon: <QuestionnaireIcon className="w-4 h-4" /> },
 ]
