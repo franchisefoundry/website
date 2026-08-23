@@ -36,7 +36,6 @@ export async function middleware(request: NextRequest) {
     '/api/auth/forgot-password',  // sends the Resend-backed reset email
     '/sw.js',                     // service worker must load before login (PWA + push)
     '/manifest.webmanifest',      // web app manifest — read by the browser pre-auth
-    '/crm.html',                  // CRM design prototype (sample data only) — preview
   ]
   if (publicPaths.some(p => pathname.startsWith(p))) {
     return NextResponse.next()
