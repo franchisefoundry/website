@@ -337,3 +337,64 @@ export function SortIcon({ className }: IconProps) {
     </svg>
   )
 }
+
+// ── CRM record-shell actions ────────────────────────────────────────────────
+export function MailIcon({ className }: IconProps) {
+  return (
+    <svg className={className} {...defaults}>
+      <rect x="3" y="5" width="18" height="14" rx="2" />
+      <path d="m3 7 9 6 9-6" />
+    </svg>
+  )
+}
+
+export function MessageIcon({ className }: IconProps) {
+  return (
+    <svg className={className} {...defaults}>
+      <path d="M21 11.5a8.38 8.38 0 0 1-8.5 8.5 9.5 9.5 0 0 1-4-.9L3 20l1.9-5.5a8.38 8.38 0 0 1-.9-4A8.5 8.5 0 0 1 12.5 3 8.38 8.38 0 0 1 21 11.5Z" />
+    </svg>
+  )
+}
+
+export function ExpandIcon({ className }: IconProps) {
+  return (
+    <svg className={className} {...defaults}>
+      <path d="M15 3h6v6" />
+      <path d="M9 21H3v-6" />
+      <path d="M21 3l-7 7" />
+      <path d="M3 21l7-7" />
+    </svg>
+  )
+}
+
+export function MoreIcon({ className }: IconProps) {
+  return (
+    <svg className={className} {...defaults}>
+      <circle cx="12" cy="5" r="1" />
+      <circle cx="12" cy="12" r="1" />
+      <circle cx="12" cy="19" r="1" />
+    </svg>
+  )
+}
+
+export function ArchiveIcon({ className }: IconProps) {
+  return (
+    <svg className={className} {...defaults}>
+      <rect x="3" y="4" width="18" height="4" rx="1" />
+      <path d="M5 8v11a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8" />
+      <line x1="10" y1="12" x2="14" y2="12" />
+    </svg>
+  )
+}
+
+export function TrashIcon({ className }: IconProps) {
+  return (
+    <svg className={className} {...defaults}>
+      <path d="M3 6h18" />
+      <path d="M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2" />
+      <path d="M19 6v14a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V6" />
+      <line x1="10" y1="11" x2="10" y2="17" />
+      <line x1="14" y1="11" x2="14" y2="17" />
+    </svg>
+  )
+}
