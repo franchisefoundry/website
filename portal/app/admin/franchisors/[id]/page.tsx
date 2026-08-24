@@ -14,6 +14,7 @@ import Link from 'next/link'
 import { MATCH_PIPELINE_STAGES } from '@/lib/supabase/types'
 import { FranchisorPreviewButton } from '@/components/admin/FranchisorPreviewButton'
 import { ArchiveButton } from '@/components/admin/ArchiveButton'
+import { BrandTerritories } from './BrandTerritories'
 import SendAgreementButton from './SendAgreementButton'
 
 interface Props {
@@ -179,6 +180,11 @@ export default async function FranchisorDetailPage({ params }: Props) {
                 ? `Submitted ${new Date(questionnaire.completed_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}`
                 : 'Not yet submitted'}
             </p>
+          </Section>
+
+          {/* Territories */}
+          <Section title="Territories">
+            <BrandTerritories franchisorId={id} />
           </Section>
         </div>
 

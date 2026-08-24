@@ -1,5 +1,6 @@
 import { createAdminClient } from '@/lib/supabase/admin'
 import { PageHeader } from '@/components/page-header'
+import { MarketplaceTabs } from '@/components/admin/MarketplaceTabs'
 import { Section } from '@/components/crm/Section'
 import { Avatar } from '@/components/ui/Avatar'
 import { addResale, setResaleStatus, deleteResale } from './actions'
@@ -22,7 +23,8 @@ export default async function ResalesPage() {
 
   return (
     <div className="max-w-5xl">
-      <PageHeader title="Resales" description="Existing franchises for resale across the network." />
+      <PageHeader title="Marketplace" description="Existing franchises for resale across the network." />
+      <MarketplaceTabs />
 
       <Section title="List a resale" className="mb-5">
         <form action={addResale} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5">

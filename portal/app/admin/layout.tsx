@@ -29,7 +29,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   const badges: Record<string, number> = {}
   if (newLeads) badges['/admin/leads'] = newLeads
   if (pendingReview) badges['/admin/franchisors'] = pendingReview
-  if (pendingIntros) badges['/admin/intro-requests'] = pendingIntros
+  if (pendingIntros) badges['/admin/partners'] = pendingIntros   // Marketplace group
   if (unreadMsgs) badges['/admin/messages'] = unreadMsgs
 
   return (

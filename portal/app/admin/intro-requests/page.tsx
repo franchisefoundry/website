@@ -1,5 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 import { PageHeader } from '@/components/page-header'
+import { MarketplaceTabs } from '@/components/admin/MarketplaceTabs'
 import { Avatar } from '@/components/ui/Avatar'
 import { statusBadge } from '@/components/ui/badge'
 import { formatDate } from '@/lib/utils'
@@ -16,9 +17,10 @@ export default async function IntroRequestsPage() {
   return (
     <div>
       <PageHeader
-        title="Marketplace intro requests"
-        description="Requests from franchisees and franchisors to be connected with a marketplace partner."
+        title="Marketplace"
+        description="Requests from franchisees and franchisors to be connected with a partner."
       />
+      <MarketplaceTabs />
 
       {(!requests || requests.length === 0) ? (
         <div className="text-center py-16 text-ink-3 text-sm">No intro requests yet.</div>

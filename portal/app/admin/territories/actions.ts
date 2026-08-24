@@ -25,6 +25,7 @@ export async function addTerritory(formData: FormData) {
     status: String(formData.get('status') || 'open'),
   })
   revalidatePath('/admin/territories')
+  revalidatePath('/admin/franchisors/[id]', 'page')
 }
 
 export async function setTerritoryStatus(formData: FormData) {
@@ -34,6 +35,7 @@ export async function setTerritoryStatus(formData: FormData) {
     .update({ status: String(formData.get('status')), updated_at: new Date().toISOString() })
     .eq('id', String(formData.get('id')))
   revalidatePath('/admin/territories')
+  revalidatePath('/admin/franchisors/[id]', 'page')
 }
 
 export async function deleteTerritory(formData: FormData) {
@@ -41,4 +43,5 @@ export async function deleteTerritory(formData: FormData) {
   const admin = createAdminClient()
   await admin.from('territories').delete().eq('id', String(formData.get('id')))
   revalidatePath('/admin/territories')
+  revalidatePath('/admin/franchisors/[id]', 'page')
 }

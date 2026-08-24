@@ -1,5 +1,6 @@
 import { createAdminClient } from '@/lib/supabase/admin'
 import { PageHeader } from '@/components/page-header'
+import { MarketplaceTabs } from '@/components/admin/MarketplaceTabs'
 import PartnersClient from './PartnersClient'
 import type { Partner } from '@/lib/supabase/types'
 
@@ -18,9 +19,10 @@ export default async function AdminPartnersPage() {
   return (
     <div>
       <PageHeader
-        title="Marketplace partners"
-        description="Trusted supply chain partners shown in the franchisee and franchisor marketplace."
+        title="Marketplace"
+        description="Trusted supply-chain partners, intro requests and resales."
       />
+      <MarketplaceTabs />
       <PartnersClient
         partners={(partners ?? []) as Partner[]}
         introRequestCount={introRequestCount ?? 0}
