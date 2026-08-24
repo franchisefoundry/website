@@ -1,7 +1,6 @@
 'use client'
 
 import { useState } from 'react'
-import { createClient } from '@/lib/supabase/client'
 import { toast } from '@/lib/toast'
 import { cn } from '@/lib/utils'
 
@@ -18,10 +17,12 @@ export default function RevealToggle({ matchId, revealed }: { matchId: string; r
     const next = !on
     setOn(next)
     setSaving(true)
-    const supabase = createClient()
-    await supabase.from('matches').update({ franchisor_revealed: next }).eq('id', matchId)
+    await fetch(`/api/admin/matches/${matchId}/reveal`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ revealed: next }),
+    }).catch(() => {})
     setSaving(false)
-    toast(next ? 'Revealed to brand' : 'Hidden from brand')
+    toast(next ? 'Revealed — brand notified' : 'Hidden from brand')
   }
 
   return (
