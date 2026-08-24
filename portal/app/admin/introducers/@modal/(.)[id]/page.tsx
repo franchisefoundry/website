@@ -2,7 +2,8 @@ import { notFound } from 'next/navigation'
 import { Avatar } from '@/components/ui/Avatar'
 import { Section } from '@/components/crm/Section'
 import { candPill, getAgentData } from '@/app/admin/introducers/agent-metrics'
-import { MailIcon } from '@/components/icons'
+import Link from 'next/link'
+import { MailIcon, MessageIcon } from '@/components/icons'
 import { RecordDrawerHost as DrawerHost } from '@/components/crm/RecordDrawerHost'
 
 interface Props { params: Promise<{ id: string }> }
@@ -24,12 +25,18 @@ export default async function AgentModal({ params }: Props) {
             <p className="text-sm text-ink-2 mt-0.5">Code <span className="font-mono text-ink">{agent.referral_code || '—'}</span></p>
           </div>
         </div>
-        {agent.email && (
-          <a href={gmail(agent.email)} target="_blank" rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-medium text-ink-2 border border-line bg-surface hover:bg-surface-2 transition-colors flex-shrink-0">
-            <MailIcon className="w-4 h-4" /> Email
-          </a>
-        )}
+        <div className="flex items-center gap-2 flex-shrink-0">
+          <Link href={`/admin/messages?thread=introducer:${id}`}
+            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-medium text-ink-2 border border-line bg-surface hover:bg-surface-2 transition-colors">
+            <MessageIcon className="w-4 h-4" /> Message
+          </Link>
+          {agent.email && (
+            <a href={gmail(agent.email)} target="_blank" rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-medium text-ink-2 border border-line bg-surface hover:bg-surface-2 transition-colors">
+              <MailIcon className="w-4 h-4" /> Email
+            </a>
+          )}
+        </div>
       </div>
 
       <div className="grid grid-cols-4 gap-3 mb-5">

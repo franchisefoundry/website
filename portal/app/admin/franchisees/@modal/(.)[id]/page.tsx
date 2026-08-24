@@ -8,7 +8,8 @@ import { formatInvestmentRange } from '@/lib/utils'
 import { scoreColour } from '@/lib/matching'
 import { FRANCHISEE_PIPELINE_STAGES } from '@/lib/supabase/types'
 import { franchiseeStageIndex } from '@/lib/crm/pipeline'
-import { MailIcon } from '@/components/icons'
+import Link from 'next/link'
+import { MailIcon, MessageIcon } from '@/components/icons'
 import { RecordDrawerHost as DrawerHost } from '@/components/crm/RecordDrawerHost'
 
 interface Props { params: Promise<{ id: string }> }
@@ -49,12 +50,18 @@ export default async function FranchiseeModal({ params }: Props) {
             <p className="text-sm text-ink-2 mt-0.5 truncate">{profile?.email}</p>
           </div>
         </div>
-        {profile?.email && (
-          <a href={gmail(profile.email)} target="_blank" rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-medium text-ink-2 border border-line bg-surface hover:bg-surface-2 transition-colors flex-shrink-0">
-            <MailIcon className="w-4 h-4" /> Email
-          </a>
-        )}
+        <div className="flex items-center gap-2 flex-shrink-0">
+          <Link href={`/admin/messages?thread=franchisee:${id}`}
+            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-medium text-ink-2 border border-line bg-surface hover:bg-surface-2 transition-colors">
+            <MessageIcon className="w-4 h-4" /> Message
+          </Link>
+          {profile?.email && (
+            <a href={gmail(profile.email)} target="_blank" rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-medium text-ink-2 border border-line bg-surface hover:bg-surface-2 transition-colors">
+              <MailIcon className="w-4 h-4" /> Email
+            </a>
+          )}
+        </div>
       </div>
 
       {/* Journey */}

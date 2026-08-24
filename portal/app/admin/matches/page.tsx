@@ -6,6 +6,7 @@ import { MATCH_PIPELINE_STAGES } from '@/lib/supabase/types'
 import Link from 'next/link'
 import MatchPipelineSelect from './match-pipeline-select'
 import MatchNotesInline from './match-notes-inline'
+import RunMatchingButton from './run-matching-button'
 
 export default async function MatchesPage() {
   const admin = createAdminClient()
@@ -85,6 +86,7 @@ export default async function MatchesPage() {
       <PageHeader
         title="Match pipeline"
         description="Active matches grouped by brand — advance stages and add notes inline."
+        action={<RunMatchingButton />}
       />
 
       {groups.length === 0 && (

@@ -5,7 +5,7 @@ import { Avatar } from '@/components/ui/Avatar'
 import { statusBadge } from '@/components/ui/badge'
 import { Section } from '@/components/crm/Section'
 import { formatInvestmentRange } from '@/lib/utils'
-import { MailIcon } from '@/components/icons'
+import { MailIcon, MessageIcon } from '@/components/icons'
 import { RecordDrawerHost as DrawerHost } from '@/components/crm/RecordDrawerHost'
 
 interface Props { params: Promise<{ id: string }> }
@@ -46,6 +46,10 @@ export default async function BrandModal({ params }: Props) {
           </div>
         </div>
         <div className="flex items-center gap-2 flex-shrink-0">
+          <Link href={`/admin/messages?thread=franchisor:${id}`}
+            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-medium text-ink-2 border border-line bg-surface hover:bg-surface-2 transition-colors">
+            <MessageIcon className="w-4 h-4" /> Message
+          </Link>
           {profile?.email && (
             <a href={gmail(profile.email)} target="_blank" rel="noopener noreferrer"
               className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-medium text-ink-2 border border-line bg-surface hover:bg-surface-2 transition-colors">
