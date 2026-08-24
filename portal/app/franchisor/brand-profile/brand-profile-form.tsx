@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
-import { Section } from '@/components/crm/Section'
+import { Ring } from '@/components/ui/Ring'
 import { UK_CITIES, SECTORS } from '@/lib/supabase/types'
 import type { FranchisorProfile } from '@/lib/supabase/types'
 import { slugify } from '@/lib/utils'
@@ -14,16 +14,25 @@ interface Props {
   userId: string
 }
 
-const inp = 'w-full px-3 py-2 border border-line rounded-xl text-sm bg-surface text-ink placeholder:text-ink-3 focus:outline-none focus:ring-2 focus:ring-ff-green'
+const inp = 'w-full px-3 py-2.5 rounded-xl text-sm text-ink bg-surface-2 border border-transparent hover:bg-[#f2f4ed] focus:bg-surface focus:border-ff-green focus:outline-none focus:ring-[3px] focus:ring-ff-green/10 transition placeholder:text-ink-3'
 const lbl = 'block text-sm font-medium text-ink-2 mb-1.5'
 
 function Toggle({ on, onClick, children, pill }: { on: boolean; onClick: () => void; children: React.ReactNode; pill?: boolean }) {
   return (
     <button type="button" onClick={onClick}
       className={`${pill ? 'rounded-full px-3.5 py-1.5' : 'flex-1 rounded-xl px-3 py-2'} text-sm border transition-colors ${
-        on ? 'bg-ff-green text-white border-ff-green' : 'border-line text-ink-2 hover:bg-surface-2'}`}>
+        on ? 'bg-ff-green text-white border-ff-green shadow-sm' : 'border-line text-ink-2 hover:border-[#cdd2c8]'}`}>
       {children}
     </button>
+  )
+}
+
+function Group({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <div className="px-5 sm:px-6 py-5 border-t border-line-2 first:border-t-0">
+      <div className="text-[11px] font-bold uppercase tracking-[0.09em] text-ink-3 mb-3.5">{title}</div>
+      {children}
+    </div>
   )
 }
 
@@ -86,18 +95,24 @@ export default function BrandProfileForm({ brandProfile, userId }: Props) {
     ? `£${parseInt(investmentMin).toLocaleString('en-GB')} – £${parseInt(investmentMax).toLocaleString('en-GB')}`
     : 'Investment to be confirmed'
 
+  // Live profile-strength score.
+  const filled = [brandName, category, teaser, investmentMin, timelineMonths,
+    cleanHighlights.length > 0, locations.length > 0, sectorTags.length > 0,
+    operatorModel, experienceRequired].filter(Boolean).length
+  const strength = Math.round((filled / 10) * 100)
+
   return (
     <form onSubmit={e => handleSave(e)}>
       {isActive && (
-        <div className="bg-ff-green-soft border border-ff-green/20 rounded-2xl px-5 py-3.5 text-sm text-ff-green mb-5">
+        <div className="bg-ff-green-soft border border-ff-green/20 rounded-2xl px-5 py-3.5 text-sm text-ff-green mb-5 rise">
           Your brand profile is live. Changes you save are reviewed by the Franchise Foundry team.
         </div>
       )}
 
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-5 items-start">
-        {/* ── Editor ─────────────────────────────────────────────── */}
-        <div className="space-y-5">
-          <Section title="Brand basics">
+      <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-5 items-start">
+        {/* Single editor surface — hairline-divided, not stacked boxes */}
+        <div className="bg-surface border border-line rounded-2xl shadow-[0_1px_2px_rgba(27,33,26,0.05)] overflow-hidden rise">
+          <Group title="Brand basics">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div><label className={lbl}>Brand name</label><input value={brandName} onChange={e => setBrandName(e.target.value)} placeholder="e.g. Sides, Zambrero" className={inp} /></div>
               <div><label className={lbl}>Category</label><input value={category} onChange={e => setCategory(e.target.value)} placeholder="e.g. Quick Service, Coffee" className={inp} /></div>
@@ -126,17 +141,17 @@ export default function BrandProfileForm({ brandProfile, userId }: Props) {
                 ))}
               </div>
             </div>
-          </Section>
+          </Group>
 
-          <Section title="Investment">
+          <Group title="Investment">
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div><label className={lbl}>Minimum (£)</label><input type="number" value={investmentMin} onChange={e => setInvestmentMin(e.target.value)} placeholder="150000" className={inp} /></div>
               <div><label className={lbl}>Maximum (£)</label><input type="number" value={investmentMax} onChange={e => setInvestmentMax(e.target.value)} placeholder="300000" className={inp} /></div>
               <div><label className={lbl}>Setup timeline (months)</label><input type="number" value={timelineMonths} onChange={e => setTimelineMonths(e.target.value)} placeholder="6" className={inp} /></div>
             </div>
-          </Section>
+          </Group>
 
-          <Section title="Franchisee requirements">
+          <Group title="Franchisee requirements">
             <div className="space-y-5">
               <div>
                 <label className={lbl}>Operator model</label>
@@ -149,7 +164,7 @@ export default function BrandProfileForm({ brandProfile, userId }: Props) {
               <div>
                 <label className={lbl}>Experience required</label>
                 <div className="flex flex-col sm:flex-row gap-2">
-                  {[['none', 'None — welcomes first-timers'], ['management', 'Some management'], ['food-beverage', 'F&B background']].map(([v, l]) => (
+                  {[['none', 'None — first-timers'], ['management', 'Some management'], ['food-beverage', 'F&B background']].map(([v, l]) => (
                     <Toggle key={v} on={experienceRequired === v} onClick={() => setExperienceRequired(v)}>{l}</Toggle>
                   ))}
                 </div>
@@ -165,39 +180,31 @@ export default function BrandProfileForm({ brandProfile, userId }: Props) {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className={lbl}>Full-time required?</label>
-                  <div className="flex gap-2">
-                    <Toggle on={fullTimeRequired} onClick={() => setFullTimeRequired(true)}>Yes</Toggle>
-                    <Toggle on={!fullTimeRequired} onClick={() => setFullTimeRequired(false)}>No</Toggle>
-                  </div>
+                  <div className="flex gap-2"><Toggle on={fullTimeRequired} onClick={() => setFullTimeRequired(true)}>Yes</Toggle><Toggle on={!fullTimeRequired} onClick={() => setFullTimeRequired(false)}>No</Toggle></div>
                 </div>
                 <div>
                   <label className={lbl}>Multi-site ready?</label>
-                  <div className="flex gap-2">
-                    <Toggle on={multiSiteReady} onClick={() => setMultiSiteReady(true)}>Yes</Toggle>
-                    <Toggle on={!multiSiteReady} onClick={() => setMultiSiteReady(false)}>No</Toggle>
-                  </div>
+                  <div className="flex gap-2"><Toggle on={multiSiteReady} onClick={() => setMultiSiteReady(true)}>Yes</Toggle><Toggle on={!multiSiteReady} onClick={() => setMultiSiteReady(false)}>No</Toggle></div>
                 </div>
               </div>
             </div>
-          </Section>
+          </Group>
 
-          <Section title="Location coverage">
+          <Group title="Coverage & sectors">
             <label className={lbl}>Cities available</label>
             <div className="flex flex-wrap gap-2 mb-4">
               {UK_CITIES.map(c => <Toggle key={c.value} pill on={locations.includes(c.value)} onClick={() => tgl(locations, setLocations, c.value)}>{c.label}</Toggle>)}
             </div>
             <label className={lbl}>Display text <span className="text-ink-3 font-normal text-xs">— shown to candidates</span></label>
-            <input value={locationsDisplay} onChange={e => setLocationsDisplay(e.target.value)} placeholder="e.g. Major UK cities, Greater Manchester" className={inp} />
-          </Section>
-
-          <Section title="Sector tags">
+            <input value={locationsDisplay} onChange={e => setLocationsDisplay(e.target.value)} placeholder="e.g. Major UK cities" className={`${inp} mb-4`} />
+            <label className={lbl}>Sector tags</label>
             <div className="flex flex-wrap gap-2">
               {SECTORS.map(s => <Toggle key={s.value} pill on={sectorTags.includes(s.value)} onClick={() => tgl(sectorTags, setSectorTags, s.value)}>{s.label}</Toggle>)}
             </div>
-          </Section>
+          </Group>
 
-          <div className="flex items-center gap-3">
-            <button type="submit" disabled={saving} className="bg-ff-green hover:brightness-110 text-white font-medium py-2.5 px-6 rounded-xl text-sm transition-all disabled:opacity-60">
+          <div className="flex items-center gap-3 px-5 sm:px-6 py-4 bg-surface-2 border-t border-line-2">
+            <button type="submit" disabled={saving} className="bg-ff-green hover:brightness-110 text-white font-medium py-2.5 px-6 rounded-xl text-sm transition-all disabled:opacity-60 shadow-sm">
               {saving ? 'Saving…' : 'Save changes'}
             </button>
             {brandProfile?.status === 'draft' && (
@@ -210,29 +217,39 @@ export default function BrandProfileForm({ brandProfile, userId }: Props) {
           </div>
         </div>
 
-        {/* ── Live preview ───────────────────────────────────────── */}
-        <div className="lg:sticky lg:top-4">
-          <p className="text-[11px] font-bold uppercase tracking-[0.09em] text-ink-3 mb-2.5">How candidates see you</p>
-          <div className="bg-surface border border-line rounded-2xl shadow-[0_1px_2px_rgba(27,33,26,0.04)] overflow-hidden">
-            <div className="h-1 bg-gradient-to-r from-ff-gold to-[#e8c9a0]" />
-            <div className="p-5">
-              <span className="inline-flex items-center gap-1.5 text-[11px] font-bold text-ff-green bg-ff-green/10 rounded-full px-2.5 py-1 mb-3">
-                <ShieldCheckIcon className="w-3.5 h-3.5" /> Vetted by Franchise Foundry
-              </span>
-              <p className="text-xs font-semibold uppercase tracking-wide text-ink-3">{category || 'Category'}</p>
-              <p className="text-sm text-ink-2 mt-2 leading-relaxed min-h-[40px]">{teaser || 'Your concept teaser appears here — this is what candidates read before they’re revealed the brand.'}</p>
-              <p className="text-lg font-bold text-ink mt-3 tabular-nums">{investDisplay}</p>
-              {locationsDisplay && <p className="text-xs text-ink-3 mt-0.5">{locationsDisplay}</p>}
-              {cleanHighlights.length > 0 && (
-                <ul className="mt-4 space-y-2">
-                  {cleanHighlights.map((h, i) => (
-                    <li key={i} className="flex items-start gap-2 text-sm text-ink-2"><CheckIcon className="w-4 h-4 text-ff-gold mt-0.5 flex-shrink-0" />{h}</li>
-                  ))}
-                </ul>
-              )}
+        {/* Sticky preview + strength ring */}
+        <div className="lg:sticky lg:top-4 space-y-4">
+          <div className="rise" style={{ animationDelay: '0.08s' }}>
+            <p className="text-[11px] font-bold uppercase tracking-[0.09em] text-ink-3 mb-2.5">How candidates see you</p>
+            <div className="bg-surface border border-line rounded-2xl shadow-[0_14px_34px_rgba(27,33,26,0.1)] overflow-hidden">
+              <div className="h-1 bg-gradient-to-r from-ff-gold to-[#e8c9a0]" />
+              <div className="p-5">
+                <span className="inline-flex items-center gap-1.5 text-[11px] font-bold text-ff-green bg-ff-green/10 rounded-full px-2.5 py-1 mb-3">
+                  <ShieldCheckIcon className="w-3.5 h-3.5" /> Vetted by Franchise Foundry
+                </span>
+                <p className="text-xs font-semibold uppercase tracking-wide text-ink-3">{category || 'Category'}</p>
+                <p className="text-sm text-ink-2 mt-2 leading-relaxed min-h-[40px]">{teaser || 'Your concept teaser appears here — what candidates read before the brand is revealed.'}</p>
+                <p className="text-lg font-bold text-ink mt-3 tabular-nums">{investDisplay}</p>
+                {locationsDisplay && <p className="text-xs text-ink-3 mt-0.5">{locationsDisplay}</p>}
+                {cleanHighlights.length > 0 && (
+                  <ul className="mt-4 space-y-2">
+                    {cleanHighlights.map((h, i) => (
+                      <li key={i} className="flex items-start gap-2 text-sm text-ink-2"><CheckIcon className="w-4 h-4 text-ff-gold mt-0.5 flex-shrink-0" />{h}</li>
+                    ))}
+                  </ul>
+                )}
+              </div>
             </div>
           </div>
-          <p className="text-[11px] text-ink-3 mt-3 leading-relaxed">Updates live as you type. A complete, sharp profile is the single biggest driver of match quality.</p>
+
+          <div className="bg-surface border border-line rounded-2xl shadow-[0_1px_2px_rgba(27,33,26,0.05)] p-4 flex items-center gap-4 rise" style={{ animationDelay: '0.14s' }}>
+            <Ring pct={strength} size={80} />
+            <div>
+              <p className="text-sm font-bold text-ink">Profile strength</p>
+              <p className="text-xs text-ink-2 mt-0.5">A complete profile lifts match quality.</p>
+              {strength < 100 && <p className="text-xs text-ff-gold-ink font-semibold mt-1.5">✦ Finish the empty fields to reach 100%</p>}
+            </div>
+          </div>
         </div>
       </div>
     </form>

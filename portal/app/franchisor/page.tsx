@@ -1,9 +1,8 @@
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
-import { PageHeader } from '@/components/page-header'
-import { Card } from '@/components/ui/card'
 import { statusBadge } from '@/components/ui/badge'
-import { LeadsIcon, CheckIcon, PartnerIcon } from '@/components/icons'
+import { Ring } from '@/components/ui/Ring'
+import { CountUp } from '@/components/ui/CountUp'
 import Link from 'next/link'
 import { cookies } from 'next/headers'
 
@@ -12,244 +11,142 @@ export default async function FranchisorDashboard() {
   const { data: { user } } = await supabase.auth.getUser()
   const admin = createAdminClient()
 
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('full_name, role')
-    .eq('id', user!.id)
-    .single()
+  const { data: profile } = await supabase.from('profiles').select('full_name, role').eq('id', user!.id).single()
 
   const cookieStore = await cookies()
-  // Admin preview: FranchisorPreviewButton sets ff_preview_as
-  const previewAs    = profile?.role === 'admin'    ? cookieStore.get('ff_preview_as')?.value    : null
-  // Multi-brand: brand switcher sets ff_active_brand_id
+  const previewAs    = profile?.role === 'admin'      ? cookieStore.get('ff_preview_as')?.value     : null
   const activeBrandId = profile?.role === 'franchisor' ? cookieStore.get('ff_active_brand_id')?.value : null
 
   const { data: brandProfile } = previewAs
     ? await admin.from('franchisor_profiles').select('*').eq('id', previewAs).single()
     : activeBrandId
       ? await supabase.from('franchisor_profiles').select('*').eq('id', activeBrandId).single()
-      : await supabase.from('franchisor_profiles').select('*').eq('user_id', user!.id)
-          .order('created_at', { ascending: true }).limit(1).single()
+      : await supabase.from('franchisor_profiles').select('*').eq('user_id', user!.id).order('created_at', { ascending: true }).limit(1).single()
 
   const firstName = profile?.full_name?.split(' ')[0] ?? 'there'
 
-  // Fetch match stats via admin client (bypasses RLS, allows role filter)
   const { data: rawMatches } = brandProfile
-    ? await admin
-        .from('matches')
+    ? await admin.from('matches')
         .select('id, status, franchisee_profiles(profiles!franchisee_profiles_user_id_fkey(role))')
-        .eq('franchisor_id', brandProfile.id)
-        .eq('franchisor_revealed', true)
+        .eq('franchisor_id', brandProfile.id).eq('franchisor_revealed', true)
         .in('status', ['suggested', 'shown', 'interested', 'intro_made'])
     : { data: [] }
-
-  // Exclude admin/test accounts
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const matches = (rawMatches ?? []).filter(m => (m.franchisee_profiles as any)?.profiles?.role === 'franchisee')
-
-  const incomingCount  = matches.filter(m => m.status === 'suggested' || m.status === 'shown').length
+  const incomingCount = matches.filter(m => m.status === 'suggested' || m.status === 'shown').length
   const interestedCount = matches.filter(m => m.status === 'interested').length
-  const introCount     = matches.filter(m => m.status === 'intro_made').length
+  const introCount = matches.filter(m => m.status === 'intro_made').length
 
-  // Profile completeness
   const fields = ['brand_name', 'category', 'teaser', 'investment_min', 'investment_max', 'operator_model', 'experience_required']
   const filled = fields.filter(f => brandProfile?.[f as keyof typeof brandProfile]).length
   const completeness = Math.round((filled / fields.length) * 100)
-
   const isActive = brandProfile?.status === 'active'
 
-  return (
-    <div>
-      <PageHeader
-        title={`Welcome, ${firstName}`}
-        description="Your Franchise Foundry brand portal."
-      />
+  // Contextual hero line + primary action
+  let line: string, ctaLabel: string, ctaHref: string
+  if (!brandProfile) { line = "Let's set up your brand profile to start matching."; ctaLabel = 'Set up your profile'; ctaHref = '/franchisor/brand-profile' }
+  else if (isActive && incomingCount > 0) { line = `${incomingCount} candidate${incomingCount !== 1 ? 's are' : ' is'} waiting on you.`; ctaLabel = 'Review candidates →'; ctaHref = '/franchisor/matches' }
+  else if (isActive) { line = "Your brand is live — we're actively matching candidates."; ctaLabel = 'View your profile'; ctaHref = '/franchisor/brand-profile' }
+  else if (brandProfile.status === 'pending_review') { line = "Your profile is under review — we'll activate it shortly."; ctaLabel = 'View your profile'; ctaHref = '/franchisor/brand-profile' }
+  else { line = 'Complete your profile and submit it for review.'; ctaLabel = 'Finish your profile'; ctaHref = '/franchisor/brand-profile' }
 
-      {/* Stats — only show when active and there are candidates */}
-      {isActive && matches.length > 0 && (
-        <div className="grid grid-cols-3 gap-4 mb-6">
-          {[
-            {
-              label: 'New to review',
-              count: incomingCount,
-              colour: 'text-sky-600',
-              bg: 'bg-sky-50',
-              border: 'border-sky-200',
-              iconBg: 'bg-sky-100',
-              icon: <LeadsIcon className="w-5 h-5 text-sky-600" />,
-            },
-            {
-              label: "You're interested",
-              count: interestedCount,
-              colour: 'text-emerald-600',
-              bg: 'bg-emerald-50',
-              border: 'border-emerald-200',
-              iconBg: 'bg-emerald-100',
-              icon: <CheckIcon className="w-5 h-5 text-emerald-600" />,
-            },
-            {
-              label: 'Intros arranged',
-              count: introCount,
-              colour: 'text-amber-600',
-              bg: 'bg-amber-50',
-              border: 'border-amber-200',
-              iconBg: 'bg-amber-100',
-              icon: <PartnerIcon className="w-5 h-5 text-amber-600" />,
-            },
-          ].map(s => (
-            <Link key={s.label} href="/franchisor/matches">
-              <div className={`rounded-2xl border ${s.border} ${s.bg} p-5 hover:shadow-sm transition-all cursor-pointer`}>
-                <div className={`w-9 h-9 rounded-xl flex items-center justify-center mb-3 ${s.iconBg}`}>
-                  {s.icon}
-                </div>
-                <p className={`text-3xl font-bold tracking-tight ${s.colour} mb-1`}>{s.count}</p>
-                <p className="text-xs font-medium text-slate-600">{s.label}</p>
-              </div>
+  const kpis = [
+    { n: incomingCount, l: 'Candidates waiting' },
+    { n: interestedCount, l: "You're interested" },
+    { n: introCount, l: 'Intros arranged' },
+    { n: completeness, l: 'Profile complete', suffix: '%' },
+  ]
+
+  return (
+    <div className="max-w-5xl">
+      {/* Hero */}
+      <div className="rise relative overflow-hidden rounded-2xl p-6 text-white shadow-[0_18px_40px_rgba(27,33,26,0.22)] bg-gradient-to-br from-ff-green to-ff-green-deep">
+        <div className="absolute inset-0" style={{ background: 'radial-gradient(560px 220px at 88% -30%, rgba(200,146,74,0.34), transparent 60%)' }} />
+        <div className="relative">
+          <div className="flex items-center gap-2.5 flex-wrap">
+            <h1 className="text-2xl font-bold tracking-tight">Welcome, {firstName}</h1>
+            {brandProfile && <span className="opacity-90">{statusBadge(brandProfile.status)}</span>}
+          </div>
+          <p className="text-sm text-white/70 mt-1.5">{line}</p>
+          <Link href={ctaHref}
+            className="mt-4 inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold text-ff-green-deep shadow-[0_6px_18px_rgba(200,146,74,0.4)] bg-gradient-to-br from-ff-gold to-[#dcae6b] hover:-translate-y-0.5 transition-transform">
+            {ctaLabel}
+          </Link>
+        </div>
+      </div>
+
+      {/* KPI strip */}
+      {isActive && (
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mt-4">
+          {kpis.map((k, i) => (
+            <Link key={k.l} href={k.l === 'Profile complete' ? '/franchisor/brand-profile' : '/franchisor/matches'}
+              className="lift rise bg-surface border border-line rounded-2xl px-4 py-4 shadow-[0_1px_2px_rgba(27,33,26,0.05)]"
+              style={{ animationDelay: `${0.05 + i * 0.06}s` }}>
+              <p className="text-[28px] font-extrabold tracking-tight text-ink tabular-nums leading-none">
+                <CountUp value={k.n} suffix={k.suffix ?? ''} />
+              </p>
+              <p className="text-[11px] text-ink-3 mt-1.5">{k.l}</p>
             </Link>
           ))}
         </div>
       )}
 
-      {/* Active brand — prompt to review candidates */}
-      {isActive && incomingCount > 0 && (
-        <div className="bg-sky-50 border border-sky-200 rounded-xl px-5 py-4 mb-6 flex items-center justify-between gap-4">
+      {/* Profile strength + next step */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
+        <div className="rise bg-surface border border-line rounded-2xl shadow-[0_1px_2px_rgba(27,33,26,0.05)] p-5 flex items-center gap-5" style={{ animationDelay: '0.28s' }}>
+          <Ring pct={completeness} size={96} />
           <div>
-            <p className="text-sm font-semibold text-sky-800">
-              {incomingCount} new candidate{incomingCount !== 1 ? 's' : ''} to review
-            </p>
-            <p className="text-xs text-sky-600 mt-0.5">
-              Review their profiles and let us know if you&apos;re interested — we&apos;ll arrange the introduction.
-            </p>
+            <p className="text-sm font-bold text-ink">Profile strength</p>
+            <p className="text-xs text-ink-2 mt-0.5 max-w-[22ch]">A complete profile matches you with better-qualified candidates.</p>
+            <Link href="/franchisor/brand-profile" className="inline-block mt-3 text-sm font-medium text-ff-green hover:underline">
+              {completeness === 0 ? 'Set up your profile →' : 'Update your profile →'}
+            </Link>
           </div>
-          <Link
-            href="/franchisor/matches"
-            className="shrink-0 bg-sky-600 hover:bg-sky-700 text-white text-xs font-semibold px-4 py-2 rounded-lg transition-colors"
-          >
-            Review candidates →
-          </Link>
         </div>
-      )}
 
-      {/* Active brand — no candidates yet */}
-      {isActive && matches.length === 0 && (
-        <div className="bg-emerald-50 border border-emerald-200 rounded-xl px-5 py-4 mb-6">
-          <p className="text-sm font-semibold text-emerald-800">Your brand is live</p>
-          <p className="text-xs text-emerald-700 mt-0.5">
-            We&apos;re actively matching qualified candidates to your brand. You&apos;ll be notified as soon as strong matches are identified.
-          </p>
-        </div>
-      )}
-
-      {/* Not yet active */}
-      {!isActive && brandProfile && (
-        <div className="bg-amber-50 border border-amber-200 rounded-xl px-5 py-4 mb-6">
-          <p className="text-sm font-semibold text-amber-800">
-            {brandProfile.status === 'pending_review' ? 'Profile under review' : 'Profile not yet submitted'}
-          </p>
-          <p className="text-xs text-amber-700 mt-0.5">
-            {brandProfile.status === 'pending_review'
-              ? 'The Franchise Foundry team is reviewing your profile. We\'ll activate it and begin matching shortly.'
-              : 'Complete your brand profile and submit it for review to start receiving matched candidates.'}
-          </p>
-        </div>
-      )}
-
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mb-8">
-        {/* Profile status card */}
-        <Card className="p-6">
-          <p className="text-sm text-slate-500 mb-1">Profile status</p>
-          <div className="flex items-center gap-3 mb-3">
-            <span className="text-xl font-bold text-slate-900">{completeness}% complete</span>
-            {brandProfile && statusBadge(brandProfile.status)}
-          </div>
-          <div className="w-full bg-slate-100 rounded-full h-2 mb-4">
-            <div
-              className="bg-brand-green h-2 rounded-full transition-all"
-              style={{ width: `${completeness}%` }}
-            />
-          </div>
-          {completeness < 100 && (
-            <p className="text-xs text-slate-400 mb-3">
-              A complete profile helps us match you with better-qualified candidates.
-            </p>
-          )}
-          <Link
-            href="/franchisor/brand-profile"
-            className="inline-block bg-brand-green hover:bg-brand-green-dark text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors"
-          >
-            {completeness === 0 ? 'Set up your profile' : 'Update your profile'}
-          </Link>
-        </Card>
-
-        {/* Candidates quick link / teaser */}
         {isActive ? (
-          <Link href="/franchisor/matches">
-            <Card className="p-6 hover:border-brand-green transition-colors cursor-pointer h-full flex flex-col justify-between">
-              <div>
-                <p className="text-sm text-slate-500 mb-1">Candidates</p>
-                <p className="text-2xl font-bold text-slate-900 mb-1">{matches.length}</p>
-                <p className="text-xs text-slate-400">active in your pipeline</p>
-              </div>
-              <p className="mt-4 text-sm font-medium text-brand-green">View all candidates →</p>
-            </Card>
+          <Link href="/franchisor/matches"
+            className="rise lift bg-surface border border-line rounded-2xl shadow-[0_1px_2px_rgba(27,33,26,0.05)] p-5 flex flex-col justify-between" style={{ animationDelay: '0.34s' }}>
+            <div>
+              <p className="text-[11px] font-bold uppercase tracking-[0.09em] text-ink-3">Your pipeline</p>
+              <p className="text-[28px] font-extrabold text-ink tabular-nums mt-1"><CountUp value={matches.length} /></p>
+              <p className="text-xs text-ink-3">candidates active</p>
+            </div>
+            <p className="mt-3 text-sm font-medium text-ff-green">View all candidates →</p>
           </Link>
         ) : (
-          <Card className="p-6">
-            <p className="text-sm text-slate-500 mb-2">How matching works</p>
+          <div className="rise bg-surface border border-line rounded-2xl shadow-[0_1px_2px_rgba(27,33,26,0.05)] p-5" style={{ animationDelay: '0.34s' }}>
+            <p className="text-[11px] font-bold uppercase tracking-[0.09em] text-ink-3 mb-2.5">How matching works</p>
             <ol className="space-y-2">
-              {[
-                'Complete your brand profile with investment details and operator model.',
-                'Submit for review — we\'ll activate your profile.',
-                'We match and brief qualified franchisee candidates.',
-                'You review candidates and we arrange warm introductions.',
-              ].map((step, i) => (
-                <li key={i} className="flex gap-2.5 text-xs text-slate-600">
-                  <span className="w-4.5 h-4.5 rounded-full bg-brand-green text-white text-[10px] font-semibold flex items-center justify-center shrink-0 mt-0.5">
-                    {i + 1}
-                  </span>
-                  {step}
+              {['Complete your brand profile.', 'Submit for review — we activate it.', 'We match & brief qualified candidates.', 'You review; we arrange warm intros.'].map((s, i) => (
+                <li key={i} className="flex gap-2.5 text-xs text-ink-2">
+                  <span className="w-5 h-5 rounded-full bg-ff-green text-white text-[10px] font-semibold flex items-center justify-center shrink-0">{i + 1}</span>{s}
                 </li>
               ))}
             </ol>
-          </Card>
+          </div>
         )}
       </div>
 
-      {/* Intro arranged — show a reminder if any */}
+      {/* Intro reminder */}
       {isActive && introCount > 0 && (
-        <div className="bg-amber-50 border border-amber-200 rounded-xl px-5 py-4 flex items-center justify-between gap-4">
+        <div className="rise mt-4 bg-ff-gold-soft border border-[#e6cfa6] rounded-2xl px-5 py-4 flex items-center justify-between gap-4" style={{ animationDelay: '0.4s' }}>
           <div>
-            <p className="text-sm font-semibold text-amber-800">
-              {introCount} introduction{introCount !== 1 ? 's' : ''} arranged
-            </p>
-            <p className="text-xs text-amber-700 mt-0.5">
-              Your consultant will connect you with these candidates shortly. Check your email for scheduling details.
-            </p>
+            <p className="text-sm font-semibold text-ff-gold-ink">{introCount} introduction{introCount !== 1 ? 's' : ''} arranged</p>
+            <p className="text-xs text-ff-gold-ink/80 mt-0.5">Your consultant will connect you with these candidates shortly.</p>
           </div>
-          <Link
-            href="/franchisor/matches"
-            className="shrink-0 text-amber-700 text-xs font-semibold hover:underline"
-          >
-            View →
-          </Link>
+          <Link href="/franchisor/matches" className="shrink-0 text-ff-gold-ink text-xs font-semibold hover:underline">View →</Link>
         </div>
       )}
 
-      {/* Multi-brand: prompt to add another brand (only shown to real franchisors, not admin preview) */}
+      {/* Add another brand */}
       {profile?.role === 'franchisor' && isActive && (
-        <div className="mt-6 border border-dashed border-slate-300 rounded-xl px-5 py-4 flex items-center justify-between gap-4">
+        <div className="mt-4 border border-dashed border-line rounded-2xl px-5 py-4 flex items-center justify-between gap-4">
           <div>
-            <p className="text-sm font-semibold text-slate-700">Have another brand to franchise?</p>
-            <p className="text-xs text-slate-400 mt-0.5">
-              Add a second brand to your account — the recruitment questionnaire is pre-filled from this one.
-            </p>
+            <p className="text-sm font-semibold text-ink">Have another brand to franchise?</p>
+            <p className="text-xs text-ink-3 mt-0.5">Add a second brand — the questionnaire is pre-filled from this one.</p>
           </div>
-          <Link
-            href="/franchisor/onboarding?add_brand=1"
-            className="shrink-0 text-xs font-medium text-slate-600 border border-slate-300 hover:border-slate-400 hover:text-slate-800 px-4 py-2 rounded-lg transition-colors"
-          >
-            + Add brand
-          </Link>
+          <Link href="/franchisor/onboarding?add_brand=1" className="shrink-0 text-xs font-medium text-ink-2 border border-line hover:border-[#cdd2c8] px-4 py-2 rounded-lg transition-colors">+ Add brand</Link>
         </div>
       )}
     </div>
