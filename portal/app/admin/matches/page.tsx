@@ -7,6 +7,7 @@ import Link from 'next/link'
 import MatchPipelineSelect from './match-pipeline-select'
 import MatchNotesInline from './match-notes-inline'
 import RunMatchingButton from './run-matching-button'
+import RevealToggle from './reveal-toggle'
 
 export default async function MatchesPage() {
   const admin = createAdminClient()
@@ -160,11 +161,15 @@ export default async function MatchesPage() {
                               </span>
                             )}
                           </div>
-                          <MatchPipelineSelect
-                            matchId={m.id}
-                            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                            currentStage={(m as any).pipeline_stage ?? null}
-                          />
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <MatchPipelineSelect
+                              matchId={m.id}
+                              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                              currentStage={(m as any).pipeline_stage ?? null}
+                            />
+                            {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+                            <RevealToggle matchId={m.id} revealed={(m as any).franchisor_revealed ?? false} />
+                          </div>
                         </div>
                         <div className="shrink-0 w-72">
                           <MatchNotesInline

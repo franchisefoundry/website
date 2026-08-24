@@ -9,6 +9,7 @@ import { MailIcon } from '@/components/icons'
 import FranchisorStatusActions from './actions'
 import MatchPipelineSelect from '@/app/admin/matches/match-pipeline-select'
 import MatchStatusSelect from '@/app/admin/matches/match-status-select'
+import RevealToggle from '@/app/admin/matches/reveal-toggle'
 import Link from 'next/link'
 import { MATCH_PIPELINE_STAGES } from '@/lib/supabase/types'
 import { FranchisorPreviewButton } from '@/components/admin/FranchisorPreviewButton'
@@ -38,7 +39,7 @@ export default async function FranchisorDetailPage({ params }: Props) {
     admin.from('franchisor_questionnaires').select('completed_at').eq('franchisor_id', id).single(),
     admin
       .from('matches')
-      .select('id, status, pipeline_stage, score, franchisee_profiles(id, profiles!franchisee_profiles_user_id_fkey(full_name, role))')
+      .select('id, status, pipeline_stage, score, franchisor_revealed, franchisee_profiles(id, profiles!franchisee_profiles_user_id_fkey(full_name, role))')
       .eq('franchisor_id', id)
       .order('created_at', { ascending: false }),
     admin
@@ -141,9 +142,13 @@ export default async function FranchisorDetailPage({ params }: Props) {
                   const stage = MATCH_PIPELINE_STAGES.find(s => s.value === (m as any).pipeline_stage)
                   return (
                     <div key={m.id} className="rounded-xl border border-line-2 px-4 py-3">
-                      <div className="flex items-center justify-between mb-3">
+                      <div className="flex items-center justify-between gap-2 mb-3">
                         <Link href={`/admin/franchisees/${fe?.id}`} className="text-sm font-semibold text-ink hover:text-ff-green transition-colors">{name}</Link>
-                        {stage && <span className="text-xs text-ink-2 flex items-center gap-1">{stage.emoji} {stage.label}</span>}
+                        <div className="flex items-center gap-2">
+                          {stage && <span className="text-xs text-ink-2 hidden sm:flex items-center gap-1">{stage.emoji} {stage.label}</span>}
+                          {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+                          <RevealToggle matchId={m.id} revealed={(m as any).franchisor_revealed ?? false} />
+                        </div>
                       </div>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <div>
