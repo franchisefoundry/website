@@ -56,6 +56,7 @@ const franchiseeNav: NavItem[] = [
   { label: 'Dashboard',   href: '/franchisee',             icon: <DashboardIcon className="w-4 h-4" /> },
   { label: 'My Journey',  href: '/franchisee/matches',     icon: <MatchIcon className="w-4 h-4" /> },
   { label: 'Marketplace', href: '/franchisee/marketplace', icon: <MarketplaceIcon className="w-4 h-4" /> },
+  { label: 'Messages',    href: '/franchisee/messages',    icon: <MessageIcon className="w-4 h-4" /> },
   { label: 'My Profile',  href: '/franchisee/profile',     icon: <FranchiseeIcon className="w-4 h-4" /> },
 ]
 
@@ -72,6 +73,7 @@ const franchisorNav: NavItem[] = [
   { label: 'Candidates',  href: '/franchisor/matches',     icon: <LeadsIcon className="w-4 h-4" /> },
   { label: 'Marketplace', href: '/franchisor/marketplace', icon: <MarketplaceIcon className="w-4 h-4" /> },
   { label: 'Agreement',   href: '/franchisor/agreement',   icon: <AgreementIcon className="w-4 h-4" /> },
+  { label: 'Messages',    href: '/franchisor/messages',    icon: <MessageIcon className="w-4 h-4" /> },
   { label: 'My Account',  href: '/franchisor/profile',     icon: <FranchiseeIcon className="w-4 h-4" /> },
 ]
 
@@ -80,6 +82,7 @@ const introducerNav: NavItem[] = [
   { label: 'My Leads',   href: '/introducer/leads',   icon: <LeadsIcon className="w-4 h-4" /> },
   { label: 'Commission', href: '/introducer/commission', icon: <MatchIcon className="w-4 h-4" /> },
   { label: 'Tools',      href: '/introducer/tools',   icon: <MarketplaceIcon className="w-4 h-4" /> },
+  { label: 'Messages',   href: '/introducer/messages', icon: <MessageIcon className="w-4 h-4" /> },
   { label: 'My Account', href: '/introducer/profile', icon: <FranchiseeIcon className="w-4 h-4" /> },
 ]
 
