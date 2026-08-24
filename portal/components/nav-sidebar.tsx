@@ -14,7 +14,7 @@ import {
   DashboardIcon, LeadsIcon, FranchiseeIcon, FranchisorIcon,
   MatchIcon, AgreementIcon, MarketplaceIcon, AgentIcon,
   QuestionnaireIcon, SignOutIcon, SearchIcon, ChartIcon, WalletIcon,
-  PropertyIcon, TagIcon, MessageIcon, ArchiveIcon,
+  PropertyIcon, TagIcon, MessageIcon, ArchiveIcon, SettingsIcon,
 } from '@/components/icons'
 
 // ── Nav type system ──────────────────────────────────────────────────────────
@@ -53,6 +53,7 @@ const adminNav: NavItem[] = [
   { label: 'Questionnaires', href: '/admin/questionnaires',         icon: <QuestionnaireIcon className="w-4 h-4" /> },
   { label: 'Questions',      href: '/admin/questionnaire-template', icon: <QuestionnaireIcon className="w-4 h-4" /> },
   { label: 'Archived',       href: '/admin/archived',               icon: <ArchiveIcon className="w-4 h-4" /> },
+  { label: 'Settings',       href: '/admin/settings',               icon: <SettingsIcon className="w-4 h-4" /> },
 ]
 
 const franchiseeNav: NavItem[] = [
