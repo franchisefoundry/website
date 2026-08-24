@@ -25,143 +25,92 @@ const EXPERIENCE_ORDER: Record<string, number> = {
  *   - Franchisee wants a location the brand doesn't operate in
  *   - Brand requires multi-site but franchisee only wants a single site
  */
-export function scoreMatch(
+/**
+ * Scores a match AND explains it — the reasons power the "why they match" chips
+ * in the CRM. A reason is only added when a dimension genuinely contributes
+ * (a real, confirmed overlap), so the chips reflect actual fit, not filler.
+ */
+export function scoreMatchDetailed(
   franchisee: FranchiseeProfile,
-  franchisor: FranchisorProfile
-): number {
+  franchisor: FranchisorProfile,
+): { score: number; reasons: string[] } {
+  const reasons: string[] = []
 
-  // ── Hard filter: total budget ────────────────────────────────────────────
-  if (franchisee.investment_max && franchisor.investment_min) {
-    if (franchisee.investment_max < franchisor.investment_min) return 0
-  }
-
-  // ── Hard filter: liquid capital ──────────────────────────────────────────
-  if (franchisee.liquid_capital != null && franchisor.liquid_capital_min) {
-    if (franchisee.liquid_capital < franchisor.liquid_capital_min) return 0
-  }
-
-  // ── Hard filter: location ────────────────────────────────────────────────
+  // ── Hard filters (return 0 immediately) ──────────────────────────────────
+  if (franchisee.investment_max && franchisor.investment_min && franchisee.investment_max < franchisor.investment_min) return { score: 0, reasons: [] }
+  if (franchisee.liquid_capital != null && franchisor.liquid_capital_min && franchisee.liquid_capital < franchisor.liquid_capital_min) return { score: 0, reasons: [] }
   if (franchisee.preferred_locations?.length && franchisor.locations_available?.length) {
-    const hasOverlap = franchisee.preferred_locations.some(loc =>
-      franchisor.locations_available.includes(loc)
-    )
-    if (!hasOverlap) return 0
+    if (!franchisee.preferred_locations.some(loc => franchisor.locations_available.includes(loc))) return { score: 0, reasons: [] }
   }
-
-  // ── Hard filter: multi-site requirement ─────────────────────────────────
-  if (franchisor.min_sites_required && franchisor.min_sites_required >= 2) {
-    if (!franchisee.multi_site_interest) return 0
-  }
+  if (franchisor.min_sites_required && franchisor.min_sites_required >= 2 && !franchisee.multi_site_interest) return { score: 0, reasons: [] }
 
   let score = 0
 
-  // ── 1. Experience — 20 pts ───────────────────────────────────────────────
-  // Most important hard requirement: brands that won't take first-timers
-  // should never be shown at the top for someone with no background.
+  // 1. Experience — 20
   if (franchisee.experience && franchisor.experience_required) {
-    const franchiseeLevel = EXPERIENCE_ORDER[franchisee.experience] ?? 0
-    const requiredLevel = EXPERIENCE_ORDER[franchisor.experience_required] ?? 0
-    if (franchiseeLevel >= requiredLevel) {
-      score += 20
-    } else {
-      // Partial credit for being one level below (management vs food-beverage)
-      score += franchiseeLevel > 0 && requiredLevel - franchiseeLevel === 1 ? 8 : 0
-    }
+    const fl = EXPERIENCE_ORDER[franchisee.experience] ?? 0
+    const rl = EXPERIENCE_ORDER[franchisor.experience_required] ?? 0
+    if (fl >= rl) { score += 20; reasons.push('Experience fits') }
+    else if (fl > 0 && rl - fl === 1) { score += 8 }
   } else if (!franchisor.experience_required) {
-    score += 20
+    score += 20; reasons.push('Open to all backgrounds')
   }
 
-  // ── 2. Budget fit — 20 pts ───────────────────────────────────────────────
-  // Checks both affordability AND whether this is the right investment level.
-  // A £1m investor in a £25k brand is as poor a fit as someone who can't afford it.
+  // 2. Budget fit — 20
   if (franchisee.investment_max && franchisor.investment_min) {
     const brandMax = franchisor.investment_max ?? null
     const franchiseeMin = franchisee.investment_min ?? 0
-
-    if (brandMax && franchiseeMin > brandMax) {
-      // Franchisee's minimum exceeds what the brand costs — overqualified
-      score += 4
-    } else {
+    if (brandMax && franchiseeMin > brandMax) { score += 4 }
+    else {
       const headroom = (franchisee.investment_max - franchisor.investment_min) / franchisor.investment_min
-      if (headroom >= 0.5)      score += 20  // comfortable: max is 50%+ above brand min
-      else if (headroom >= 0.2) score += 13  // workable: 20–50% buffer
-      else                      score += 7   // tight: barely covers the minimum
+      if (headroom >= 0.5) { score += 20; reasons.push('Budget aligned') }
+      else if (headroom >= 0.2) { score += 13; reasons.push('Budget covers it') }
+      else { score += 7 }
     }
-  } else if (!franchisor.investment_min) {
-    score += 12 // brand has no stated minimum — neutral
-  }
+  } else if (!franchisor.investment_min) { score += 12 }
 
-  // ── 3. Operator model — 15 pts ───────────────────────────────────────────
+  // 3. Operator model — 15
   if (franchisee.operator_model && franchisor.operator_model) {
-    if (
-      franchisor.operator_model === 'either' ||
-      franchisee.operator_model === 'either' ||
-      franchisee.operator_model === franchisor.operator_model
-    ) {
-      score += 15
+    if (franchisor.operator_model === 'either' || franchisee.operator_model === 'either' || franchisee.operator_model === franchisor.operator_model) {
+      score += 15; reasons.push('Operator model matches')
     }
-    // Mismatch: 0 pts
   }
 
-  // ── 4. Timeline alignment — 15 pts ──────────────────────────────────────
-  // Someone who wants to open in 3 months should not top-match with a brand
-  // that takes 27 months to get running.
+  // 4. Timeline — 15
   if (franchisee.timeline_months && franchisor.timeline_months) {
     const ratio = franchisee.timeline_months / franchisor.timeline_months
-    if (ratio >= 1) {
-      score += 15 // franchisee has as much time as the brand needs — ideal
-    } else if (ratio >= 0.6) {
-      score += 8  // a bit impatient but close enough
-    } else {
-      score += 3  // franchisee wants to move much faster than the brand allows
-    }
-  } else if (!franchisor.timeline_months) {
-    score += 10 // brand has no stated timeline — neutral
-  }
+    if (ratio >= 1) { score += 15; reasons.push('Timeline fits') }
+    else if (ratio >= 0.6) { score += 8 }
+    else { score += 3 }
+  } else if (!franchisor.timeline_months) { score += 10 }
 
-  // ── 5. Format type — 10 pts ──────────────────────────────────────────────
-  // Matches franchisee's preferred site format against what the brand offers.
+  // 5. Format — 10
   if (franchisee.format_types?.length && franchisor.format?.length) {
-    const noPreference = franchisee.format_types.includes('flexible')
-    if (noPreference) {
-      score += 7 // open to anything — neutral-positive
-    } else {
-      const hasFormatMatch = franchisee.format_types.some(fmt =>
-        franchisor.format.includes(fmt) || franchisor.format.includes('flexible')
-      )
-      score += hasFormatMatch ? 10 : 0
+    if (franchisee.format_types.includes('flexible')) { score += 7 }
+    else if (franchisee.format_types.some(fmt => franchisor.format.includes(fmt) || franchisor.format.includes('flexible'))) {
+      score += 10; reasons.push('Format matches')
     }
-  } else if (!franchisor.format?.length || !franchisee.format_types?.length) {
-    score += 6 // one side has no preference — neutral
-  }
+  } else if (!franchisor.format?.length || !franchisee.format_types?.length) { score += 6 }
 
-  // ── 6. Location quality — 10 pts ─────────────────────────────────────────
-  // Hard filter already eliminated zero-overlap cases above.
-  // Here we reward quality of location match.
+  // 6. Location — 10
   if (franchisee.preferred_locations?.length) {
-    if (franchisor.locations_available?.length) {
-      score += 10 // specific city match confirmed
-    } else {
-      score += 6  // brand has no location restriction (national / international)
-    }
-  } else {
-    score += 6 // no location preference — neutral
+    if (franchisor.locations_available?.length) { score += 10; reasons.push(`Territory available${franchisee.preferred_locations[0] ? ` — ${franchisee.preferred_locations[0]}` : ''}`) }
+    else { score += 6 }
+  } else { score += 6 }
+
+  // 7. Full-time — 5
+  if (franchisee.full_time_available != null) {
+    if (!franchisor.full_time_required || franchisee.full_time_available) score += 5
   }
 
-  // ── 7. Full-time availability — 5 pts ────────────────────────────────────
-  if (franchisee.full_time_available !== null && franchisee.full_time_available !== undefined) {
-    if (!franchisor.full_time_required || franchisee.full_time_available) {
-      score += 5
-    }
-    // Brand requires full-time but franchisee can't commit → 0 pts
-  }
+  // 8. Multi-site — 5
+  if (franchisee.multi_site_interest && franchisor.multi_site_ready) { score += 5; reasons.push('Both open to multi-site') }
 
-  // ── 8. Multi-site alignment — 5 pts ─────────────────────────────────────
-  if (franchisee.multi_site_interest && franchisor.multi_site_ready) {
-    score += 5
-  }
+  return { score, reasons }
+}
 
-  return score
+export function scoreMatch(franchisee: FranchiseeProfile, franchisor: FranchisorProfile): number {
+  return scoreMatchDetailed(franchisee, franchisor).score
 }
 
 export function scoreLabel(score: number): string {

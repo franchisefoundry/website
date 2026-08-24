@@ -109,23 +109,34 @@ export default async function FranchiseeDetailPage({ params }: Props) {
                   // eslint-disable-next-line @typescript-eslint/no-explicit-any
                   const ps = MATCH_PIPELINE_STAGES.find(s => s.value === (m as any).pipeline_stage)
                   const isAssigned = fr?.id === franchisee.assigned_franchisor_id
+                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                  const reasons = ((m as any).match_reasons ?? []) as string[]
                   return (
-                    <div key={m.id} className={`flex items-center gap-3 rounded-xl border px-4 py-3 ${isAssigned ? 'border-ff-green/40 bg-ff-green/[0.04]' : 'border-line-2'}`}>
-                      <Avatar name={fr?.brand_name} size="md" square />
-                      <div className="min-w-0 flex-1">
-                        <div className="flex items-center gap-2">
-                          <p className="text-sm font-semibold text-ink truncate">{fr?.brand_name || 'Unnamed brand'}</p>
-                          {isAssigned && <span className="text-[10px] font-bold text-ff-green bg-ff-green/10 rounded-full px-2 py-0.5">Assigned</span>}
+                    <div key={m.id} className={`rounded-xl border px-4 py-3 ${isAssigned ? 'border-ff-green/40 bg-ff-green/[0.04]' : 'border-line-2'}`}>
+                      <div className="flex items-center gap-3">
+                        <Avatar name={fr?.brand_name} size="md" square />
+                        <div className="min-w-0 flex-1">
+                          <div className="flex items-center gap-2">
+                            <p className="text-sm font-semibold text-ink truncate">{fr?.brand_name || 'Unnamed brand'}</p>
+                            {isAssigned && <span className="text-[10px] font-bold text-ff-green bg-ff-green/10 rounded-full px-2 py-0.5">Assigned</span>}
+                          </div>
+                          <p className="text-xs text-ink-3">{fr?.category}</p>
                         </div>
-                        <p className="text-xs text-ink-3">{fr?.category}</p>
+                        {ps && <span className="text-xs text-ink-2 hidden sm:flex items-center gap-1">{ps.emoji} {ps.label}</span>}
+                        {m.score > 0 && (
+                          <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${scoreColour(m.score)}`}>
+                            {m.score}% — {scoreLabel(m.score)}
+                          </span>
+                        )}
+                        {statusBadge(m.status)}
                       </div>
-                      {ps && <span className="text-xs text-ink-2 hidden sm:flex items-center gap-1">{ps.emoji} {ps.label}</span>}
-                      {m.score > 0 && (
-                        <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${scoreColour(m.score)}`}>
-                          {m.score}% — {scoreLabel(m.score)}
-                        </span>
+                      {reasons.length > 0 && (
+                        <div className="flex flex-wrap gap-1.5 mt-2.5">
+                          {reasons.map((r, i) => (
+                            <span key={i} className="inline-flex items-center gap-1 text-[11px] font-medium text-ff-green bg-ff-green/10 rounded-full px-2 py-0.5">✓ {r}</span>
+                          ))}
+                        </div>
                       )}
-                      {statusBadge(m.status)}
                     </div>
                   )
                 })}

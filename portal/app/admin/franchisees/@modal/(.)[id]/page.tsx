@@ -25,7 +25,7 @@ export default async function FranchiseeModal({ params }: Props) {
       .select('*, profiles!franchisee_profiles_user_id_fkey(full_name, email)')
       .eq('id', id).single(),
     admin.from('matches')
-      .select('id, score, franchisor_profiles(brand_name, category)')
+      .select('id, score, match_reasons, franchisor_profiles(brand_name, category)')
       .eq('franchisee_id', id).order('score', { ascending: false }).limit(5),
   ])
 
@@ -79,15 +79,26 @@ export default async function FranchiseeModal({ params }: Props) {
               {matches.map(m => {
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 const fr = m.franchisor_profiles as any
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                const reasons = ((m as any).match_reasons ?? []) as string[]
                 return (
-                  <div key={m.id} className="flex items-center gap-3 rounded-xl border border-line-2 px-3.5 py-2.5">
-                    <Avatar name={fr?.brand_name} size="md" square />
-                    <div className="min-w-0 flex-1">
-                      <p className="text-sm font-semibold text-ink truncate">{fr?.brand_name || 'Unnamed brand'}</p>
-                      <p className="text-xs text-ink-3">{fr?.category}</p>
+                  <div key={m.id} className="rounded-xl border border-line-2 px-3.5 py-2.5">
+                    <div className="flex items-center gap-3">
+                      <Avatar name={fr?.brand_name} size="md" square />
+                      <div className="min-w-0 flex-1">
+                        <p className="text-sm font-semibold text-ink truncate">{fr?.brand_name || 'Unnamed brand'}</p>
+                        <p className="text-xs text-ink-3">{fr?.category}</p>
+                      </div>
+                      {m.score > 0 && (
+                        <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${scoreColour(m.score)}`}>{m.score}%</span>
+                      )}
                     </div>
-                    {m.score > 0 && (
-                      <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${scoreColour(m.score)}`}>{m.score}%</span>
+                    {reasons.length > 0 && (
+                      <div className="flex flex-wrap gap-1.5 mt-2">
+                        {reasons.map((r, i) => (
+                          <span key={i} className="inline-flex items-center gap-1 text-[11px] font-medium text-ff-green bg-ff-green/10 rounded-full px-2 py-0.5">✓ {r}</span>
+                        ))}
+                      </div>
                     )}
                   </div>
                 )

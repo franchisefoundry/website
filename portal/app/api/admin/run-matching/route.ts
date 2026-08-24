@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
-import { scoreMatch } from '@/lib/matching'
+import { scoreMatchDetailed } from '@/lib/matching'
 import type { FranchiseeProfile, FranchisorProfile } from '@/lib/supabase/types'
 
 export async function POST() {
@@ -34,15 +34,16 @@ export async function POST() {
 
   for (const franchisee of franchisees as FranchiseeProfile[]) {
     for (const franchisor of franchisors as FranchisorProfile[]) {
-      const score = scoreMatch(franchisee, franchisor)
+      const { score, reasons } = scoreMatchDetailed(franchisee, franchisor)
       if (score === 0) continue
 
-      // Upsert — update score if match already exists
+      // Upsert — update score + reasons if the match already exists
       const { error } = await supabase.from('matches').upsert(
         {
           franchisee_id: franchisee.id,
           franchisor_id: franchisor.id,
           score,
+          match_reasons: reasons,
           status: 'suggested',
         },
         { onConflict: 'franchisee_id,franchisor_id', ignoreDuplicates: false }
