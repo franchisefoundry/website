@@ -84,10 +84,10 @@ export default async function FranchisorMatchesPage() {
       )}
 
       {matches.length === 0 ? (
-        <div className="bg-white rounded-2xl border border-slate-200 p-12 text-center">
+        <div className="bg-surface rounded-2xl border border-line p-12 text-center">
           <div className="text-3xl mb-3">👀</div>
-          <p className="text-slate-800 font-semibold text-sm mb-1">We&apos;re looking for your first match</p>
-          <p className="text-slate-400 text-xs max-w-sm mx-auto leading-relaxed">
+          <p className="text-ink font-semibold text-sm mb-1">We&apos;re looking for your first match</p>
+          <p className="text-ink-3 text-xs max-w-sm mx-auto leading-relaxed">
             Our team is reviewing your brand and identifying qualified candidates.
             As soon as we find a strong fit, they&apos;ll appear here for you to review.
           </p>
@@ -97,7 +97,7 @@ export default async function FranchisorMatchesPage() {
           {/* Intros made first */}
           {intros.length > 0 && (
             <section>
-              <h2 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3 flex items-center gap-2">
+              <h2 className="text-xs font-semibold text-ink-3 uppercase tracking-wider mb-3 flex items-center gap-2">
                 <span className="w-2 h-2 rounded-full bg-amber-400 inline-block" />
                 Intro arranged ({intros.length})
               </h2>
@@ -110,7 +110,7 @@ export default async function FranchisorMatchesPage() {
           {/* Active (interested) */}
           {active.length > 0 && (
             <section>
-              <h2 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3 flex items-center gap-2">
+              <h2 className="text-xs font-semibold text-ink-3 uppercase tracking-wider mb-3 flex items-center gap-2">
                 <span className="w-2 h-2 rounded-full bg-emerald-400 inline-block" />
                 You expressed interest ({active.length})
               </h2>
@@ -123,7 +123,7 @@ export default async function FranchisorMatchesPage() {
           {/* New / incoming */}
           {incoming.length > 0 && (
             <section>
-              <h2 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3 flex items-center gap-2">
+              <h2 className="text-xs font-semibold text-ink-3 uppercase tracking-wider mb-3 flex items-center gap-2">
                 <span className="w-2 h-2 rounded-full bg-sky-400 inline-block" />
                 New candidates to review ({incoming.length})
               </h2>
@@ -162,8 +162,8 @@ function CandidateCard({
     : null
 
   return (
-    <div className={`bg-white rounded-2xl border overflow-hidden ${
-      isIntro ? 'border-amber-200 shadow-sm' : 'border-slate-200'
+    <div className={`bg-surface rounded-2xl border overflow-hidden ${
+      isIntro ? 'border-amber-200 shadow-sm' : 'border-line'
     }`}>
       {isIntro && (
         <div className="bg-amber-50 border-b border-amber-100 px-5 py-2">
@@ -175,16 +175,16 @@ function CandidateCard({
         <div className="flex items-start justify-between gap-4 mb-4">
           <div>
             <div className="flex flex-wrap items-center gap-2 mb-0.5">
-              <h3 className="text-base font-semibold text-slate-900">
+              <h3 className="text-base font-semibold text-ink">
                 {isIntro && displayName ? `${displayName}, ${displayCity ?? 'UK'}` : 'Confidential candidate'}
               </h3>
               {!isIntro && locations.length > 0 && (
-                <span className="text-xs text-slate-400">
+                <span className="text-xs text-ink-3">
                   {locations.slice(0, 2).join(', ')}{locations.length > 2 ? ` +${locations.length - 2}` : ''}
                 </span>
               )}
             </div>
-            <p className="text-xs text-slate-400">
+            <p className="text-xs text-ink-3">
               {isIntro ? 'Identity revealed after introduction' : 'Identity kept confidential until introduction'}
             </p>
           </div>
@@ -193,58 +193,69 @@ function CandidateCard({
               <span className={`text-lg font-bold px-3 py-1.5 rounded-full ${scoreColour(m.score)}`}>
                 {m.score}%
               </span>
-              <p className="text-xs text-slate-400 mt-1">{scoreLabel(m.score)}</p>
+              <p className="text-xs text-ink-3 mt-1">{scoreLabel(m.score)}</p>
             </div>
           )}
         </div>
 
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 text-sm mb-4">
           <div>
-            <p className="text-slate-400 text-xs mb-0.5">Investment budget</p>
-            <p className="font-medium text-slate-800 text-sm">
+            <p className="text-ink-3 text-xs mb-0.5">Investment budget</p>
+            <p className="font-medium text-ink text-sm">
               {formatInvestmentRange(fc?.investment_min, fc?.investment_max) || '—'}
             </p>
           </div>
           <div>
-            <p className="text-slate-400 text-xs mb-0.5">Liquid capital</p>
-            <p className="font-medium text-slate-800 text-sm">
+            <p className="text-ink-3 text-xs mb-0.5">Liquid capital</p>
+            <p className="font-medium text-ink text-sm">
               {fc?.liquid_capital ? `£${Math.round(fc.liquid_capital / 1000)}k` : '—'}
             </p>
           </div>
           <div>
-            <p className="text-slate-400 text-xs mb-0.5">Timeline to open</p>
-            <p className="font-medium text-slate-800 text-sm">
+            <p className="text-ink-3 text-xs mb-0.5">Timeline to open</p>
+            <p className="font-medium text-ink text-sm">
               {fc?.timeline_months ? `${fc.timeline_months} months` : '—'}
             </p>
           </div>
           <div>
-            <p className="text-slate-400 text-xs mb-0.5">Operator model</p>
-            <p className="font-medium text-slate-800 text-sm">
+            <p className="text-ink-3 text-xs mb-0.5">Operator model</p>
+            <p className="font-medium text-ink text-sm">
               {operatorLabels[fc?.operator_model] ?? '—'}
             </p>
           </div>
           <div>
-            <p className="text-slate-400 text-xs mb-0.5">Experience</p>
-            <p className="font-medium text-slate-800 text-sm">
+            <p className="text-ink-3 text-xs mb-0.5">Experience</p>
+            <p className="font-medium text-ink text-sm">
               {experienceLabels[fc?.experience] ?? '—'}
             </p>
           </div>
           <div>
-            <p className="text-slate-400 text-xs mb-0.5">Full-time</p>
-            <p className="font-medium text-slate-800 text-sm">
+            <p className="text-ink-3 text-xs mb-0.5">Full-time</p>
+            <p className="font-medium text-ink text-sm">
               {fc?.full_time_available === true ? 'Yes' : fc?.full_time_available === false ? 'No' : '—'}
             </p>
           </div>
         </div>
 
-        {fc?.goals && (
-          <div className="bg-slate-50 rounded-xl p-3.5 mb-4">
-            <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-wide mb-1">Their goals</p>
-            <p className="text-xs text-slate-600 leading-relaxed line-clamp-3">{fc.goals}</p>
+        {Array.isArray(m.match_reasons) && m.match_reasons.length > 0 && (
+          <div className="mb-4">
+            <p className="text-[10px] font-semibold text-ink-3 uppercase tracking-wide mb-1.5">Why they match</p>
+            <div className="flex flex-wrap gap-1.5">
+              {m.match_reasons.slice(0, 5).map((r: string, i: number) => (
+                <span key={i} className="inline-flex items-center gap-1 text-xs bg-ff-green/10 text-ff-green rounded-full px-2.5 py-1 font-medium">✓ {r}</span>
+              ))}
+            </div>
           </div>
         )}
 
-        <div className="pt-3 border-t border-slate-100">
+        {fc?.goals && (
+          <div className="bg-surface-2 rounded-xl p-3.5 mb-4">
+            <p className="text-[10px] font-semibold text-ink-3 uppercase tracking-wide mb-1">Their goals</p>
+            <p className="text-xs text-ink-2 leading-relaxed line-clamp-3">{fc.goals}</p>
+          </div>
+        )}
+
+        <div className="pt-3 border-t border-line-2">
           <CandidateActions matchId={m.id} currentStatus={m.status} />
         </div>
       </div>
