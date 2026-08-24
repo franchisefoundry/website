@@ -81,7 +81,7 @@ export default async function FranchisorLayout({ children }: { children: React.R
   return (
     <div className="flex min-h-screen">
       <InactivityTimeout />
-      <NavSidebar profile={sidebarProfile} brands={brands} activeBrandId={activeBrandId} />
+      <NavSidebar profile={sidebarProfile} brands={brands} activeBrandId={activeBrandId} adminPreview={isPreview} />
       <main className="flex-1 overflow-auto pt-14 md:pt-0">
         {isPreview && <PreviewBanner role="franchisor" />}
         <div className="p-4 md:p-8">{children}</div>

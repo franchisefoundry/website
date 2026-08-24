@@ -10,6 +10,7 @@ import type { Profile } from '@/lib/supabase/types'
 import { NotificationBell } from '@/components/notification-bell'
 import { CommandPalette } from '@/components/command-palette'
 import { AccountSwitcher } from '@/components/admin/AccountSwitcher'
+import { ViewSwitcher } from '@/components/admin/ViewSwitcher'
 import {
   DashboardIcon, LeadsIcon, FranchiseeIcon, FranchisorIcon,
   MatchIcon, AgreementIcon, MarketplaceIcon, AgentIcon,
@@ -195,9 +196,11 @@ interface NavSidebarProps {
   activeBrandId?: string
   /** Attention counts keyed by nav href — rendered as a gold badge. */
   badges?: Record<string, number>
+  /** True inside a client portal that an admin is previewing — shows the ViewSwitcher. */
+  adminPreview?: boolean
 }
 
-export function NavSidebar({ profile, brands, activeBrandId, badges }: NavSidebarProps) {
+export function NavSidebar({ profile, brands, activeBrandId, badges, adminPreview }: NavSidebarProps) {
   const pathname = usePathname()
   const router = useRouter()
   const nav = navForRole(profile.role)
@@ -362,10 +365,11 @@ export function NavSidebar({ profile, brands, activeBrandId, badges }: NavSideba
           })}
         </nav>
 
-        {/* ── Account switcher (admin) ────────────────── */}
-        {profile.role === 'admin' && (
-          <div className="px-3 pb-2 border-t border-white/10 pt-2 flex-shrink-0">
-            <AccountSwitcher currentName={profile.full_name ?? 'Admin'} />
+        {/* ── View switcher + account switcher (admin) ──── */}
+        {(profile.role === 'admin' || adminPreview) && (
+          <div className="px-3 pb-2 border-t border-white/10 pt-3 flex-shrink-0 space-y-2.5">
+            <ViewSwitcher />
+            {profile.role === 'admin' && <AccountSwitcher currentName={profile.full_name ?? 'Admin'} />}
           </div>
         )}
 
