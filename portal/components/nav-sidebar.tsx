@@ -9,6 +9,7 @@ import { cn, initials } from '@/lib/utils'
 import type { Profile } from '@/lib/supabase/types'
 import { NotificationBell } from '@/components/notification-bell'
 import { CommandPalette } from '@/components/command-palette'
+import { AccountSwitcher } from '@/components/admin/AccountSwitcher'
 import {
   DashboardIcon, LeadsIcon, FranchiseeIcon, FranchisorIcon,
   MatchIcon, AgreementIcon, MarketplaceIcon, AgentIcon,
@@ -347,25 +348,10 @@ export function NavSidebar({ profile, brands, activeBrandId }: NavSidebarProps) 
           })}
         </nav>
 
-        {/* ── Admin preview switcher ──────────────────── */}
+        {/* ── Account switcher (admin) ────────────────── */}
         {profile.role === 'admin' && (
-          <div className="px-3 pb-3 border-t border-white/10 pt-3 flex-shrink-0">
-            <p className="px-3 text-white/30 text-[10px] font-bold uppercase tracking-widest mb-1">Preview as</p>
-            {[
-              { href: '/franchisee', label: 'Franchisee view' },
-              { href: '/franchisor', label: 'Franchisor view' },
-              { href: '/introducer', label: 'Agent view' },
-            ].map(({ href, label }) => (
-              <Link
-                key={href}
-                href={href}
-                onClick={() => setMobileOpen(false)}
-                className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs text-white/50 hover:text-white hover:bg-white/10 transition-colors"
-              >
-                <FranchiseeIcon className="w-3 h-3 opacity-60" />
-                {label}
-              </Link>
-            ))}
+          <div className="px-3 pb-2 border-t border-white/10 pt-2 flex-shrink-0">
+            <AccountSwitcher currentName={profile.full_name ?? 'Admin'} />
           </div>
         )}
 
