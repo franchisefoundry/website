@@ -9,7 +9,7 @@ import { scoreColour } from '@/lib/matching'
 import { FRANCHISEE_PIPELINE_STAGES } from '@/lib/supabase/types'
 import { franchiseeStageIndex } from '@/lib/crm/pipeline'
 import { MailIcon } from '@/components/icons'
-import { DrawerHost } from '../DrawerHost'
+import { RecordDrawerHost as DrawerHost } from '@/components/crm/RecordDrawerHost'
 
 interface Props { params: Promise<{ id: string }> }
 

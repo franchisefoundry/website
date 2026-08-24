@@ -9,9 +9,9 @@ import { ExpandIcon, CloseIcon } from '@/components/icons'
  * Hosts an intercepted record in the slide-over. Closing plays the drawer's
  * exit transition, then navigates back (dismissing the intercepted route).
  * Expand is a hard navigation to the record's own full page (escapes the
- * interception), matching the confirmed record-interaction design.
+ * interception). Shared by every record type's @modal route.
  */
-export function DrawerHost({
+export function RecordDrawerHost({
   children,
   expandHref,
   ariaLabel,

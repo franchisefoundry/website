@@ -124,7 +124,8 @@ export default function AgentsTable({
           return (
             <div
               key={agent.id}
-              className="bg-surface border border-line rounded-2xl p-[17px] shadow-[0_1px_2px_rgba(27,33,26,0.04)] hover:-translate-y-0.5 hover:shadow-[0_8px_22px_rgba(27,33,26,0.08)] hover:border-[#d6dace] transition-all"
+              onClick={() => router.push(`/admin/introducers/${agent.id}`)}
+              className="bg-surface border border-line rounded-2xl p-[17px] shadow-[0_1px_2px_rgba(27,33,26,0.04)] hover:-translate-y-0.5 hover:shadow-[0_8px_22px_rgba(27,33,26,0.08)] hover:border-[#d6dace] transition-all cursor-pointer"
             >
               <div className="flex items-center gap-3 mb-3">
                 <Avatar name={agent.full_name} size="lg" />
@@ -147,13 +148,13 @@ export default function AgentsTable({
 
               <div className="flex gap-2 mt-3.5">
                 <button
-                  onClick={() => openReferral(agent)}
+                  onClick={e => { e.stopPropagation(); openReferral(agent) }}
                   className="flex-1 text-xs font-medium text-ink-2 border border-line bg-surface hover:bg-surface-2 rounded-lg py-2 transition-colors"
                 >
                   Referral link
                 </button>
                 <button
-                  onClick={() => { setConfirmId(agent.id); setDeleteError(null) }}
+                  onClick={e => { e.stopPropagation(); setConfirmId(agent.id); setDeleteError(null) }}
                   className="text-xs font-medium text-red-600 border border-line hover:bg-red-50 rounded-lg px-3 py-2 transition-colors"
                 >
                   Remove
