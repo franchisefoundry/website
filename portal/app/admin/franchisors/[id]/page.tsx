@@ -12,6 +12,7 @@ import MatchStatusSelect from '@/app/admin/matches/match-status-select'
 import Link from 'next/link'
 import { MATCH_PIPELINE_STAGES } from '@/lib/supabase/types'
 import { FranchisorPreviewButton } from '@/components/admin/FranchisorPreviewButton'
+import { ArchiveButton } from '@/components/admin/ArchiveButton'
 import SendAgreementButton from './SendAgreementButton'
 
 interface Props {
@@ -89,6 +90,7 @@ export default async function FranchisorDetailPage({ params }: Props) {
               className="inline-flex items-center px-3.5 py-2 rounded-xl text-sm font-medium bg-ff-green text-white shadow-sm hover:brightness-110 transition-all">
               Edit profile
             </Link>
+            <ArchiveButton type="franchisors" id={id} name={franchisor.brand_name || 'this brand'} redirectTo="/admin/franchisors" />
           </div>
         </div>
       </div>

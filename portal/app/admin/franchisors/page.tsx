@@ -14,6 +14,7 @@ export default async function FranchisorsPage() {
     admin
       .from('franchisor_profiles')
       .select('*, profiles(full_name, email)')
+      .is('archived_at', null)
       .order('created_at', { ascending: false }),
     admin.from('matches').select('franchisor_id'),
   ])

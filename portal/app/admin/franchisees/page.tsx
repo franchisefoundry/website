@@ -23,6 +23,7 @@ export default async function FranchiseesPage({
   const { data: allFranchisees } = await admin
     .from('franchisee_profiles')
     .select('*, profiles!franchisee_profiles_user_id_fkey(full_name, email, phone, role)')
+    .is('archived_at', null)
     .order('created_at', { ascending: false })
 
   // Only show users whose profile role is 'franchisee'

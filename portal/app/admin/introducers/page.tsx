@@ -11,6 +11,7 @@ export default async function AdminIntroducersPage() {
     .from('profiles')
     .select('id, full_name, email, phone, referral_code, created_at')
     .eq('role', 'introducer')
+    .is('archived_at', null)
     .order('created_at', { ascending: false })
 
   // Ensure every agent has a referral code so the admin can share it immediately

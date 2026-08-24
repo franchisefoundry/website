@@ -15,6 +15,7 @@ import DocumentsPanel from './DocumentsPanel'
 import { FRANCHISEE_PIPELINE_STAGES, MATCH_PIPELINE_STAGES } from '@/lib/supabase/types'
 import { franchiseeStageIndex } from '@/lib/crm/pipeline'
 import { ImpersonateButton } from '@/components/admin/ImpersonateButton'
+import { ArchiveButton } from '@/components/admin/ArchiveButton'
 
 interface Props { params: Promise<{ id: string }> }
 
@@ -82,6 +83,7 @@ export default async function FranchiseeDetailPage({ params }: Props) {
               redirectTo={`${process.env.NEXT_PUBLIC_SITE_URL ?? ''}/franchisee/dashboard`}
               label="View as franchisee →"
             />
+            <ArchiveButton type="franchisees" id={id} name={profile?.full_name || 'this franchisee'} redirectTo="/admin/franchisees" />
           </div>
         </div>
 
