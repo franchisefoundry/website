@@ -48,12 +48,11 @@ const adminNav: NavItem[] = [
   { label: 'Matches',        href: '/admin/matches',        icon: <MatchIcon className="w-4 h-4" /> },
   { label: 'Agreements',     href: '/admin/agreements',     icon: <AgreementIcon className="w-4 h-4" /> },
   { sectionLabel: 'Business' },
-  { label: 'Analytics',      href: '/admin/analytics',              icon: <ChartIcon className="w-4 h-4" /> },
-  { label: 'Finance',        href: '/admin/finance',                icon: <WalletIcon className="w-4 h-4" /> },
-  { label: 'Questionnaires', href: '/admin/questionnaires',         icon: <QuestionnaireIcon className="w-4 h-4" /> },
-  { label: 'Questions',      href: '/admin/questionnaire-template', icon: <QuestionnaireIcon className="w-4 h-4" /> },
-  { label: 'Archived',       href: '/admin/archived',               icon: <ArchiveIcon className="w-4 h-4" /> },
-  { label: 'Settings',       href: '/admin/settings',               icon: <SettingsIcon className="w-4 h-4" /> },
+  { label: 'Analytics',      href: '/admin/analytics',      icon: <ChartIcon className="w-4 h-4" /> },
+  { label: 'Finance',        href: '/admin/finance',        icon: <WalletIcon className="w-4 h-4" /> },
+  { label: 'Questionnaires', href: '/admin/questionnaires', icon: <QuestionnaireIcon className="w-4 h-4" /> },
+  { label: 'Archived',       href: '/admin/archived',       icon: <ArchiveIcon className="w-4 h-4" /> },
+  { label: 'Settings',       href: '/admin/settings',       icon: <SettingsIcon className="w-4 h-4" /> },
 ]
 
 const franchiseeNav: NavItem[] = [
@@ -188,9 +187,11 @@ interface NavSidebarProps {
   profile: Profile
   brands?: { id: string; brand_name: string | null; status: string }[]
   activeBrandId?: string
+  /** Attention counts keyed by nav href — rendered as a gold badge. */
+  badges?: Record<string, number>
 }
 
-export function NavSidebar({ profile, brands, activeBrandId }: NavSidebarProps) {
+export function NavSidebar({ profile, brands, activeBrandId, badges }: NavSidebarProps) {
   const pathname = usePathname()
   const router = useRouter()
   const nav = navForRole(profile.role)
@@ -345,6 +346,11 @@ export function NavSidebar({ profile, brands, activeBrandId }: NavSidebarProps) 
                   </span>
                 )}
                 {item.label}
+                {badges?.[item.href] ? (
+                  <span className="ml-auto text-[10px] font-bold bg-ff-gold text-[#2b382b] rounded-full min-w-[18px] h-[18px] grid place-items-center px-1.5 tabular-nums">
+                    {badges[item.href]}
+                  </span>
+                ) : null}
               </Link>
             )
           })}

@@ -2,6 +2,7 @@ import { createAdminClient } from '@/lib/supabase/admin'
 import { createClient } from '@/lib/supabase/server'
 import { PageHeader } from '@/components/page-header'
 import { redirect } from 'next/navigation'
+import Link from 'next/link'
 import QuestionnairesClient from './QuestionnairesClient'
 
 export default async function QuestionnairesPage() {
@@ -39,6 +40,12 @@ export default async function QuestionnairesPage() {
       <PageHeader
         title="Questionnaires"
         description={`${submitted} of ${rows.length} brands have submitted questionnaire answers.`}
+        action={
+          <Link href="/admin/questionnaire-template"
+            className="inline-flex items-center px-3.5 py-2 rounded-xl text-sm font-medium text-ink-2 border border-line bg-surface hover:bg-surface-2 transition-colors">
+            Manage questions →
+          </Link>
+        }
       />
       <QuestionnairesClient rows={rows} />
     </div>
