@@ -427,3 +427,11 @@ export function SendIcon({ className }: IconProps) {
     </svg>
   )
 }
+
+export function CalendarIcon({ className }: IconProps) {
+  return (<svg className={className} {...defaults}><rect x="3" y="4" width="18" height="18" rx="2" /><path d="M16 2v4M8 2v4M3 10h18" /></svg>)
+}
+
+export function BoltIcon({ className }: IconProps) {
+  return (<svg className={className} {...defaults}><path d="M13 2 3 14h9l-1 8 10-12h-9z" /></svg>)
+}

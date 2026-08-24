@@ -32,6 +32,7 @@ export default function BrandProfileForm({ brandProfile, userId }: Props) {
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
   const [submitRequested, setSubmitRequested] = useState(false)
+  const [aiHint, setAiHint] = useState(false)
 
   const [brandName, setBrandName] = useState(brandProfile?.brand_name ?? '')
   const [category, setCategory] = useState(brandProfile?.category ?? '')
@@ -102,7 +103,18 @@ export default function BrandProfileForm({ brandProfile, userId }: Props) {
               <div><label className={lbl}>Category</label><input value={category} onChange={e => setCategory(e.target.value)} placeholder="e.g. Quick Service, Coffee" className={inp} /></div>
             </div>
             <div className="mt-4">
-              <label className={lbl}>Concept teaser <span className="text-ink-3 font-normal text-xs">— shown to candidates without naming the brand</span></label>
+              <div className="flex items-center justify-between mb-1.5">
+                <label className="block text-sm font-medium text-ink-2">Concept teaser <span className="text-ink-3 font-normal text-xs">— shown to candidates without naming the brand</span></label>
+                <button type="button" onClick={() => setAiHint(v => !v)}
+                  className="inline-flex items-center gap-1 text-xs font-semibold text-ff-gold-ink bg-ff-gold-soft border border-[#e6cfa6] rounded-full px-2.5 py-1 hover:brightness-105 transition">
+                  ✨ Draft with AI
+                </button>
+              </div>
+              {aiHint && (
+                <p className="text-xs text-ff-gold-ink bg-ff-gold-soft/60 border border-[#e6cfa6] rounded-lg px-3 py-2 mb-2">
+                  Coming soon — the AI assistant will suggest a teaser and highlights from a few words about your concept, so you never start from a blank page.
+                </p>
+              )}
               <textarea value={teaser} onChange={e => setTeaser(e.target.value)} rows={3} placeholder="What makes your concept distinctive — the proposition and model. No brand name." className={`${inp} resize-none`} />
             </div>
             <div className="mt-4">

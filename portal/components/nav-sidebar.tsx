@@ -14,7 +14,7 @@ import {
   DashboardIcon, LeadsIcon, FranchiseeIcon, FranchisorIcon,
   MatchIcon, AgreementIcon, MarketplaceIcon, AgentIcon,
   QuestionnaireIcon, SignOutIcon, SearchIcon, ChartIcon, WalletIcon,
-  MessageIcon, ArchiveIcon, SettingsIcon,
+  MessageIcon, ArchiveIcon, SettingsIcon, CalendarIcon, BoltIcon,
 } from '@/components/icons'
 
 // ── Nav type system ──────────────────────────────────────────────────────────
@@ -44,9 +44,12 @@ const adminNav: NavItem[] = [
   { label: 'Messages',    href: '/admin/messages',   icon: <MessageIcon className="w-4 h-4" /> },
   { label: 'Matches',     href: '/admin/matches',    icon: <MatchIcon className="w-4 h-4" /> },
   { label: 'Agreements',  href: '/admin/agreements', icon: <AgreementIcon className="w-4 h-4" /> },
+  { label: 'Meetings',    href: '/admin/meetings',   icon: <CalendarIcon className="w-4 h-4" /> },
   { sectionLabel: 'Business' },
   { label: 'Analytics',      href: '/admin/analytics',      icon: <ChartIcon className="w-4 h-4" /> },
   { label: 'Finance',        href: '/admin/finance',        icon: <WalletIcon className="w-4 h-4" /> },
+  { label: 'Automations',    href: '/admin/automations',    icon: <BoltIcon className="w-4 h-4" /> },
+  { label: 'Reports',        href: '/admin/reports',        icon: <ChartIcon className="w-4 h-4" /> },
   { label: 'Questionnaires', href: '/admin/questionnaires', icon: <QuestionnaireIcon className="w-4 h-4" /> },
   { label: 'Archived',       href: '/admin/archived',       icon: <ArchiveIcon className="w-4 h-4" /> },
   { label: 'Settings',       href: '/admin/settings',       icon: <SettingsIcon className="w-4 h-4" /> },
@@ -55,6 +58,8 @@ const adminNav: NavItem[] = [
 const franchiseeNav: NavItem[] = [
   { label: 'Dashboard',   href: '/franchisee',             icon: <DashboardIcon className="w-4 h-4" /> },
   { label: 'My Journey',  href: '/franchisee/matches',     icon: <MatchIcon className="w-4 h-4" /> },
+  { label: 'Meetings',    href: '/franchisee/meetings',    icon: <CalendarIcon className="w-4 h-4" /> },
+  { label: 'Financing',   href: '/franchisee/financing',   icon: <WalletIcon className="w-4 h-4" /> },
   { label: 'Marketplace', href: '/franchisee/marketplace', icon: <MarketplaceIcon className="w-4 h-4" /> },
   { label: 'Messages',    href: '/franchisee/messages',    icon: <MessageIcon className="w-4 h-4" /> },
   { label: 'My Profile',  href: '/franchisee/profile',     icon: <FranchiseeIcon className="w-4 h-4" /> },
@@ -73,6 +78,7 @@ const franchisorNav: NavItem[] = [
   { label: 'Candidates',  href: '/franchisor/matches',     icon: <LeadsIcon className="w-4 h-4" /> },
   { label: 'Marketplace', href: '/franchisor/marketplace', icon: <MarketplaceIcon className="w-4 h-4" /> },
   { label: 'Agreement',   href: '/franchisor/agreement',   icon: <AgreementIcon className="w-4 h-4" /> },
+  { label: 'Meetings',    href: '/franchisor/meetings',    icon: <CalendarIcon className="w-4 h-4" /> },
   { label: 'Messages',    href: '/franchisor/messages',    icon: <MessageIcon className="w-4 h-4" /> },
   { label: 'My Account',  href: '/franchisor/profile',     icon: <FranchiseeIcon className="w-4 h-4" /> },
 ]
