@@ -13,6 +13,7 @@ import {
   DashboardIcon, LeadsIcon, FranchiseeIcon, FranchisorIcon,
   MatchIcon, AgreementIcon, MarketplaceIcon, AgentIcon,
   QuestionnaireIcon, SignOutIcon, SearchIcon, ChartIcon, WalletIcon,
+  PropertyIcon, TagIcon, MessageIcon,
 } from '@/components/icons'
 
 // ── Nav type system ──────────────────────────────────────────────────────────
@@ -36,9 +37,12 @@ const adminNav: NavItem[] = [
   { label: 'Franchisees', href: '/admin/franchisees',  icon: <FranchiseeIcon className="w-4 h-4" /> },
   { label: 'Brands',      href: '/admin/franchisors',  icon: <FranchisorIcon className="w-4 h-4" /> },
   { label: 'Agents',      href: '/admin/introducers',  icon: <AgentIcon className="w-4 h-4" /> },
+  { label: 'Territories', href: '/admin/territories',  icon: <PropertyIcon className="w-4 h-4" /> },
   { label: 'Leads',       href: '/admin/leads',        icon: <LeadsIcon className="w-4 h-4" /> },
   { sectionLabel: 'Workspace' },
   { label: 'Marketplace',    href: '/admin/partners',       icon: <MarketplaceIcon className="w-4 h-4" /> },
+  { label: 'Resales',        href: '/admin/resales',        icon: <TagIcon className="w-4 h-4" /> },
+  { label: 'Messages',       href: '/admin/messages',       icon: <MessageIcon className="w-4 h-4" /> },
   { label: 'Intro requests', href: '/admin/intro-requests', icon: <MatchIcon className="w-4 h-4" /> },
   { label: 'Matches',        href: '/admin/matches',        icon: <MatchIcon className="w-4 h-4" /> },
   { label: 'Agreements',     href: '/admin/agreements',     icon: <AgreementIcon className="w-4 h-4" /> },
