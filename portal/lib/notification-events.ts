@@ -61,8 +61,20 @@ export const ANNOUNCEMENT_EVENT: NotificationEvent = {
   defaultEmail: true,
 }
 
+/**
+ * Direct message from the FF team to a portal user (any role). Not role-specific;
+ * delivered in-app + push + email (subject to each user's prefs).
+ */
+export const MESSAGE_EVENT: NotificationEvent = {
+  key: 'new_message',
+  role: 'admin',
+  label: 'New message',
+  description: 'A message sent to you by the Franchise Foundry team.',
+  defaultEmail: true,
+}
+
 const BY_KEY = new Map(
-  [...NOTIFICATION_EVENTS, ANNOUNCEMENT_EVENT].map(e => [e.key, e]),
+  [...NOTIFICATION_EVENTS, ANNOUNCEMENT_EVENT, MESSAGE_EVENT].map(e => [e.key, e]),
 )
 
 /** Returns the events relevant to a given role, in display order. */
