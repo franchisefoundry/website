@@ -43,9 +43,9 @@ export default async function BrandPage() {
   ]
 
   return (
-    <div className="max-w-5xl">
+    <div className="max-w-6xl">
       <PageHeader title="Your brand" description="Your profile, questionnaire and territories — everything candidates and our matching see." />
-      <SettingsTabs tabs={tabs} />
+      <SettingsTabs tabs={tabs} orientation="top" />
     </div>
   )
 }
