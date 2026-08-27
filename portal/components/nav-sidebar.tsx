@@ -67,21 +67,20 @@ const franchiseeNav: NavItem[] = [
 ]
 
 const franchisorNav: NavItem[] = [
-  { label: 'Dashboard',  href: '/franchisor',             icon: <DashboardIcon className="w-4 h-4" /> },
-  {
-    label: 'Brand Profile',
-    icon: <FranchisorIcon className="w-4 h-4" />,
-    children: [
-      { label: 'Brand Profile',  href: '/franchisor/brand-profile', icon: <FranchisorIcon className="w-3.5 h-3.5" /> },
-      { label: 'Questionnaire',  href: '/franchisor/questionnaire', icon: <QuestionnaireIcon className="w-3.5 h-3.5" /> },
-    ],
-  },
+  { label: 'Home',        href: '/franchisor',             icon: <DashboardIcon className="w-4 h-4" /> },
+  { sectionLabel: 'My brand' },
+  { label: 'Brand',       href: '/franchisor/brand',       icon: <FranchisorIcon className="w-4 h-4" /> },
+  { sectionLabel: 'Recruitment' },
   { label: 'Candidates',  href: '/franchisor/matches',     icon: <LeadsIcon className="w-4 h-4" /> },
-  { label: 'Marketplace', href: '/franchisor/marketplace', icon: <MarketplaceIcon className="w-4 h-4" /> },
-  { label: 'Agreement',   href: '/franchisor/agreement',   icon: <AgreementIcon className="w-4 h-4" /> },
+  { label: 'Pipeline',    href: '/franchisor/pipeline',    icon: <MatchIcon className="w-4 h-4" /> },
   { label: 'Meetings',    href: '/franchisor/meetings',    icon: <CalendarIcon className="w-4 h-4" /> },
+  { label: 'Agreement',   href: '/franchisor/agreement',   icon: <AgreementIcon className="w-4 h-4" /> },
+  { sectionLabel: 'Grow' },
+  { label: 'Performance', href: '/franchisor/performance', icon: <ChartIcon className="w-4 h-4" /> },
+  { label: 'Marketplace', href: '/franchisor/marketplace', icon: <MarketplaceIcon className="w-4 h-4" /> },
+  { sectionLabel: 'Workspace' },
   { label: 'Messages',    href: '/franchisor/messages',    icon: <MessageIcon className="w-4 h-4" /> },
-  { label: 'My Account',  href: '/franchisor/profile',     icon: <FranchiseeIcon className="w-4 h-4" /> },
+  { label: 'Account',     href: '/franchisor/profile',     icon: <FranchiseeIcon className="w-4 h-4" /> },
 ]
 
 const introducerNav: NavItem[] = [
