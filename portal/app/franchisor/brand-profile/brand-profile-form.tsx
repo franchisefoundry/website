@@ -7,7 +7,7 @@ import { Ring } from '@/components/ui/Ring'
 import { UK_CITIES, SECTORS } from '@/lib/supabase/types'
 import type { FranchisorProfile } from '@/lib/supabase/types'
 import { slugify, cn } from '@/lib/utils'
-import { ShieldCheckIcon, CheckIcon } from '@/components/icons'
+import { ShieldCheckIcon, CheckIcon, SparklesIcon, ArrowRightIcon } from '@/components/icons'
 
 interface Props {
   brandProfile: FranchisorProfile | null
@@ -18,17 +18,39 @@ const inp = 'w-full px-3 py-2.5 rounded-xl text-sm text-ink bg-surface-2 border 
 const lbl = 'block text-sm font-medium text-ink-2 mb-1.5'
 
 const SECTIONS = [
-  { id: 'basics', label: 'Basics' },
-  { id: 'investment', label: 'Investment' },
-  { id: 'requirements', label: 'Requirements' },
-  { id: 'coverage', label: 'Coverage & sectors' },
+  { id: 'basics', label: 'Basics', title: 'Basics', help: "The essentials candidates see first — name, category and your hook." },
+  { id: 'investment', label: 'Investment', title: 'Investment', help: "The numbers candidates are matched on." },
+  { id: 'requirements', label: 'Requirements', title: 'Requirements', help: "Who you're looking for and how sites are run." },
+  { id: 'coverage', label: 'Coverage', title: 'Coverage & sectors', help: "Where you can open, and which sectors you fit." },
 ] as const
 
-function Toggle({ on, onClick, children, pill }: { on: boolean; onClick: () => void; children: React.ReactNode; pill?: boolean }) {
+/** Single-select segmented control with a sliding highlight (Linear/iOS feel). */
+function Segmented({ options, value, onChange }: { options: { v: string; l: string }[]; value: string; onChange: (v: string) => void }) {
+  const idx = options.findIndex(o => o.v === value)
+  const n = options.length
+  return (
+    <div className="relative flex rounded-xl bg-surface-2 border border-line p-1">
+      {idx >= 0 && (
+        <span aria-hidden className="absolute top-1 bottom-1 rounded-lg bg-ff-green shadow-sm transition-all duration-200 ease-out"
+          style={{ width: `calc((100% - 0.5rem)/${n})`, left: `calc(0.25rem + ${idx} * ((100% - 0.5rem)/${n}))` }} />
+      )}
+      {options.map(o => (
+        <button key={o.v} type="button" onClick={() => onChange(o.v)}
+          className={cn('relative z-10 flex-1 rounded-lg px-2.5 py-2 text-sm font-medium transition-colors whitespace-nowrap',
+            value === o.v ? 'text-white' : 'text-ink-2 hover:text-ink')}>
+          {o.l}
+        </button>
+      ))}
+    </div>
+  )
+}
+
+/** Multi-select pill. */
+function Pill({ on, onClick, children }: { on: boolean; onClick: () => void; children: React.ReactNode }) {
   return (
     <button type="button" onClick={onClick}
-      className={`${pill ? 'rounded-full px-3.5 py-1.5' : 'flex-1 rounded-xl px-3 py-2'} text-sm border transition-colors ${
-        on ? 'bg-ff-green text-white border-ff-green shadow-sm' : 'border-line text-ink-2 hover:border-[#cdd2c8]'}`}>
+      className={cn('rounded-full px-3.5 py-1.5 text-sm border transition-colors',
+        on ? 'bg-ff-green text-white border-ff-green shadow-sm' : 'border-line text-ink-2 hover:border-[#cdd2c8]')}>
       {children}
     </button>
   )
@@ -61,6 +83,11 @@ export default function BrandProfileForm({ brandProfile, userId }: Props) {
   const tgl = (arr: string[], set: (v: string[]) => void, v: string) =>
     set(arr.includes(v) ? arr.filter(x => x !== v) : [...arr, v])
 
+  // Dirty tracking — compare a serialized snapshot to the saved baseline.
+  const snapshot = JSON.stringify({ brandName, category, teaser, investmentMin, investmentMax, locations, locationsDisplay, sectorTags, timelineMonths, highlights, operatorModel, format, experienceRequired, multiSiteReady, fullTimeRequired })
+  const [baseline, setBaseline] = useState(snapshot)
+  const dirty = snapshot !== baseline
+
   async function handleSave(e: React.FormEvent, submitForReview = false) {
     e.preventDefault()
     setSaving(true)
@@ -82,7 +109,7 @@ export default function BrandProfileForm({ brandProfile, userId }: Props) {
     }
     if (brandProfile) await supabase.from('franchisor_profiles').update(updates).eq('id', brandProfile.id)
     else await supabase.from('franchisor_profiles').insert({ ...updates, user_id: userId, status: 'draft' })
-    setSaving(false); setSaved(true)
+    setSaving(false); setSaved(true); setBaseline(snapshot)
     if (submitForReview) setSubmitRequested(true)
     setTimeout(() => setSaved(false), 3000)
     router.refresh()
@@ -92,17 +119,32 @@ export default function BrandProfileForm({ brandProfile, userId }: Props) {
   const investDisplay = investmentMin && investmentMax
     ? `£${parseInt(investmentMin).toLocaleString('en-GB')} – £${parseInt(investmentMax).toLocaleString('en-GB')}`
     : 'Investment to be confirmed'
-  const filled = [brandName, category, teaser, investmentMin, timelineMonths, cleanHighlights.length > 0,
-    locations.length > 0, sectorTags.length > 0, operatorModel, experienceRequired].filter(Boolean).length
-  const strength = Math.round((filled / 10) * 100)
 
-  // Per-section completeness dot
+  // Actionable completeness checklist — each item jumps to its section.
+  const checklist: { label: string; done: boolean; section: string }[] = [
+    { label: 'Brand name', done: !!brandName, section: 'basics' },
+    { label: 'Category', done: !!category, section: 'basics' },
+    { label: 'Concept teaser', done: !!teaser, section: 'basics' },
+    { label: 'At least one highlight', done: cleanHighlights.length > 0, section: 'basics' },
+    { label: 'Investment range', done: !!(investmentMin && investmentMax), section: 'investment' },
+    { label: 'Setup timeline', done: !!timelineMonths, section: 'investment' },
+    { label: 'Operator model', done: !!operatorModel, section: 'requirements' },
+    { label: 'Experience required', done: !!experienceRequired, section: 'requirements' },
+    { label: 'Cities available', done: locations.length > 0, section: 'coverage' },
+    { label: 'Sector tags', done: sectorTags.length > 0, section: 'coverage' },
+  ]
+  const doneCount = checklist.filter(c => c.done).length
+  const strength = Math.round((doneCount / checklist.length) * 100)
+  const missing = checklist.filter(c => !c.done)
+
   const sectionDone: Record<string, boolean> = {
     basics: !!(brandName && category && teaser),
     investment: !!(investmentMin && investmentMax),
     requirements: !!(operatorModel && experienceRequired),
     coverage: locations.length > 0 && sectorTags.length > 0,
   }
+
+  const cur = SECTIONS.find(s => s.id === section)!
 
   return (
     <form onSubmit={e => handleSave(e)}>
@@ -121,16 +163,21 @@ export default function BrandProfileForm({ brandProfile, userId }: Props) {
                 section === s.id ? 'bg-ff-green/10 text-ff-green' : 'text-ink-2 hover:bg-surface-2')}>
               <span className={cn('w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold flex-shrink-0',
                 sectionDone[s.id] ? 'bg-ff-green text-white' : section === s.id ? 'bg-ff-green/15 text-ff-green' : 'bg-surface-2 text-ink-3')}>
-                {sectionDone[s.id] ? '✓' : i + 1}
+                {sectionDone[s.id] ? <CheckIcon className="w-3 h-3" /> : i + 1}
               </span>
               {s.label}
             </button>
           ))}
         </nav>
 
-        {/* Active section fields */}
+        {/* Active section */}
         <div className="bg-surface border border-line rounded-2xl shadow-[0_1px_2px_rgba(27,33,26,0.05)] overflow-hidden min-w-0">
           <div className="px-5 sm:px-6 py-5">
+            <div className="mb-5">
+              <h3 className="text-base font-bold text-ink tracking-[-0.01em]">{cur.title}</h3>
+              <p className="text-xs text-ink-2 mt-0.5">{cur.help}</p>
+            </div>
+
             {section === 'basics' && (
               <div className="space-y-4">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -140,7 +187,7 @@ export default function BrandProfileForm({ brandProfile, userId }: Props) {
                 <div>
                   <div className="flex items-center justify-between mb-1.5">
                     <label className="block text-sm font-medium text-ink-2">Concept teaser <span className="text-ink-3 font-normal text-xs">— shown without naming the brand</span></label>
-                    <button type="button" onClick={() => setAiHint(v => !v)} className="inline-flex items-center gap-1 text-xs font-semibold text-ff-gold-ink bg-ff-gold-soft border border-[#e6cfa6] rounded-full px-2.5 py-1 hover:brightness-105 transition">✨ Draft with AI</button>
+                    <button type="button" onClick={() => setAiHint(v => !v)} className="inline-flex items-center gap-1.5 text-xs font-semibold text-ff-gold-ink bg-ff-gold-soft border border-[#e6cfa6] rounded-full px-2.5 py-1 hover:brightness-105 transition"><SparklesIcon className="w-3.5 h-3.5" /> Draft with AI</button>
                   </div>
                   {aiHint && <p className="text-xs text-ff-gold-ink bg-ff-gold-soft/60 border border-[#e6cfa6] rounded-lg px-3 py-2 mb-2">Coming soon — AI will suggest a teaser and highlights from a few words about your concept.</p>}
                   <textarea value={teaser} onChange={e => setTeaser(e.target.value)} rows={3} placeholder="What makes your concept distinctive — the proposition and model." className={`${inp} resize-none`} />
@@ -164,31 +211,23 @@ export default function BrandProfileForm({ brandProfile, userId }: Props) {
 
             {section === 'requirements' && (
               <div className="space-y-5">
-                <div><label className={lbl}>Operator model</label><div className="flex flex-col sm:flex-row gap-2">{[['owner-operator', 'Owner-operator'], ['hire-manager', 'Hire a manager'], ['either', 'Either works']].map(([v, l]) => <Toggle key={v} on={operatorModel === v} onClick={() => setOperatorModel(v)}>{l}</Toggle>)}</div></div>
-                <div><label className={lbl}>Experience required</label><div className="flex flex-col sm:flex-row gap-2">{[['none', 'None — first-timers'], ['management', 'Some management'], ['food-beverage', 'F&B background']].map(([v, l]) => <Toggle key={v} on={experienceRequired === v} onClick={() => setExperienceRequired(v)}>{l}</Toggle>)}</div></div>
-                <div><label className={lbl}>Site format(s)</label><div className="flex gap-2 flex-wrap">{[['dine-in', 'Dine-in'], ['takeaway', 'Takeaway'], ['kiosk', 'Kiosk / bar'], ['flexible', 'Flexible']].map(([v, l]) => <Toggle key={v} pill on={format.includes(v)} onClick={() => tgl(format, setFormat, v)}>{l}</Toggle>)}</div></div>
+                <div><label className={lbl}>Operator model</label><Segmented value={operatorModel} onChange={setOperatorModel} options={[{ v: 'owner-operator', l: 'Owner-operator' }, { v: 'hire-manager', l: 'Hire a manager' }, { v: 'either', l: 'Either works' }]} /></div>
+                <div><label className={lbl}>Experience required</label><Segmented value={experienceRequired} onChange={setExperienceRequired} options={[{ v: 'none', l: 'None' }, { v: 'management', l: 'Some management' }, { v: 'food-beverage', l: 'F&B background' }]} /></div>
+                <div><label className={lbl}>Site format(s)</label><div className="flex gap-2 flex-wrap">{[['dine-in', 'Dine-in'], ['takeaway', 'Takeaway'], ['kiosk', 'Kiosk / bar'], ['flexible', 'Flexible']].map(([v, l]) => <Pill key={v} on={format.includes(v)} onClick={() => tgl(format, setFormat, v)}>{l}</Pill>)}</div></div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div><label className={lbl}>Full-time required?</label><div className="flex gap-2"><Toggle on={fullTimeRequired} onClick={() => setFullTimeRequired(true)}>Yes</Toggle><Toggle on={!fullTimeRequired} onClick={() => setFullTimeRequired(false)}>No</Toggle></div></div>
-                  <div><label className={lbl}>Multi-site ready?</label><div className="flex gap-2"><Toggle on={multiSiteReady} onClick={() => setMultiSiteReady(true)}>Yes</Toggle><Toggle on={!multiSiteReady} onClick={() => setMultiSiteReady(false)}>No</Toggle></div></div>
+                  <div><label className={lbl}>Full-time required?</label><Segmented value={fullTimeRequired ? 'yes' : 'no'} onChange={v => setFullTimeRequired(v === 'yes')} options={[{ v: 'yes', l: 'Yes' }, { v: 'no', l: 'No' }]} /></div>
+                  <div><label className={lbl}>Multi-site ready?</label><Segmented value={multiSiteReady ? 'yes' : 'no'} onChange={v => setMultiSiteReady(v === 'yes')} options={[{ v: 'yes', l: 'Yes' }, { v: 'no', l: 'No' }]} /></div>
                 </div>
               </div>
             )}
 
             {section === 'coverage' && (
               <div className="space-y-4">
-                <div><label className={lbl}>Cities available</label><div className="flex flex-wrap gap-2">{UK_CITIES.map(c => <Toggle key={c.value} pill on={locations.includes(c.value)} onClick={() => tgl(locations, setLocations, c.value)}>{c.label}</Toggle>)}</div></div>
+                <div><label className={lbl}>Cities available</label><div className="flex flex-wrap gap-2">{UK_CITIES.map(c => <Pill key={c.value} on={locations.includes(c.value)} onClick={() => tgl(locations, setLocations, c.value)}>{c.label}</Pill>)}</div></div>
                 <div><label className={lbl}>Display text <span className="text-ink-3 font-normal text-xs">— shown to candidates</span></label><input value={locationsDisplay} onChange={e => setLocationsDisplay(e.target.value)} placeholder="e.g. Major UK cities" className={inp} /></div>
-                <div><label className={lbl}>Sector tags</label><div className="flex flex-wrap gap-2">{SECTORS.map(s => <Toggle key={s.value} pill on={sectorTags.includes(s.value)} onClick={() => tgl(sectorTags, setSectorTags, s.value)}>{s.label}</Toggle>)}</div></div>
+                <div><label className={lbl}>Sector tags</label><div className="flex flex-wrap gap-2">{SECTORS.map(s => <Pill key={s.value} on={sectorTags.includes(s.value)} onClick={() => tgl(sectorTags, setSectorTags, s.value)}>{s.label}</Pill>)}</div></div>
               </div>
             )}
-          </div>
-
-          <div className="flex items-center gap-3 px-5 sm:px-6 py-4 bg-surface-2 border-t border-line-2">
-            <button type="submit" disabled={saving} className="bg-ff-green hover:brightness-110 text-white font-medium py-2.5 px-6 rounded-xl text-sm transition-all disabled:opacity-60 shadow-sm">{saving ? 'Saving…' : 'Save changes'}</button>
-            {brandProfile?.status === 'draft' && (
-              <button type="button" onClick={e => handleSave(e as unknown as React.FormEvent, true)} disabled={saving || !brandName} className="border border-ff-green text-ff-green hover:bg-ff-green hover:text-white font-medium py-2.5 px-6 rounded-xl text-sm transition-colors disabled:opacity-60">Submit for review</button>
-            )}
-            {saved && <span className="text-sm text-ff-green font-medium">{submitRequested ? 'Submitted ✓' : 'Saved ✓'}</span>}
           </div>
         </div>
 
@@ -208,12 +247,49 @@ export default function BrandProfileForm({ brandProfile, userId }: Props) {
               </div>
             </div>
           </div>
-          <div className="bg-surface border border-line rounded-2xl shadow-[0_1px_2px_rgba(27,33,26,0.05)] p-4 flex items-center gap-4">
-            <Ring pct={strength} size={72} />
-            <div>
-              <p className="text-sm font-bold text-ink">Profile strength</p>
-              {strength < 100 ? <p className="text-xs text-ff-gold-ink font-semibold mt-1">Finish the remaining sections</p> : <p className="text-xs text-ink-2 mt-1">Complete — great work</p>}
+
+          {/* Actionable profile strength */}
+          <div className="bg-surface border border-line rounded-2xl shadow-[0_1px_2px_rgba(27,33,26,0.05)] p-4">
+            <div className="flex items-center gap-4">
+              <Ring pct={strength} size={72} />
+              <div className="min-w-0">
+                <p className="text-sm font-bold text-ink">Profile strength</p>
+                {strength < 100
+                  ? <p className="text-xs text-ff-gold-ink font-semibold mt-1">{missing.length} {missing.length === 1 ? 'thing' : 'things'} left to add</p>
+                  : <p className="text-xs text-ink-2 mt-1">Complete — great work</p>}
+              </div>
             </div>
+            {missing.length > 0 && (
+              <ul className="mt-3 pt-3 border-t border-line-2 space-y-0.5">
+                {missing.map(m => (
+                  <li key={m.label}>
+                    <button type="button" onClick={() => setSection(m.section)}
+                      className="group w-full flex items-center gap-2 text-left text-sm text-ink-2 hover:text-ff-green rounded-lg px-2 py-1.5 hover:bg-ff-green/5 transition-colors">
+                      <span className="w-4 h-4 rounded-full border border-[#cdd2c8] flex-shrink-0" />
+                      <span className="flex-1">{m.label}</span>
+                      <ArrowRightIcon className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 transition-opacity" />
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Sticky save bar */}
+      <div className="sticky bottom-4 z-20 mt-5">
+        <div className="flex items-center gap-3 bg-surface/95 backdrop-blur border border-line rounded-2xl shadow-[0_10px_30px_rgba(27,33,26,0.12)] px-4 py-3">
+          <span className={cn('flex items-center gap-2 text-sm font-medium', dirty ? 'text-ff-gold-ink' : 'text-ink-3')}>
+            <span className={cn('w-2 h-2 rounded-full', dirty ? 'bg-ff-gold' : 'bg-ink-3/40')} />
+            {dirty ? 'Unsaved changes' : 'All changes saved'}
+          </span>
+          <div className="ml-auto flex items-center gap-3">
+            {saved && <span className="flex items-center gap-1 text-sm text-ff-green font-medium"><CheckIcon className="w-4 h-4" /> {submitRequested ? 'Submitted' : 'Saved'}</span>}
+            {brandProfile?.status === 'draft' && (
+              <button type="button" onClick={e => handleSave(e as unknown as React.FormEvent, true)} disabled={saving || !brandName} className="border border-ff-green text-ff-green hover:bg-ff-green hover:text-white font-medium py-2.5 px-5 rounded-xl text-sm transition-colors disabled:opacity-50">Submit for review</button>
+            )}
+            <button type="submit" disabled={saving || !dirty} className="bg-ff-green hover:brightness-110 text-white font-medium py-2.5 px-6 rounded-xl text-sm transition-all disabled:opacity-50 shadow-sm">{saving ? 'Saving…' : 'Save changes'}</button>
           </div>
         </div>
       </div>

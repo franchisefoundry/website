@@ -169,6 +169,15 @@ export function StarIcon({ className }: IconProps) {
   )
 }
 
+export function SparklesIcon({ className }: IconProps) {
+  return (
+    <svg className={className} {...defaults}>
+      <path d="M12 3l1.6 4.4L18 9l-4.4 1.6L12 15l-1.6-4.4L6 9l4.4-1.6L12 3z" />
+      <path d="M18.5 14.5l.7 1.9 1.9.7-1.9.7-.7 1.9-.7-1.9-1.9-.7 1.9-.7.7-1.9z" />
+    </svg>
+  )
+}
+
 export function CheckIcon({ className }: IconProps) {
   return (
     <svg className={className} {...defaults}>
