@@ -10,6 +10,7 @@ import { CandidatesView, type Candidate } from '../franchisor/matches/Candidates
 import { AdminHomeView, type AdminHomeAction } from '@/components/admin/AdminHomeView'
 import FranchisorsCards, { type BrandCard } from '../admin/franchisors/FranchisorsCards'
 import { BrandLogo } from '@/components/ui/BrandLogo'
+import { FranchiseeHomeView } from '@/components/franchisee/FranchiseeHomeView'
 
 const BRAND_LOGO = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='8' fill='%233a4a3a'/%3E%3Ctext x='20' y='27' font-size='20' fill='%23c8924a' text-anchor='middle' font-family='sans-serif' font-weight='bold'%3EZ%3C/text%3E%3C/svg%3E"
 import { PipelineBoard, type PipelineCard } from '@/components/franchisor/PipelineBoard'
@@ -80,9 +81,12 @@ const adminBrands: BrandCard[] = [
   { id: 'b3', brand_name: 'Coffee & Co', category: 'Coffee', email: 'hello@coffeeco.uk', status: 'draft', logo_url: null, fee: '£25k', cands: 0, prog: 40 },
 ]
 
+const feeUser: any = { id: 'preview-fee', role: 'franchisee', full_name: 'Alex Rivera', email: 'alex@example.com', avatar_url: null, setup_complete: true }
+
 const NAV: [string, string][] = [
   ['profile', 'Brand profile'], ['candidates', 'Candidates'], ['pipeline', 'Pipeline'],
   ['performance', 'Performance'], ['messages', 'Messages'], ['admin', 'Admin home'], ['admin-brands', 'Admin · Brands'],
+  ['fee', 'Franchisee · Journey'], ['fee-start', 'Franchisee · Start'],
 ]
 
 function PreviewNav({ active }: { active: string }) {
@@ -147,6 +151,7 @@ export default async function DesignPreview({ searchParams }: { searchParams: Pr
   }
 
   const isAdmin = view.startsWith('admin')
+  const isFee = view.startsWith('fee')
   const adminScreens: Record<string, React.ReactNode> = {
     admin: <AdminHomeView greeting="Good afternoon" firstName="Ben" kpis={adminKpis} actions={adminActions} feed={adminFeed} />,
     'admin-brands': (
@@ -156,15 +161,32 @@ export default async function DesignPreview({ searchParams }: { searchParams: Pr
       </div>
     ),
   }
+  const feeScreens: Record<string, React.ReactNode> = {
+    fee: (
+      <FranchiseeHomeView firstName="Alex" profileExists hasPrimaryBrand stageIndex={2}
+        primaryBrand={{ brand_name: 'Zambrero', category: 'Quick Service · Mexican', teaser: 'A purpose-led Mexican QSR with proven UK unit economics and full training and site support.', investment_display: '£150,000 – £300,000', timeline_months: 6, operator_model: 'owner-operator' }}
+        consultantNote="Great fit on budget and location — I've asked the brand to hold a call slot next week. Have a think about the questions you'd like to cover."
+        attention={{ heading: 'Your intro meeting is booked — prepare now', body: 'Think about what you want from this meeting — day-to-day operations, investment returns and support are all fair game.' }}
+        kpis={[{ n: 3, l: 'Brands matched' }, { n: 1, l: "You're interested" }, { n: 1, l: 'Intros arranged' }, { n: 80, l: 'Profile complete', suffix: '%' }]}
+        completeness={80} />
+    ),
+    'fee-start': (
+      <FranchiseeHomeView firstName="Alex" profileExists hasPrimaryBrand={false} stageIndex={-1}
+        primaryBrand={null} consultantNote={null} attention={null}
+        kpis={[{ n: 0, l: 'Brands matched' }, { n: 0, l: "You're interested" }, { n: 0, l: 'Intros arranged' }, { n: 60, l: 'Profile complete', suffix: '%' }]}
+        completeness={60} />
+    ),
+  }
+  const sidebarProfile = isAdmin ? adminUser : isFee ? feeUser : brandOwner
   return (
     <div className="flex min-h-screen">
-      <NavSidebar profile={isAdmin ? adminUser : brandOwner}
-        brands={isAdmin ? undefined : [{ id: 'preview-brand', brand_name: 'Zambrero', status: 'active' }]}
-        activeBrandId={isAdmin ? undefined : 'preview-brand'} adminPreview={false} />
+      <NavSidebar profile={sidebarProfile}
+        brands={isAdmin || isFee ? undefined : [{ id: 'preview-brand', brand_name: 'Zambrero', status: 'active' }]}
+        activeBrandId={isAdmin || isFee ? undefined : 'preview-brand'} adminPreview={false} />
       <main className="flex-1 overflow-auto pt-14 md:pt-0">
         <div className="p-4 md:p-8">
           <PreviewNav active={view} />
-          {isAdmin ? adminScreens[view] : franchisorScreens[view]}
+          {isAdmin ? adminScreens[view] : isFee ? feeScreens[view] : franchisorScreens[view]}
         </div>
       </main>
     </div>
