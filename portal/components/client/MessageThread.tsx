@@ -19,7 +19,7 @@ export function MessageThread({ messages, composer }: { messages: ThreadMessage[
         <BellIcon className="w-3.5 h-3.5" /> Replies reach the FF team and push to their inbox.
       </div>
 
-      <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-2.5">
+      <div className="flex-1 overflow-y-auto p-4 flex flex-col justify-end gap-2.5">
         {messages.length === 0 ? (
           <p className="text-center text-sm text-ink-3 my-auto">No messages yet — say hello 👋</p>
         ) : messages.map(m => (

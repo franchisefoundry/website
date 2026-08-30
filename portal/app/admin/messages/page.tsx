@@ -46,7 +46,17 @@ export default async function MessagesPage({ searchParams }: { searchParams: Pro
 
   const activeKey = selected || threads[0]?.key || ''
   const activeType = activeKey.split(':')[0]
+  const activeId = activeKey.split(':')[1]
   const activeMsgs = M.filter(m => `${m.thread_type}:${m.thread_id}` === activeKey)
+
+  // Mark the client's messages in the open thread as read so the Messages nav
+  // badge clears once the admin has actually seen them (mirrors the client side).
+  if (activeKey) {
+    await admin.from('messages')
+      .update({ read_at: new Date().toISOString() })
+      .eq('thread_type', activeType).eq('thread_id', activeId)
+      .eq('from_admin', false).is('read_at', null)
+  }
 
   return (
     <div>
