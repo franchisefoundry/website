@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Modal } from '@/components/ui/modal'
 import { Button } from '@/components/ui/button'
+import { Avatar } from '@/components/ui/Avatar'
 import { referralLink } from '@/lib/referral'
 import { toast } from '@/lib/toast'
 
@@ -117,62 +118,51 @@ export default function AgentsTable({
 
   return (
     <>
-      <div className="bg-white rounded-2xl border border-slate-200 overflow-x-auto">
-        <table className="w-full text-sm">
-          <thead>
-            <tr className="border-b border-slate-100 text-slate-500 text-xs">
-              <th className="text-left px-4 py-3 font-medium">Name</th>
-              <th className="text-left px-4 py-3 font-medium hidden md:table-cell">Email</th>
-              <th className="text-left px-4 py-3 font-medium hidden lg:table-cell">Mobile</th>
-              <th className="text-left px-4 py-3 font-medium">Total leads</th>
-              <th className="text-left px-4 py-3 font-medium hidden sm:table-cell">Not invited</th>
-              <th className="text-left px-4 py-3 font-medium hidden sm:table-cell">Active</th>
-              <th className="text-left px-4 py-3 font-medium hidden lg:table-cell">Joined</th>
-              <th className="px-4 py-3" />
-            </tr>
-          </thead>
-          <tbody>
-            {agents.map(agent => {
-              const counts = countsByAgent[agent.id] ?? { total: 0, pending: 0, active: 0 }
-              return (
-                <tr key={agent.id} className="border-b border-slate-50 hover:bg-slate-50 transition-colors">
-                  <td className="px-4 py-3">
-                    <p className="font-medium text-slate-800">{agent.full_name ?? '—'}</p>
-                    <p className="text-xs text-slate-400 md:hidden">{agent.email}</p>
-                  </td>
-                  <td className="px-4 py-3 text-slate-500 hidden md:table-cell">{agent.email}</td>
-                  <td className="px-4 py-3 text-slate-500 hidden lg:table-cell">{agent.phone ?? '—'}</td>
-                  <td className="px-4 py-3 text-slate-800 font-medium">{counts.total}</td>
-                  <td className="px-4 py-3 hidden sm:table-cell">
-                    {counts.pending > 0
-                      ? <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-amber-50 text-amber-700">{counts.pending}</span>
-                      : <span className="text-slate-400">0</span>}
-                  </td>
-                  <td className="px-4 py-3 text-slate-600 hidden sm:table-cell">{counts.active}</td>
-                  <td className="px-4 py-3 text-slate-400 text-xs hidden lg:table-cell">
-                    {new Date(agent.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
-                  </td>
-                  <td className="px-4 py-3 text-right">
-                    <div className="inline-flex items-center gap-4">
-                      <button
-                        onClick={() => openReferral(agent)}
-                        className="text-xs text-brand-green hover:text-brand-green/80 font-medium transition-colors whitespace-nowrap"
-                      >
-                        Referral link
-                      </button>
-                      <button
-                        onClick={() => { setConfirmId(agent.id); setDeleteError(null) }}
-                        className="text-xs text-red-500 hover:text-red-700 hover:underline transition-colors"
-                      >
-                        Remove
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              )
-            })}
-          </tbody>
-        </table>
+      <div className="grid gap-4" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(290px, 1fr))' }}>
+        {agents.map(agent => {
+          const counts = countsByAgent[agent.id] ?? { total: 0, pending: 0, active: 0 }
+          return (
+            <div
+              key={agent.id}
+              onClick={() => router.push(`/admin/introducers/${agent.id}`)}
+              className="bg-surface border border-line rounded-2xl p-[17px] shadow-[0_1px_2px_rgba(27,33,26,0.04)] hover:-translate-y-0.5 hover:shadow-[0_8px_22px_rgba(27,33,26,0.08)] hover:border-[#d6dace] transition-all cursor-pointer"
+            >
+              <div className="flex items-center gap-3 mb-3">
+                <Avatar name={agent.full_name} size="lg" />
+                <div className="min-w-0 flex-1">
+                  <p className="text-sm font-semibold text-ink leading-tight truncate">{agent.full_name ?? '—'}</p>
+                  <p className="text-xs text-ink-3 truncate">
+                    Code <span className="font-mono text-ink-2">{agent.referral_code ?? '—'}</span>
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex gap-1.5 border-t border-line-2 pt-3">
+                {([['Leads', counts.total], ['Active', counts.active], ['Not invited', counts.pending]] as const).map(([l, v]) => (
+                  <div key={l} className="flex-1">
+                    <p className="text-[15px] font-bold text-ink tabular-nums leading-none">{v}</p>
+                    <p className="text-[10.5px] text-ink-3 mt-1">{l}</p>
+                  </div>
+                ))}
+              </div>
+
+              <div className="flex gap-2 mt-3.5">
+                <button
+                  onClick={e => { e.stopPropagation(); openReferral(agent) }}
+                  className="flex-1 text-xs font-medium text-ink-2 border border-line bg-surface hover:bg-surface-2 rounded-lg py-2 transition-colors"
+                >
+                  Referral link
+                </button>
+                <button
+                  onClick={e => { e.stopPropagation(); setConfirmId(agent.id); setDeleteError(null) }}
+                  className="text-xs font-medium text-red-600 border border-line hover:bg-red-50 rounded-lg px-3 py-2 transition-colors"
+                >
+                  Remove
+                </button>
+              </div>
+            </div>
+          )
+        })}
       </div>
 
       {/* Referral link modal */}
@@ -185,15 +175,15 @@ export default function AgentsTable({
         {referralUrl ? (
           <>
             {/* Personalise the code */}
-            <label className="block text-xs font-medium text-slate-600 mb-1">Personalised code</label>
+            <label className="block text-xs font-medium text-ink-2 mb-1">Personalised code</label>
             <div className="flex gap-2 mb-1">
-              <div className="flex-1 flex items-center border border-slate-300 rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-brand-green">
-                <span className="pl-3 pr-1 text-xs text-slate-400 select-none">/get-matched?ref=</span>
+              <div className="flex-1 flex items-center border border-line rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-ff-green">
+                <span className="pl-3 pr-1 text-xs text-ink-3 select-none">/get-matched?ref=</span>
                 <input
                   value={editCode}
                   onChange={e => { setEditCode(e.target.value); setCodeError(null) }}
                   placeholder="jane-smith"
-                  className="flex-1 min-w-0 py-2 pr-3 text-sm text-slate-800 focus:outline-none"
+                  className="flex-1 min-w-0 py-2 pr-3 text-sm text-ink focus:outline-none"
                 />
               </div>
               <Button size="sm" onClick={saveCode} disabled={!codeChanged || savingCode}>
@@ -202,9 +192,9 @@ export default function AgentsTable({
             </div>
             {codeError
               ? <p className="text-xs text-red-600 mb-4">{codeError}</p>
-              : <p className="text-xs text-slate-400 mb-4">3–30 letters, numbers or hyphens.</p>}
+              : <p className="text-xs text-ink-3 mb-4">3–30 letters, numbers or hyphens.</p>}
 
-            <div className="bg-slate-50 border border-slate-200 rounded-lg px-3 py-2.5 text-xs text-slate-700 break-all mb-4">
+            <div className="bg-surface-2 border border-line rounded-lg px-3 py-2.5 text-xs text-ink-2 break-all mb-4">
               {referralUrl}
             </div>
             <div className="flex gap-2">
@@ -214,13 +204,13 @@ export default function AgentsTable({
               </Button>
             </div>
             {sent && (
-              <p className="text-xs text-emerald-600 mt-3 text-center">
+              <p className="text-xs text-ff-green mt-3 text-center">
                 Sent to {referralAgent?.email}
               </p>
             )}
           </>
         ) : (
-          <p className="text-sm text-slate-500">No referral code available for this agent.</p>
+          <p className="text-sm text-ink-3">No referral code available for this agent.</p>
         )}
       </Modal>
 
@@ -229,10 +219,10 @@ export default function AgentsTable({
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="fixed inset-0 bg-black/40" onClick={() => !deleting && setConfirmId(null)} />
           <div className="relative bg-white rounded-2xl shadow-xl w-full max-w-sm p-6">
-            <h3 className="text-base font-semibold text-slate-800 mb-2">Remove agent?</h3>
-            <p className="text-sm text-slate-500 mb-1">
+            <h3 className="text-base font-semibold text-ink mb-2">Remove agent?</h3>
+            <p className="text-sm text-ink-3 mb-1">
               This will permanently delete{' '}
-              <span className="font-medium text-slate-700">{confirmAgent?.full_name ?? confirmAgent?.email}</span>
+              <span className="font-medium text-ink-2">{confirmAgent?.full_name ?? confirmAgent?.email}</span>
               &apos;s account and all their leads.
             </p>
             <p className="text-xs text-red-600 mb-5">This cannot be undone.</p>
@@ -250,7 +240,7 @@ export default function AgentsTable({
               <button
                 onClick={() => setConfirmId(null)}
                 disabled={deleting}
-                className="px-4 py-2.5 border border-slate-300 text-slate-700 text-sm font-medium rounded-lg hover:bg-slate-50 transition-colors disabled:opacity-60"
+                className="px-4 py-2.5 border border-line text-ink-2 text-sm font-medium rounded-lg hover:bg-surface-2 transition-colors disabled:opacity-60"
               >
                 Cancel
               </button>

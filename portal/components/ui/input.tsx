@@ -2,9 +2,9 @@ import { cn } from '@/lib/utils'
 
 /** Canonical field styling — matches the pattern used across the portal. */
 const fieldBase =
-  'w-full px-3 py-2 border border-slate-300 rounded-lg text-sm text-slate-800 ' +
-  'placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-green ' +
-  'focus:border-transparent disabled:opacity-60 disabled:bg-slate-50'
+  'w-full px-3.5 py-2 bg-surface border border-line rounded-xl text-sm text-ink ' +
+  'placeholder:text-ink-3 transition-shadow focus:outline-none focus:ring-2 focus:ring-brand-green/25 ' +
+  'focus:border-brand-green disabled:opacity-60 disabled:bg-surface-2'
 
 export const Input = function Input({
   className,
@@ -38,7 +38,7 @@ export function Label({
   ...props
 }: React.LabelHTMLAttributes<HTMLLabelElement>) {
   return (
-    <label className={cn('block text-sm font-medium text-slate-700 mb-1', className)} {...props}>
+    <label className={cn('block text-sm font-medium text-ink-2 mb-1', className)} {...props}>
       {children}
     </label>
   )
@@ -63,7 +63,7 @@ export function Field({
       {error
         ? <p className="text-xs text-red-600 mt-1">{error}</p>
         : hint
-          ? <p className="text-xs text-slate-400 mt-1">{hint}</p>
+          ? <p className="text-xs text-ink-3 mt-1">{hint}</p>
           : null}
     </div>
   )

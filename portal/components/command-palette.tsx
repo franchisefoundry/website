@@ -5,33 +5,41 @@ import { useRouter } from 'next/navigation'
 import {
   DashboardIcon, LeadsIcon, FranchiseeIcon, FranchisorIcon, MatchIcon,
   AgreementIcon, MarketplaceIcon, AgentIcon, QuestionnaireIcon, PlusIcon, SearchIcon,
+  ChartIcon, WalletIcon, MessageIcon, PropertyIcon, TagIcon, SettingsIcon,
 } from '@/components/icons'
 
 type Cmd = {
   id: string
   label: string
   href: string
-  group: 'Go to' | 'Actions'
+  group: 'Go to' | 'Actions' | 'Records'
   icon: React.ReactNode
   keywords?: string
+  sub?: string
 }
 
 function commandsFor(role: string): Cmd[] {
   const i = (n: React.ReactNode) => n
   if (role === 'admin') return [
-    { id: 'dash', label: 'Dashboard', href: '/admin', group: 'Go to', icon: i(<DashboardIcon className="w-4 h-4" />) },
-    { id: 'leads', label: 'Leads', href: '/admin/leads', group: 'Go to', icon: i(<LeadsIcon className="w-4 h-4" />), keywords: 'crm prospects' },
+    { id: 'dash', label: 'Home', href: '/admin', group: 'Go to', icon: i(<DashboardIcon className="w-4 h-4" />), keywords: 'dashboard' },
     { id: 'franchisees', label: 'Franchisees', href: '/admin/franchisees', group: 'Go to', icon: i(<FranchiseeIcon className="w-4 h-4" />) },
-    { id: 'franchisors', label: 'Franchisors', href: '/admin/franchisors', group: 'Go to', icon: i(<FranchisorIcon className="w-4 h-4" />), keywords: 'brands' },
-    { id: 'matches', label: 'Matches', href: '/admin/matches', group: 'Go to', icon: i(<MatchIcon className="w-4 h-4" />) },
-    { id: 'agreements', label: 'Agreements', href: '/admin/agreements', group: 'Go to', icon: i(<AgreementIcon className="w-4 h-4" />) },
+    { id: 'franchisors', label: 'Brands', href: '/admin/franchisors', group: 'Go to', icon: i(<FranchisorIcon className="w-4 h-4" />), keywords: 'franchisors' },
     { id: 'agents', label: 'Agents', href: '/admin/introducers', group: 'Go to', icon: i(<AgentIcon className="w-4 h-4" />), keywords: 'introducers referral' },
-    { id: 'partners', label: 'Marketplace partners', href: '/admin/partners', group: 'Go to', icon: i(<MarketplaceIcon className="w-4 h-4" />) },
+    { id: 'territories', label: 'Territories', href: '/admin/territories', group: 'Go to', icon: i(<PropertyIcon className="w-4 h-4" />) },
+    { id: 'leads', label: 'Leads', href: '/admin/leads', group: 'Go to', icon: i(<LeadsIcon className="w-4 h-4" />), keywords: 'prospects quiz' },
+    { id: 'partners', label: 'Marketplace', href: '/admin/partners', group: 'Go to', icon: i(<MarketplaceIcon className="w-4 h-4" />), keywords: 'partners' },
+    { id: 'resales', label: 'Resales', href: '/admin/resales', group: 'Go to', icon: i(<TagIcon className="w-4 h-4" />) },
+    { id: 'messages', label: 'Messages', href: '/admin/messages', group: 'Go to', icon: i(<MessageIcon className="w-4 h-4" />), keywords: 'chat inbox' },
+    { id: 'matches', label: 'Match pipeline', href: '/admin/matches', group: 'Go to', icon: i(<MatchIcon className="w-4 h-4" />) },
+    { id: 'agreements', label: 'Agreements', href: '/admin/agreements', group: 'Go to', icon: i(<AgreementIcon className="w-4 h-4" />) },
+    { id: 'analytics', label: 'Analytics', href: '/admin/analytics', group: 'Go to', icon: i(<ChartIcon className="w-4 h-4" />) },
+    { id: 'finance', label: 'Finance', href: '/admin/finance', group: 'Go to', icon: i(<WalletIcon className="w-4 h-4" />), keywords: 'revenue payouts' },
     { id: 'questionnaires', label: 'Questionnaires', href: '/admin/questionnaires', group: 'Go to', icon: i(<QuestionnaireIcon className="w-4 h-4" />) },
-    { id: 'inv-fr', label: 'Invite a franchisor', href: '/admin/franchisors/invites', group: 'Actions', icon: i(<PlusIcon className="w-4 h-4" />), keywords: 'add brand new' },
+    { id: 'settings', label: 'Settings', href: '/admin/settings', group: 'Go to', icon: i(<SettingsIcon className="w-4 h-4" />), keywords: 'match weighting' },
+    { id: 'inv-fr', label: 'Invite a brand', href: '/admin/franchisors/invites', group: 'Actions', icon: i(<PlusIcon className="w-4 h-4" />), keywords: 'add franchisor new' },
     { id: 'inv-fe', label: 'Invite a franchisee', href: '/admin/franchisees/invites', group: 'Actions', icon: i(<PlusIcon className="w-4 h-4" />) },
     { id: 'inv-ag', label: 'Invite an agent', href: '/admin/introducers/invites', group: 'Actions', icon: i(<PlusIcon className="w-4 h-4" />) },
-    { id: 'run-match', label: 'Run matching', href: '/admin/matches', group: 'Actions', icon: i(<MatchIcon className="w-4 h-4" />), keywords: 'score' },
+    { id: 'run-match', label: 'Run matching', href: '/admin/matches', group: 'Actions', icon: i(<MatchIcon className="w-4 h-4" />), keywords: 'score generate' },
   ]
   if (role === 'franchisor') return [
     { id: 'dash', label: 'Dashboard', href: '/franchisor', group: 'Go to', icon: i(<DashboardIcon className="w-4 h-4" />) },
@@ -65,14 +73,31 @@ export function CommandPalette({ role }: { role: string }) {
   const inputRef = useRef<HTMLInputElement>(null)
 
   const commands = useMemo(() => commandsFor(role), [role])
+  const [records, setRecords] = useState<Cmd[]>([])
+
+  // Load the record index (people / brands / agents) once, for ⌘K jump-to.
+  useEffect(() => {
+    if (!open || role !== 'admin' || records.length > 0) return
+    fetch('/api/admin/search').then(r => r.json()).then(d => {
+      const iconFor = (t: string) => t === 'Brand'
+        ? <FranchisorIcon className="w-4 h-4" />
+        : t === 'Agent' ? <AgentIcon className="w-4 h-4" /> : <FranchiseeIcon className="w-4 h-4" />
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      setRecords((d.records ?? []).map((rec: any, i: number): Cmd => ({
+        id: `rec-${i}`, label: rec.label, href: rec.href, group: 'Records',
+        sub: rec.type, keywords: rec.type, icon: iconFor(rec.type),
+      })))
+    }).catch(() => {})
+  }, [open, role, records.length])
 
   const results = useMemo(() => {
     const q = query.trim().toLowerCase()
     if (!q) return commands
-    return commands.filter(c =>
-      c.label.toLowerCase().includes(q) || (c.keywords ?? '').toLowerCase().includes(q)
-    )
-  }, [query, commands])
+    const cmdMatches = commands.filter(c =>
+      c.label.toLowerCase().includes(q) || (c.keywords ?? '').toLowerCase().includes(q))
+    const recMatches = records.filter(r => r.label.toLowerCase().includes(q)).slice(0, 8)
+    return [...recMatches, ...cmdMatches]
+  }, [query, commands, records])
 
   // Reset highlight when the result set changes
   useEffect(() => { setActive(0) }, [query, open])
@@ -172,6 +197,7 @@ export function CommandPalette({ role }: { role: string }) {
                       {cmd.icon}
                     </span>
                     <span className="flex-1 text-[13.5px] font-medium text-ink">{cmd.label}</span>
+                    {cmd.sub && <span className="text-[11px] text-slate-400">{cmd.sub}</span>}
                     {isActive && <span className="text-[11px] font-semibold" style={{ color: 'var(--ff-gold-ink)' }}>↵</span>}
                   </button>
                 )

@@ -3,6 +3,7 @@ import { PageHeader } from '@/components/page-header'
 import InviteFranchiseeButton from './invite-button'
 import FranchiseeKanban from './FranchiseeKanban'
 import FranchiseesListView from './FranchiseesListView'
+import FranchiseesCards from './FranchiseesCards'
 import ViewToggle from './ViewToggle'
 
 interface SearchParams { view?: string }
@@ -13,7 +14,8 @@ export default async function FranchiseesPage({
   searchParams: Promise<SearchParams>
 }) {
   const { view } = await searchParams
-  const isKanban = view !== 'list'   // kanban is the default
+  const current: 'cards' | 'kanban' | 'list' =
+    view === 'kanban' ? 'kanban' : view === 'list' ? 'list' : 'cards'   // cards is the default
 
   const admin = createAdminClient()
 
@@ -21,6 +23,7 @@ export default async function FranchiseesPage({
   const { data: allFranchisees } = await admin
     .from('franchisee_profiles')
     .select('*, profiles!franchisee_profiles_user_id_fkey(full_name, email, phone, role)')
+    .is('archived_at', null)
     .order('created_at', { ascending: false })
 
   // Only show users whose profile role is 'franchisee'
@@ -46,6 +49,19 @@ export default async function FranchiseesPage({
     profiles: (f.profiles as any) ?? null,
   }))
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const cardData = franchisees.map((f: any) => ({
+    id: f.id,
+    full_name: f.profiles?.full_name ?? null,
+    email: f.profiles?.email ?? null,
+    investment_min: f.investment_min,
+    investment_max: f.investment_max,
+    status: f.status,
+    pipeline_stage: f.pipeline_stage ?? null,
+    created_at: f.created_at,
+    last_seen: lastLoginMap[f.user_id] ?? null,
+  }))
+
   return (
     <div>
       <PageHeader
@@ -53,17 +69,19 @@ export default async function FranchiseesPage({
         description="Everyone in the portal — active, pending and signed."
         action={
           <div className="flex flex-wrap items-center gap-2">
-            <ViewToggle current={isKanban ? 'kanban' : 'list'} />
+            <ViewToggle current={current} />
             <InviteFranchiseeButton />
           </div>
         }
       />
 
       {franchisees.length === 0 ? (
-        <div className="text-center py-16 text-slate-400 text-sm">
+        <div className="text-center py-16 text-ink-3 text-sm">
           No franchisees yet. Invite one to get started.
         </div>
-      ) : isKanban ? (
+      ) : current === 'cards' ? (
+        <FranchiseesCards franchisees={cardData} />
+      ) : current === 'kanban' ? (
         <FranchiseeKanban franchisees={kanbanData} />
       ) : (
         <FranchiseesListView

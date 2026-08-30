@@ -35,12 +35,15 @@ export const MATCH_PIPELINE_STAGES: { value: MatchPipelineStage; label: string; 
   { value: 'agreement_signed', label: 'Agreement Signed', emoji: '🎉' },
 ]
 
+// Order MUST match the DB check constraint (franchisee_profiles_pipeline_stage_check)
+// and the FranchiseePipelineStage union above — the record-page stage index and
+// the CRM journey stepper both rely on this array being in true journey order.
 export const FRANCHISEE_PIPELINE_STAGES: { value: FranchiseePipelineStage; label: string; emoji: string }[] = [
   { value: 'new_enquiry',       label: 'New Enquiry',        emoji: '📥' },
-  { value: 'meeting_booked',    label: 'Meeting Booked',     emoji: '📅' },
   { value: 'profile_complete',  label: 'Profile Complete',   emoji: '✅' },
   { value: 'matches_sent',      label: 'Matches Sent',       emoji: '📋' },
   { value: 'brand_shortlisted', label: 'Brand Shortlisted',  emoji: '⭐' },
+  { value: 'meeting_booked',    label: 'Meeting Booked',     emoji: '📅' },
   { value: 'intro_made',        label: 'Intro Made',         emoji: '🤝' },
   { value: 'agreement_sent',    label: 'Agreement Sent',     emoji: '📄' },
   { value: 'signed',            label: 'Signed Up',          emoji: '🎉' },

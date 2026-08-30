@@ -65,11 +65,11 @@ export default function TemplateEditor({ initial }: { initial: Agreement | null 
     <div className="space-y-4">
       {/* Title */}
       <div>
-        <label className="block text-xs font-medium text-slate-500 mb-1">Document title</label>
+        <label className="block text-xs font-medium text-ink-3 mb-1">Document title</label>
         <input
           value={title}
           onChange={e => setTitle(e.target.value)}
-          className="w-full max-w-md px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-green"
+          className="w-full max-w-md px-3 py-2 border border-line rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-ff-green"
         />
       </div>
 
@@ -78,11 +78,11 @@ export default function TemplateEditor({ initial }: { initial: Agreement | null 
         <button
           onClick={() => fileRef.current?.click()}
           disabled={uploading}
-          className="text-sm px-4 py-2 border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors disabled:opacity-50"
+          className="text-sm px-4 py-2 border border-line rounded-lg hover:bg-surface-2 transition-colors disabled:opacity-50"
         >
           {uploading ? 'Importing…' : 'Import from .docx'}
         </button>
-        <span className="text-xs text-slate-400">Replaces current content with the imported text</span>
+        <span className="text-xs text-ink-3">Replaces current content with the imported text</span>
         <input
           ref={fileRef}
           type="file"
@@ -93,22 +93,22 @@ export default function TemplateEditor({ initial }: { initial: Agreement | null 
       </div>
 
       {/* Tab bar */}
-      <div className="flex gap-1 border-b border-slate-200">
+      <div className="flex gap-1 border-b border-line">
         {(['edit', 'preview'] as const).map(t => (
           <button
             key={t}
             onClick={() => setTab(t)}
             className={`px-4 py-2 text-sm font-medium capitalize transition-colors border-b-2 -mb-px ${
               tab === t
-                ? 'border-brand-green text-brand-green'
-                : 'border-transparent text-slate-500 hover:text-slate-700'
+                ? 'border-ff-green text-ff-green'
+                : 'border-transparent text-ink-3 hover:text-ink-2'
             }`}
           >
             {t}
           </button>
         ))}
         {initial && (
-          <span className="ml-auto text-xs text-slate-400 self-center pr-1">
+          <span className="ml-auto text-xs text-ink-3 self-center pr-1">
             Current: v{initial.version}
           </span>
         )}
@@ -122,7 +122,7 @@ export default function TemplateEditor({ initial }: { initial: Agreement | null 
           rows={32}
           spellCheck={false}
           placeholder={`# Franchise Agreement\n\n## 1. Parties\n\nThis agreement is between...\n\n## 2. Term\n\n...`}
-          className="w-full font-mono text-sm border border-slate-200 rounded-lg px-4 py-3 resize-y focus:outline-none focus:ring-2 focus:ring-brand-green placeholder:text-slate-300"
+          className="w-full font-mono text-sm border border-line rounded-lg px-4 py-3 resize-y focus:outline-none focus:ring-2 focus:ring-ff-green placeholder:text-ink-3"
         />
       ) : (
         <AgreementDocument
@@ -132,11 +132,11 @@ export default function TemplateEditor({ initial }: { initial: Agreement | null 
         />
       )}
 
-      <p className="text-xs text-slate-400">
-        Use Markdown: <code className="bg-slate-100 px-1 rounded"># Heading</code>,{' '}
-        <code className="bg-slate-100 px-1 rounded">## Section</code>,{' '}
-        <code className="bg-slate-100 px-1 rounded">**bold**</code>,{' '}
-        <code className="bg-slate-100 px-1 rounded">- list item</code>.
+      <p className="text-xs text-ink-3">
+        Use Markdown: <code className="bg-surface-2 px-1 rounded"># Heading</code>,{' '}
+        <code className="bg-surface-2 px-1 rounded">## Section</code>,{' '}
+        <code className="bg-surface-2 px-1 rounded">**bold**</code>,{' '}
+        <code className="bg-surface-2 px-1 rounded">- list item</code>.
         Saving creates a new version; previous versions are preserved.
       </p>
 
@@ -144,11 +144,11 @@ export default function TemplateEditor({ initial }: { initial: Agreement | null 
         <button
           onClick={handleSave}
           disabled={saving || !content.trim()}
-          className="bg-brand-green hover:bg-brand-green-dark text-white text-sm font-medium px-5 py-2 rounded-lg transition-colors disabled:opacity-50"
+          className="bg-ff-green hover:bg-ff-green-deep text-white text-sm font-medium px-5 py-2 rounded-lg transition-colors disabled:opacity-50"
         >
           {saving ? 'Saving…' : 'Save & publish'}
         </button>
-        {saved && <span className="text-sm text-emerald-600 font-medium">✓ Saved</span>}
+        {saved && <span className="text-sm text-ff-green font-medium">✓ Saved</span>}
       </div>
     </div>
   )

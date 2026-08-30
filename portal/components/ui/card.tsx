@@ -7,7 +7,7 @@ interface CardProps {
 
 export function Card({ children, className }: CardProps) {
   return (
-    <div className={cn('bg-white rounded-2xl border border-slate-200', className)}>
+    <div className={cn('bg-surface rounded-2xl border border-line shadow-[0_1px_2px_rgba(27,33,26,0.04)]', className)}>
       {children}
     </div>
   )
@@ -15,7 +15,7 @@ export function Card({ children, className }: CardProps) {
 
 export function CardHeader({ children, className }: CardProps) {
   return (
-    <div className={cn('px-6 py-4 border-b border-slate-100', className)}>
+    <div className={cn('px-6 py-4 border-b border-line-2', className)}>
       {children}
     </div>
   )
@@ -23,7 +23,7 @@ export function CardHeader({ children, className }: CardProps) {
 
 export function CardTitle({ children, className }: CardProps) {
   return (
-    <h2 className={cn('text-sm font-semibold text-slate-900', className)}>
+    <h2 className={cn('text-sm font-semibold text-ink', className)}>
       {children}
     </h2>
   )
@@ -49,10 +49,10 @@ interface StatCardProps {
 
 export function StatCard({ label, value, sub, icon, iconBg, trend, alert }: StatCardProps) {
   return (
-    <div className="bg-white rounded-2xl border border-slate-200 p-5 hover:shadow-sm hover:border-slate-300 transition-all">
+    <div className="bg-surface rounded-2xl border border-line p-5 shadow-[0_1px_2px_rgba(27,33,26,0.04)] hover:shadow-[0_4px_16px_rgba(27,33,26,0.06)] hover:border-line transition-all duration-200">
       <div className="flex items-start justify-between mb-3">
         {icon && (
-          <div className={cn('w-9 h-9 rounded-xl flex items-center justify-center', iconBg ?? 'bg-slate-100')}>
+          <div className={cn('w-9 h-9 rounded-xl flex items-center justify-center', iconBg ?? 'bg-surface-2 text-ink-2')}>
             {icon}
           </div>
         )}
@@ -62,9 +62,9 @@ export function StatCard({ label, value, sub, icon, iconBg, trend, alert }: Stat
           </span>
         )}
       </div>
-      <p className="text-3xl font-bold tracking-tight text-slate-900">{value}</p>
-      <p className="text-sm text-slate-500 mt-0.5">{label}</p>
-      {sub && <p className="text-xs text-slate-400 mt-1">{sub}</p>}
+      <p className="text-3xl font-bold tracking-tight text-ink tabular-nums">{value}</p>
+      <p className="text-sm text-ink-2 mt-0.5">{label}</p>
+      {sub && <p className="text-xs text-ink-3 mt-1">{sub}</p>}
       {alert && (
         <p className="mt-2 text-[11px] font-semibold px-2.5 py-1 rounded-full inline-block bg-amber-50 text-amber-700">
           {alert}

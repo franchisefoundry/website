@@ -37,9 +37,10 @@ export default async function AdminAgreementsPage() {
         description="Manage the master franchise agreement template and track signatures."
       />
 
-      {/* Status table */}
+      {/* Send + active agreements */}
       <section>
-        <h2 className="text-base font-semibold text-slate-800 mb-4">Franchisor signatures</h2>
+        <h2 className="text-base font-semibold text-ink mb-1">Active agreements</h2>
+        <p className="text-sm text-ink-3 mb-4">Send a new agreement, track signatures, and open any brand&apos;s agreement to review or edit it.</p>
         <AgreementsTable
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           franchisorAgreements={(franchisorAgreements ?? []) as any}
@@ -51,8 +52,8 @@ export default async function AdminAgreementsPage() {
 
       {/* Template editor */}
       <section>
-        <h2 className="text-base font-semibold text-slate-800 mb-1">Agreement template</h2>
-        <p className="text-sm text-slate-500 mb-4">
+        <h2 className="text-base font-semibold text-ink mb-1">Agreement template</h2>
+        <p className="text-sm text-ink-3 mb-4">
           Edit the master agreement below. Every save creates a new version — franchisors always sign the version current at the time of sending.
         </p>
         <TemplateEditor initial={agreement ?? null} />
