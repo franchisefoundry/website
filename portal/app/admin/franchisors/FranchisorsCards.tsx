@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { statusBadge } from '@/components/ui/badge'
-import { Avatar } from '@/components/ui/Avatar'
+import { BrandLogo } from '@/components/ui/BrandLogo'
 import { cn } from '@/lib/utils'
 import { SearchIcon } from '@/components/icons'
 
@@ -18,6 +18,7 @@ export interface BrandCard {
   category: string | null
   email: string | null
   status: string | null
+  logo_url: string | null
   fee: string
   cands: number
   prog: number
@@ -90,7 +91,7 @@ export default function FranchisorsCards({ brands }: { brands: BrandCard[] }) {
                 )}
               >
                 <div className="flex items-center gap-3 mb-3">
-                  <Avatar name={b.brand_name} size="lg" square />
+                  <BrandLogo src={b.logo_url} name={b.brand_name} size="lg" />
                   <div className="min-w-0 flex-1">
                     <p className="text-sm font-semibold text-ink leading-tight truncate">{b.brand_name || 'Incomplete profile'}</p>
                     <p className="text-xs text-ink-3 truncate">{b.category || b.email || '—'}</p>

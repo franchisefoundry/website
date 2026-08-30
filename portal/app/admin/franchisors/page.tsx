@@ -31,6 +31,7 @@ export default async function FranchisorsPage() {
       category: b.category,
       email: b.profiles?.email ?? null,
       status: b.status,
+      logo_url: b.logo_url ?? null,
       fee: b.franchise_fee
         ? `£${Math.round(b.franchise_fee / 1000)}k`
         : (b.investment_display || (b.investment_min ? `£${Math.round(b.investment_min / 1000)}k+` : '—')),

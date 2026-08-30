@@ -108,18 +108,10 @@ function BrandCard({ rank, match, placeholder }: BrandCardProps) {
       <div className="p-5">
         <div className="flex items-start justify-between gap-3 mb-4">
           <div className="flex items-center gap-3">
-            {fr?.logo_url ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                src={fr.logo_url}
-                alt=""
-                className="w-10 h-10 rounded-xl object-contain border border-slate-100 p-0.5 bg-white"
-              />
-            ) : (
-              <div className="w-10 h-10 rounded-xl bg-brand-green/10 flex items-center justify-center text-brand-green font-bold text-base">
-                {fr?.category?.charAt(0) ?? '?'}
-              </div>
-            )}
+            {/* No brand logo here — matches stay anonymous until the brand is revealed. */}
+            <div className="w-10 h-10 rounded-xl bg-ff-green/10 flex items-center justify-center text-ff-green font-bold text-base">
+              {fr?.category?.charAt(0) ?? '?'}
+            </div>
             <div>
               <p className="text-sm font-semibold text-slate-900">
                 {fr?.brand_name ?? 'Confidential brand'}

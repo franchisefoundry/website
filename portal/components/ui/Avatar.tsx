@@ -18,7 +18,7 @@ export function Avatar({ name, size = 'sm', square = false }: AvatarProps) {
     : '?'
   return (
     <div
-      className={`${square ? 'rounded-xl' : 'rounded-full'} bg-brand-green/10 text-brand-green font-bold flex items-center justify-center shrink-0 ${SIZES[size]}`}
+      className={`${square ? 'rounded-xl' : 'rounded-full'} bg-ff-green/10 text-ff-green font-bold flex items-center justify-center shrink-0 ${SIZES[size]}`}
     >
       {initials}
     </div>

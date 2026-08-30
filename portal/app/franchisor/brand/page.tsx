@@ -2,6 +2,7 @@ import { redirect } from 'next/navigation'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { PageHeader } from '@/components/page-header'
 import { SettingsTabs } from '@/components/SettingsTabs'
+import { BrandLogo } from '@/components/ui/BrandLogo'
 import { resolveBrand } from '@/lib/resolve-brand'
 import BrandProfileForm from '../brand-profile/brand-profile-form'
 import QuestionnaireForm from '../questionnaire/QuestionnaireForm'
@@ -44,7 +45,12 @@ export default async function BrandPage() {
 
   return (
     <div className="max-w-6xl">
-      <PageHeader title="Your brand" description="Your profile, questionnaire and territories — everything candidates and our matching see." />
+      <div className="flex items-start gap-4">
+        <BrandLogo src={brandProfile?.logo_url} name={brandProfile?.brand_name} size="xl" className="mt-1" />
+        <div className="flex-1 min-w-0">
+          <PageHeader title="Your brand" description="Your profile, questionnaire and territories — everything candidates and our matching see." />
+        </div>
+      </div>
       <SettingsTabs tabs={tabs} orientation="top" />
     </div>
   )

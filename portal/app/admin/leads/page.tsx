@@ -3,6 +3,7 @@ import { PageHeader } from '@/components/page-header'
 import { Avatar } from '@/components/ui/Avatar'
 import Link from 'next/link'
 import type { Lead } from '@/lib/supabase/types'
+import { cn } from '@/lib/utils'
 import DeleteLeadButton from './DeleteLeadButton'
 
 const STATUS_STYLES: Record<string, string> = {
@@ -73,7 +74,8 @@ function LeadsGrid({ leads, agentNames }: { leads: Lead[]; agentNames: Record<st
   )
 }
 
-export default async function AdminLeadsPage() {
+export default async function AdminLeadsPage({ searchParams }: { searchParams: Promise<{ view?: string }> }) {
+  const view = (await searchParams).view === 'archived' ? 'archived' : 'active'
   const admin = createAdminClient()
 
   const { data: leads } = await admin
@@ -94,6 +96,12 @@ export default async function AdminLeadsPage() {
 
   const activeLeads = typedLeads.filter(l => l.status === 'new' || l.status === 'meeting_requested')
   const archivedLeads = typedLeads.filter(l => l.status === 'converted' || l.status === 'rejected')
+  const shown = view === 'archived' ? archivedLeads : activeLeads
+
+  const TABS: [string, string, number][] = [
+    ['active', 'Active', activeLeads.length],
+    ['archived', 'Archived', archivedLeads.length],
+  ]
 
   return (
     <div>
@@ -102,23 +110,29 @@ export default async function AdminLeadsPage() {
         description="Quiz submissions from the public matching form."
       />
 
-      {/* Active leads */}
-      {activeLeads.length === 0 ? (
+      {/* Active / Archived tabs — archived (approved & rejected) stay tucked away */}
+      <div className="flex gap-1 border-b border-line mb-6">
+        {TABS.map(([v, label, count]) => (
+          <Link key={v} href={`/admin/leads?view=${v}`}
+            className={cn(
+              'relative -mb-px inline-flex items-center gap-2 px-4 py-2.5 text-sm font-medium border-b-2 transition-colors',
+              view === v ? 'border-ff-green text-ink' : 'border-transparent text-ink-3 hover:text-ink-2',
+            )}>
+            {label}
+            <span className={cn('text-[11px] font-bold rounded-full px-1.5 py-0.5 tabular-nums',
+              view === v ? 'bg-ff-green/10 text-ff-green' : 'bg-surface-2 text-ink-3')}>{count}</span>
+          </Link>
+        ))}
+      </div>
+
+      {shown.length === 0 ? (
         <div className="text-center py-16 text-ink-3 text-sm">
-          No active leads. Share the <strong className="text-ink-2">/get-matched</strong> link to start collecting.
+          {view === 'archived'
+            ? 'No archived leads yet.'
+            : <>No active leads. Share the <strong className="text-ink-2">/get-matched</strong> link to start collecting.</>}
         </div>
       ) : (
-        <LeadsGrid leads={activeLeads} agentNames={agentNames} />
-      )}
-
-      {/* Archived — converted & rejected */}
-      {archivedLeads.length > 0 && (
-        <div className="mt-10">
-          <h2 className="text-xs font-semibold text-ink-3 uppercase tracking-wider mb-3">
-            Archived ({archivedLeads.length})
-          </h2>
-          <LeadsGrid leads={archivedLeads} agentNames={agentNames} />
-        </div>
+        <LeadsGrid leads={shown} agentNames={agentNames} />
       )}
     </div>
   )
