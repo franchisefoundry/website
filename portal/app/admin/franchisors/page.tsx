@@ -46,6 +46,12 @@ export default async function FranchisorsPage() {
         description="Brands onboarded to the network."
         action={
           <div className="flex flex-wrap gap-2 items-center">
+            <Link
+              href="/admin/questionnaires"
+              className="text-sm font-medium text-ink-2 border border-line hover:border-[#cdd2c8] px-4 py-2 rounded-lg transition-colors"
+            >
+              Questionnaires
+            </Link>
             <SeedFranchisorsButton />
             <Link
               href="/admin/franchisors/new"

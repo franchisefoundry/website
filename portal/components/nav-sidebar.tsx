@@ -35,25 +35,27 @@ function isDivider(item: NavItem): item is NavDivider {
 // Grouped like the confirmed CRM design — Network / Workspace / Business.
 const adminNav: NavItem[] = [
   { label: 'Home', href: '/admin', icon: <DashboardIcon className="w-4 h-4" /> },
-  { sectionLabel: 'Network' },
+  { sectionLabel: 'People & deals' },
+  { label: 'Leads',       href: '/admin/leads',        icon: <LeadsIcon className="w-4 h-4" /> },
   { label: 'Franchisees', href: '/admin/franchisees',  icon: <FranchiseeIcon className="w-4 h-4" /> },
   { label: 'Brands',      href: '/admin/franchisors',  icon: <FranchisorIcon className="w-4 h-4" /> },
   { label: 'Agents',      href: '/admin/introducers',  icon: <AgentIcon className="w-4 h-4" /> },
-  { label: 'Leads',       href: '/admin/leads',        icon: <LeadsIcon className="w-4 h-4" /> },
-  { sectionLabel: 'Workspace' },
-  { label: 'Marketplace', href: '/admin/partners',   icon: <MarketplaceIcon className="w-4 h-4" /> },
+  { label: 'Matches',     href: '/admin/matches',      icon: <MatchIcon className="w-4 h-4" /> },
+  { sectionLabel: 'Operations' },
   { label: 'Messages',    href: '/admin/messages',   icon: <MessageIcon className="w-4 h-4" /> },
-  { label: 'Matches',     href: '/admin/matches',    icon: <MatchIcon className="w-4 h-4" /> },
   { label: 'Agreements',  href: '/admin/agreements', icon: <AgreementIcon className="w-4 h-4" /> },
-  { label: 'Meetings',    href: '/admin/meetings',   icon: <CalendarIcon className="w-4 h-4" /> },
-  { sectionLabel: 'Business' },
-  { label: 'Analytics',      href: '/admin/analytics',      icon: <ChartIcon className="w-4 h-4" /> },
-  { label: 'Finance',        href: '/admin/finance',        icon: <WalletIcon className="w-4 h-4" /> },
-  { label: 'Automations',    href: '/admin/automations',    icon: <BoltIcon className="w-4 h-4" /> },
-  { label: 'Reports',        href: '/admin/reports',        icon: <ChartIcon className="w-4 h-4" /> },
-  { label: 'Questionnaires', href: '/admin/questionnaires', icon: <QuestionnaireIcon className="w-4 h-4" /> },
-  { label: 'Archived',       href: '/admin/archived',       icon: <ArchiveIcon className="w-4 h-4" /> },
-  { label: 'Settings',       href: '/admin/settings',       icon: <SettingsIcon className="w-4 h-4" /> },
+  { label: 'Marketplace', href: '/admin/partners',   icon: <MarketplaceIcon className="w-4 h-4" /> },
+  { sectionLabel: 'Growth' },
+  { label: 'Insights', icon: <ChartIcon className="w-4 h-4" />, children: [
+    { label: 'Overview', href: '/admin/analytics', icon: <ChartIcon className="w-4 h-4" /> },
+    { label: 'Finance',  href: '/admin/finance',   icon: <WalletIcon className="w-4 h-4" /> },
+    { label: 'Reports',  href: '/admin/reports',   icon: <QuestionnaireIcon className="w-4 h-4" /> },
+  ] },
+  { label: 'System', icon: <SettingsIcon className="w-4 h-4" />, children: [
+    { label: 'Automations', href: '/admin/automations', icon: <BoltIcon className="w-4 h-4" /> },
+    { label: 'Archived',    href: '/admin/archived',    icon: <ArchiveIcon className="w-4 h-4" /> },
+    { label: 'Settings',    href: '/admin/settings',    icon: <SettingsIcon className="w-4 h-4" /> },
+  ] },
 ]
 
 const franchiseeNav: NavItem[] = [
@@ -173,7 +175,7 @@ function NavGroupItem({
                 className={cn(
                   'flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium transition-all',
                   active
-                    ? 'bg-white text-brand-green shadow-sm'
+                    ? 'bg-white text-ff-green shadow-sm'
                     : 'text-white/60 hover:text-white hover:bg-white/10'
                 )}
               >
@@ -344,7 +346,7 @@ export function NavSidebar({ profile, brands, activeBrandId, badges, adminPrevie
                 className={cn(
                   'flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm font-medium transition-all',
                   active
-                    ? 'bg-white text-brand-green shadow-sm'
+                    ? 'bg-white text-ff-green shadow-sm'
                     : 'text-white/70 hover:text-white hover:bg-white/10'
                 )}
               >
