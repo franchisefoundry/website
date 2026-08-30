@@ -76,7 +76,7 @@ export default async function FranchiseesPage({
       />
 
       {franchisees.length === 0 ? (
-        <div className="text-center py-16 text-slate-400 text-sm">
+        <div className="text-center py-16 text-ink-3 text-sm">
           No franchisees yet. Invite one to get started.
         </div>
       ) : current === 'cards' ? (

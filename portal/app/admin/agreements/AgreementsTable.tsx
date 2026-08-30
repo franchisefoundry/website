@@ -30,11 +30,11 @@ interface FranchisorRow {
 function agreementStatusBadge(status: string) {
   switch (status) {
     case 'signed':
-      return <span className="inline-flex items-center gap-1 text-xs font-medium text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full">✓ Signed</span>
+      return <span className="inline-flex items-center gap-1 text-xs font-medium text-ff-green bg-ff-green-soft border border-ff-green/20 px-2 py-0.5 rounded-full">✓ Signed</span>
     case 'sent':
       return <span className="inline-flex items-center gap-1 text-xs font-medium text-amber-700 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-full">⏳ Awaiting signature</span>
     default:
-      return <span className="inline-flex items-center gap-1 text-xs font-medium text-slate-500 bg-slate-100 border border-slate-200 px-2 py-0.5 rounded-full">— Not sent</span>
+      return <span className="inline-flex items-center gap-1 text-xs font-medium text-ink-3 bg-surface-2 border border-line px-2 py-0.5 rounded-full">— Not sent</span>
   }
 }
 

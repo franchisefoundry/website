@@ -8,12 +8,12 @@ interface Props {
 }
 
 const base = 'flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-colors'
-const on = 'bg-white text-slate-800 shadow-sm'
-const off = 'text-slate-500 hover:text-slate-700'
+const on = 'bg-white text-ink shadow-sm'
+const off = 'text-ink-3 hover:text-ink-2'
 
 export default function ViewToggle({ current }: Props) {
   return (
-    <div className="flex items-center bg-slate-100 rounded-lg p-0.5 gap-0.5">
+    <div className="flex items-center bg-surface-2 rounded-lg p-0.5 gap-0.5">
       <Link href="/admin/franchisees" className={cn(base, current === 'cards' ? on : off)}>
         <svg width="14" height="14" viewBox="0 0 14 14" fill="none" className="flex-shrink-0">
           <rect x="1" y="1" width="5.5" height="5.5" rx="1" fill="currentColor" opacity="0.8"/>

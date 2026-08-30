@@ -175,15 +175,15 @@ export default function AgentsTable({
         {referralUrl ? (
           <>
             {/* Personalise the code */}
-            <label className="block text-xs font-medium text-slate-600 mb-1">Personalised code</label>
+            <label className="block text-xs font-medium text-ink-2 mb-1">Personalised code</label>
             <div className="flex gap-2 mb-1">
-              <div className="flex-1 flex items-center border border-slate-300 rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-brand-green">
-                <span className="pl-3 pr-1 text-xs text-slate-400 select-none">/get-matched?ref=</span>
+              <div className="flex-1 flex items-center border border-line rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-ff-green">
+                <span className="pl-3 pr-1 text-xs text-ink-3 select-none">/get-matched?ref=</span>
                 <input
                   value={editCode}
                   onChange={e => { setEditCode(e.target.value); setCodeError(null) }}
                   placeholder="jane-smith"
-                  className="flex-1 min-w-0 py-2 pr-3 text-sm text-slate-800 focus:outline-none"
+                  className="flex-1 min-w-0 py-2 pr-3 text-sm text-ink focus:outline-none"
                 />
               </div>
               <Button size="sm" onClick={saveCode} disabled={!codeChanged || savingCode}>
@@ -192,9 +192,9 @@ export default function AgentsTable({
             </div>
             {codeError
               ? <p className="text-xs text-red-600 mb-4">{codeError}</p>
-              : <p className="text-xs text-slate-400 mb-4">3–30 letters, numbers or hyphens.</p>}
+              : <p className="text-xs text-ink-3 mb-4">3–30 letters, numbers or hyphens.</p>}
 
-            <div className="bg-slate-50 border border-slate-200 rounded-lg px-3 py-2.5 text-xs text-slate-700 break-all mb-4">
+            <div className="bg-surface-2 border border-line rounded-lg px-3 py-2.5 text-xs text-ink-2 break-all mb-4">
               {referralUrl}
             </div>
             <div className="flex gap-2">
@@ -204,13 +204,13 @@ export default function AgentsTable({
               </Button>
             </div>
             {sent && (
-              <p className="text-xs text-emerald-600 mt-3 text-center">
+              <p className="text-xs text-ff-green mt-3 text-center">
                 Sent to {referralAgent?.email}
               </p>
             )}
           </>
         ) : (
-          <p className="text-sm text-slate-500">No referral code available for this agent.</p>
+          <p className="text-sm text-ink-3">No referral code available for this agent.</p>
         )}
       </Modal>
 
@@ -219,10 +219,10 @@ export default function AgentsTable({
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="fixed inset-0 bg-black/40" onClick={() => !deleting && setConfirmId(null)} />
           <div className="relative bg-white rounded-2xl shadow-xl w-full max-w-sm p-6">
-            <h3 className="text-base font-semibold text-slate-800 mb-2">Remove agent?</h3>
-            <p className="text-sm text-slate-500 mb-1">
+            <h3 className="text-base font-semibold text-ink mb-2">Remove agent?</h3>
+            <p className="text-sm text-ink-3 mb-1">
               This will permanently delete{' '}
-              <span className="font-medium text-slate-700">{confirmAgent?.full_name ?? confirmAgent?.email}</span>
+              <span className="font-medium text-ink-2">{confirmAgent?.full_name ?? confirmAgent?.email}</span>
               &apos;s account and all their leads.
             </p>
             <p className="text-xs text-red-600 mb-5">This cannot be undone.</p>
@@ -240,7 +240,7 @@ export default function AgentsTable({
               <button
                 onClick={() => setConfirmId(null)}
                 disabled={deleting}
-                className="px-4 py-2.5 border border-slate-300 text-slate-700 text-sm font-medium rounded-lg hover:bg-slate-50 transition-colors disabled:opacity-60"
+                className="px-4 py-2.5 border border-line text-ink-2 text-sm font-medium rounded-lg hover:bg-surface-2 transition-colors disabled:opacity-60"
               >
                 Cancel
               </button>

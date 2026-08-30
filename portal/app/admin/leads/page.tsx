@@ -8,8 +8,8 @@ import DeleteLeadButton from './DeleteLeadButton'
 const STATUS_STYLES: Record<string, string> = {
   new: 'bg-blue-50 text-blue-700',
   meeting_requested: 'bg-amber-50 text-amber-700',
-  converted: 'bg-emerald-50 text-emerald-700',
-  rejected: 'bg-slate-100 text-slate-500',
+  converted: 'bg-ff-green-soft text-ff-green',
+  rejected: 'bg-surface-2 text-ink-3',
 }
 
 const STATUS_LABELS: Record<string, string> = {
@@ -29,7 +29,7 @@ function SourceBadge({ lead, agentNames }: { lead: Lead; agentNames: Record<stri
       </span>
     )
   }
-  return <span className="text-xs text-slate-400">Matching platform</span>
+  return <span className="text-xs text-ink-3">Matching platform</span>
 }
 
 function LeadsGrid({ leads, agentNames }: { leads: Lead[]; agentNames: Record<string, string> }) {
@@ -46,7 +46,7 @@ function LeadsGrid({ leads, agentNames }: { leads: Lead[]; agentNames: Record<st
           </div>
 
           <div className="flex items-center gap-2 mb-2.5 flex-wrap">
-            <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${STATUS_STYLES[lead.status] ?? 'bg-slate-100 text-slate-500'}`}>
+            <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${STATUS_STYLES[lead.status] ?? 'bg-surface-2 text-ink-3'}`}>
               {STATUS_LABELS[lead.status] ?? lead.status}
             </span>
             <SourceBadge lead={lead} agentNames={agentNames} />
@@ -104,8 +104,8 @@ export default async function AdminLeadsPage() {
 
       {/* Active leads */}
       {activeLeads.length === 0 ? (
-        <div className="text-center py-16 text-slate-400 text-sm">
-          No active leads. Share the <strong className="text-slate-600">/get-matched</strong> link to start collecting.
+        <div className="text-center py-16 text-ink-3 text-sm">
+          No active leads. Share the <strong className="text-ink-2">/get-matched</strong> link to start collecting.
         </div>
       ) : (
         <LeadsGrid leads={activeLeads} agentNames={agentNames} />
@@ -114,7 +114,7 @@ export default async function AdminLeadsPage() {
       {/* Archived — converted & rejected */}
       {archivedLeads.length > 0 && (
         <div className="mt-10">
-          <h2 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">
+          <h2 className="text-xs font-semibold text-ink-3 uppercase tracking-wider mb-3">
             Archived ({archivedLeads.length})
           </h2>
           <LeadsGrid leads={archivedLeads} agentNames={agentNames} />

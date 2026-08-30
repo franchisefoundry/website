@@ -73,9 +73,9 @@ export default function InviteAgentButton() {
         ) : (
           <>
             <div className="text-2xl mb-3">✓</div>
-            <h3 className="text-base font-semibold text-slate-800 mb-1">Invite sent</h3>
-            <p className="text-sm text-slate-500 mb-6">
-              An invite email has been sent to <span className="font-medium text-slate-700">{email}</span>.
+            <h3 className="text-base font-semibold text-ink mb-1">Invite sent</h3>
+            <p className="text-sm text-ink-3 mb-6">
+              An invite email has been sent to <span className="font-medium text-ink-2">{email}</span>.
               They&apos;ll receive a sign-in link to set up their account.
             </p>
             <Button fullWidth size="lg" onClick={close}>Done</Button>

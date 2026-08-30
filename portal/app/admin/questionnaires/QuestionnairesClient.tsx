@@ -33,7 +33,7 @@ export default function QuestionnairesClient({ rows }: { rows: QuestionnaireRow[
           value={search}
           onChange={e => setSearch(e.target.value)}
           placeholder="Filter by brand name…"
-          className="w-full max-w-xs px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-green focus:border-transparent"
+          className="w-full max-w-xs px-3 py-2 border border-line rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-ff-green focus:border-transparent"
         />
         <div className="flex gap-1">
           {(['all', 'submitted', 'missing'] as const).map(f => (
@@ -42,8 +42,8 @@ export default function QuestionnairesClient({ rows }: { rows: QuestionnaireRow[
               onClick={() => setFilter(f)}
               className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors capitalize ${
                 filter === f
-                  ? 'bg-brand-green text-white border-brand-green'
-                  : 'border-slate-300 text-slate-600 hover:bg-slate-50'
+                  ? 'bg-ff-green text-white border-ff-green'
+                  : 'border-line text-ink-2 hover:bg-surface-2'
               }`}
             >
               {f === 'all' ? 'All brands' : f === 'submitted' ? '✓ Submitted' : '⚠ Missing'}
@@ -70,7 +70,7 @@ export default function QuestionnairesClient({ rows }: { rows: QuestionnaireRow[
                   <p className="text-xs text-ink-3 truncate">{row.category || '—'}</p>
                 </div>
                 {row.has_submission ? (
-                  <span className="inline-flex items-center gap-1 text-xs font-medium text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full flex-shrink-0">✓ Submitted</span>
+                  <span className="inline-flex items-center gap-1 text-xs font-medium text-ff-green bg-ff-green-soft border border-ff-green/20 px-2 py-0.5 rounded-full flex-shrink-0">✓ Submitted</span>
                 ) : (
                   <span className="inline-flex items-center gap-1 text-xs font-medium text-amber-700 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-full flex-shrink-0">⚠ Missing</span>
                 )}

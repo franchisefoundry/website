@@ -39,7 +39,7 @@ export default async function AdminAgreementsPage() {
 
       {/* Status table */}
       <section>
-        <h2 className="text-base font-semibold text-slate-800 mb-4">Franchisor signatures</h2>
+        <h2 className="text-base font-semibold text-ink mb-4">Franchisor signatures</h2>
         <AgreementsTable
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           franchisorAgreements={(franchisorAgreements ?? []) as any}
@@ -51,8 +51,8 @@ export default async function AdminAgreementsPage() {
 
       {/* Template editor */}
       <section>
-        <h2 className="text-base font-semibold text-slate-800 mb-1">Agreement template</h2>
-        <p className="text-sm text-slate-500 mb-4">
+        <h2 className="text-base font-semibold text-ink mb-1">Agreement template</h2>
+        <p className="text-sm text-ink-3 mb-4">
           Edit the master agreement below. Every save creates a new version — franchisors always sign the version current at the time of sending.
         </p>
         <TemplateEditor initial={agreement ?? null} />

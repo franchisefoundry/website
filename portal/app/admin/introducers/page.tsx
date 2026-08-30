@@ -47,10 +47,10 @@ export default async function AdminIntroducersPage() {
       />
 
       {(introducers ?? []).length === 0 ? (
-        <div className="bg-white rounded-2xl border border-slate-200 p-12 text-center">
+        <div className="bg-white rounded-2xl border border-line p-12 text-center">
           <div className="text-3xl mb-3">👤</div>
-          <p className="text-slate-800 font-semibold text-sm mb-1">No agents yet</p>
-          <p className="text-slate-400 text-xs">Use the button above to invite your first agent.</p>
+          <p className="text-ink font-semibold text-sm mb-1">No agents yet</p>
+          <p className="text-ink-3 text-xs">Use the button above to invite your first agent.</p>
         </div>
       ) : (
         <AgentsTable agents={introducers ?? []} countsByAgent={countsByAgent} />

@@ -90,12 +90,12 @@ function BrandSelector({
   return (
     <div className="space-y-2">
       <div className="flex items-center justify-between">
-        <p className="text-xs font-semibold text-slate-600 uppercase tracking-wide">{label}</p>
+        <p className="text-xs font-semibold text-ink-2 uppercase tracking-wide">{label}</p>
         {current && (
           <button
             onClick={remove}
             disabled={removing}
-            className="text-xs text-slate-400 hover:text-red-500 transition-colors disabled:opacity-50"
+            className="text-xs text-ink-3 hover:text-red-500 transition-colors disabled:opacity-50"
           >
             {removing ? 'Removing…' : 'Remove'}
           </button>
@@ -103,11 +103,11 @@ function BrandSelector({
       </div>
 
       {current && (
-        <div className={`rounded-lg px-3 py-2.5 border ${isPrimary ? 'bg-brand-green/5 border-brand-green/20' : 'bg-slate-50 border-slate-200'}`}>
-          <p className="text-xs font-semibold text-slate-800">{current.brand_name || 'Unnamed brand'}</p>
-          <p className="text-xs text-slate-400">{current.category || '—'}</p>
+        <div className={`rounded-lg px-3 py-2.5 border ${isPrimary ? 'bg-ff-green/5 border-ff-green/20' : 'bg-surface-2 border-line'}`}>
+          <p className="text-xs font-semibold text-ink">{current.brand_name || 'Unnamed brand'}</p>
+          <p className="text-xs text-ink-3">{current.category || '—'}</p>
           {isPrimary && (
-            <p className="text-[10px] text-brand-green font-medium mt-0.5">
+            <p className="text-[10px] text-ff-green font-medium mt-0.5">
               🔔 Franchisor notified on assignment
             </p>
           )}
@@ -122,13 +122,13 @@ function BrandSelector({
             placeholder="Search brands…"
             value={search}
             onChange={e => setSearch(e.target.value)}
-            className="w-full px-3 py-1.5 border border-slate-200 rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-brand-green focus:border-transparent placeholder:text-slate-400"
+            className="w-full px-3 py-1.5 border border-line rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-ff-green focus:border-transparent placeholder:text-ink-3"
           />
           <select
             value={selected}
             onChange={e => setSelected(e.target.value)}
             size={Math.min(filteredFranchisors.length + 1, 6)}
-            className="w-full px-3 py-1.5 border border-slate-300 rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-brand-green focus:border-transparent"
+            className="w-full px-3 py-1.5 border border-line rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-ff-green focus:border-transparent"
           >
             <option value="">— {current ? 'change brand' : 'select a brand'} —</option>
             {filteredFranchisors.map(f => (
@@ -138,12 +138,12 @@ function BrandSelector({
             ))}
           </select>
           {filteredFranchisors.length === 0 && search && (
-            <p className="text-xs text-slate-400 text-center py-1">No brands match &ldquo;{search}&rdquo;</p>
+            <p className="text-xs text-ink-3 text-center py-1">No brands match &ldquo;{search}&rdquo;</p>
           )}
           {changed && (
             <button
               onClick={() => setConfirming(true)}
-              className="w-full bg-brand-green hover:bg-brand-green-dark text-white text-xs font-medium py-2 rounded-lg transition-colors"
+              className="w-full bg-ff-green hover:bg-ff-green-deep text-white text-xs font-medium py-2 rounded-lg transition-colors"
             >
               {current ? 'Change brand' : `Assign ${label.toLowerCase()}`}
             </button>
@@ -151,7 +151,7 @@ function BrandSelector({
         </>
       ) : (
         <div className="space-y-2">
-          <p className="text-xs text-slate-700">
+          <p className="text-xs text-ink-2">
             Assign <strong>{pendingBrand?.brand_name}</strong> as {label.toLowerCase()}?
             {isPrimary && ' The franchisor will receive an email notification.'}
           </p>
@@ -159,13 +159,13 @@ function BrandSelector({
             <button
               onClick={assign}
               disabled={loading}
-              className="flex-1 py-1.5 text-xs font-medium bg-brand-green hover:bg-brand-green-dark text-white rounded-lg transition-colors disabled:opacity-60"
+              className="flex-1 py-1.5 text-xs font-medium bg-ff-green hover:bg-ff-green-deep text-white rounded-lg transition-colors disabled:opacity-60"
             >
               {loading ? 'Assigning…' : 'Confirm'}
             </button>
             <button
               onClick={() => setConfirming(false)}
-              className="flex-1 py-1.5 text-xs font-medium border border-slate-300 text-slate-600 hover:bg-slate-50 rounded-lg transition-colors"
+              className="flex-1 py-1.5 text-xs font-medium border border-line text-ink-2 hover:bg-surface-2 rounded-lg transition-colors"
             >
               Cancel
             </button>
@@ -235,7 +235,7 @@ export default function FranchiseeActions({
             {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
             {(franchisee as any).profiles?.email && (
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              <a href={`mailto:${(franchisee as any).profiles.email}`} className="block text-brand-green hover:underline truncate">
+              <a href={`mailto:${(franchisee as any).profiles.email}`} className="block text-ff-green hover:underline truncate">
                 {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                 {(franchisee as any).profiles.email}
               </a>
@@ -243,7 +243,7 @@ export default function FranchiseeActions({
             {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
             {(franchisee as any).profiles?.phone && (
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              <p className="text-slate-600">{(franchisee as any).profiles.phone}</p>
+              <p className="text-ink-2">{(franchisee as any).profiles.phone}</p>
             )}
           </CardBody>
         </Card>
@@ -257,7 +257,7 @@ export default function FranchiseeActions({
             {FRANCHISEE_PIPELINE_STAGES.map((s, i) => (
               <div
                 key={s.value}
-                className={`h-1.5 flex-1 rounded-full transition-colors ${i <= currentStageIndex ? 'bg-brand-green' : 'bg-slate-200'}`}
+                className={`h-1.5 flex-1 rounded-full transition-colors ${i <= currentStageIndex ? 'bg-ff-green' : 'bg-surface-2'}`}
               />
             ))}
           </div>
@@ -268,10 +268,10 @@ export default function FranchiseeActions({
               disabled={loading !== null}
               className={`w-full text-left px-3 py-2 rounded-lg text-xs border transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 ${
                 pipelineStage === s.value
-                  ? 'bg-brand-green text-white border-brand-green'
+                  ? 'bg-ff-green text-white border-ff-green'
                   : i < currentStageIndex
-                  ? 'bg-emerald-50 border-emerald-200 text-emerald-700'
-                  : 'border-slate-200 text-slate-600 hover:bg-slate-50'
+                  ? 'bg-ff-green-soft border-ff-green/20 text-ff-green'
+                  : 'border-line text-ink-2 hover:bg-surface-2'
               }`}
             >
               <span>{s.emoji}</span>
@@ -290,7 +290,7 @@ export default function FranchiseeActions({
         <CardHeader>
           <CardTitle>Brand assignments</CardTitle>
         </CardHeader>
-        <CardBody className="space-y-5 divide-y divide-slate-100">
+        <CardBody className="space-y-5 divide-y divide-line-2">
           <BrandSelector
             label="Primary brand"
             rank={1}
@@ -332,7 +332,7 @@ export default function FranchiseeActions({
               onClick={() => updateStatus(s)}
               disabled={franchiseeStatus === s || loading !== null}
               className="w-full text-left px-3 py-2 rounded-lg text-sm border transition-colors disabled:opacity-50 disabled:cursor-not-allowed
-                border-slate-200 text-slate-700 hover:bg-slate-50 data-[active=true]:bg-brand-green data-[active=true]:text-white data-[active=true]:border-brand-green"
+                border-line text-ink-2 hover:bg-surface-2 data-[active=true]:bg-ff-green data-[active=true]:text-white data-[active=true]:border-ff-green"
               data-active={franchiseeStatus === s}
             >
               {loading === `status-${s}` ? 'Saving…' : <span className="capitalize">{s.replace('_', ' ')}</span>}
@@ -345,7 +345,7 @@ export default function FranchiseeActions({
       <Card>
         <CardHeader><CardTitle>Marketplace access</CardTitle></CardHeader>
         <CardBody>
-          <p className="text-xs text-slate-500 mb-3">
+          <p className="text-xs text-ink-3 mb-3">
             {tier2Unlocked
               ? 'Marketplace is unlocked — franchisee can browse partners and request intros.'
               : 'Unlock to give this franchisee access to the partner marketplace.'}
@@ -355,8 +355,8 @@ export default function FranchiseeActions({
             disabled={loading === 'tier2'}
             className={`w-full py-2 px-3 rounded-lg text-sm font-medium transition-colors ${
               tier2Unlocked
-                ? 'bg-slate-100 text-slate-700 hover:bg-slate-200'
-                : 'bg-brand-green text-white hover:bg-brand-green-dark'
+                ? 'bg-surface-2 text-ink-2 hover:bg-surface-2'
+                : 'bg-ff-green text-white hover:bg-ff-green-deep'
             }`}
           >
             {loading === 'tier2' ? 'Saving…' : tier2Unlocked ? '🔒 Lock marketplace' : '🔓 Unlock marketplace'}
