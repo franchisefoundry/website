@@ -9,6 +9,9 @@ import BrandProfileForm from '../franchisor/brand-profile/brand-profile-form'
 import { CandidatesView, type Candidate } from '../franchisor/matches/CandidatesView'
 import { AdminHomeView, type AdminHomeAction } from '@/components/admin/AdminHomeView'
 import FranchisorsCards, { type BrandCard } from '../admin/franchisors/FranchisorsCards'
+import { BrandLogo } from '@/components/ui/BrandLogo'
+
+const BRAND_LOGO = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='8' fill='%233a4a3a'/%3E%3Ctext x='20' y='27' font-size='20' fill='%23c8924a' text-anchor='middle' font-family='sans-serif' font-weight='bold'%3EZ%3C/text%3E%3C/svg%3E"
 import { PipelineBoard, type PipelineCard } from '@/components/franchisor/PipelineBoard'
 import { PerformanceView } from '@/components/franchisor/PerformanceView'
 import { MessageThread, type ThreadMessage } from '@/components/client/MessageThread'
@@ -30,7 +33,7 @@ const brandProfile = {
   sectors: ['food-beverage', 'health'], timeline_months: null,
   highlights: ['No F&B experience required', 'Full training & site support', 'Social-impact brand story'],
   operator_model: '', format: ['dine-in', 'takeaway'], experience_required: 'none',
-  multi_site_ready: true, full_time_required: true, status: 'active',
+  multi_site_ready: true, full_time_required: true, status: 'active', logo_url: BRAND_LOGO,
 } as any as FranchisorProfile
 
 const candidates: Candidate[] = [
@@ -72,9 +75,9 @@ const adminFeed = [
 ]
 
 const adminBrands: BrandCard[] = [
-  { id: 'b1', brand_name: 'Zambrero', category: 'Quick Service · Mexican', email: 'ben@zambrero.co.uk', status: 'active', fee: '£35k', cands: 12, prog: 100 },
-  { id: 'b2', brand_name: 'Sides', category: 'QSR · Chicken', email: 'ops@sides.co.uk', status: 'pending_review', fee: '£30k', cands: 4, prog: 70 },
-  { id: 'b3', brand_name: 'Coffee & Co', category: 'Coffee', email: 'hello@coffeeco.uk', status: 'draft', fee: '£25k', cands: 0, prog: 40 },
+  { id: 'b1', brand_name: 'Zambrero', category: 'Quick Service · Mexican', email: 'ben@zambrero.co.uk', status: 'active', logo_url: BRAND_LOGO, fee: '£35k', cands: 12, prog: 100 },
+  { id: 'b2', brand_name: 'Sides', category: 'QSR · Chicken', email: 'ops@sides.co.uk', status: 'pending_review', logo_url: null, fee: '£30k', cands: 4, prog: 70 },
+  { id: 'b3', brand_name: 'Coffee & Co', category: 'Coffee', email: 'hello@coffeeco.uk', status: 'draft', logo_url: null, fee: '£25k', cands: 0, prog: 40 },
 ]
 
 const NAV: [string, string][] = [
@@ -103,7 +106,12 @@ export default async function DesignPreview({ searchParams }: { searchParams: Pr
   const franchisorScreens: Record<string, React.ReactNode> = {
     profile: (
       <>
-        <PageHeader title="Your brand" description="Your profile, questionnaire and territories — everything candidates and our matching see." />
+        <div className="flex items-start gap-4">
+          <BrandLogo src={brandProfile.logo_url} name={brandProfile.brand_name} size="xl" className="mt-1" />
+          <div className="flex-1 min-w-0">
+            <PageHeader title="Your brand" description="Your profile, questionnaire and territories — everything candidates and our matching see." />
+          </div>
+        </div>
         <SettingsTabs orientation="top" tabs={[{ id: 'profile', label: 'Profile', icon: <FranchisorIcon className="w-4 h-4" />, content: <BrandProfileForm brandProfile={brandProfile} userId="preview-user" /> }]} />
       </>
     ),
