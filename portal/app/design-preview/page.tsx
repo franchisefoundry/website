@@ -8,6 +8,7 @@ import { SettingsTabs } from '@/components/SettingsTabs'
 import BrandProfileForm from '../franchisor/brand-profile/brand-profile-form'
 import { CandidatesView, type Candidate } from '../franchisor/matches/CandidatesView'
 import { AdminHomeView, type AdminHomeAction } from '@/components/admin/AdminHomeView'
+import FranchisorsCards, { type BrandCard } from '../admin/franchisors/FranchisorsCards'
 import { PipelineBoard, type PipelineCard } from '@/components/franchisor/PipelineBoard'
 import { PerformanceView } from '@/components/franchisor/PerformanceView'
 import { MessageThread, type ThreadMessage } from '@/components/client/MessageThread'
@@ -70,9 +71,15 @@ const adminFeed = [
   { dot: 'var(--ff-gold-ink)', text: 'New lead <b>Priya Shah</b> from the matching quiz', time: 'Yesterday' },
 ]
 
+const adminBrands: BrandCard[] = [
+  { id: 'b1', brand_name: 'Zambrero', category: 'Quick Service · Mexican', email: 'ben@zambrero.co.uk', status: 'active', fee: '£35k', cands: 12, prog: 100 },
+  { id: 'b2', brand_name: 'Sides', category: 'QSR · Chicken', email: 'ops@sides.co.uk', status: 'pending_review', fee: '£30k', cands: 4, prog: 70 },
+  { id: 'b3', brand_name: 'Coffee & Co', category: 'Coffee', email: 'hello@coffeeco.uk', status: 'draft', fee: '£25k', cands: 0, prog: 40 },
+]
+
 const NAV: [string, string][] = [
   ['profile', 'Brand profile'], ['candidates', 'Candidates'], ['pipeline', 'Pipeline'],
-  ['performance', 'Performance'], ['messages', 'Messages'], ['admin', 'Admin home'],
+  ['performance', 'Performance'], ['messages', 'Messages'], ['admin', 'Admin home'], ['admin-brands', 'Admin · Brands'],
 ]
 
 function PreviewNav({ active }: { active: string }) {
@@ -131,7 +138,16 @@ export default async function DesignPreview({ searchParams }: { searchParams: Pr
     ),
   }
 
-  const isAdmin = view === 'admin'
+  const isAdmin = view.startsWith('admin')
+  const adminScreens: Record<string, React.ReactNode> = {
+    admin: <AdminHomeView greeting="Good afternoon" firstName="Ben" kpis={adminKpis} actions={adminActions} feed={adminFeed} />,
+    'admin-brands': (
+      <div>
+        <PageHeader title="Brands" description="Every franchise brand on the platform." />
+        <FranchisorsCards brands={adminBrands} />
+      </div>
+    ),
+  }
   return (
     <div className="flex min-h-screen">
       <NavSidebar profile={isAdmin ? adminUser : brandOwner}
@@ -140,9 +156,7 @@ export default async function DesignPreview({ searchParams }: { searchParams: Pr
       <main className="flex-1 overflow-auto pt-14 md:pt-0">
         <div className="p-4 md:p-8">
           <PreviewNav active={view} />
-          {isAdmin
-            ? <AdminHomeView greeting="Good afternoon" firstName="Ben" kpis={adminKpis} actions={adminActions} feed={adminFeed} />
-            : franchisorScreens[view]}
+          {isAdmin ? adminScreens[view] : franchisorScreens[view]}
         </div>
       </main>
     </div>
