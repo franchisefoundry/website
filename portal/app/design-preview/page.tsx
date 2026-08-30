@@ -11,6 +11,8 @@ import { AdminHomeView, type AdminHomeAction } from '@/components/admin/AdminHom
 import FranchisorsCards, { type BrandCard } from '../admin/franchisors/FranchisorsCards'
 import { BrandLogo } from '@/components/ui/BrandLogo'
 import { FranchiseeHomeView } from '@/components/franchisee/FranchiseeHomeView'
+import { ClientComposer } from '@/components/client/ClientComposer'
+import AgreementsTable from '../admin/agreements/AgreementsTable'
 
 const BRAND_LOGO = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='8' fill='%233a4a3a'/%3E%3Ctext x='20' y='27' font-size='20' fill='%23c8924a' text-anchor='middle' font-family='sans-serif' font-weight='bold'%3EZ%3C/text%3E%3C/svg%3E"
 import { PipelineBoard, type PipelineCard } from '@/components/franchisor/PipelineBoard'
@@ -83,9 +85,19 @@ const adminBrands: BrandCard[] = [
 
 const feeUser: any = { id: 'preview-fee', role: 'franchisee', full_name: 'Alex Rivera', email: 'alex@example.com', avatar_url: null, setup_complete: true }
 
+const agmtRows: any[] = [
+  { id: 'a1', status: 'signed', sent_at: '2026-08-10T09:00:00Z', signed_at: '2026-08-14T16:20:00Z', signer_name: 'Ben Ortiz', signed_pdf_path: 'x', franchisor_profiles: { id: 'b1', brand_name: 'Zambrero', user_id: 'u1', profiles: { full_name: 'Ben Ortiz', email: 'ben@zambrero.co.uk' } } },
+  { id: 'a2', status: 'sent', sent_at: '2026-08-22T11:00:00Z', signed_at: null, signer_name: null, signed_pdf_path: null, franchisor_profiles: { id: 'b2', brand_name: 'Sides', user_id: 'u2', profiles: { full_name: 'Ops Team', email: 'ops@sides.co.uk' } } },
+]
+const agmtFranchisors: any[] = [
+  { id: 'b1', brand_name: 'Zambrero', user_id: 'u1', profiles: { full_name: 'Ben Ortiz', email: 'ben@zambrero.co.uk' } },
+  { id: 'b2', brand_name: 'Sides', user_id: 'u2', profiles: { full_name: 'Ops Team', email: 'ops@sides.co.uk' } },
+  { id: 'b3', brand_name: 'Coffee & Co', user_id: 'u3', profiles: { full_name: 'Sam Lee', email: 'sam@coffeeco.uk' } },
+]
+
 const NAV: [string, string][] = [
   ['profile', 'Brand profile'], ['candidates', 'Candidates'], ['pipeline', 'Pipeline'],
-  ['performance', 'Performance'], ['messages', 'Messages'], ['admin', 'Admin home'], ['admin-brands', 'Admin · Brands'],
+  ['performance', 'Performance'], ['messages', 'Messages'], ['admin', 'Admin home'], ['admin-brands', 'Admin · Brands'], ['admin-agreements', 'Admin · Agreements'],
   ['fee', 'Franchisee · Journey'], ['fee-start', 'Franchisee · Start'],
 ]
 
@@ -140,12 +152,7 @@ export default async function DesignPreview({ searchParams }: { searchParams: Pr
     messages: (
       <div className="max-w-3xl">
         <PageHeader title="Messages" description="Chat directly with the Franchise Foundry team." />
-        <MessageThread messages={threadMessages} composer={
-          <div className="flex gap-2">
-            <input disabled placeholder="Write a message…" className="flex-1 px-3 py-2.5 rounded-xl text-sm bg-surface-2 border border-line text-ink placeholder:text-ink-3" />
-            <button disabled className="bg-ff-green text-white px-4 rounded-xl text-sm font-medium opacity-90">Send</button>
-          </div>
-        } />
+        <MessageThread messages={threadMessages} composer={<ClientComposer />} />
       </div>
     ),
   }
@@ -158,6 +165,16 @@ export default async function DesignPreview({ searchParams }: { searchParams: Pr
       <div>
         <PageHeader title="Brands" description="Every franchise brand on the platform." />
         <FranchisorsCards brands={adminBrands} />
+      </div>
+    ),
+    'admin-agreements': (
+      <div className="space-y-10">
+        <PageHeader title="Agreements" description="Manage the master franchise agreement template and track signatures." />
+        <section>
+          <h2 className="text-base font-semibold text-ink mb-1">Active agreements</h2>
+          <p className="text-sm text-ink-3 mb-4">Send a new agreement, track signatures, and open any brand&apos;s agreement to review or edit it.</p>
+          <AgreementsTable franchisorAgreements={agmtRows} allFranchisors={agmtFranchisors} hasTemplate />
+        </section>
       </div>
     ),
   }
