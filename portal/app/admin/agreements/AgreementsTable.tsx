@@ -1,9 +1,9 @@
 'use client'
 
 import { useState } from 'react'
+import Link from 'next/link'
 import { formatDate, timeAgo } from '@/lib/utils'
-import { statusBadge } from '@/components/ui/badge'
-import { Avatar } from '@/components/ui/Avatar'
+import { ArrowRightIcon } from '@/components/icons'
 
 interface FranchisorAgreement {
   id: string
@@ -27,15 +27,10 @@ interface FranchisorRow {
   profiles: { full_name: string | null; email: string | null } | null
 }
 
-function agreementStatusBadge(status: string) {
-  switch (status) {
-    case 'signed':
-      return <span className="inline-flex items-center gap-1 text-xs font-medium text-ff-green bg-ff-green-soft border border-ff-green/20 px-2 py-0.5 rounded-full">✓ Signed</span>
-    case 'sent':
-      return <span className="inline-flex items-center gap-1 text-xs font-medium text-amber-700 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-full">⏳ Awaiting signature</span>
-    default:
-      return <span className="inline-flex items-center gap-1 text-xs font-medium text-ink-3 bg-surface-2 border border-line px-2 py-0.5 rounded-full">— Not sent</span>
-  }
+function statusPill(status: string) {
+  if (status === 'signed') return <span className="inline-flex items-center text-xs font-medium text-ff-green bg-ff-green-soft border border-ff-green/20 px-2 py-0.5 rounded-full">Signed</span>
+  if (status === 'sent') return <span className="inline-flex items-center text-xs font-medium text-amber-700 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-full">Awaiting signature</span>
+  return <span className="inline-flex items-center text-xs font-medium text-ink-3 bg-surface-2 border border-line px-2 py-0.5 rounded-full">Not sent</span>
 }
 
 export default function AgreementsTable({
@@ -48,10 +43,9 @@ export default function AgreementsTable({
   hasTemplate: boolean
 }) {
   const [sending, setSending] = useState<string | null>(null)
-  const [localAgreements, setLocalAgreements] = useState(franchisorAgreements)
+  const [target, setTarget] = useState('')
 
-  // Franchisors not yet in the agreements table
-  const sentIds = new Set(localAgreements.map(a => a.franchisor_profiles.id))
+  const sentIds = new Set(franchisorAgreements.map(a => a.franchisor_profiles.id))
   const unsent = allFranchisors.filter(f => !sentIds.has(f.id))
 
   async function sendAgreement(franchisorProfileId: string) {
@@ -65,71 +59,84 @@ export default function AgreementsTable({
       })
       const d = await res.json()
       if (!res.ok) { alert(d.error ?? 'Failed to send'); return }
-      // Refresh page to show updated table
       window.location.reload()
     } finally {
       setSending(null)
     }
   }
 
-  const allRows = [
-    ...localAgreements.map(a => ({ type: 'sent' as const, agreement: a, franchisor: a.franchisor_profiles })),
-    ...unsent.map(f => ({ type: 'unsent' as const, agreement: null, franchisor: f })),
-  ]
-
-  if (allRows.length === 0) {
-    return (
-      <div className="text-center py-16 text-ink-3 text-sm">No franchisors onboarded yet.</div>
-    )
-  }
-
   return (
-    <div className="grid gap-4" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))' }}>
-      {allRows.map(row => {
-        const fp = row.franchisor
-        const p = fp.profiles
-        const name = fp.brand_name || p?.full_name || 'Unnamed'
-        const a = row.agreement
-        return (
-          <div key={fp.id} className="bg-surface border border-line rounded-2xl p-[17px] shadow-[0_1px_2px_rgba(27,33,26,0.04)]">
-            <div className="flex items-center gap-3 mb-3">
-              <Avatar name={name} size="lg" square />
-              <div className="min-w-0 flex-1">
-                <p className="text-sm font-semibold text-ink truncate">{name}</p>
-                <p className="text-xs text-ink-3 truncate">{p?.email}</p>
-              </div>
-            </div>
+    <div>
+      {/* Send a new agreement */}
+      <div className="flex flex-wrap items-center gap-2.5 mb-5 bg-surface border border-line rounded-2xl px-4 py-3 shadow-[0_1px_2px_rgba(27,33,26,0.04)]">
+        <span className="text-sm font-semibold text-ink">Send an agreement</span>
+        <select value={target} onChange={e => setTarget(e.target.value)}
+          className="text-sm border border-line rounded-lg px-2.5 py-2 bg-surface text-ink min-w-[200px] focus:outline-none focus:ring-2 focus:ring-ff-green/30">
+          <option value="" disabled>Choose a brand…</option>
+          {unsent.map(f => <option key={f.id} value={f.id}>{f.brand_name || f.profiles?.full_name || 'Unnamed'}</option>)}
+        </select>
+        <button onClick={() => target && sendAgreement(target)} disabled={!target || !hasTemplate || sending === target}
+          className="bg-ff-green hover:brightness-110 text-white text-sm font-medium px-4 py-2 rounded-lg transition-all disabled:opacity-50">
+          {sending === target ? 'Sending…' : 'Send'}
+        </button>
+        {!hasTemplate && <span className="text-xs text-ff-gold-ink">Create a template first ↓</span>}
+        {unsent.length === 0 && hasTemplate && <span className="text-xs text-ink-3">All brands have an agreement.</span>}
+      </div>
 
-            <div className="mb-3">{a ? agreementStatusBadge(a.status) : agreementStatusBadge('not_sent')}</div>
-
-            <div className="text-xs text-ink-2 space-y-1 mb-3.5">
-              <div className="flex justify-between"><span className="text-ink-3">Sent</span><span>{a?.sent_at ? formatDate(a.sent_at) : '—'}</span></div>
-              <div className="flex justify-between">
-                <span className="text-ink-3">Signed by</span>
-                <span>{a?.status === 'signed' ? `${a.signer_name}${a.signed_at ? ` · ${timeAgo(a.signed_at)}` : ''}` : '—'}</span>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-2 pt-3 border-t border-line-2">
-              {a?.status === 'signed' && a.signed_pdf_path && (
-                <a href={`/api/admin/agreements/download/${a.id}`} className="text-xs font-medium text-ff-green hover:underline">Download PDF</a>
-              )}
-              {(!a || a.status === 'not_sent') && (
-                <button onClick={() => sendAgreement(fp.id)} disabled={sending === fp.id || !hasTemplate}
-                  className="text-xs bg-ff-green hover:brightness-110 text-white font-medium px-3.5 py-2 rounded-xl transition-all disabled:opacity-50">
-                  {sending === fp.id ? 'Sending…' : 'Send agreement'}
-                </button>
-              )}
-              {a?.status === 'sent' && (
-                <button onClick={() => sendAgreement(fp.id)} disabled={sending === fp.id}
-                  className="text-xs text-ink-2 font-medium px-3.5 py-2 rounded-xl border border-line hover:bg-surface-2 transition-colors disabled:opacity-50">
-                  {sending === fp.id ? 'Resending…' : 'Resend'}
-                </button>
-              )}
-            </div>
+      {/* Active agreements */}
+      {franchisorAgreements.length === 0 ? (
+        <div className="text-center py-12 text-ink-3 text-sm border border-line rounded-2xl bg-surface">
+          No agreements sent yet — send one above, or from a brand&apos;s record.
+        </div>
+      ) : (
+        <div className="bg-surface border border-line rounded-2xl overflow-hidden shadow-[0_1px_2px_rgba(27,33,26,0.04)]">
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead className="bg-surface-2 border-b border-line">
+                <tr className="text-ink-3 text-[11px] uppercase tracking-wide">
+                  <th className="text-left px-4 py-2.5 font-medium">Brand</th>
+                  <th className="text-left px-4 py-2.5 font-medium">Status</th>
+                  <th className="text-left px-4 py-2.5 font-medium hidden sm:table-cell">Sent</th>
+                  <th className="text-left px-4 py-2.5 font-medium hidden md:table-cell">Signed by</th>
+                  <th className="text-right px-4 py-2.5 font-medium">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-line-2">
+                {franchisorAgreements.map(a => {
+                  const fp = a.franchisor_profiles
+                  const name = fp.brand_name || fp.profiles?.full_name || 'Unnamed'
+                  return (
+                    <tr key={a.id} className="hover:bg-surface-2/60 transition-colors">
+                      <td className="px-4 py-3">
+                        <Link href={`/admin/franchisors/${fp.id}`} className="font-medium text-ink hover:text-ff-green">{name}</Link>
+                        <div className="text-xs text-ink-3 truncate">{fp.profiles?.email}</div>
+                      </td>
+                      <td className="px-4 py-3">{statusPill(a.status)}</td>
+                      <td className="px-4 py-3 text-ink-2 whitespace-nowrap hidden sm:table-cell">{a.sent_at ? formatDate(a.sent_at) : '—'}</td>
+                      <td className="px-4 py-3 text-ink-2 whitespace-nowrap hidden md:table-cell">{a.status === 'signed' ? `${a.signer_name ?? ''}${a.signed_at ? ` · ${timeAgo(a.signed_at)}` : ''}` : '—'}</td>
+                      <td className="px-4 py-3">
+                        <div className="flex items-center justify-end gap-3 whitespace-nowrap">
+                          {a.status === 'signed' && a.signed_pdf_path && (
+                            <a href={`/api/admin/agreements/download/${a.id}`} className="text-xs font-medium text-ff-green hover:underline">PDF</a>
+                          )}
+                          {a.status === 'sent' && (
+                            <button onClick={() => sendAgreement(fp.id)} disabled={sending === fp.id} className="text-xs text-ink-2 hover:text-ink disabled:opacity-50">
+                              {sending === fp.id ? 'Resending…' : 'Resend'}
+                            </button>
+                          )}
+                          <Link href={`/admin/franchisors/${fp.id}`} className="text-xs font-medium text-ff-green hover:underline inline-flex items-center gap-0.5">
+                            View <ArrowRightIcon className="w-3 h-3" />
+                          </Link>
+                        </div>
+                      </td>
+                    </tr>
+                  )
+                })}
+              </tbody>
+            </table>
           </div>
-        )
-      })}
+        </div>
+      )}
     </div>
   )
 }
