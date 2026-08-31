@@ -5,14 +5,14 @@ import { useState, useEffect } from 'react'
 interface Account { id: string; role: string; name: string; email: string | null }
 
 const ROLE: Record<string, { label: string; cls: string }> = {
-  admin:      { label: 'Admin',      cls: 'bg-emerald-100 text-emerald-700' },
+  admin:      { label: 'Admin',      cls: 'bg-ff-green-soft text-ff-green' },
   franchisor: { label: 'Brand',      cls: 'bg-amber-100 text-amber-800' },
   franchisee: { label: 'Franchisee', cls: 'bg-blue-100 text-blue-700' },
   introducer: { label: 'Agent',      cls: 'bg-violet-100 text-violet-700' },
 }
 
 function Tag({ role }: { role: string }) {
-  const r = ROLE[role] ?? { label: role, cls: 'bg-slate-100 text-slate-600' }
+  const r = ROLE[role] ?? { label: role, cls: 'bg-surface-2 text-ink-2' }
   return <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full ${r.cls}`}>{r.label}</span>
 }
 
@@ -60,7 +60,7 @@ export function AccountSwitcher({ currentName }: { currentName: string }) {
   return (
     <>
       <button onClick={() => setOpen(true)}
-        className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-xs text-white/60 hover:text-white hover:bg-white/10 transition-colors">
+        className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-xs text-white/60 hover:text-white hover:bg-surface/10 transition-colors">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <path d="M8 3 4 7l4 4" /><path d="M4 7h16" /><path d="m16 21 4-4-4-4" /><path d="M20 17H4" />
         </svg>

@@ -72,7 +72,7 @@ export function CandidatesView({ candidates }: { candidates: Candidate[] }) {
   const seg = (id: typeof filter, label: string, n: number) => (
     <button onClick={() => setFilter(id)}
       className={cn('px-3.5 py-2 rounded-lg text-sm font-medium transition-colors', filter === id ? 'bg-ff-green text-white' : 'text-ink-2 hover:text-ink')}>
-      {label}{n > 0 && <span className={cn('ml-1.5 text-[11px] rounded-full px-1.5 tabular-nums', filter === id ? 'bg-white/20' : 'bg-surface-2')}>{n}</span>}
+      {label}{n > 0 && <span className={cn('ml-1.5 text-[11px] rounded-full px-1.5 tabular-nums', filter === id ? 'bg-surface/20' : 'bg-surface-2')}>{n}</span>}
     </button>
   )
 

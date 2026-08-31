@@ -39,7 +39,7 @@ export function StageTracker({ stages, currentIndex, className }: StageTrackerPr
               <span
                 className={cn(
                   'inline-flex items-center justify-center w-4 h-4 rounded-full text-[10px] font-semibold',
-                  current && 'bg-white/25 text-white',
+                  current && 'bg-surface/25 text-white',
                   done && 'bg-ff-green text-white',
                   !done && !current && 'bg-line text-ink-3',
                 )}

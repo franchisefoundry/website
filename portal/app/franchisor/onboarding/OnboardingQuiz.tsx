@@ -271,7 +271,7 @@ function Textarea({ value, onChange, placeholder, rows = 4 }: {
       onBlur={e => onChange(e.target.value)}
       placeholder={placeholder}
       rows={rows}
-      className="w-full px-4 py-3 border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#3a4a3a] focus:border-transparent resize-none text-slate-800 placeholder:text-slate-400"
+      className="w-full px-4 py-3 border border-line rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#3a4a3a] focus:border-transparent resize-none text-ink placeholder:text-ink-3"
     />
   )
 }
@@ -287,7 +287,7 @@ function ShortInput({ value, onChange, placeholder }: {
       onChange={e => setLocal(e.target.value)}
       onBlur={e => onChange(e.target.value)}
       placeholder={placeholder}
-      className="w-full px-4 py-3 border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#3a4a3a] focus:border-transparent text-slate-800 placeholder:text-slate-400"
+      className="w-full px-4 py-3 border border-line rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#3a4a3a] focus:border-transparent text-ink placeholder:text-ink-3"
     />
   )
 }
@@ -301,7 +301,7 @@ function MultiSelect({ options, selected, onChange }: {
         <button
           key={opt} type="button"
           onClick={() => onChange(selected.includes(opt) ? selected.filter(o => o !== opt) : [...selected, opt])}
-          className={`px-3 py-2 rounded-lg text-sm border transition-colors ${selected.includes(opt) ? 'bg-[#3a4a3a] text-white border-[#3a4a3a]' : 'border-slate-300 text-slate-700 hover:bg-slate-50'}`}
+          className={`px-3 py-2 rounded-lg text-sm border transition-colors ${selected.includes(opt) ? 'bg-[#3a4a3a] text-white border-[#3a4a3a]' : 'border-line text-ink-2 hover:bg-surface-2'}`}
         >
           {opt}
         </button>
@@ -316,7 +316,7 @@ function YesNo({ value, onChange }: { value: boolean | null; onChange: (v: boole
       {([{ label: 'Yes', val: true }, { label: 'No', val: false }] as const).map(opt => (
         <button
           key={opt.label} type="button" onClick={() => onChange(opt.val)}
-          className={`flex-1 py-2.5 px-4 rounded-xl text-sm border transition-colors font-medium ${value === opt.val ? 'bg-[#3a4a3a] text-white border-[#3a4a3a]' : 'border-slate-300 text-slate-700 hover:bg-slate-50'}`}
+          className={`flex-1 py-2.5 px-4 rounded-xl text-sm border transition-colors font-medium ${value === opt.val ? 'bg-[#3a4a3a] text-white border-[#3a4a3a]' : 'border-line text-ink-2 hover:bg-surface-2'}`}
         >
           {opt.label}
         </button>
@@ -327,9 +327,9 @@ function YesNo({ value, onChange }: { value: boolean | null; onChange: (v: boole
 
 function SubLabel({ children, optional }: { children: React.ReactNode; optional?: boolean }) {
   return (
-    <p className="text-xs font-medium text-slate-600 mb-1.5">
+    <p className="text-xs font-medium text-ink-2 mb-1.5">
       {children}
-      {optional && <span className="text-slate-400 font-normal ml-1">(optional)</span>}
+      {optional && <span className="text-ink-3 font-normal ml-1">(optional)</span>}
     </p>
   )
 }
@@ -344,11 +344,11 @@ function QuestionBlock({ number, question, hint, required, children }: {
           {number}
         </span>
         <div>
-          <p className="text-sm font-medium text-slate-800 leading-relaxed">
+          <p className="text-sm font-medium text-ink leading-relaxed">
             {question}
             {required && <ProfileBadge />}
           </p>
-          {hint && <p className="text-xs text-slate-400 mt-0.5">{hint}</p>}
+          {hint && <p className="text-xs text-ink-3 mt-0.5">{hint}</p>}
         </div>
       </div>
       <div className="pl-9">{children}</div>
@@ -413,7 +413,7 @@ export default function OnboardingQuiz({ franchisorId, firstName, brandName, exi
           { a: answers,  s: set  as SetFn, i: 0 },
           { a: answers2, s: set2 as SetFn, i: 1 },
         ]).map(({ a, s, i }) => (
-          <div key={i} className={i > 0 ? 'pt-4 border-t border-slate-100' : ''}>
+          <div key={i} className={i > 0 ? 'pt-4 border-t border-line-2' : ''}>
             <p className="text-[11px] font-bold text-[#3a4a3a] uppercase tracking-wide mb-3 flex items-center gap-1.5">
               <span className="w-4 h-4 rounded-full bg-[#3a4a3a] text-white text-[10px] flex items-center justify-center shrink-0">{i + 1}</span>
               {brandLabels[i]}
@@ -518,26 +518,26 @@ export default function OnboardingQuiz({ franchisorId, firstName, brandName, exi
       <div className="min-h-screen flex items-center justify-center p-6">
         <div className="max-w-lg w-full text-center">
           <Image src="/logo-icon.png" alt="Franchise Foundry" width={64} height={64} className="mx-auto mb-8" />
-          <h1 className="text-2xl font-bold text-slate-900 mb-3">Welcome, {firstName}</h1>
-          <p className="text-slate-600 leading-relaxed mb-6">
+          <h1 className="text-2xl font-bold text-ink mb-3">Welcome, {firstName}</h1>
+          <p className="text-ink-2 leading-relaxed mb-6">
             Before you access the portal, we&apos;d like to learn more about your franchise. This helps us match you
             with the right candidates and brief our team properly.
           </p>
 
           {/* Brand name(s) — collected upfront */}
-          <div className="bg-white border border-slate-200 rounded-2xl p-5 mb-5 text-left space-y-4">
+          <div className="bg-surface border border-line rounded-2xl p-5 mb-5 text-left space-y-4">
             {/* Brand 1 */}
             <div>
-              <label className="block text-sm font-semibold text-slate-800 mb-1">
+              <label className="block text-sm font-semibold text-ink mb-1">
                 What is your franchise brand name? <span className="text-red-400">*</span>
               </label>
-              <p className="text-xs text-slate-400 mb-3">This is how your brand will appear throughout the portal</p>
+              <p className="text-xs text-ink-3 mb-3">This is how your brand will appear throughout the portal</p>
               <input
                 type="text"
                 value={answers.brand_name}
                 onChange={e => { set('brand_name', e.target.value); if (e.target.value.trim()) setBrandNameError(false) }}
                 placeholder="e.g. Bob's Burgers"
-                className={`w-full px-4 py-3 border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#3a4a3a] focus:border-transparent text-slate-800 placeholder:text-slate-400 ${brandNameError ? 'border-red-400 bg-red-50' : 'border-slate-300'}`}
+                className={`w-full px-4 py-3 border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#3a4a3a] focus:border-transparent text-ink placeholder:text-ink-3 ${brandNameError ? 'border-red-400 bg-red-50' : 'border-line'}`}
               />
               {brandNameError && (
                 <p className="text-xs text-red-500 mt-1.5">Please enter your brand name to continue</p>
@@ -556,13 +556,13 @@ export default function OnboardingQuiz({ franchisorId, firstName, brandName, exi
             ) : (
               <div>
                 <div className="flex items-center justify-between mb-1">
-                  <label className="block text-sm font-semibold text-slate-800">
+                  <label className="block text-sm font-semibold text-ink">
                     Second brand name <span className="text-red-400">*</span>
                   </label>
                   <button
                     type="button"
                     onClick={() => { setWantsTwoBrands(false); setBrand2NameInput(''); setBrand2NameError(false) }}
-                    className="text-xs text-slate-400 hover:text-slate-600"
+                    className="text-xs text-ink-3 hover:text-ink-2"
                   >
                     Remove
                   </button>
@@ -572,20 +572,20 @@ export default function OnboardingQuiz({ franchisorId, firstName, brandName, exi
                   value={brand2NameInput}
                   onChange={e => { setBrand2NameInput(e.target.value); if (e.target.value.trim()) setBrand2NameError(false) }}
                   placeholder="e.g. Clucking Chicken"
-                  className={`w-full px-4 py-3 border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#3a4a3a] focus:border-transparent text-slate-800 placeholder:text-slate-400 ${brand2NameError ? 'border-red-400 bg-red-50' : 'border-slate-300'}`}
+                  className={`w-full px-4 py-3 border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#3a4a3a] focus:border-transparent text-ink placeholder:text-ink-3 ${brand2NameError ? 'border-red-400 bg-red-50' : 'border-line'}`}
                 />
                 {brand2NameError && (
                   <p className="text-xs text-red-500 mt-1.5">Please enter the second brand name to continue</p>
                 )}
-                <p className="text-xs text-slate-400 mt-2">
+                <p className="text-xs text-ink-3 mt-2">
                   Brand-specific details are collected side-by-side. Your recruitment process is asked once and shared across both brands.
                 </p>
               </div>
             )}
           </div>
 
-          <div className="bg-slate-50 border border-slate-200 rounded-2xl p-5 mb-8 text-left space-y-3">
-            <p className="text-sm font-semibold text-slate-800">What to expect</p>
+          <div className="bg-surface-2 border border-line rounded-2xl p-5 mb-8 text-left space-y-3">
+            <p className="text-sm font-semibold text-ink">What to expect</p>
             {[
               wantsTwoBrands
                 ? '5 sections · ~20 minutes · brand-specific questions answered for both brands side-by-side'
@@ -594,7 +594,7 @@ export default function OnboardingQuiz({ franchisorId, firstName, brandName, exi
               'Your answers are only seen by the Franchise Foundry team',
               'Fields marked "Profile field" feed directly into your profile and matching',
             ].map(item => (
-              <div key={item} className="flex gap-2 text-sm text-slate-600">
+              <div key={item} className="flex gap-2 text-sm text-ink-2">
                 <span className="text-[#3a4a3a] font-bold shrink-0">✓</span>
                 {item}
               </div>
@@ -623,33 +623,33 @@ export default function OnboardingQuiz({ franchisorId, firstName, brandName, exi
   // ── Submitted — under review ───────────────────────────────────────────────
   if (step === effectiveSections + 1) {
     return (
-      <div className="min-h-screen flex items-center justify-center p-6 bg-slate-50">
+      <div className="min-h-screen flex items-center justify-center p-6 bg-surface-2">
         <div className="max-w-lg w-full">
-          <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-8 text-center">
-            <div className="w-16 h-16 rounded-full bg-brand-green/10 flex items-center justify-center mx-auto mb-6 text-3xl">
+          <div className="bg-surface rounded-2xl border border-line shadow-sm p-8 text-center">
+            <div className="w-16 h-16 rounded-full bg-ff-green/10 flex items-center justify-center mx-auto mb-6 text-3xl">
               📋
             </div>
-            <h1 className="text-2xl font-bold text-slate-900 mb-3">Questionnaire submitted</h1>
-            <p className="text-slate-600 leading-relaxed mb-6">
+            <h1 className="text-2xl font-bold text-ink mb-3">Questionnaire submitted</h1>
+            <p className="text-ink-2 leading-relaxed mb-6">
               Thank you, {firstName} — your answers have been saved. A member of the Franchise Foundry team
               will review your submission and be in touch shortly to discuss next steps and grant you
               full access to the portal.
             </p>
-            <div className="bg-slate-50 border border-slate-200 rounded-xl p-4 text-left space-y-2.5 mb-6">
+            <div className="bg-surface-2 border border-line rounded-xl p-4 text-left space-y-2.5 mb-6">
               {[
                 "We'll review your brand and questionnaire",
                 "A consultant will reach out within 1–2 business days",
                 "Once approved, you'll get full access to your portal and matched candidates",
               ].map(item => (
-                <div key={item} className="flex gap-2 text-sm text-slate-600">
-                  <span className="text-brand-green font-bold shrink-0">✓</span>
+                <div key={item} className="flex gap-2 text-sm text-ink-2">
+                  <span className="text-ff-green font-bold shrink-0">✓</span>
                   {item}
                 </div>
               ))}
             </div>
-            <p className="text-xs text-slate-400">
+            <p className="text-xs text-ink-3">
               Questions? Email us at{' '}
-              <a href="mailto:connect@franchisefoundry.co.uk" className="underline hover:text-slate-600">
+              <a href="mailto:connect@franchisefoundry.co.uk" className="underline hover:text-ink-2">
                 connect@franchisefoundry.co.uk
               </a>
             </p>
@@ -669,7 +669,7 @@ export default function OnboardingQuiz({ franchisorId, firstName, brandName, exi
   return (
     <div className="min-h-screen flex flex-col">
       {/* Progress bar */}
-      <div className="h-1 bg-slate-200 fixed top-0 left-0 right-0 z-50">
+      <div className="h-1 bg-surface-2 fixed top-0 left-0 right-0 z-50">
         <div className="h-full bg-[#3a4a3a] transition-all duration-500" style={{ width: `${progressPct}%` }} />
       </div>
 
@@ -678,24 +678,24 @@ export default function OnboardingQuiz({ franchisorId, firstName, brandName, exi
         <div className="flex items-center gap-3 mb-2">
           <Image src="/logo-icon.png" alt="Franchise Foundry" width={32} height={32} />
           <div>
-            <p className="text-xs text-slate-400 uppercase tracking-wider font-medium">
+            <p className="text-xs text-ink-3 uppercase tracking-wider font-medium">
               Section {step} of {effectiveSections}
               {isTwoBrands && step < TOTAL_SECTIONS && (
-                <span className="ml-2 text-slate-500 normal-case tracking-normal font-semibold">
+                <span className="ml-2 text-ink-3 normal-case tracking-normal font-semibold">
                   · {brandLabels[0]} &amp; {brandLabels[1]}
                 </span>
               )}
               {!isTwoBrands && answers.brand_name && (
-                <span className="ml-2 text-slate-500 normal-case tracking-normal font-semibold">
+                <span className="ml-2 text-ink-3 normal-case tracking-normal font-semibold">
                   · {answers.brand_name}
                 </span>
               )}
             </p>
-            <h2 className="text-lg font-bold text-slate-900">{currentSection.title}</h2>
+            <h2 className="text-lg font-bold text-ink">{currentSection.title}</h2>
           </div>
           <div className="ml-auto text-right">
-            <p className="text-xs text-slate-400">{progressPct}% complete</p>
-            {saving && <p className="text-xs text-slate-400 mt-0.5">Saving…</p>}
+            <p className="text-xs text-ink-3">{progressPct}% complete</p>
+            {saving && <p className="text-xs text-ink-3 mt-0.5">Saving…</p>}
             {saveError && <p className="text-xs text-amber-500 mt-0.5">Save failed — will retry</p>}
           </div>
         </div>
@@ -718,7 +718,7 @@ export default function OnboardingQuiz({ franchisorId, firstName, brandName, exi
           </div>
         )}
 
-        <p className="text-sm text-slate-500 mb-8 leading-relaxed pl-11">{currentSection.subtitle}</p>
+        <p className="text-sm text-ink-3 mb-8 leading-relaxed pl-11">{currentSection.subtitle}</p>
 
         {/* Validation errors */}
         {sectionErrors.length > 0 && (
@@ -789,7 +789,7 @@ export default function OnboardingQuiz({ franchisorId, firstName, brandName, exi
                         onClick={() => s('format_types', a.format_types.includes(fmt.value)
                           ? a.format_types.filter(f => f !== fmt.value)
                           : [...a.format_types, fmt.value])}
-                        className={`px-3 py-2 rounded-lg text-sm border transition-colors ${a.format_types.includes(fmt.value) ? 'bg-[#3a4a3a] text-white border-[#3a4a3a]' : 'border-slate-300 text-slate-700 hover:bg-slate-50'}`}
+                        className={`px-3 py-2 rounded-lg text-sm border transition-colors ${a.format_types.includes(fmt.value) ? 'bg-[#3a4a3a] text-white border-[#3a4a3a]' : 'border-line text-ink-2 hover:bg-surface-2'}`}
                       >
                         {fmt.label}
                       </button>
@@ -810,7 +810,7 @@ export default function OnboardingQuiz({ franchisorId, firstName, brandName, exi
                 hint="Drag the handles to set your minimum and maximum"
               >
                 {perBrand((a, s) => (
-                  <div className="bg-slate-50 rounded-2xl p-5 border border-slate-200">
+                  <div className="bg-surface-2 rounded-2xl p-5 border border-line">
                     <DualRangeSlider
                       min={a.investment_min}
                       max={a.investment_max}
@@ -828,7 +828,7 @@ export default function OnboardingQuiz({ franchisorId, firstName, brandName, exi
                 hint="Cash in hand — separate from any financed portion of the investment"
               >
                 {perBrand((a, s) => (
-                  <div className="bg-slate-50 rounded-2xl p-5 border border-slate-200">
+                  <div className="bg-surface-2 rounded-2xl p-5 border border-line">
                     <SingleSlider
                       value={a.liquid_capital_min}
                       min={5000} max={200000} step={5000}
@@ -852,13 +852,13 @@ export default function OnboardingQuiz({ franchisorId, firstName, brandName, exi
                     <div>
                       <SubLabel>Franchise fee <span className="text-red-400">*</span></SubLabel>
                       <div className="relative">
-                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm font-medium">£</span>
+                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-ink-3 text-sm font-medium">£</span>
                         <input
                           type="number" min="0" step="500"
                           value={a.franchise_fee}
                           onChange={e => s('franchise_fee', e.target.value)}
                           placeholder="e.g. 25000"
-                          className="w-full pl-7 pr-4 py-3 border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#3a4a3a] focus:border-transparent text-slate-800"
+                          className="w-full pl-7 pr-4 py-3 border border-line rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#3a4a3a] focus:border-transparent text-ink"
                         />
                       </div>
                     </div>
@@ -871,9 +871,9 @@ export default function OnboardingQuiz({ franchisorId, firstName, brandName, exi
                             value={a.royalty_pct}
                             onChange={e => s('royalty_pct', e.target.value)}
                             placeholder="e.g. 7"
-                            className="w-full pl-4 pr-8 py-3 border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#3a4a3a] focus:border-transparent text-slate-800"
+                            className="w-full pl-4 pr-8 py-3 border border-line rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#3a4a3a] focus:border-transparent text-ink"
                           />
-                          <span className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm font-medium">%</span>
+                          <span className="absolute right-3 top-1/2 -translate-y-1/2 text-ink-3 text-sm font-medium">%</span>
                         </div>
                       </div>
                       <div>
@@ -884,9 +884,9 @@ export default function OnboardingQuiz({ franchisorId, firstName, brandName, exi
                             value={a.marketing_levy_pct}
                             onChange={e => s('marketing_levy_pct', e.target.value)}
                             placeholder="e.g. 2"
-                            className="w-full pl-4 pr-8 py-3 border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#3a4a3a] focus:border-transparent text-slate-800"
+                            className="w-full pl-4 pr-8 py-3 border border-line rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#3a4a3a] focus:border-transparent text-ink"
                           />
-                          <span className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm font-medium">%</span>
+                          <span className="absolute right-3 top-1/2 -translate-y-1/2 text-ink-3 text-sm font-medium">%</span>
                         </div>
                       </div>
                     </div>
@@ -921,7 +921,7 @@ export default function OnboardingQuiz({ franchisorId, firstName, brandName, exi
                 hint="Slide to select the typical number of months"
               >
                 {perBrand((a, s) => (
-                  <div className="bg-slate-50 rounded-2xl p-5 border border-slate-200">
+                  <div className="bg-surface-2 rounded-2xl p-5 border border-line">
                     <SingleSlider
                       value={a.break_even_months}
                       min={1} max={48}
@@ -961,7 +961,7 @@ export default function OnboardingQuiz({ franchisorId, firstName, brandName, exi
                       <button
                         key={opt.value} type="button"
                         onClick={() => s('experience_required', opt.value)}
-                        className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl border text-left text-sm transition-colors ${a.experience_required === opt.value ? 'bg-[#3a4a3a] text-white border-[#3a4a3a]' : 'border-slate-300 text-slate-700 hover:bg-slate-50'}`}
+                        className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl border text-left text-sm transition-colors ${a.experience_required === opt.value ? 'bg-[#3a4a3a] text-white border-[#3a4a3a]' : 'border-line text-ink-2 hover:bg-surface-2'}`}
                       >
                         <span className="text-xl">{opt.icon}</span>
                         <span className="font-medium">{opt.label}</span>
@@ -980,7 +980,7 @@ export default function OnboardingQuiz({ franchisorId, firstName, brandName, exi
                   <div className="space-y-4">
                     <div>
                       <SubLabel>Is full-time commitment required from the franchisee?</SubLabel>
-                      <p className="text-xs text-slate-400 mb-2">Some franchisees prefer semi-passive ownership — be clear about your expectation</p>
+                      <p className="text-xs text-ink-3 mb-2">Some franchisees prefer semi-passive ownership — be clear about your expectation</p>
                       <YesNo value={a.full_time_required} onChange={v => s('full_time_required', v)} />
                     </div>
                     <div className="pt-1">
@@ -1042,7 +1042,7 @@ export default function OnboardingQuiz({ franchisorId, firstName, brandName, exi
                           onClick={() => s('locations_available', a.locations_available.includes(city)
                             ? a.locations_available.filter(c => c !== city)
                             : [...a.locations_available, city])}
-                          className={`px-3 py-1.5 rounded-full text-sm border capitalize transition-colors ${a.locations_available.includes(city) ? 'bg-[#3a4a3a] text-white border-[#3a4a3a]' : 'border-slate-300 text-slate-700 hover:bg-slate-50'}`}
+                          className={`px-3 py-1.5 rounded-full text-sm border capitalize transition-colors ${a.locations_available.includes(city) ? 'bg-[#3a4a3a] text-white border-[#3a4a3a]' : 'border-line text-ink-2 hover:bg-surface-2'}`}
                         >
                           {city.charAt(0).toUpperCase() + city.slice(1)}
                         </button>
@@ -1060,7 +1060,7 @@ export default function OnboardingQuiz({ franchisorId, firstName, brandName, exi
                             const presets = a.locations_available.filter(l => UK_CITY_OPTIONS.includes(l))
                             s('locations_available', [...presets, ...custom])
                           }}
-                          className="w-full px-3 py-2.5 border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#3a4a3a] focus:border-transparent"
+                          className="w-full px-3 py-2.5 border border-line rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#3a4a3a] focus:border-transparent"
                         />
                       </div>
                       <div>
@@ -1080,7 +1080,7 @@ export default function OnboardingQuiz({ franchisorId, firstName, brandName, exi
               >
                 {perBrand((a, s) => (
                   <>
-                    <div className="bg-slate-50 rounded-2xl p-5 border border-slate-200">
+                    <div className="bg-surface-2 rounded-2xl p-5 border border-line">
                       <SingleSlider
                         value={a.growth_target_units}
                         min={1} max={50}
@@ -1116,7 +1116,7 @@ export default function OnboardingQuiz({ franchisorId, firstName, brandName, exi
                 hint="Include training, fit-out, and launch preparation in your estimate"
               >
                 {perBrand((a, s) => (
-                  <div className="bg-slate-50 rounded-2xl p-5 border border-slate-200">
+                  <div className="bg-surface-2 rounded-2xl p-5 border border-line">
                     <SingleSlider
                       value={a.timeline_months}
                       min={1} max={36}
@@ -1225,19 +1225,19 @@ export default function OnboardingQuiz({ franchisorId, firstName, brandName, exi
         )}
 
         {/* Navigation */}
-        <div className="flex items-center justify-between mt-10 pt-6 border-t border-slate-200">
+        <div className="flex items-center justify-between mt-10 pt-6 border-t border-line">
           {step > 1 ? (
             <button
               type="button"
               onClick={() => { setSectionErrors([]); setStep(s => s - 1); window.scrollTo({ top: 0, behavior: 'smooth' }) }}
-              className="text-sm text-slate-500 hover:text-slate-800 transition-colors"
+              className="text-sm text-ink-3 hover:text-ink transition-colors"
             >
               ← Back
             </button>
           ) : <div />}
 
           <div className="flex items-center gap-3">
-            {saving && <span className="text-xs text-slate-400">Saving…</span>}
+            {saving && <span className="text-xs text-ink-3">Saving…</span>}
             {saveError && !saving && <span className="text-xs text-amber-500">Save failed</span>}
 
             {isLastSection ? (

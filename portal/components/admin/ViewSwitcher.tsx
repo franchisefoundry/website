@@ -28,7 +28,7 @@ export function ViewSwitcher() {
           <Link key={href} href={href}
             className={cn(
               'text-[11px] font-semibold rounded-lg px-2 py-1.5 text-center transition-colors',
-              active === href ? 'bg-white text-ff-green shadow-sm' : 'bg-white/[0.08] text-white/70 hover:bg-white/[0.14] hover:text-white',
+              active === href ? 'bg-surface text-ff-green shadow-sm' : 'bg-surface/[0.08] text-white/70 hover:bg-surface/[0.14] hover:text-white',
             )}>
             {label}
           </Link>

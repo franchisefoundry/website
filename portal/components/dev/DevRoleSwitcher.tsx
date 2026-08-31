@@ -72,21 +72,21 @@ export function DevRoleSwitcher() {
   const roleColour: Record<string, string> = {
     admin: 'text-purple-400',
     franchisee: 'text-blue-400',
-    franchisor: 'text-emerald-400',
+    franchisor: 'text-ff-green',
   }
 
   return (
     <div className="fixed bottom-4 right-4 z-[9999] font-sans">
       {open ? (
-        <div className="bg-slate-900 text-white rounded-xl shadow-2xl border border-slate-700 w-60 overflow-hidden">
+        <div className="bg-surface-2 text-white rounded-xl shadow-2xl border border-line w-60 overflow-hidden">
           {/* Header */}
-          <div className="flex items-center justify-between px-4 py-3 border-b border-slate-700">
-            <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">
+          <div className="flex items-center justify-between px-4 py-3 border-b border-line">
+            <span className="text-[10px] font-semibold text-ink-3 uppercase tracking-wider">
               ⚡ Dev switcher
             </span>
             <button
               onClick={() => setOpen(false)}
-              className="text-slate-500 hover:text-white transition-colors text-lg leading-none"
+              className="text-ink-3 hover:text-white transition-colors text-lg leading-none"
             >
               ×
             </button>
@@ -94,11 +94,11 @@ export function DevRoleSwitcher() {
 
           {/* Current user */}
           {currentEmail && (
-            <div className="px-4 py-2.5 border-b border-slate-800 bg-slate-800/50">
-              <p className="text-[10px] text-slate-500 mb-0.5">Currently signed in</p>
-              <p className="text-xs text-slate-300 truncate">{currentEmail}</p>
+            <div className="px-4 py-2.5 border-b border-line bg-surface-2/50">
+              <p className="text-[10px] text-ink-3 mb-0.5">Currently signed in</p>
+              <p className="text-xs text-ink-3 truncate">{currentEmail}</p>
               {currentRole && (
-                <p className={`text-[10px] font-semibold mt-0.5 capitalize ${roleColour[currentRole] ?? 'text-slate-400'}`}>
+                <p className={`text-[10px] font-semibold mt-0.5 capitalize ${roleColour[currentRole] ?? 'text-ink-3'}`}>
                   {currentRole}
                 </p>
               )}
@@ -118,10 +118,10 @@ export function DevRoleSwitcher() {
                   onClick={() => switchTo(account)}
                   className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors text-left ${
                     isActive
-                      ? 'bg-slate-700 opacity-60 cursor-default'
+                      ? 'bg-surface-2 opacity-60 cursor-default'
                       : missing
                       ? 'opacity-30 cursor-not-allowed'
-                      : 'bg-slate-800 hover:bg-slate-700'
+                      : 'bg-surface-2 hover:bg-surface-2'
                   }`}
                 >
                   <span className="text-base shrink-0">{account.emoji}</span>
@@ -129,17 +129,17 @@ export function DevRoleSwitcher() {
                     <p className="text-sm font-medium text-white flex items-center gap-2">
                       {account.label}
                       {isActive && (
-                        <span className="text-[9px] font-normal text-slate-500 bg-slate-600 px-1.5 py-0.5 rounded">
+                        <span className="text-[9px] font-normal text-ink-3 bg-surface-2 px-1.5 py-0.5 rounded">
                           active
                         </span>
                       )}
                     </p>
-                    <p className="text-[10px] text-slate-500 truncate">
+                    <p className="text-[10px] text-ink-3 truncate">
                       {missing ? 'Not configured in .env.local' : account.email}
                     </p>
                   </div>
                   {loading === account.role && (
-                    <span className="text-xs text-slate-400 shrink-0">…</span>
+                    <span className="text-xs text-ink-3 shrink-0">…</span>
                   )}
                 </button>
               )
@@ -147,8 +147,8 @@ export function DevRoleSwitcher() {
           </div>
 
           {/* Footer hint */}
-          <div className="px-4 py-2.5 border-t border-slate-800">
-            <p className="text-[9px] text-slate-600 leading-relaxed">
+          <div className="px-4 py-2.5 border-t border-line">
+            <p className="text-[9px] text-ink-2 leading-relaxed">
               Set NEXT_PUBLIC_DEV_*_EMAIL + PASSWORD in .env.local
             </p>
           </div>
@@ -156,10 +156,10 @@ export function DevRoleSwitcher() {
       ) : (
         <button
           onClick={() => setOpen(true)}
-          className="bg-slate-900/90 backdrop-blur text-white rounded-full px-3 py-2 text-xs font-semibold shadow-xl border border-slate-700 hover:bg-slate-800 transition-colors flex items-center gap-1.5"
+          className="bg-surface-2/90 backdrop-blur text-white rounded-full px-3 py-2 text-xs font-semibold shadow-xl border border-line hover:bg-surface-2 transition-colors flex items-center gap-1.5"
         >
           <span>⚡</span>
-          <span className="text-slate-400">Dev</span>
+          <span className="text-ink-3">Dev</span>
           {currentRole && (
             <span className={`font-semibold capitalize ${roleColour[currentRole] ?? ''}`}>
               · {currentRole}

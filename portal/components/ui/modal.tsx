@@ -40,11 +40,11 @@ export function Modal({ open, onClose, title, description, children, maxWidth = 
       aria-label={title}
     >
       <div
-        className={cn('bg-white rounded-2xl shadow-xl w-full p-6', maxWidth)}
+        className={cn('bg-surface rounded-2xl shadow-xl w-full p-6', maxWidth)}
         onClick={e => e.stopPropagation()}
       >
-        {title && <h2 className="text-base font-semibold text-slate-900 mb-1">{title}</h2>}
-        {description && <p className="text-sm text-slate-500 mb-5">{description}</p>}
+        {title && <h2 className="text-base font-semibold text-ink mb-1">{title}</h2>}
+        {description && <p className="text-sm text-ink-3 mb-5">{description}</p>}
         {children}
       </div>
     </div>

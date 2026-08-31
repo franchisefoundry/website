@@ -47,7 +47,7 @@ interface Props {
 }
 
 export function DualRangeSlider({ min, max, onChange, variant = 'light' }: Props) {
-  const accent = variant === 'dark' ? '#3a4a3a' : 'var(--color-brand-green, #3a4a3a)'
+  const accent = variant === 'dark' ? '#3a4a3a' : 'var(--color-ff-green, #3a4a3a)'
 
   // Live indices stored in refs — shared between both sliders for constraint enforcement
   const minIdx = useRef(nearestIdx(min))
@@ -86,13 +86,13 @@ export function DualRangeSlider({ min, max, onChange, variant = 'light' }: Props
       {/* ── Minimum slider ─────────────────────────────────────── */}
       <div>
         <div className="flex items-baseline justify-between mb-2">
-          <span className="text-xs font-medium text-slate-500 uppercase tracking-wide">Minimum</span>
+          <span className="text-xs font-medium text-ink-3 uppercase tracking-wide">Minimum</span>
           <span ref={minValRef} className="text-xl font-bold" style={{ color: accent }}>
             {fmt(INVESTMENT_STEPS[minIdx.current])}
           </span>
         </div>
         <div className="relative h-9 flex items-center">
-          <div className="absolute left-0 right-0 h-2 bg-slate-200 rounded-full">
+          <div className="absolute left-0 right-0 h-2 bg-surface-2 rounded-full">
             <div
               ref={minFillRef}
               className="absolute left-0 h-full rounded-full"
@@ -101,7 +101,7 @@ export function DualRangeSlider({ min, max, onChange, variant = 'light' }: Props
           </div>
           <div
             ref={minThumbRef}
-            className="absolute w-5 h-5 bg-white rounded-full shadow-md border-2 pointer-events-none -translate-x-1/2"
+            className="absolute w-5 h-5 bg-surface rounded-full shadow-md border-2 pointer-events-none -translate-x-1/2"
             style={{ left: `${initMinPct}%`, borderColor: accent }}
           />
           <input
@@ -125,13 +125,13 @@ export function DualRangeSlider({ min, max, onChange, variant = 'light' }: Props
       {/* ── Maximum slider ─────────────────────────────────────── */}
       <div>
         <div className="flex items-baseline justify-between mb-2">
-          <span className="text-xs font-medium text-slate-500 uppercase tracking-wide">Maximum</span>
+          <span className="text-xs font-medium text-ink-3 uppercase tracking-wide">Maximum</span>
           <span ref={maxValRef} className="text-xl font-bold" style={{ color: accent }}>
             {fmt(INVESTMENT_STEPS[maxIdx.current])}
           </span>
         </div>
         <div className="relative h-9 flex items-center">
-          <div className="absolute left-0 right-0 h-2 bg-slate-200 rounded-full">
+          <div className="absolute left-0 right-0 h-2 bg-surface-2 rounded-full">
             <div
               ref={maxFillRef}
               className="absolute left-0 h-full rounded-full"
@@ -140,7 +140,7 @@ export function DualRangeSlider({ min, max, onChange, variant = 'light' }: Props
           </div>
           <div
             ref={maxThumbRef}
-            className="absolute w-5 h-5 bg-white rounded-full shadow-md border-2 pointer-events-none -translate-x-1/2"
+            className="absolute w-5 h-5 bg-surface rounded-full shadow-md border-2 pointer-events-none -translate-x-1/2"
             style={{ left: `${initMaxPct}%`, borderColor: accent }}
           />
           <input
@@ -166,7 +166,7 @@ export function DualRangeSlider({ min, max, onChange, variant = 'light' }: Props
         {AXIS_TICKS.map(({ label, idx }, i) => (
           <span
             key={label}
-            className="absolute text-xs text-slate-400 whitespace-nowrap"
+            className="absolute text-xs text-ink-3 whitespace-nowrap"
             style={{
               left: `${(idx / N) * 100}%`,
               transform:

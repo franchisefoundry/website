@@ -57,7 +57,7 @@ export function StatCard({ label, value, sub, icon, iconBg, trend, alert }: Stat
           </div>
         )}
         {trend && (
-          <span className="text-[11px] font-semibold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">
+          <span className="text-[11px] font-semibold text-ff-green bg-ff-green-soft px-2 py-0.5 rounded-full">
             {trend}
           </span>
         )}

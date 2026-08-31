@@ -68,7 +68,7 @@ export default async function FranchisorLayout({ children }: { children: React.R
 
   if (isOnboarding || isPending) {
     return (
-      <div className="min-h-screen bg-slate-50">
+      <div className="min-h-screen bg-surface-2">
         {children}
       </div>
     )

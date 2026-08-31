@@ -87,21 +87,21 @@ export default function ProfileForm({ profile, franchiseeProfile }: Props) {
         <CardHeader><CardTitle>Personal details</CardTitle></CardHeader>
         <CardBody className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">Full name</label>
+            <label className="block text-sm font-medium text-ink-2 mb-1">Full name</label>
             <input
               type="text"
               value={fullName}
               onChange={e => setFullName(e.target.value)}
-              className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-green focus:border-transparent"
+              className="w-full px-3 py-2 border border-line rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-ff-green focus:border-transparent"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">Phone number</label>
+            <label className="block text-sm font-medium text-ink-2 mb-1">Phone number</label>
             <input
               type="tel"
               value={phone}
               onChange={e => setPhone(e.target.value)}
-              className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-green focus:border-transparent"
+              className="w-full px-3 py-2 border border-line rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-ff-green focus:border-transparent"
             />
           </div>
         </CardBody>
@@ -112,35 +112,35 @@ export default function ProfileForm({ profile, franchiseeProfile }: Props) {
         <CardHeader><CardTitle>Investment budget</CardTitle></CardHeader>
         <CardBody className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">Minimum (£)</label>
+            <label className="block text-sm font-medium text-ink-2 mb-1">Minimum (£)</label>
             <input
               type="number"
               value={investmentMin}
               onChange={e => setInvestmentMin(e.target.value)}
               placeholder="e.g. 50000"
-              className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-green focus:border-transparent"
+              className="w-full px-3 py-2 border border-line rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-ff-green focus:border-transparent"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">Maximum (£)</label>
+            <label className="block text-sm font-medium text-ink-2 mb-1">Maximum (£)</label>
             <input
               type="number"
               value={investmentMax}
               onChange={e => setInvestmentMax(e.target.value)}
               placeholder="e.g. 200000"
-              className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-green focus:border-transparent"
+              className="w-full px-3 py-2 border border-line rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-ff-green focus:border-transparent"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">Liquid capital available (£)</label>
+            <label className="block text-sm font-medium text-ink-2 mb-1">Liquid capital available (£)</label>
             <input
               type="number"
               value={liquidCapital}
               onChange={e => setLiquidCapital(e.target.value)}
               placeholder="e.g. 30000"
-              className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-green focus:border-transparent"
+              className="w-full px-3 py-2 border border-line rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-ff-green focus:border-transparent"
             />
-            <p className="text-xs text-slate-400 mt-1">Cash you can deploy now without borrowing</p>
+            <p className="text-xs text-ink-3 mt-1">Cash you can deploy now without borrowing</p>
           </div>
         </CardBody>
       </Card>
@@ -150,7 +150,7 @@ export default function ProfileForm({ profile, franchiseeProfile }: Props) {
         <CardHeader><CardTitle>Your preferences</CardTitle></CardHeader>
         <CardBody className="space-y-5">
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">How do you want to operate?</label>
+            <label className="block text-sm font-medium text-ink-2 mb-2">How do you want to operate?</label>
             <div className="flex flex-col sm:flex-row gap-2">
               {[
                 { value: 'owner-operator', label: 'Hands-on (owner-operator)' },
@@ -163,8 +163,8 @@ export default function ProfileForm({ profile, franchiseeProfile }: Props) {
                   onClick={() => setOperatorModel(opt.value)}
                   className={`flex-1 py-2 px-3 rounded-lg text-sm border transition-colors ${
                     operatorModel === opt.value
-                      ? 'bg-brand-green text-white border-brand-green'
-                      : 'border-slate-300 text-slate-700 hover:bg-slate-50'
+                      ? 'bg-ff-green text-white border-ff-green'
+                      : 'border-line text-ink-2 hover:bg-surface-2'
                   }`}
                 >
                   {opt.label}
@@ -174,7 +174,7 @@ export default function ProfileForm({ profile, franchiseeProfile }: Props) {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">Your background / experience</label>
+            <label className="block text-sm font-medium text-ink-2 mb-2">Your background / experience</label>
             <div className="flex gap-3">
               {[
                 { value: 'none', label: 'No industry experience' },
@@ -187,8 +187,8 @@ export default function ProfileForm({ profile, franchiseeProfile }: Props) {
                   onClick={() => setExperience(opt.value)}
                   className={`flex-1 py-2 px-3 rounded-lg text-sm border transition-colors ${
                     experience === opt.value
-                      ? 'bg-brand-green text-white border-brand-green'
-                      : 'border-slate-300 text-slate-700 hover:bg-slate-50'
+                      ? 'bg-ff-green text-white border-ff-green'
+                      : 'border-line text-ink-2 hover:bg-surface-2'
                   }`}
                 >
                   {opt.label}
@@ -199,7 +199,7 @@ export default function ProfileForm({ profile, franchiseeProfile }: Props) {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">Full-time commitment available?</label>
+              <label className="block text-sm font-medium text-ink-2 mb-2">Full-time commitment available?</label>
               <div className="flex gap-3">
                 {[{ value: true, label: 'Yes' }, { value: false, label: 'No' }].map(opt => (
                   <button
@@ -208,8 +208,8 @@ export default function ProfileForm({ profile, franchiseeProfile }: Props) {
                     onClick={() => setFullTime(opt.value)}
                     className={`flex-1 py-2 px-3 rounded-lg text-sm border transition-colors ${
                       fullTime === opt.value
-                        ? 'bg-brand-green text-white border-brand-green'
-                        : 'border-slate-300 text-slate-700 hover:bg-slate-50'
+                        ? 'bg-ff-green text-white border-ff-green'
+                        : 'border-line text-ink-2 hover:bg-surface-2'
                     }`}
                   >
                     {opt.label}
@@ -219,7 +219,7 @@ export default function ProfileForm({ profile, franchiseeProfile }: Props) {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">Interest in multi-site growth?</label>
+              <label className="block text-sm font-medium text-ink-2 mb-2">Interest in multi-site growth?</label>
               <div className="flex gap-3">
                 {[{ value: true, label: 'Yes' }, { value: false, label: 'No' }].map(opt => (
                   <button
@@ -228,8 +228,8 @@ export default function ProfileForm({ profile, franchiseeProfile }: Props) {
                     onClick={() => setMultiSite(opt.value)}
                     className={`flex-1 py-2 px-3 rounded-lg text-sm border transition-colors ${
                       multiSite === opt.value
-                        ? 'bg-brand-green text-white border-brand-green'
-                        : 'border-slate-300 text-slate-700 hover:bg-slate-50'
+                        ? 'bg-ff-green text-white border-ff-green'
+                        : 'border-line text-ink-2 hover:bg-surface-2'
                     }`}
                   >
                     {opt.label}
@@ -240,7 +240,7 @@ export default function ProfileForm({ profile, franchiseeProfile }: Props) {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">
+            <label className="block text-sm font-medium text-ink-2 mb-1">
               Timeline to opening (months)
             </label>
             <input
@@ -248,7 +248,7 @@ export default function ProfileForm({ profile, franchiseeProfile }: Props) {
               value={timeline}
               onChange={e => setTimeline(e.target.value)}
               placeholder="e.g. 12"
-              className="w-40 px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-green focus:border-transparent"
+              className="w-40 px-3 py-2 border border-line rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-ff-green focus:border-transparent"
             />
           </div>
         </CardBody>
@@ -266,8 +266,8 @@ export default function ProfileForm({ profile, franchiseeProfile }: Props) {
                 onClick={() => toggleLocation(city.value)}
                 className={`py-1.5 px-3 rounded-full text-sm border transition-colors ${
                   locations.includes(city.value)
-                    ? 'bg-brand-green text-white border-brand-green'
-                    : 'border-slate-300 text-slate-700 hover:bg-slate-50'
+                    ? 'bg-ff-green text-white border-ff-green'
+                    : 'border-line text-ink-2 hover:bg-surface-2'
                 }`}
               >
                 {city.label}
@@ -275,13 +275,13 @@ export default function ProfileForm({ profile, franchiseeProfile }: Props) {
             ))}
           </div>
           <div>
-            <label className="block text-xs font-medium text-slate-500 mb-1">Other locations (comma-separated)</label>
+            <label className="block text-xs font-medium text-ink-3 mb-1">Other locations (comma-separated)</label>
             <input
               type="text"
               value={otherLocation}
               onChange={e => setOtherLocation(e.target.value)}
               placeholder="e.g. Brighton, Oxford, Bath"
-              className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-green focus:border-transparent"
+              className="w-full px-3 py-2 border border-line rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-ff-green focus:border-transparent"
             />
           </div>
         </CardBody>
@@ -291,7 +291,7 @@ export default function ProfileForm({ profile, franchiseeProfile }: Props) {
       <Card>
         <CardHeader><CardTitle>Franchise format preferences</CardTitle></CardHeader>
         <CardBody>
-          <p className="text-sm text-slate-500 mb-3">What format of franchise are you open to?</p>
+          <p className="text-sm text-ink-3 mb-3">What format of franchise are you open to?</p>
           <div className="flex flex-wrap gap-2">
             {FORMAT_TYPES.map(opt => (
               <button
@@ -300,8 +300,8 @@ export default function ProfileForm({ profile, franchiseeProfile }: Props) {
                 onClick={() => toggleFormatType(opt.value)}
                 className={`py-1.5 px-3 rounded-full text-sm border transition-colors ${
                   formatTypes.includes(opt.value)
-                    ? 'bg-brand-green text-white border-brand-green'
-                    : 'border-slate-300 text-slate-700 hover:bg-slate-50'
+                    ? 'bg-ff-green text-white border-ff-green'
+                    : 'border-line text-ink-2 hover:bg-surface-2'
                 }`}
               >
                 {opt.label}
@@ -323,8 +323,8 @@ export default function ProfileForm({ profile, franchiseeProfile }: Props) {
                 onClick={() => toggleSector(s.value)}
                 className={`py-1.5 px-3 rounded-full text-sm border transition-colors ${
                   sectors.includes(s.value)
-                    ? 'bg-brand-green text-white border-brand-green'
-                    : 'border-slate-300 text-slate-700 hover:bg-slate-50'
+                    ? 'bg-ff-green text-white border-ff-green'
+                    : 'border-line text-ink-2 hover:bg-surface-2'
                 }`}
               >
                 {s.label}
@@ -343,7 +343,7 @@ export default function ProfileForm({ profile, franchiseeProfile }: Props) {
             onChange={e => setGoals(e.target.value)}
             rows={4}
             placeholder="Tell us what you're looking to achieve, your background, and anything else that's important to you…"
-            className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-green focus:border-transparent resize-none"
+            className="w-full px-3 py-2 border border-line rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-ff-green focus:border-transparent resize-none"
           />
         </CardBody>
       </Card>
@@ -352,11 +352,11 @@ export default function ProfileForm({ profile, franchiseeProfile }: Props) {
         <button
           type="submit"
           disabled={saving}
-          className="bg-brand-green hover:bg-brand-green-dark text-white font-medium py-2.5 px-6 rounded-lg text-sm transition-colors disabled:opacity-60"
+          className="bg-ff-green hover:bg-ff-green-deep text-white font-medium py-2.5 px-6 rounded-lg text-sm transition-colors disabled:opacity-60"
         >
           {saving ? 'Saving…' : 'Save profile'}
         </button>
-        {saved && <span className="text-sm text-emerald-600">Saved successfully</span>}
+        {saved && <span className="text-sm text-ff-green">Saved successfully</span>}
       </div>
     </form>
   )

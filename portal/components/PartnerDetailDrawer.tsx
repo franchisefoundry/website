@@ -46,10 +46,10 @@ export default function PartnerDetailDrawer({ partner: p, unlocked, onClose, onR
         role="dialog"
         aria-modal="true"
         aria-label={`${p.name} details`}
-        className={`absolute top-0 right-0 h-full w-full max-w-md bg-white shadow-2xl flex flex-col transition-transform duration-300 ease-out motion-reduce:transition-none ${shown ? 'translate-x-0' : 'translate-x-full'}`}
+        className={`absolute top-0 right-0 h-full w-full max-w-md bg-surface shadow-2xl flex flex-col transition-transform duration-300 ease-out motion-reduce:transition-none ${shown ? 'translate-x-0' : 'translate-x-full'}`}
       >
         {/* Header */}
-        <div className="relative bg-brand-green px-6 py-6 text-white flex-shrink-0">
+        <div className="relative bg-ff-green px-6 py-6 text-white flex-shrink-0">
           <button
             onClick={onClose}
             aria-label="Close"
@@ -59,10 +59,10 @@ export default function PartnerDetailDrawer({ partner: p, unlocked, onClose, onR
           </button>
 
           <div className="flex items-center gap-4">
-            <div className="w-14 h-14 rounded-2xl bg-white flex items-center justify-center flex-shrink-0 overflow-hidden">
+            <div className="w-14 h-14 rounded-2xl bg-surface flex items-center justify-center flex-shrink-0 overflow-hidden">
               {p.logo_url
                 ? <img src={p.logo_url} alt={p.name} className="w-full h-full object-contain p-1.5" />
-                : <span className="text-brand-green text-xl font-bold">{p.name.charAt(0)}</span>}
+                : <span className="text-ff-green text-xl font-bold">{p.name.charAt(0)}</span>}
             </div>
             <div className="min-w-0">
               <h2 className="text-lg font-bold leading-tight">{p.name}</h2>
@@ -72,7 +72,7 @@ export default function PartnerDetailDrawer({ partner: p, unlocked, onClose, onR
             </div>
           </div>
 
-          <div className="inline-flex items-center gap-1.5 mt-4 bg-brand-gold/25 text-brand-gold-light text-[11px] font-bold px-3 py-1 rounded-full">
+          <div className="inline-flex items-center gap-1.5 mt-4 bg-ff-gold/25 text-ff-gold-light text-[11px] font-bold px-3 py-1 rounded-full">
             <ShieldCheckIcon className="w-3.5 h-3.5" />
             Vetted by Franchise Foundry
           </div>
@@ -82,21 +82,21 @@ export default function PartnerDetailDrawer({ partner: p, unlocked, onClose, onR
         <div className="flex-1 overflow-y-auto px-6 py-6">
           {p.description && (
             <section className="mb-6">
-              <h3 className="text-xs font-semibold uppercase tracking-wide text-slate-500 mb-2">About</h3>
-              <p className="text-sm text-slate-600 leading-relaxed">{p.description}</p>
+              <h3 className="text-xs font-semibold uppercase tracking-wide text-ink-3 mb-2">About</h3>
+              <p className="text-sm text-ink-2 leading-relaxed">{p.description}</p>
             </section>
           )}
 
           {features.length > 0 && (
             <section className="mb-6">
-              <h3 className="text-xs font-semibold uppercase tracking-wide text-slate-500 mb-3">What&apos;s included</h3>
+              <h3 className="text-xs font-semibold uppercase tracking-wide text-ink-3 mb-3">What&apos;s included</h3>
               <ul className="space-y-2.5">
                 {features.map((f, i) => (
                   <li key={i} className="flex items-start gap-2.5 text-sm">
-                    <CheckIcon className="w-4 h-4 text-brand-gold mt-0.5 flex-shrink-0" />
-                    <span className="text-slate-600">
-                      {f.label && <strong className="font-semibold text-slate-800">{f.label}</strong>}
-                      {f.label && f.value && <span className="text-slate-300 mx-1.5">·</span>}
+                    <CheckIcon className="w-4 h-4 text-ff-gold mt-0.5 flex-shrink-0" />
+                    <span className="text-ink-2">
+                      {f.label && <strong className="font-semibold text-ink">{f.label}</strong>}
+                      {f.label && f.value && <span className="text-ink-3 mx-1.5">·</span>}
                       {f.value && <span>{f.value}</span>}
                     </span>
                   </li>
@@ -106,25 +106,25 @@ export default function PartnerDetailDrawer({ partner: p, unlocked, onClose, onR
           )}
 
           {p.offer_text && (
-            <div className="bg-brand-gold-light/20 border border-dashed border-brand-gold rounded-xl px-4 py-3.5 mb-2">
-              <p className="flex items-center gap-2 text-xs font-bold text-slate-900">
-                <TagIcon className="w-4 h-4 text-brand-gold" />
+            <div className="bg-ff-gold-light/20 border border-dashed border-ff-gold rounded-xl px-4 py-3.5 mb-2">
+              <p className="flex items-center gap-2 text-xs font-bold text-ink">
+                <TagIcon className="w-4 h-4 text-ff-gold" />
                 Foundry member deal
               </p>
-              <p className="text-sm text-slate-600 mt-1.5 leading-relaxed">{p.offer_text}</p>
+              <p className="text-sm text-ink-2 mt-1.5 leading-relaxed">{p.offer_text}</p>
             </div>
           )}
         </div>
 
         {/* Footer */}
-        <div className="flex-shrink-0 border-t border-slate-200 px-6 py-4 flex gap-3">
+        <div className="flex-shrink-0 border-t border-line px-6 py-4 flex gap-3">
           <button
             onClick={unlocked ? onRequestIntro : undefined}
             disabled={!unlocked}
-            className={`flex-1 inline-flex items-center justify-center gap-2 py-3 text-sm font-medium rounded-lg transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-green ${
+            className={`flex-1 inline-flex items-center justify-center gap-2 py-3 text-sm font-medium rounded-lg transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-ff-green ${
               unlocked
-                ? 'bg-brand-green hover:bg-brand-green-dark text-white'
-                : 'bg-slate-100 text-slate-400 cursor-not-allowed'
+                ? 'bg-ff-green hover:bg-ff-green-deep text-white'
+                : 'bg-surface-2 text-ink-3 cursor-not-allowed'
             }`}
           >
             {unlocked ? <>Request a warm intro <ArrowRightIcon className="w-4 h-4" /></> : 'Unlock to request intro'}
@@ -134,7 +134,7 @@ export default function PartnerDetailDrawer({ partner: p, unlocked, onClose, onR
               href={p.website.startsWith('http') ? p.website : `https://${p.website}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 py-3 px-4 text-sm font-medium text-slate-700 border border-slate-200 rounded-lg hover:border-brand-green hover:bg-slate-50 transition-colors"
+              className="inline-flex items-center gap-2 py-3 px-4 text-sm font-medium text-ink-2 border border-line rounded-lg hover:border-ff-green hover:bg-surface-2 transition-colors"
             >
               <ExternalLinkIcon className="w-4 h-4" /> Visit
             </a>

@@ -29,7 +29,7 @@ interface Props {
 }
 
 export function OperatingModelCards({ value, onChange, variant = 'light', readOnly = false }: Props) {
-  const accent = variant === 'dark' ? '#3a4a3a' : 'var(--color-brand-green, #3a4a3a)'
+  const accent = variant === 'dark' ? '#3a4a3a' : 'var(--color-ff-green, #3a4a3a)'
 
   return (
     <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
@@ -45,14 +45,14 @@ export function OperatingModelCards({ value, onChange, variant = 'light', readOn
               'text-left p-4 rounded-xl border-2 transition-all',
               isSelected
                 ? 'shadow-md'
-                : 'border-slate-200 bg-white hover:border-slate-300',
+                : 'border-line bg-surface hover:border-line',
               readOnly ? 'cursor-default' : 'cursor-pointer',
             ].join(' ')}
             style={isSelected ? { borderColor: accent, backgroundColor: `${accent}10` } : {}}
           >
             <div className="text-2xl mb-2">{opt.emoji}</div>
-            <p className="text-sm font-semibold text-slate-800 mb-1">{opt.title}</p>
-            <p className="text-xs text-slate-500 leading-relaxed">{opt.desc}</p>
+            <p className="text-sm font-semibold text-ink mb-1">{opt.title}</p>
+            <p className="text-xs text-ink-3 leading-relaxed">{opt.desc}</p>
             {isSelected && (
               <div className="mt-3 flex items-center gap-1">
                 <div className="w-4 h-4 rounded-full flex items-center justify-center"

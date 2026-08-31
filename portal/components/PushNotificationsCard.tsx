@@ -142,10 +142,10 @@ export default function PushNotificationsCard({ role, initialPushPrefs }: Props)
       </CardHeader>
       <CardBody className="p-0">
         {/* Device enable row */}
-        <div className="flex items-center justify-between gap-4 px-6 py-4 border-b border-slate-100">
+        <div className="flex items-center justify-between gap-4 px-6 py-4 border-b border-line-2">
           <div className="min-w-0">
-            <p className="text-sm font-medium text-slate-800">This device</p>
-            <p className="text-xs text-slate-400 mt-0.5">
+            <p className="text-sm font-medium text-ink">This device</p>
+            <p className="text-xs text-ink-3 mt-0.5">
               {state === 'unsupported' && 'Not available in this browser. On iPhone, add the app to your home screen first.'}
               {state === 'denied' && 'Blocked in your browser settings — allow notifications there to enable.'}
               {state === 'off' && 'Get alerts on this device even when the portal is closed.'}
@@ -158,7 +158,7 @@ export default function PushNotificationsCard({ role, initialPushPrefs }: Props)
               type="button"
               disabled={busy}
               onClick={disable}
-              className="flex-shrink-0 rounded-lg border border-slate-200 px-3 py-1.5 text-sm font-medium text-slate-600 hover:bg-slate-50 disabled:opacity-60"
+              className="flex-shrink-0 rounded-lg border border-line px-3 py-1.5 text-sm font-medium text-ink-2 hover:bg-surface-2 disabled:opacity-60"
             >
               Disable
             </button>
@@ -167,7 +167,7 @@ export default function PushNotificationsCard({ role, initialPushPrefs }: Props)
               type="button"
               disabled={busy || state === 'unsupported' || state === 'denied' || state === 'loading'}
               onClick={enable}
-              className="flex-shrink-0 rounded-lg bg-brand-green px-3 py-1.5 text-sm font-medium text-white hover:bg-brand-green-dark disabled:opacity-60"
+              className="flex-shrink-0 rounded-lg bg-ff-green px-3 py-1.5 text-sm font-medium text-white hover:bg-ff-green-deep disabled:opacity-60"
             >
               {busy ? 'Enabling…' : 'Enable'}
             </button>
@@ -175,17 +175,17 @@ export default function PushNotificationsCard({ role, initialPushPrefs }: Props)
         </div>
 
         {/* Per-event toggles */}
-        <p className="px-6 pt-4 pb-2 text-xs text-slate-500">
+        <p className="px-6 pt-4 pb-2 text-xs text-ink-3">
           Choose which updates push to your devices.
         </p>
-        <div className="divide-y divide-slate-100">
+        <div className="divide-y divide-line-2">
           {events.map(event => {
             const on = prefs[event.key]
             return (
               <div key={event.key} className="flex items-center justify-between gap-4 px-6 py-3.5">
                 <div className="min-w-0">
-                  <p className="text-sm font-medium text-slate-800">{event.label}</p>
-                  <p className="text-xs text-slate-400 mt-0.5">{event.description}</p>
+                  <p className="text-sm font-medium text-ink">{event.label}</p>
+                  <p className="text-xs text-ink-3 mt-0.5">{event.description}</p>
                 </div>
                 <button
                   type="button"
@@ -194,12 +194,12 @@ export default function PushNotificationsCard({ role, initialPushPrefs }: Props)
                   aria-label={`Push me when: ${event.label}`}
                   disabled={saving}
                   onClick={() => toggle(event.key)}
-                  className={`relative inline-flex h-6 w-11 flex-shrink-0 items-center rounded-full transition-colors disabled:opacity-60 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-green focus-visible:ring-offset-1 ${
-                    on ? 'bg-brand-green' : 'bg-slate-200'
+                  className={`relative inline-flex h-6 w-11 flex-shrink-0 items-center rounded-full transition-colors disabled:opacity-60 focus:outline-none focus-visible:ring-2 focus-visible:ring-ff-green focus-visible:ring-offset-1 ${
+                    on ? 'bg-ff-green' : 'bg-surface-2'
                   }`}
                 >
                   <span
-                    className={`inline-block h-4 w-4 transform rounded-full bg-white shadow transition-transform ${
+                    className={`inline-block h-4 w-4 transform rounded-full bg-surface shadow transition-transform ${
                       on ? 'translate-x-6' : 'translate-x-1'
                     }`}
                   />

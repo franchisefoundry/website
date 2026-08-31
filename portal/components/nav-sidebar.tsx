@@ -147,8 +147,8 @@ function NavGroupItem({
         className={cn(
           'w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium transition-colors',
           anyChildActive
-            ? 'text-white bg-white/10'
-            : 'text-white/60 hover:text-white hover:bg-white/10'
+            ? 'text-white bg-surface/10'
+            : 'text-white/60 hover:text-white hover:bg-surface/10'
         )}
       >
         <div className="flex items-center gap-2.5">
@@ -175,8 +175,8 @@ function NavGroupItem({
                 className={cn(
                   'flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium transition-all',
                   active
-                    ? 'bg-white text-ff-green shadow-sm'
-                    : 'text-white/60 hover:text-white hover:bg-white/10'
+                    ? 'bg-surface text-ff-green shadow-sm'
+                    : 'text-white/60 hover:text-white hover:bg-surface/10'
                 )}
               >
                 {child.icon && <span className="flex-shrink-0 opacity-60">{child.icon}</span>}
@@ -230,7 +230,7 @@ export function NavSidebar({ profile, brands, activeBrandId, badges, adminPrevie
         <button
           onClick={() => setMobileOpen(true)}
           aria-label="Open menu"
-          className="text-white p-2 rounded-lg hover:bg-white/10 transition-colors"
+          className="text-white p-2 rounded-lg hover:bg-surface/10 transition-colors"
         >
           <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
             <line x1="3" y1="5"  x2="17" y2="5" />
@@ -264,7 +264,7 @@ export function NavSidebar({ profile, brands, activeBrandId, badges, adminPrevie
             <button
               onClick={() => setMobileOpen(false)}
               aria-label="Close menu"
-              className="md:hidden text-white/50 hover:text-white w-8 h-8 flex items-center justify-center rounded-lg hover:bg-white/10 transition-colors text-xl leading-none"
+              className="md:hidden text-white/50 hover:text-white w-8 h-8 flex items-center justify-center rounded-lg hover:bg-surface/10 transition-colors text-xl leading-none"
             >
               ×
             </button>
@@ -275,11 +275,11 @@ export function NavSidebar({ profile, brands, activeBrandId, badges, adminPrevie
         <div className="px-3 pt-3 flex-shrink-0">
           <button
             onClick={() => { setMobileOpen(false); window.dispatchEvent(new Event('ff:cmdk')) }}
-            className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm text-white/50 hover:text-white bg-white/[0.06] hover:bg-white/10 border border-white/10 transition-colors"
+            className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm text-white/50 hover:text-white bg-surface/[0.06] hover:bg-surface/10 border border-white/10 transition-colors"
           >
             <SearchIcon className="w-4 h-4 flex-shrink-0" />
             <span className="flex-1 text-left">Search…</span>
-            <kbd className="text-[10px] font-medium text-white/45 bg-white/10 border border-white/10 rounded px-1.5 py-0.5 leading-none">⌘K</kbd>
+            <kbd className="text-[10px] font-medium text-white/45 bg-surface/10 border border-white/10 rounded px-1.5 py-0.5 leading-none">⌘K</kbd>
           </button>
         </div>
 
@@ -298,17 +298,17 @@ export function NavSidebar({ profile, brands, activeBrandId, badges, adminPrevie
                 className={cn(
                   'w-full text-left flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs transition-colors',
                   brand.id === activeBrandId
-                    ? 'text-white bg-white/15 font-medium'
-                    : 'text-white/60 hover:text-white hover:bg-white/10'
+                    ? 'text-white bg-surface/15 font-medium'
+                    : 'text-white/60 hover:text-white hover:bg-surface/10'
                 )}
               >
-                <span className={cn('w-1.5 h-1.5 rounded-full flex-shrink-0', brand.id === activeBrandId ? 'bg-emerald-400' : 'bg-transparent')} />
+                <span className={cn('w-1.5 h-1.5 rounded-full flex-shrink-0', brand.id === activeBrandId ? 'bg-ff-green-soft' : 'bg-transparent')} />
                 <span className="truncate">{brand.brand_name ?? 'Unnamed brand'}</span>
               </button>
             ))}
             <button
               onClick={() => { router.push('/franchisor/onboarding?add_brand=1'); setMobileOpen(false) }}
-              className="w-full text-left flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs text-white/40 hover:text-white/70 hover:bg-white/5 transition-colors mt-0.5"
+              className="w-full text-left flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs text-white/40 hover:text-white/70 hover:bg-surface/5 transition-colors mt-0.5"
             >
               <span className="text-base leading-none">+</span> Add another brand
             </button>
@@ -346,8 +346,8 @@ export function NavSidebar({ profile, brands, activeBrandId, badges, adminPrevie
                 className={cn(
                   'flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm font-medium transition-all',
                   active
-                    ? 'bg-white text-ff-green shadow-sm'
-                    : 'text-white/70 hover:text-white hover:bg-white/10'
+                    ? 'bg-surface text-ff-green shadow-sm'
+                    : 'text-white/70 hover:text-white hover:bg-surface/10'
                 )}
               >
                 {item.icon && (
@@ -379,9 +379,9 @@ export function NavSidebar({ profile, brands, activeBrandId, badges, adminPrevie
           <Link
             href={profileHref}
             onClick={() => setMobileOpen(false)}
-            className="flex items-center gap-3 px-3 py-2 mb-1 rounded-lg hover:bg-white/10 transition-colors group"
+            className="flex items-center gap-3 px-3 py-2 mb-1 rounded-lg hover:bg-surface/10 transition-colors group"
           >
-            <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center text-white text-xs font-semibold flex-shrink-0 overflow-hidden">
+            <div className="w-8 h-8 rounded-full bg-surface/20 flex items-center justify-center text-white text-xs font-semibold flex-shrink-0 overflow-hidden">
               {avatarUrl
                 ? <img src={avatarUrl} alt="" className="w-full h-full object-cover" />
                 : initials(profile.full_name)
@@ -394,7 +394,7 @@ export function NavSidebar({ profile, brands, activeBrandId, badges, adminPrevie
           </Link>
           <button
             onClick={handleSignOut}
-            className="w-full text-left flex items-center gap-2 px-3 py-2 text-xs text-white/50 hover:text-white/90 rounded-lg hover:bg-white/10 transition-colors"
+            className="w-full text-left flex items-center gap-2 px-3 py-2 text-xs text-white/50 hover:text-white/90 rounded-lg hover:bg-surface/10 transition-colors"
           >
             <SignOutIcon className="w-3.5 h-3.5 opacity-60" />
             Sign out

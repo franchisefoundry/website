@@ -3,8 +3,8 @@ import { cn } from '@/lib/utils'
 /** Canonical field styling — matches the pattern used across the portal. */
 const fieldBase =
   'w-full px-3.5 py-2 bg-surface border border-line rounded-xl text-sm text-ink ' +
-  'placeholder:text-ink-3 transition-shadow focus:outline-none focus:ring-2 focus:ring-brand-green/25 ' +
-  'focus:border-brand-green disabled:opacity-60 disabled:bg-surface-2'
+  'placeholder:text-ink-3 transition-shadow focus:outline-none focus:ring-2 focus:ring-ff-green/25 ' +
+  'focus:border-ff-green disabled:opacity-60 disabled:bg-surface-2'
 
 export const Input = function Input({
   className,
@@ -26,7 +26,7 @@ export const Select = function Select({
   ...props
 }: React.SelectHTMLAttributes<HTMLSelectElement>) {
   return (
-    <select className={cn(fieldBase, 'bg-white', className)} {...props}>
+    <select className={cn(fieldBase, 'bg-surface', className)} {...props}>
       {children}
     </select>
   )

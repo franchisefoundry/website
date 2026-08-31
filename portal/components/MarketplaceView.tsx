@@ -38,39 +38,39 @@ function RequestIntroModal({ partner, onClose }: RequestIntroModalProps) {
 
   return (
     <div className="fixed inset-0 bg-black/50 z-[60] flex items-center justify-center px-4" onClick={e => { if (e.target === e.currentTarget) onClose() }}>
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md">
-        <div className="px-6 py-5 border-b border-slate-200 flex justify-between items-center">
-          <h3 className="text-base font-bold text-slate-900">Request intro — {partner.name}</h3>
-          <button onClick={onClose} className="text-slate-400 hover:text-slate-600 text-xl font-light leading-none">×</button>
+      <div className="bg-surface rounded-2xl shadow-2xl w-full max-w-md">
+        <div className="px-6 py-5 border-b border-line flex justify-between items-center">
+          <h3 className="text-base font-bold text-ink">Request intro — {partner.name}</h3>
+          <button onClick={onClose} className="text-ink-3 hover:text-ink-2 text-xl font-light leading-none">×</button>
         </div>
 
         {sent ? (
           <div className="px-6 py-8 text-center">
             <div className="text-4xl mb-4">✓</div>
-            <p className="text-base font-semibold text-slate-900 mb-2">Request sent!</p>
-            <p className="text-sm text-slate-500 mb-6">We&apos;ll be in touch shortly to arrange your introduction to {partner.name}.</p>
-            <button onClick={onClose} className="px-6 py-2.5 text-sm font-medium bg-brand-green text-white rounded-lg hover:bg-brand-green-dark transition-colors">Done</button>
+            <p className="text-base font-semibold text-ink mb-2">Request sent!</p>
+            <p className="text-sm text-ink-3 mb-6">We&apos;ll be in touch shortly to arrange your introduction to {partner.name}.</p>
+            <button onClick={onClose} className="px-6 py-2.5 text-sm font-medium bg-ff-green text-white rounded-lg hover:bg-ff-green-deep transition-colors">Done</button>
           </div>
         ) : (
           <div className="px-6 py-5 space-y-4">
-            <p className="text-sm text-slate-600">
+            <p className="text-sm text-ink-2">
               We&apos;ll connect you directly with <strong>{partner.name}</strong>. Add a message so we can pass on any context before the intro.
             </p>
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1.5 uppercase tracking-wide">Message <span className="font-normal text-slate-400 normal-case">(optional)</span></label>
+              <label className="block text-xs font-semibold text-ink-2 mb-1.5 uppercase tracking-wide">Message <span className="font-normal text-ink-3 normal-case">(optional)</span></label>
               <textarea
                 value={message}
                 onChange={e => setMessage(e.target.value)}
                 rows={4}
                 placeholder={`e.g. We're looking to finance a £250k franchise and need to understand what rates are available…`}
-                className="w-full px-3 py-2.5 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-green resize-none"
+                className="w-full px-3 py-2.5 border border-line rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-ff-green resize-none"
               />
             </div>
             {error && <p className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2">{error}</p>}
             <div className="flex gap-3 pt-1">
-              <button onClick={onClose} className="flex-1 py-2.5 text-sm text-slate-600 border border-slate-300 rounded-lg hover:bg-slate-50 transition-colors">Cancel</button>
+              <button onClick={onClose} className="flex-1 py-2.5 text-sm text-ink-2 border border-line rounded-lg hover:bg-surface-2 transition-colors">Cancel</button>
               <button onClick={submit} disabled={loading}
-                className="flex-1 py-2.5 text-sm font-medium bg-brand-green hover:bg-brand-green-dark text-white rounded-lg transition-colors disabled:opacity-60">
+                className="flex-1 py-2.5 text-sm font-medium bg-ff-green hover:bg-ff-green-deep text-white rounded-lg transition-colors disabled:opacity-60">
                 {loading ? 'Sending…' : 'Request intro'}
               </button>
             </div>
@@ -152,8 +152,8 @@ export default function MarketplaceView({ partners, unlocked: initialUnlocked, i
             onClick={() => setPreviewUnlocked(v => !v)}
             className={`flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold border transition-colors ${
               previewUnlocked
-                ? 'bg-emerald-600 text-white border-emerald-600 hover:bg-emerald-700'
-                : 'bg-white text-slate-600 border-slate-300 hover:border-slate-400'
+                ? 'bg-ff-green-soft text-white border-ff-green/20 hover:bg-ff-green-soft'
+                : 'bg-surface text-ink-2 border-line hover:border-line'
             }`}
           >
             {previewUnlocked ? '🔓 Unlocked view' : '🔒 Locked view'}
@@ -164,18 +164,18 @@ export default function MarketplaceView({ partners, unlocked: initialUnlocked, i
       {/* Header + search */}
       <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4 mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900 tracking-tight mb-1">Partner Marketplace</h1>
-          <p className="text-slate-500 text-sm max-w-xl">
+          <h1 className="text-2xl font-bold text-ink tracking-tight mb-1">Partner Marketplace</h1>
+          <p className="text-ink-3 text-sm max-w-xl">
             Vetted partners to help you fund, launch and run your franchise — each negotiated by Franchise Foundry.
           </p>
         </div>
-        <label className="flex items-center gap-2.5 bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 w-full md:w-72 focus-within:ring-2 focus-within:ring-brand-green focus-within:border-brand-green transition-shadow">
-          <SearchIcon className="w-4 h-4 text-slate-400 flex-shrink-0" />
+        <label className="flex items-center gap-2.5 bg-surface-2 border border-line rounded-xl px-3.5 py-2.5 w-full md:w-72 focus-within:ring-2 focus-within:ring-ff-green focus-within:border-ff-green transition-shadow">
+          <SearchIcon className="w-4 h-4 text-ink-3 flex-shrink-0" />
           <input
             value={query}
             onChange={e => setQuery(e.target.value)}
             placeholder="Search partners, e.g. “EPOS”"
-            className="bg-transparent outline-none text-sm text-slate-700 placeholder:text-slate-400 w-full"
+            className="bg-transparent outline-none text-sm text-ink-2 placeholder:text-ink-3 w-full"
           />
         </label>
       </div>
@@ -199,23 +199,23 @@ export default function MarketplaceView({ partners, unlocked: initialUnlocked, i
 
       {/* Count + sort */}
       <div className="flex items-center justify-between gap-3 mt-3 mb-6">
-        <p className="text-xs text-slate-500">
-          <span className="font-semibold text-slate-900">{filtered.length}</span> {filtered.length === 1 ? 'partner' : 'partners'}
+        <p className="text-xs text-ink-3">
+          <span className="font-semibold text-ink">{filtered.length}</span> {filtered.length === 1 ? 'partner' : 'partners'}
           {isDefaultView && dealCount > 0 && (
-            <> · <span className="font-semibold text-slate-900">{dealCount}</span> with Foundry deals</>
+            <> · <span className="font-semibold text-ink">{dealCount}</span> with Foundry deals</>
           )}
         </p>
-        <label className="flex items-center gap-2 text-xs text-slate-600 border border-slate-200 rounded-lg pl-3 pr-2 py-1.5 bg-white cursor-pointer hover:border-slate-300 transition-colors">
-          <span className="text-slate-400">Sort</span>
+        <label className="flex items-center gap-2 text-xs text-ink-2 border border-line rounded-lg pl-3 pr-2 py-1.5 bg-surface cursor-pointer hover:border-line transition-colors">
+          <span className="text-ink-3">Sort</span>
           <select
             value={sort}
             onChange={e => setSort(e.target.value as SortKey)}
-            className="bg-transparent outline-none text-slate-700 font-medium cursor-pointer appearance-none pr-4"
+            className="bg-transparent outline-none text-ink-2 font-medium cursor-pointer appearance-none pr-4"
           >
             <option value="recommended">Recommended</option>
             <option value="az">A–Z</option>
           </select>
-          <ChevronDownIcon className="w-3.5 h-3.5 text-slate-400 -ml-4 pointer-events-none" />
+          <ChevronDownIcon className="w-3.5 h-3.5 text-ink-3 -ml-4 pointer-events-none" />
         </label>
       </div>
 
@@ -259,7 +259,7 @@ export default function MarketplaceView({ partners, unlocked: initialUnlocked, i
 
       {/* Footer note */}
       {unlocked && partners.length > 0 && (
-        <p className="mt-10 text-xs text-slate-400 text-center">
+        <p className="mt-10 text-xs text-ink-3 text-center">
           All partners are vetted by Franchise Foundry. We may receive a referral fee, which never affects our recommendations.
         </p>
       )}
@@ -282,8 +282,8 @@ export default function MarketplaceView({ partners, unlocked: initialUnlocked, i
 function SectionLabel({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex items-center gap-3 mb-4">
-      <h2 className="text-xs font-semibold uppercase tracking-wide text-slate-500 whitespace-nowrap">{children}</h2>
-      <div className="h-px bg-slate-100 flex-1" />
+      <h2 className="text-xs font-semibold uppercase tracking-wide text-ink-3 whitespace-nowrap">{children}</h2>
+      <div className="h-px bg-surface-2 flex-1" />
     </div>
   )
 }
@@ -294,15 +294,15 @@ function CategoryPill({ active, onClick, label, count, icon }: {
   return (
     <button
       onClick={onClick}
-      className={`flex-shrink-0 flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-medium border transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-green ${
+      className={`flex-shrink-0 flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-medium border transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-ff-green ${
         active
-          ? 'bg-brand-green text-white border-brand-green'
-          : 'bg-white text-slate-600 border-slate-200 hover:border-brand-green'
+          ? 'bg-ff-green text-white border-ff-green'
+          : 'bg-surface text-ink-2 border-line hover:border-ff-green'
       }`}
     >
-      {icon && <span className={active ? 'text-white' : 'text-slate-400'}>{icon}</span>}
+      {icon && <span className={active ? 'text-white' : 'text-ink-3'}>{icon}</span>}
       {label}
-      <span className={`text-[11px] tabular-nums rounded-full px-1.5 ${active ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-400'}`}>{count}</span>
+      <span className={`text-[11px] tabular-nums rounded-full px-1.5 ${active ? 'bg-surface/20 text-white' : 'bg-surface-2 text-ink-3'}`}>{count}</span>
     </button>
   )
 }
@@ -310,34 +310,34 @@ function CategoryPill({ active, onClick, label, count, icon }: {
 function EmptyState({ heading, body }: { heading: string; body: string }) {
   return (
     <div className="flex flex-col items-center justify-center py-16 px-6 text-center">
-      <div className="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center mb-4">
-        <MarketplaceIcon className="w-6 h-6 text-slate-400" />
+      <div className="w-12 h-12 rounded-full bg-surface-2 flex items-center justify-center mb-4">
+        <MarketplaceIcon className="w-6 h-6 text-ink-3" />
       </div>
-      <p className="text-sm font-semibold text-slate-700 mb-1">{heading}</p>
-      <p className="text-xs text-slate-400 leading-relaxed max-w-xs">{body}</p>
+      <p className="text-sm font-semibold text-ink-2 mb-1">{heading}</p>
+      <p className="text-xs text-ink-3 leading-relaxed max-w-xs">{body}</p>
     </div>
   )
 }
 
 function UnlockGate({ hiddenCount }: { hiddenCount: number }) {
   return (
-    <div className="mt-6 bg-gradient-to-b from-white to-slate-50 border border-slate-200 rounded-2xl p-8 text-center">
-      <div className="w-14 h-14 rounded-full bg-brand-green/10 flex items-center justify-center mx-auto mb-4">
-        <ShieldCheckIcon className="w-7 h-7 text-brand-green" />
+    <div className="mt-6 bg-gradient-to-b from-surface to-surface-2 border border-line rounded-2xl p-8 text-center">
+      <div className="w-14 h-14 rounded-full bg-ff-green/10 flex items-center justify-center mx-auto mb-4">
+        <ShieldCheckIcon className="w-7 h-7 text-ff-green" />
       </div>
-      <h3 className="text-base font-bold text-slate-900 mb-2">Unlock the full marketplace</h3>
-      <p className="text-sm text-slate-500 mb-5 leading-relaxed max-w-sm mx-auto">
+      <h3 className="text-base font-bold text-ink mb-2">Unlock the full marketplace</h3>
+      <p className="text-sm text-ink-3 mb-5 leading-relaxed max-w-sm mx-auto">
         {hiddenCount > 0
           ? `You're previewing ${hiddenCount === 1 ? 'part of' : `${hiddenCount} more of`} our vetted partners. Membership unlocks every partner and exclusive Foundry-negotiated deals.`
           : 'Membership unlocks warm introductions and exclusive Foundry-negotiated deals from every partner.'}
       </p>
       <a
         href="mailto:connect@franchisefoundry.co.uk?subject=Marketplace access"
-        className="inline-block py-2.5 px-6 text-sm font-medium bg-brand-green hover:bg-brand-green-dark text-white rounded-lg transition-colors"
+        className="inline-block py-2.5 px-6 text-sm font-medium bg-ff-green hover:bg-ff-green-deep text-white rounded-lg transition-colors"
       >
         Contact us to unlock
       </a>
-      <p className="text-xs text-slate-400 mt-3">connect@franchisefoundry.co.uk</p>
+      <p className="text-xs text-ink-3 mt-3">connect@franchisefoundry.co.uk</p>
     </div>
   )
 }
@@ -357,22 +357,22 @@ function PartnerCard({ partner: p, unlocked, featured, onOpen, onRequestIntro }:
       role="button"
       tabIndex={0}
       onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onOpen() } }}
-      className={`bg-white rounded-xl border shadow-sm hover:shadow-md hover:border-slate-300 transition-all flex flex-col overflow-hidden cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-green ${
-        featured ? 'border-brand-gold-light' : 'border-slate-200'
+      className={`bg-surface rounded-xl border shadow-sm hover:shadow-md hover:border-line transition-all flex flex-col overflow-hidden cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-ff-green ${
+        featured ? 'border-ff-gold-light' : 'border-line'
       }`}
     >
-      {featured && <div className="h-[3px] bg-gradient-to-r from-brand-gold to-brand-gold-light flex-shrink-0" />}
+      {featured && <div className="h-[3px] bg-gradient-to-r from-ff-gold to-ff-gold-light flex-shrink-0" />}
 
       {/* Header */}
-      <div className="p-5 flex items-start gap-4 border-b border-slate-100">
-        <div className="w-12 h-12 rounded-xl bg-slate-100 flex items-center justify-center flex-shrink-0 overflow-hidden">
+      <div className="p-5 flex items-start gap-4 border-b border-line-2">
+        <div className="w-12 h-12 rounded-xl bg-surface-2 flex items-center justify-center flex-shrink-0 overflow-hidden">
           {p.logo_url
             ? <img src={p.logo_url} alt={p.name} className="w-full h-full object-contain" />
-            : <span className="text-slate-400 text-lg font-bold">{p.name.charAt(0)}</span>}
+            : <span className="text-ink-3 text-lg font-bold">{p.name.charAt(0)}</span>}
         </div>
         <div className="flex-1 min-w-0">
-          <p className="font-bold text-slate-900 text-sm leading-tight">{p.name}</p>
-          {p.tagline && <p className="text-xs text-slate-500 mt-0.5 line-clamp-2">{p.tagline}</p>}
+          <p className="font-bold text-ink text-sm leading-tight">{p.name}</p>
+          {p.tagline && <p className="text-xs text-ink-3 mt-0.5 line-clamp-2">{p.tagline}</p>}
         </div>
         <span className={`flex-shrink-0 inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-full ${meta.pill}`}>
           <meta.Icon className="w-3 h-3" />
@@ -383,13 +383,13 @@ function PartnerCard({ partner: p, unlocked, featured, onOpen, onRequestIntro }:
       {/* Body */}
       <div className="p-5 flex-1 flex flex-col">
         {p.description && (
-          <p className="text-sm text-slate-600 leading-relaxed mb-4 line-clamp-3">{p.description}</p>
+          <p className="text-sm text-ink-2 leading-relaxed mb-4 line-clamp-3">{p.description}</p>
         )}
 
         {p.offer_text?.trim() && (
-          <div className="flex items-start gap-2 bg-brand-gold-light/20 border border-dashed border-brand-gold rounded-lg px-3 py-2 mb-4">
-            <TagIcon className="w-3.5 h-3.5 text-brand-gold mt-0.5 flex-shrink-0" />
-            <span className="text-xs font-semibold text-slate-800 leading-snug">{p.offer_text}</span>
+          <div className="flex items-start gap-2 bg-ff-gold-light/20 border border-dashed border-ff-gold rounded-lg px-3 py-2 mb-4">
+            <TagIcon className="w-3.5 h-3.5 text-ff-gold mt-0.5 flex-shrink-0" />
+            <span className="text-xs font-semibold text-ink leading-snug">{p.offer_text}</span>
           </div>
         )}
 
@@ -397,11 +397,11 @@ function PartnerCard({ partner: p, unlocked, featured, onOpen, onRequestIntro }:
           <ul className="space-y-2 mb-5">
             {p.features.slice(0, 3).map((f, i) => (
               <li key={i} className="flex items-start gap-2 text-sm">
-                <span className="text-brand-gold mt-0.5 flex-shrink-0">✦</span>
+                <span className="text-ff-gold mt-0.5 flex-shrink-0">✦</span>
                 <span>
-                  {f.label && <strong className="font-semibold text-slate-800">{f.label}</strong>}
-                  {f.label && f.value && <span className="text-slate-400 mx-1">·</span>}
-                  {f.value && <span className="text-slate-600">{f.value}</span>}
+                  {f.label && <strong className="font-semibold text-ink">{f.label}</strong>}
+                  {f.label && f.value && <span className="text-ink-3 mx-1">·</span>}
+                  {f.value && <span className="text-ink-2">{f.value}</span>}
                 </span>
               </li>
             ))}
@@ -415,15 +415,15 @@ function PartnerCard({ partner: p, unlocked, featured, onOpen, onRequestIntro }:
             disabled={!unlocked}
             className={`flex-1 inline-flex items-center justify-center gap-1.5 py-2.5 text-sm font-medium rounded-lg transition-colors ${
               unlocked
-                ? 'bg-brand-green hover:bg-brand-green-dark text-white'
-                : 'bg-slate-100 text-slate-400 cursor-not-allowed'
+                ? 'bg-ff-green hover:bg-ff-green-deep text-white'
+                : 'bg-surface-2 text-ink-3 cursor-not-allowed'
             }`}
           >
             {unlocked ? <>Request intro <ArrowRightIcon className="w-3.5 h-3.5" /></> : '🔒 Unlock'}
           </button>
           <button
             onClick={onOpen}
-            className="py-2.5 px-4 text-sm font-medium text-slate-700 border border-slate-200 rounded-lg hover:border-brand-green hover:bg-slate-50 transition-colors"
+            className="py-2.5 px-4 text-sm font-medium text-ink-2 border border-line rounded-lg hover:border-ff-green hover:bg-surface-2 transition-colors"
           >
             Details
           </button>

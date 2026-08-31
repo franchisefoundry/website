@@ -164,24 +164,24 @@ export function CommandPalette({ role }: { role: string }) {
         onClick={e => e.stopPropagation()}
       >
         <div className="flex items-center gap-3 px-5 py-4 border-b" style={{ borderColor: 'var(--ff-border-2)' }}>
-          <SearchIcon className="w-[18px] h-[18px] text-slate-400" />
+          <SearchIcon className="w-[18px] h-[18px] text-ink-3" />
           <input
             ref={inputRef}
             value={query}
             onChange={e => setQuery(e.target.value)}
             placeholder="Search or jump to…"
-            className="flex-1 bg-transparent outline-none text-[15px] text-ink placeholder:text-slate-400"
+            className="flex-1 bg-transparent outline-none text-[15px] text-ink placeholder:text-ink-3"
           />
-          <kbd className="text-[11px] px-1.5 py-0.5 rounded border text-slate-400" style={{ borderColor: 'var(--ff-border)', background: 'var(--ff-surface-2)' }}>esc</kbd>
+          <kbd className="text-[11px] px-1.5 py-0.5 rounded border text-ink-3" style={{ borderColor: 'var(--ff-border)', background: 'var(--ff-surface-2)' }}>esc</kbd>
         </div>
 
         <div className="max-h-[420px] overflow-y-auto p-2">
           {flat.length === 0 && (
-            <div className="px-3 py-8 text-center text-sm text-slate-400">No matches for “{query}”.</div>
+            <div className="px-3 py-8 text-center text-sm text-ink-3">No matches for “{query}”.</div>
           )}
           {groups.map(group => (
             <div key={group.name}>
-              <div className="px-3 pt-3 pb-1.5 text-[10.5px] font-bold uppercase tracking-wider text-slate-400">{group.name}</div>
+              <div className="px-3 pt-3 pb-1.5 text-[10.5px] font-bold uppercase tracking-wider text-ink-3">{group.name}</div>
               {group.items.map(cmd => {
                 const idx = flat.indexOf(cmd)
                 const isActive = idx === active
@@ -193,11 +193,11 @@ export function CommandPalette({ role }: { role: string }) {
                     className="w-full flex items-center gap-3 px-3 py-2.5 rounded-[10px] text-left transition-colors"
                     style={isActive ? { background: 'var(--ff-gold-soft)' } : undefined}
                   >
-                    <span className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 text-slate-500" style={{ background: 'var(--ff-surface-2)' }}>
+                    <span className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 text-ink-3" style={{ background: 'var(--ff-surface-2)' }}>
                       {cmd.icon}
                     </span>
                     <span className="flex-1 text-[13.5px] font-medium text-ink">{cmd.label}</span>
-                    {cmd.sub && <span className="text-[11px] text-slate-400">{cmd.sub}</span>}
+                    {cmd.sub && <span className="text-[11px] text-ink-3">{cmd.sub}</span>}
                     {isActive && <span className="text-[11px] font-semibold" style={{ color: 'var(--ff-gold-ink)' }}>↵</span>}
                   </button>
                 )
@@ -206,7 +206,7 @@ export function CommandPalette({ role }: { role: string }) {
           ))}
         </div>
 
-        <div className="flex items-center gap-4 px-4 py-2.5 border-t text-[11px] text-slate-400" style={{ borderColor: 'var(--ff-border-2)', background: 'var(--ff-surface-2)' }}>
+        <div className="flex items-center gap-4 px-4 py-2.5 border-t text-[11px] text-ink-3" style={{ borderColor: 'var(--ff-border-2)', background: 'var(--ff-surface-2)' }}>
           <span>↑↓ navigate</span><span>↵ open</span>
           <span className="ml-auto flex items-center gap-1"><kbd className="px-1.5 py-0.5 rounded border" style={{ borderColor: 'var(--ff-border)', background: 'var(--ff-surface)' }}>⌘K</kbd> anywhere</span>
         </div>

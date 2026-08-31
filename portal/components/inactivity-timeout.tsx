@@ -103,7 +103,7 @@ export default function InactivityTimeout({
 
   return (
     <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/40 backdrop-blur-sm">
-      <div className="bg-white rounded-2xl shadow-2xl border border-slate-200 p-8 mx-4 max-w-sm w-full text-center">
+      <div className="bg-surface rounded-2xl shadow-2xl border border-line p-8 mx-4 max-w-sm w-full text-center">
         <div className="mx-auto mb-4 w-12 h-12 rounded-full bg-amber-50 border border-amber-200 flex items-center justify-center">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="text-amber-500">
             <circle cx="12" cy="12" r="10" />
@@ -111,22 +111,22 @@ export default function InactivityTimeout({
           </svg>
         </div>
 
-        <h2 className="text-base font-semibold text-slate-900 mb-1">Still there?</h2>
-        <p className="text-sm text-slate-500 mb-5">
+        <h2 className="text-base font-semibold text-ink mb-1">Still there?</h2>
+        <p className="text-sm text-ink-3 mb-5">
           You&apos;ve been inactive for a while. For your security, you&apos;ll be signed out in{' '}
-          <span className="font-semibold tabular-nums text-slate-700">{timeLabel}</span>.
+          <span className="font-semibold tabular-nums text-ink-2">{timeLabel}</span>.
         </p>
 
         <div className="space-y-2">
           <button
             onClick={() => resetTimerRef.current()}
-            className="w-full px-4 py-2.5 bg-brand-green text-white text-sm font-medium rounded-xl hover:bg-brand-green/90 transition-colors"
+            className="w-full px-4 py-2.5 bg-ff-green text-white text-sm font-medium rounded-xl hover:bg-ff-green/90 transition-colors"
           >
             Stay signed in
           </button>
           <button
             onClick={() => signOutRef.current()}
-            className="w-full px-4 py-2 text-sm text-slate-400 hover:text-slate-600 transition-colors"
+            className="w-full px-4 py-2 text-sm text-ink-3 hover:text-ink-2 transition-colors"
           >
             Sign out now
           </button>
