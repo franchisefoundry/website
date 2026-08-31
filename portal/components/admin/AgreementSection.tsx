@@ -29,6 +29,13 @@ export function AgreementSection({ agreement, comments = [] }: { agreement: Agre
     { label: 'Signed', done: status === 'signed', date: agreement?.signed_at },
   ]
 
+  // Audit trail — derived from the agreement + comment events.
+  const events: { at: string; label: string }[] = []
+  if (agreement?.sent_at) events.push({ at: agreement.sent_at, label: 'Sent for signature' })
+  comments.forEach(c => events.push({ at: c.created_at, label: `${c.author_name} commented${c.section_ref ? ` on ${c.section_ref}` : ''}` }))
+  if (status === 'signed' && agreement?.signed_at) events.push({ at: agreement.signed_at, label: `Signed by ${agreement.signer_name ?? 'the brand'}` })
+  events.sort((a, b) => (a.at < b.at ? -1 : 1))
+
   return (
     <Section title="Franchise agreement" right={statusPill(status)}>
       {status === 'not_sent' ? (
@@ -69,6 +76,22 @@ export function AgreementSection({ agreement, comments = [] }: { agreement: Agre
         <p className="text-[10px] font-bold text-ink-3 uppercase tracking-wide mb-2">Comments{comments.length > 0 ? ` (${comments.length})` : ''}</p>
         <AgreementComments comments={comments} />
       </div>
+
+      {/* Audit trail */}
+      {events.length > 0 && (
+        <div className="mt-5 pt-4 border-t border-line-2">
+          <p className="text-[10px] font-bold text-ink-3 uppercase tracking-wide mb-2">History</p>
+          <ol className="space-y-2">
+            {events.map((e, i) => (
+              <li key={i} className="flex items-start gap-2.5 text-xs">
+                <span className="w-1.5 h-1.5 rounded-full bg-ff-green/40 mt-1.5 flex-shrink-0" />
+                <span className="text-ink-2 flex-1">{e.label}</span>
+                <span className="text-ink-3 whitespace-nowrap">{formatDate(e.at)}</span>
+              </li>
+            ))}
+          </ol>
+        </div>
+      )}
     </Section>
   )
 }
