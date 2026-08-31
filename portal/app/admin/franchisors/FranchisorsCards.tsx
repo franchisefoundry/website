@@ -107,7 +107,7 @@ export default function FranchisorsCards({ brands }: { brands: BrandCard[] }) {
                 )}
 
                 <div className="flex gap-1.5 border-t border-line-2 pt-3 mt-3.5">
-                  {[['Fee', b.fee], ['Candidates', String(b.cands)], ['Profile', `${b.prog}%`]].map(([l, v]) => (
+                  {[['Candidates', String(b.cands)], ['Profile', `${b.prog}%`]].map(([l, v]) => (
                     <div key={l} className="flex-1">
                       <p className="text-[15px] font-bold text-ink tabular-nums leading-none">{v}</p>
                       <p className="text-[10.5px] text-ink-3 mt-1">{l}</p>
