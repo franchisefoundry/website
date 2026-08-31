@@ -14,9 +14,11 @@ import { FranchiseeHomeView } from '@/components/franchisee/FranchiseeHomeView'
 import { JourneyBrandCard } from '@/components/franchisee/JourneyBrandCard'
 import FranchiseeProfileForm from '../franchisee/profile/profile-form'
 import { ClientComposer } from '@/components/client/ClientComposer'
-import AgreementsTable from '../admin/agreements/AgreementsTable'
 import { AgreementSection } from '@/components/admin/AgreementSection'
 import TemplateEditor from '../admin/agreements/TemplateEditor'
+import { SendWorkflow } from '@/components/admin/agreements/SendWorkflow'
+import { AgreementsList, type AgreementRow } from '@/components/admin/agreements/AgreementsList'
+import { SendIcon, ArchiveIcon } from '@/components/icons'
 import { Avatar } from '@/components/ui/Avatar'
 import AgreementView from '../franchisor/agreement/AgreementView'
 
@@ -91,14 +93,15 @@ const adminBrands: BrandCard[] = [
 
 const feeUser: any = { id: 'preview-fee', role: 'franchisee', full_name: 'Alex Rivera', email: 'alex@example.com', avatar_url: null, setup_complete: true }
 
-const agmtRows: any[] = [
-  { id: 'a1', status: 'signed', sent_at: '2026-08-10T09:00:00Z', signed_at: '2026-08-14T16:20:00Z', signer_name: 'Ben Ortiz', signed_pdf_path: 'x', franchisor_profiles: { id: 'b1', brand_name: 'Zambrero', user_id: 'u1', profiles: { full_name: 'Ben Ortiz', email: 'ben@zambrero.co.uk' } } },
-  { id: 'a2', status: 'sent', sent_at: '2026-08-22T11:00:00Z', signed_at: null, signer_name: null, signed_pdf_path: null, franchisor_profiles: { id: 'b2', brand_name: 'Sides', user_id: 'u2', profiles: { full_name: 'Ops Team', email: 'ops@sides.co.uk' } } },
+const sendBrands = [
+  { id: 'b1', name: 'Zambrero', email: 'ben@zambrero.co.uk', hasAgreement: true },
+  { id: 'b2', name: 'Sides', email: 'ops@sides.co.uk', hasAgreement: true },
+  { id: 'b3', name: 'Coffee & Co', email: 'sam@coffeeco.uk', hasAgreement: false },
 ]
-const agmtFranchisors: any[] = [
-  { id: 'b1', brand_name: 'Zambrero', user_id: 'u1', profiles: { full_name: 'Ben Ortiz', email: 'ben@zambrero.co.uk' } },
-  { id: 'b2', brand_name: 'Sides', user_id: 'u2', profiles: { full_name: 'Ops Team', email: 'ops@sides.co.uk' } },
-  { id: 'b3', brand_name: 'Coffee & Co', user_id: 'u3', profiles: { full_name: 'Sam Lee', email: 'sam@coffeeco.uk' } },
+const agRows: AgreementRow[] = [
+  { id: 'a1', brandId: 'b1', brandName: 'Zambrero', email: 'ben@zambrero.co.uk', status: 'signed', sent_at: '2026-08-10T09:00:00Z', signed_at: '2026-08-14T16:20:00Z', signer_name: 'Ben Ortiz', signed_pdf_path: 'x', openComments: 0 },
+  { id: 'a2', brandId: 'b2', brandName: 'Sides', email: 'ops@sides.co.uk', status: 'sent', sent_at: '2026-08-22T11:00:00Z', signed_at: null, signer_name: null, signed_pdf_path: null, openComments: 2 },
+  { id: 'a3', brandId: 'b4', brandName: 'Bloom Florists', email: 'hi@bloom.uk', status: 'sent', sent_at: '2026-08-25T11:00:00Z', signed_at: null, signer_name: null, signed_pdf_path: null, openComments: 0 },
 ]
 
 const NAV: [string, string][] = [
@@ -224,26 +227,20 @@ export default async function DesignPreview({ searchParams }: { searchParams: Pr
     ),
     'admin-agreements': (
       <div>
-        <PageHeader title="Agreements" description="Send and track agreements, and manage the master template." />
+        <PageHeader title="Agreements" description="Send and track franchise agreements, manage templates, and store signed copies." />
         <SettingsTabs orientation="top" tabs={[
-          {
-            id: 'active', label: 'Active agreements', icon: <AgreementIcon className="w-4 h-4" />,
-            content: (
-              <div>
-                <p className="text-sm text-ink-3 mb-4">Send a new agreement, track signatures, and open any brand&apos;s agreement to review or edit it.</p>
-                <AgreementsTable franchisorAgreements={agmtRows} allFranchisors={agmtFranchisors} hasTemplate />
-              </div>
-            ),
-          },
-          {
-            id: 'template', label: 'Template', icon: <QuestionnaireIcon className="w-4 h-4" />,
-            content: (
-              <div>
-                <p className="text-sm text-ink-3 mb-4">Upload a Word doc or edit the master agreement here. Every save creates a new version — brands sign the version current at send time.</p>
-                <TemplateEditor initial={{ id: 't1', title: 'Master Franchise Agreement', content: '# Master Franchise Agreement\n\n## 1. Parties\n\nThis agreement is made between Franchise Foundry Ltd and the Franchisee.\n\n## 2. Grant of Franchise\n\nThe Franchisor grants the Franchisee the right to operate under the brand.\n\n## 3. Term\n\nThe initial term is five (5) years.\n\n## 4. Territory\n\nThe Franchisee is granted an exclusive territory as defined in Schedule A.', version: 3, updated_at: '2026-08-20T09:00:00Z' }} />
-              </div>
-            ),
-          },
+          { id: 'send', label: 'Send', icon: <SendIcon className="w-4 h-4" />, content: (
+            <div><p className="text-sm text-ink-3 mb-4">Send an agreement to a brand in three quick steps.</p><SendWorkflow brands={sendBrands} templateTitle="Master Franchise Agreement" templateVersion={3} hasTemplate /></div>
+          ) },
+          { id: 'active', label: 'Active', icon: <AgreementIcon className="w-4 h-4" />, content: (
+            <div><p className="text-sm text-ink-3 mb-4">Agreements out for signature. Ones with open brand comments are grouped first.</p><AgreementsList agreements={agRows} mode="active" /></div>
+          ) },
+          { id: 'templates', label: 'Templates', icon: <QuestionnaireIcon className="w-4 h-4" />, content: (
+            <div><p className="text-sm text-ink-3 mb-4">Upload a Word doc or edit the master agreement. Every save creates a new version.</p><TemplateEditor initial={{ id: 't1', title: 'Master Franchise Agreement', content: '# Master Franchise Agreement\n\n## 1. Parties\n\nThis agreement is made between Franchise Foundry Ltd and the Franchisee.\n\n## 2. Grant of Franchise\n\nThe Franchisor grants the Franchisee the right to operate under the brand.\n\n## 3. Term\n\nThe initial term is five (5) years.\n\n## 4. Territory\n\nThe Franchisee is granted an exclusive territory as defined in Schedule A.', version: 3, updated_at: '2026-08-20T09:00:00Z' }} /></div>
+          ) },
+          { id: 'archive', label: 'Archive', icon: <ArchiveIcon className="w-4 h-4" />, content: (
+            <div><p className="text-sm text-ink-3 mb-4">Signed and executed agreements — downloadable as PDF.</p><AgreementsList agreements={agRows} mode="archive" /></div>
+          ) },
         ]} />
         <div className="max-w-2xl mt-10 pt-8 border-t border-line">
           <p className="text-[11px] font-bold uppercase tracking-widest text-ff-gold-ink mb-2">▁ And on a brand record:</p>
