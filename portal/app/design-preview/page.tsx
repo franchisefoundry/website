@@ -196,6 +196,9 @@ export default async function DesignPreview({ searchParams }: { searchParams: Pr
         <PageHeader title="Messages" description="Conversations with franchisees, brands and agents." />
         <div className="grid grid-cols-1 lg:grid-cols-[300px_1fr] bg-surface border border-line rounded-2xl overflow-hidden shadow-[0_1px_2px_rgba(27,33,26,0.04)]" style={{ height: 'calc(100vh - 260px)', minHeight: 440 }}>
           <div className="border-r border-line-2 overflow-y-auto">
+            <div className="sticky top-0 z-10 bg-surface/95 backdrop-blur px-3 py-2.5 border-b border-line-2">
+              <div className="flex items-center justify-center gap-1.5 text-sm font-medium rounded-lg px-3 py-2 bg-ff-green/10 text-ff-green">＋ New message</div>
+            </div>
             {[
               { name: 'Zambrero', last: 'Two strong candidates are in your tab now.', active: true, square: true },
               { name: 'Alex Rivera', last: 'Thanks! Excited to see the first candidates.', active: false, square: false },
