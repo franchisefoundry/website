@@ -11,6 +11,7 @@ import { AdminHomeView, type AdminHomeAction } from '@/components/admin/AdminHom
 import FranchisorsCards, { type BrandCard } from '../admin/franchisors/FranchisorsCards'
 import { BrandLogo } from '@/components/ui/BrandLogo'
 import { FranchiseeHomeView } from '@/components/franchisee/FranchiseeHomeView'
+import { JourneyBrandCard } from '@/components/franchisee/JourneyBrandCard'
 import { ClientComposer } from '@/components/client/ClientComposer'
 import AgreementsTable from '../admin/agreements/AgreementsTable'
 
@@ -98,8 +99,11 @@ const agmtFranchisors: any[] = [
 const NAV: [string, string][] = [
   ['profile', 'Brand profile'], ['candidates', 'Candidates'], ['pipeline', 'Pipeline'],
   ['performance', 'Performance'], ['messages', 'Messages'], ['admin', 'Admin home'], ['admin-brands', 'Admin · Brands'], ['admin-agreements', 'Admin · Agreements'],
-  ['fee', 'Franchisee · Journey'], ['fee-start', 'Franchisee · Start'],
+  ['fee', 'Franchisee · Home'], ['fee-journey', 'Franchisee · My Journey'], ['fee-start', 'Franchisee · Start'],
 ]
+
+const feePrimary: any = { id: 'm1', pipeline_stage: 'meeting_booked', franchisor_notes: 'Great fit on budget and location — I\'ve asked the brand to hold a call slot next week. Have a think about the questions you\'d like to cover.', franchisor_profiles: { id: 'b1', brand_name: 'Zambrero', category: 'Quick Service · Mexican', teaser: 'A purpose-led Mexican QSR with proven UK unit economics and full training and site support.', investment_display: '£150,000 – £300,000', timeline_months: 6, operator_model: 'owner-operator', experience_required: 'none' } }
+const feeBackup: any = { id: 'm2', pipeline_stage: 'match_assigned', franchisor_notes: null, franchisor_profiles: { id: 'b2', brand_name: null, category: 'Coffee', teaser: null, investment_display: '£90,000 – £180,000', timeline_months: 4, operator_model: 'either', experience_required: 'none' } }
 
 function PreviewNav({ active }: { active: string }) {
   return (
@@ -192,6 +196,21 @@ export default async function DesignPreview({ searchParams }: { searchParams: Pr
         primaryBrand={null} consultantNote={null} attention={null}
         kpis={[{ n: 0, l: 'Brands matched' }, { n: 0, l: "You're interested" }, { n: 0, l: 'Intros arranged' }, { n: 60, l: 'Profile complete', suffix: '%' }]}
         completeness={60} />
+    ),
+    'fee-journey': (
+      <div className="max-w-4xl">
+        <PageHeader title="Your journey" description="Track where you are with your matched brands. Your consultant manages these on your behalf." />
+        <div className="space-y-6">
+          <JourneyBrandCard rank="primary" match={feePrimary} />
+          <div>
+            <p className="text-[11px] font-bold uppercase tracking-[0.09em] text-ink-3 mb-3">Your alternative matches</p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <JourneyBrandCard rank="backup" match={feeBackup} delay={0.06} />
+              <JourneyBrandCard rank="backup" match={null} placeholder="Backup option being identified…" delay={0.12} />
+            </div>
+          </div>
+        </div>
+      </div>
     ),
   }
   const sidebarProfile = isAdmin ? adminUser : isFee ? feeUser : brandOwner
