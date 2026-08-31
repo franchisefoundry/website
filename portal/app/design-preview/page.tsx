@@ -15,6 +15,8 @@ import { JourneyBrandCard } from '@/components/franchisee/JourneyBrandCard'
 import { ClientComposer } from '@/components/client/ClientComposer'
 import AgreementsTable from '../admin/agreements/AgreementsTable'
 import { AgreementSection } from '@/components/admin/AgreementSection'
+import TemplateEditor from '../admin/agreements/TemplateEditor'
+import { Avatar } from '@/components/ui/Avatar'
 
 const BRAND_LOGO = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='8' fill='%233a4a3a'/%3E%3Ctext x='20' y='27' font-size='20' fill='%23c8924a' text-anchor='middle' font-family='sans-serif' font-weight='bold'%3EZ%3C/text%3E%3C/svg%3E"
 import { PipelineBoard, type PipelineCard } from '@/components/franchisor/PipelineBoard'
@@ -99,7 +101,7 @@ const agmtFranchisors: any[] = [
 
 const NAV: [string, string][] = [
   ['profile', 'Brand profile'], ['candidates', 'Candidates'], ['pipeline', 'Pipeline'],
-  ['performance', 'Performance'], ['messages', 'Messages'], ['admin', 'Admin home'], ['admin-brands', 'Admin · Brands'], ['admin-agreements', 'Admin · Agreements'],
+  ['performance', 'Performance'], ['messages', 'Messages'], ['admin', 'Admin home'], ['admin-brands', 'Admin · Brands'], ['admin-messages', 'Admin · Messages'], ['admin-agreements', 'Admin · Agreements'],
   ['fee', 'Franchisee · Home'], ['fee-journey', 'Franchisee · My Journey'], ['fee-start', 'Franchisee · Start'],
 ]
 
@@ -172,6 +174,40 @@ export default async function DesignPreview({ searchParams }: { searchParams: Pr
         <FranchisorsCards brands={adminBrands} />
       </div>
     ),
+    'admin-messages': (
+      <div>
+        <PageHeader title="Messages" description="Conversations with franchisees, brands and agents." />
+        <div className="grid grid-cols-1 lg:grid-cols-[300px_1fr] bg-surface border border-line rounded-2xl overflow-hidden shadow-[0_1px_2px_rgba(27,33,26,0.04)]" style={{ height: 'calc(100vh - 260px)', minHeight: 440 }}>
+          <div className="border-r border-line-2 overflow-y-auto">
+            {[
+              { name: 'Zambrero', last: 'Two strong candidates are in your tab now.', active: true, square: true },
+              { name: 'Alex Rivera', last: 'Thanks! Excited to see the first candidates.', active: false, square: false },
+              { name: 'Jordan Blake', last: 'New referral sent your way — Priya Shah.', active: false, square: false },
+            ].map(t => (
+              <div key={t.name} className={`flex gap-3 items-center px-4 py-3 border-b border-line-2 cursor-pointer ${t.active ? 'bg-ff-green/[0.06]' : 'hover:bg-surface-2'}`}>
+                <Avatar name={t.name} size="md" square={t.square} />
+                <div className="min-w-0 flex-1"><p className="text-sm font-semibold text-ink truncate">{t.name}</p><p className="text-xs text-ink-3 truncate">{t.last}</p></div>
+              </div>
+            ))}
+          </div>
+          <div className="flex flex-col min-w-0">
+            <div className="px-5 py-3.5 border-b border-line-2 flex items-center gap-3">
+              <Avatar name="Zambrero" size="md" square />
+              <div><p className="text-sm font-semibold text-ink">Zambrero</p><p className="text-[11px] text-ink-3">Brand · portal + app</p></div>
+            </div>
+            <div className="flex-1 overflow-y-auto p-5 flex flex-col gap-2.5">
+              <div className="max-w-[82%] px-3.5 py-2.5 rounded-2xl text-sm bg-surface-2 border border-line-2 rounded-bl-md text-ink">When will the first candidates come through?<div className="text-[10.5px] mt-1 text-ink-3">Zambrero · 28 Aug, 11:12</div></div>
+              <div className="max-w-[82%] px-3.5 py-2.5 rounded-2xl text-sm ml-auto bg-ff-green text-white rounded-br-md">Two strong candidates are in your tab now — both budget-aligned and in your target cities.<div className="text-[10.5px] mt-1 text-white/60">You · 28 Aug, 14:03</div></div>
+            </div>
+            <div className="border-t border-line-2 p-3 flex items-end gap-2">
+              <input placeholder="Write a message…" className="flex-1 text-sm border border-line rounded-lg px-3 py-2 bg-surface text-ink outline-none focus:ring-2 focus:ring-ff-green" />
+              <button className="px-4 py-2 rounded-lg text-sm font-medium bg-ff-green text-white">Send</button>
+            </div>
+          </div>
+        </div>
+        <p className="text-xs text-ink-3 mt-2">To start a new conversation, the composer shows a &ldquo;To…&rdquo; picker (franchisees / brands / agents) when no thread is selected — admins can message anyone.</p>
+      </div>
+    ),
     'admin-agreements': (
       <div className="space-y-10">
         <PageHeader title="Agreements" description="Manage the master franchise agreement template and track signatures." />
@@ -182,8 +218,18 @@ export default async function DesignPreview({ searchParams }: { searchParams: Pr
         </section>
         <section className="max-w-2xl">
           <h2 className="text-base font-semibold text-ink mb-1">On a brand record</h2>
-          <p className="text-sm text-ink-3 mb-4">Individual agreements live under the brand — status, timeline, download and comments.</p>
-          <AgreementSection agreement={{ id: 'a1', status: 'signed', sent_at: '2026-08-10T09:00:00Z', signed_at: '2026-08-14T16:20:00Z', signer_name: 'Ben Ortiz', signed_pdf_path: 'x' }} />
+          <p className="text-sm text-ink-3 mb-4">Individual agreements live under the brand — status, timeline, download and the brand&apos;s comments.</p>
+          <AgreementSection
+            agreement={{ id: 'a2', status: 'sent', sent_at: '2026-08-22T11:00:00Z', signed_at: null, signer_name: null, signed_pdf_path: null }}
+            comments={[
+              { id: 'c1', body: 'Can we clarify the territory exclusivity radius in section 4? We assumed 3 miles.', section_ref: 'Section 4 — Territory', created_at: '2026-08-23T10:00:00Z', author_name: 'Ben Ortiz' },
+              { id: 'c2', body: 'Fee schedule looks good, no changes needed there.', section_ref: null, created_at: '2026-08-23T10:04:00Z', author_name: 'Ben Ortiz' },
+            ]} />
+        </section>
+        <section>
+          <h2 className="text-base font-semibold text-ink mb-1">Agreement template</h2>
+          <p className="text-sm text-ink-3 mb-4">Upload a Word doc or edit the master agreement here. Every save creates a new version — brands sign the version current at send time.</p>
+          <TemplateEditor initial={{ id: 't1', title: 'Master Franchise Agreement', content: '# Master Franchise Agreement\n\n## 1. Parties\n\nThis agreement is made between Franchise Foundry Ltd and the Franchisee.\n\n## 2. Grant of Franchise\n\nThe Franchisor grants the Franchisee the right to operate under the brand.\n\n## 3. Term\n\nThe initial term is five (5) years.\n\n## 4. Territory\n\nThe Franchisee is granted an exclusive territory as defined in Schedule A.', version: 3, updated_at: '2026-08-20T09:00:00Z' }} />
         </section>
       </div>
     ),
