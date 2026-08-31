@@ -14,6 +14,7 @@ import { FranchiseeHomeView } from '@/components/franchisee/FranchiseeHomeView'
 import { JourneyBrandCard } from '@/components/franchisee/JourneyBrandCard'
 import { ClientComposer } from '@/components/client/ClientComposer'
 import AgreementsTable from '../admin/agreements/AgreementsTable'
+import { AgreementSection } from '@/components/admin/AgreementSection'
 
 const BRAND_LOGO = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='8' fill='%233a4a3a'/%3E%3Ctext x='20' y='27' font-size='20' fill='%23c8924a' text-anchor='middle' font-family='sans-serif' font-weight='bold'%3EZ%3C/text%3E%3C/svg%3E"
 import { PipelineBoard, type PipelineCard } from '@/components/franchisor/PipelineBoard'
@@ -178,6 +179,11 @@ export default async function DesignPreview({ searchParams }: { searchParams: Pr
           <h2 className="text-base font-semibold text-ink mb-1">Active agreements</h2>
           <p className="text-sm text-ink-3 mb-4">Send a new agreement, track signatures, and open any brand&apos;s agreement to review or edit it.</p>
           <AgreementsTable franchisorAgreements={agmtRows} allFranchisors={agmtFranchisors} hasTemplate />
+        </section>
+        <section className="max-w-2xl">
+          <h2 className="text-base font-semibold text-ink mb-1">On a brand record</h2>
+          <p className="text-sm text-ink-3 mb-4">Individual agreements live under the brand — status, timeline, download and comments.</p>
+          <AgreementSection agreement={{ id: 'a1', status: 'signed', sent_at: '2026-08-10T09:00:00Z', signed_at: '2026-08-14T16:20:00Z', signer_name: 'Ben Ortiz', signed_pdf_path: 'x' }} />
         </section>
       </div>
     ),
