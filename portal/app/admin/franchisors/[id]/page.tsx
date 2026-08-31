@@ -16,6 +16,7 @@ import { FranchisorPreviewButton } from '@/components/admin/FranchisorPreviewBut
 import { ArchiveButton } from '@/components/admin/ArchiveButton'
 import { BrandTerritories } from './BrandTerritories'
 import SendAgreementButton from './SendAgreementButton'
+import { AgreementSection } from '@/components/admin/AgreementSection'
 
 interface Props {
   params: Promise<{ id: string }>
@@ -45,9 +46,9 @@ export default async function FranchisorDetailPage({ params }: Props) {
       .order('created_at', { ascending: false }),
     admin
       .from('franchisor_agreements')
-      .select('status')
+      .select('id, status, sent_at, signed_at, signer_name, signed_pdf_path')
       .eq('franchisor_profile_id', id)
-      .single(),
+      .maybeSingle(),
   ])
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -168,6 +169,9 @@ export default async function FranchisorDetailPage({ params }: Props) {
               </div>
             </Section>
           )}
+
+          {/* Agreement */}
+          <AgreementSection agreement={franchisorAgreement} />
 
           {/* Questionnaire */}
           <Section title="Onboarding questionnaire" right={
