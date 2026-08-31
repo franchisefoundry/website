@@ -25,7 +25,7 @@ export function MessageThread({ messages, composer }: { messages: ThreadMessage[
 
       <div className="flex-1 overflow-y-auto p-4 flex flex-col justify-end gap-2.5">
         {messages.length === 0 ? (
-          <p className="text-center text-sm text-ink-3 my-auto">No messages yet — say hello 👋</p>
+          <p className="text-center text-sm text-ink-3 my-auto">No messages yet — send a message to start the conversation.</p>
         ) : messages.map(m => (
           <div key={m.id} className={`max-w-[82%] px-3.5 py-2.5 rounded-2xl text-sm leading-snug ${
             m.from_admin

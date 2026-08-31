@@ -97,7 +97,7 @@ export function CandidatesView({ candidates }: { candidates: Candidate[] }) {
         </div>
       )}
       <div className="mt-3 pt-3 border-t border-line-2 flex items-center justify-between">
-        <span className="text-xs text-ink-3">{c.stageIndex >= 2 ? `🤝 ${PIPE[c.stageIndex]}` : PIPE[c.stageIndex]}</span>
+        <span className="text-xs text-ink-3">{PIPE[c.stageIndex]}</span>
         <span className="text-xs font-semibold text-ff-green">{c.stageIndex >= 2 ? 'Open →' : 'Review candidate →'}</span>
       </div>
     </button>

@@ -102,7 +102,7 @@ export default function FranchisorsCards({ brands }: { brands: BrandCard[] }) {
 
                 {review && (
                   <div className="mt-3 bg-ff-gold-soft rounded-[10px] px-3 py-2 text-xs font-medium text-ff-gold-ink flex items-center gap-1.5">
-                    ✦ Awaiting your review
+                    <span className="w-1.5 h-1.5 rounded-full bg-ff-gold-ink flex-shrink-0" /> Awaiting your review
                   </div>
                 )}
 
