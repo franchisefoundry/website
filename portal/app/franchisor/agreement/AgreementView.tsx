@@ -12,6 +12,8 @@ interface Comment {
   resolved: boolean
   created_at: string
   author_id: string
+  admin_reply: string | null
+  admin_reply_at: string | null
 }
 
 interface Props {
@@ -146,8 +148,14 @@ export default function AgreementView({
                   <p className="text-sm text-ink-2">{c.body}</p>
                   <div className="flex items-center gap-2 mt-2">
                     <span className="text-xs text-ink-3">{new Date(c.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
-                    {c.resolved && <span className="inline-flex items-center gap-1 text-xs text-ff-green font-medium"><CheckIcon className="w-3 h-3" /> Addressed by the team</span>}
+                    {c.resolved && !c.admin_reply && <span className="inline-flex items-center gap-1 text-xs text-ff-green font-medium"><CheckIcon className="w-3 h-3" /> Addressed by the team</span>}
                   </div>
+                  {c.admin_reply && (
+                    <div className="mt-3 ml-3 pl-3 border-l-2 border-ff-green/30">
+                      <p className="text-xs font-semibold text-ff-green mb-0.5">Franchise Foundry replied{c.admin_reply_at ? ` · ${new Date(c.admin_reply_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}` : ''}</p>
+                      <p className="text-sm text-ink-2">{c.admin_reply}</p>
+                    </div>
+                  )}
                 </div>
               ))}
             </div>

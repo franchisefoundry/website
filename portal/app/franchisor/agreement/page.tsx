@@ -51,7 +51,7 @@ export default async function FranchisorAgreementPage() {
   const { data: comments } = fa
     ? await admin
         .from('agreement_comments')
-        .select('id, body, section_ref, resolved, created_at, author_id')
+        .select('id, body, section_ref, resolved, created_at, author_id, admin_reply, admin_reply_at')
         .eq('franchisor_agreement_id', fa.id)
         .order('created_at', { ascending: false })
     : { data: [] }
