@@ -27,7 +27,7 @@ import { MessageThread, type ThreadMessage } from '@/components/client/MessageTh
 import { scoreColour } from '@/lib/matching'
 import { cn } from '@/lib/utils'
 import type { FranchisorProfile } from '@/lib/supabase/types'
-import { FranchisorIcon, CalendarIcon, QuestionnaireIcon, BellIcon } from '@/components/icons'
+import { FranchisorIcon, CalendarIcon, QuestionnaireIcon, BellIcon, AgreementIcon } from '@/components/icons'
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
@@ -223,28 +223,37 @@ export default async function DesignPreview({ searchParams }: { searchParams: Pr
       </div>
     ),
     'admin-agreements': (
-      <div className="space-y-10">
-        <PageHeader title="Agreements" description="Manage the master franchise agreement template and track signatures." />
-        <section>
-          <h2 className="text-base font-semibold text-ink mb-1">Active agreements</h2>
-          <p className="text-sm text-ink-3 mb-4">Send a new agreement, track signatures, and open any brand&apos;s agreement to review or edit it.</p>
-          <AgreementsTable franchisorAgreements={agmtRows} allFranchisors={agmtFranchisors} hasTemplate />
-        </section>
-        <section className="max-w-2xl">
-          <h2 className="text-base font-semibold text-ink mb-1">On a brand record</h2>
-          <p className="text-sm text-ink-3 mb-4">Individual agreements live under the brand — status, timeline, download and the brand&apos;s comments.</p>
+      <div>
+        <PageHeader title="Agreements" description="Send and track agreements, and manage the master template." />
+        <SettingsTabs orientation="top" tabs={[
+          {
+            id: 'active', label: 'Active agreements', icon: <AgreementIcon className="w-4 h-4" />,
+            content: (
+              <div>
+                <p className="text-sm text-ink-3 mb-4">Send a new agreement, track signatures, and open any brand&apos;s agreement to review or edit it.</p>
+                <AgreementsTable franchisorAgreements={agmtRows} allFranchisors={agmtFranchisors} hasTemplate />
+              </div>
+            ),
+          },
+          {
+            id: 'template', label: 'Template', icon: <QuestionnaireIcon className="w-4 h-4" />,
+            content: (
+              <div>
+                <p className="text-sm text-ink-3 mb-4">Upload a Word doc or edit the master agreement here. Every save creates a new version — brands sign the version current at send time.</p>
+                <TemplateEditor initial={{ id: 't1', title: 'Master Franchise Agreement', content: '# Master Franchise Agreement\n\n## 1. Parties\n\nThis agreement is made between Franchise Foundry Ltd and the Franchisee.\n\n## 2. Grant of Franchise\n\nThe Franchisor grants the Franchisee the right to operate under the brand.\n\n## 3. Term\n\nThe initial term is five (5) years.\n\n## 4. Territory\n\nThe Franchisee is granted an exclusive territory as defined in Schedule A.', version: 3, updated_at: '2026-08-20T09:00:00Z' }} />
+              </div>
+            ),
+          },
+        ]} />
+        <div className="max-w-2xl mt-10 pt-8 border-t border-line">
+          <p className="text-[11px] font-bold uppercase tracking-widest text-ff-gold-ink mb-2">▁ And on a brand record:</p>
           <AgreementSection
             agreement={{ id: 'a2', status: 'sent', sent_at: '2026-08-22T11:00:00Z', signed_at: null, signer_name: null, signed_pdf_path: null }}
             comments={[
               { id: 'c1', body: 'Can we clarify the territory exclusivity radius in section 4? We assumed 3 miles.', section_ref: 'Section 4 — Territory', created_at: '2026-08-23T10:00:00Z', author_name: 'Ben Ortiz' },
               { id: 'c2', body: 'Fee schedule looks good, no changes needed there.', section_ref: null, created_at: '2026-08-23T10:04:00Z', author_name: 'Ben Ortiz' },
             ]} />
-        </section>
-        <section>
-          <h2 className="text-base font-semibold text-ink mb-1">Agreement template</h2>
-          <p className="text-sm text-ink-3 mb-4">Upload a Word doc or edit the master agreement here. Every save creates a new version — brands sign the version current at send time.</p>
-          <TemplateEditor initial={{ id: 't1', title: 'Master Franchise Agreement', content: '# Master Franchise Agreement\n\n## 1. Parties\n\nThis agreement is made between Franchise Foundry Ltd and the Franchisee.\n\n## 2. Grant of Franchise\n\nThe Franchisor grants the Franchisee the right to operate under the brand.\n\n## 3. Term\n\nThe initial term is five (5) years.\n\n## 4. Territory\n\nThe Franchisee is granted an exclusive territory as defined in Schedule A.', version: 3, updated_at: '2026-08-20T09:00:00Z' }} />
-        </section>
+        </div>
       </div>
     ),
   }
