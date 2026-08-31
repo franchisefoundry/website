@@ -2,6 +2,7 @@
 
 import { useState, useRef } from 'react'
 import AgreementDocument from '@/components/AgreementDocument'
+import { cn } from '@/lib/utils'
 
 interface Agreement {
   id: string
@@ -114,32 +115,21 @@ export default function TemplateEditor({ initial }: { initial: Agreement | null 
         />
       </div>
 
-      {/* Tab bar */}
-      <div className="flex gap-1 border-b border-line">
-        {(['edit', 'preview'] as const).map(t => (
-          <button
-            key={t}
-            onClick={() => setTab(t)}
-            className={`px-4 py-2 text-sm font-medium capitalize transition-colors border-b-2 -mb-px ${
-              tab === t
-                ? 'border-ff-green text-ff-green'
-                : 'border-transparent text-ink-3 hover:text-ink-2'
-            }`}
-          >
-            {t}
-          </button>
-        ))}
-        {initial && (
-          <span className="ml-auto text-xs text-ink-3 self-center pr-1">
-            Current: v{initial.version}
-          </span>
-        )}
+      {/* Mobile edit/preview toggle + version */}
+      <div className="flex items-center gap-1 border-b border-line lg:border-0 lg:pb-0">
+        <div className="flex gap-1 lg:hidden">
+          {(['edit', 'preview'] as const).map(t => (
+            <button key={t} onClick={() => setTab(t)}
+              className={`px-4 py-2 text-sm font-medium capitalize transition-colors border-b-2 -mb-px ${tab === t ? 'border-ff-green text-ff-green' : 'border-transparent text-ink-3 hover:text-ink-2'}`}>{t}</button>
+          ))}
+        </div>
+        {initial && <span className="ml-auto text-xs text-ink-3 self-center pr-1">Current: v{initial.version}</span>}
       </div>
 
-      {/* Editor / Preview */}
-      {tab === 'edit' ? (
-        <div>
-          {/* Formatting toolbar */}
+      {/* Editor + live preview, side-by-side on wide screens */}
+      <div className="grid lg:grid-cols-2 gap-4">
+        {/* Editor */}
+        <div className={cn('min-w-0', tab === 'preview' && 'hidden lg:block')}>
           <div className="flex flex-wrap items-center gap-1 border border-line border-b-0 rounded-t-lg bg-surface-2 px-2 py-1.5">
             {[
               { l: 'Title', fn: () => linePrefix('# ') },
@@ -153,25 +143,25 @@ export default function TemplateEditor({ initial }: { initial: Agreement | null 
             <button type="button" onClick={() => wrap('*')} className="text-xs italic text-ink-2 hover:text-ink hover:bg-surface rounded px-2 py-1 transition-colors">Italic</button>
             <button type="button" onClick={() => linePrefix('- ')} className="text-xs font-medium text-ink-2 hover:text-ink hover:bg-surface rounded px-2 py-1 transition-colors">List</button>
             <button type="button" onClick={() => insertBlock('\n\n---\n\n')} className="text-xs font-medium text-ink-2 hover:text-ink hover:bg-surface rounded px-2 py-1 transition-colors">Divider</button>
-            <span className="ml-auto text-[11px] text-ink-3 pr-1 hidden sm:inline">Switch to Preview to see the formatted document</span>
           </div>
           <textarea
             ref={contentRef}
             value={content}
             onChange={e => setContent(e.target.value)}
-            rows={30}
+            rows={26}
             spellCheck={false}
             placeholder={`# Franchise Agreement\n\n## 1. Parties\n\nThis agreement is between...\n\n## 2. Term\n\n...`}
             className="w-full font-mono text-sm border border-line rounded-b-lg px-4 py-3 resize-y focus:outline-none focus:ring-2 focus:ring-ff-green focus:ring-inset placeholder:text-ink-3"
           />
         </div>
-      ) : (
-        <AgreementDocument
-          title={title}
-          version={(initial?.version ?? 0) + 1}
-          content={content}
-        />
-      )}
+        {/* Live preview */}
+        <div className={cn('min-w-0', tab === 'edit' && 'hidden lg:block')}>
+          <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-ink-3 mb-1.5">Live preview</p>
+          <div className="border border-line rounded-lg overflow-y-auto" style={{ maxHeight: '38rem' }}>
+            <AgreementDocument title={title} version={(initial?.version ?? 0) + 1} content={content} />
+          </div>
+        </div>
+      </div>
 
       <p className="text-xs text-ink-3">
         Use Markdown: <code className="bg-surface-2 px-1 rounded"># Heading</code>,{' '}
