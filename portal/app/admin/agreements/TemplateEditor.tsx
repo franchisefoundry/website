@@ -19,6 +19,28 @@ export default function TemplateEditor({ initial }: { initial: Agreement | null 
   const [uploading, setUploading] = useState(false)
   const [tab, setTab] = useState<'edit' | 'preview'>('edit')
   const fileRef = useRef<HTMLInputElement>(null)
+  const contentRef = useRef<HTMLTextAreaElement>(null)
+
+  // Insert markdown at the cursor / around the selection.
+  function wrap(before: string, after = before) {
+    const ta = contentRef.current; if (!ta) return
+    const s = ta.selectionStart, e = ta.selectionEnd
+    setContent(content.slice(0, s) + before + content.slice(s, e) + after + content.slice(e))
+    requestAnimationFrame(() => { ta.focus(); ta.selectionStart = s + before.length; ta.selectionEnd = e + before.length })
+  }
+  function linePrefix(prefix: string) {
+    const ta = contentRef.current; if (!ta) return
+    const s = ta.selectionStart
+    const lineStart = content.lastIndexOf('\n', s - 1) + 1
+    setContent(content.slice(0, lineStart) + prefix + content.slice(lineStart))
+    requestAnimationFrame(() => { ta.focus(); ta.selectionStart = ta.selectionEnd = s + prefix.length })
+  }
+  function insertBlock(text: string) {
+    const ta = contentRef.current; if (!ta) return
+    const s = ta.selectionStart
+    setContent(content.slice(0, s) + text + content.slice(s))
+    requestAnimationFrame(() => { ta.focus(); ta.selectionStart = ta.selectionEnd = s + text.length })
+  }
 
   async function handleSave() {
     setSaving(true)
@@ -116,14 +138,33 @@ export default function TemplateEditor({ initial }: { initial: Agreement | null 
 
       {/* Editor / Preview */}
       {tab === 'edit' ? (
-        <textarea
-          value={content}
-          onChange={e => setContent(e.target.value)}
-          rows={32}
-          spellCheck={false}
-          placeholder={`# Franchise Agreement\n\n## 1. Parties\n\nThis agreement is between...\n\n## 2. Term\n\n...`}
-          className="w-full font-mono text-sm border border-line rounded-lg px-4 py-3 resize-y focus:outline-none focus:ring-2 focus:ring-ff-green placeholder:text-ink-3"
-        />
+        <div>
+          {/* Formatting toolbar */}
+          <div className="flex flex-wrap items-center gap-1 border border-line border-b-0 rounded-t-lg bg-surface-2 px-2 py-1.5">
+            {[
+              { l: 'Title', fn: () => linePrefix('# ') },
+              { l: 'Section', fn: () => linePrefix('## ') },
+              { l: 'Sub-section', fn: () => linePrefix('### ') },
+            ].map(b => (
+              <button key={b.l} type="button" onClick={b.fn} className="text-xs font-medium text-ink-2 hover:text-ink hover:bg-surface rounded px-2 py-1 transition-colors">{b.l}</button>
+            ))}
+            <span className="w-px h-4 bg-line mx-1" />
+            <button type="button" onClick={() => wrap('**')} className="text-xs font-bold text-ink-2 hover:text-ink hover:bg-surface rounded px-2 py-1 transition-colors">Bold</button>
+            <button type="button" onClick={() => wrap('*')} className="text-xs italic text-ink-2 hover:text-ink hover:bg-surface rounded px-2 py-1 transition-colors">Italic</button>
+            <button type="button" onClick={() => linePrefix('- ')} className="text-xs font-medium text-ink-2 hover:text-ink hover:bg-surface rounded px-2 py-1 transition-colors">List</button>
+            <button type="button" onClick={() => insertBlock('\n\n---\n\n')} className="text-xs font-medium text-ink-2 hover:text-ink hover:bg-surface rounded px-2 py-1 transition-colors">Divider</button>
+            <span className="ml-auto text-[11px] text-ink-3 pr-1 hidden sm:inline">Switch to Preview to see the formatted document</span>
+          </div>
+          <textarea
+            ref={contentRef}
+            value={content}
+            onChange={e => setContent(e.target.value)}
+            rows={30}
+            spellCheck={false}
+            placeholder={`# Franchise Agreement\n\n## 1. Parties\n\nThis agreement is between...\n\n## 2. Term\n\n...`}
+            className="w-full font-mono text-sm border border-line rounded-b-lg px-4 py-3 resize-y focus:outline-none focus:ring-2 focus:ring-ff-green focus:ring-inset placeholder:text-ink-3"
+          />
+        </div>
       ) : (
         <AgreementDocument
           title={title}
