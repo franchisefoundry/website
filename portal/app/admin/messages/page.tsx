@@ -2,14 +2,17 @@ import { createAdminClient } from '@/lib/supabase/admin'
 import { PageHeader } from '@/components/page-header'
 import { Avatar } from '@/components/ui/Avatar'
 import { formatDate } from '@/lib/utils'
+import { PlusIcon } from '@/components/icons'
 import { sendMessage } from './actions'
 
 export const dynamic = 'force-dynamic'
 
 const KIND: Record<string, string> = { franchisee: 'Franchisee', franchisor: 'Brand', introducer: 'Agent' }
 
-export default async function MessagesPage({ searchParams }: { searchParams: Promise<{ thread?: string }> }) {
-  const selected = (await searchParams).thread ?? ''
+export default async function MessagesPage({ searchParams }: { searchParams: Promise<{ thread?: string; compose?: string }> }) {
+  const sp = await searchParams
+  const selected = sp.thread ?? ''
+  const composing = sp.compose === '1'
   const admin = createAdminClient()
 
   const [{ data: messages }, { data: fes }, { data: brs }, { data: ags }] = await Promise.all([
@@ -44,7 +47,7 @@ export default async function MessagesPage({ searchParams }: { searchParams: Pro
   }
   const threads = [...threadsMap.values()].sort((a, b) => (a.at < b.at ? 1 : -1))
 
-  const activeKey = selected || threads[0]?.key || ''
+  const activeKey = composing ? '' : (selected || threads[0]?.key || '')
   const activeType = activeKey.split(':')[0]
   const activeId = activeKey.split(':')[1]
   const activeMsgs = M.filter(m => `${m.thread_type}:${m.thread_id}` === activeKey)
@@ -65,8 +68,14 @@ export default async function MessagesPage({ searchParams }: { searchParams: Pro
       <div className="grid grid-cols-1 lg:grid-cols-[300px_1fr] bg-surface border border-line rounded-2xl overflow-hidden shadow-[0_1px_2px_rgba(27,33,26,0.04)]" style={{ height: 'calc(100vh - 200px)', minHeight: 460 }}>
         {/* Thread list */}
         <div className="border-r border-line-2 overflow-y-auto">
+          <div className="sticky top-0 z-10 bg-surface/95 backdrop-blur px-3 py-2.5 border-b border-line-2">
+            <a href="/admin/messages?compose=1"
+              className={`flex items-center justify-center gap-1.5 text-sm font-medium rounded-lg px-3 py-2 transition-colors ${composing ? 'bg-ff-green text-white' : 'bg-ff-green/10 text-ff-green hover:bg-ff-green/15'}`}>
+              <PlusIcon className="w-4 h-4" /> New message
+            </a>
+          </div>
           {threads.length === 0 ? (
-            <p className="px-4 py-8 text-sm text-ink-3 text-center">No conversations yet. Start one on the right.</p>
+            <p className="px-4 py-8 text-sm text-ink-3 text-center">No conversations yet — start one with “New message” above.</p>
           ) : threads.map(t => {
             const active = t.key === activeKey
             return (
