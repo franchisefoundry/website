@@ -12,6 +12,7 @@ import FranchisorsCards, { type BrandCard } from '../admin/franchisors/Franchiso
 import { BrandLogo } from '@/components/ui/BrandLogo'
 import { FranchiseeHomeView } from '@/components/franchisee/FranchiseeHomeView'
 import { JourneyBrandCard } from '@/components/franchisee/JourneyBrandCard'
+import FranchiseeProfileForm from '../franchisee/profile/profile-form'
 import { ClientComposer } from '@/components/client/ClientComposer'
 import AgreementsTable from '../admin/agreements/AgreementsTable'
 import { AgreementSection } from '@/components/admin/AgreementSection'
@@ -103,7 +104,7 @@ const agmtFranchisors: any[] = [
 const NAV: [string, string][] = [
   ['profile', 'Brand profile'], ['candidates', 'Candidates'], ['pipeline', 'Pipeline'],
   ['performance', 'Performance'], ['brand-agreement', 'Brand · Agreement'], ['messages', 'Messages'], ['admin', 'Admin home'], ['admin-brands', 'Admin · Brands'], ['admin-messages', 'Admin · Messages'], ['admin-agreements', 'Admin · Agreements'],
-  ['fee', 'Franchisee · Home'], ['fee-journey', 'Franchisee · My Journey'], ['fee-start', 'Franchisee · Start'],
+  ['fee', 'Franchisee · Home'], ['fee-journey', 'Franchisee · My Journey'], ['fee-profile', 'Franchisee · Profile'], ['fee-start', 'Franchisee · Start'],
 ]
 
 const feePrimary: any = { id: 'm1', pipeline_stage: 'meeting_booked', franchisor_notes: 'Great fit on budget and location — I\'ve asked the brand to hold a call slot next week. Have a think about the questions you\'d like to cover.', franchisor_profiles: { id: 'b1', brand_name: 'Zambrero', category: 'Quick Service · Mexican', teaser: 'A purpose-led Mexican QSR with proven UK unit economics and full training and site support.', investment_display: '£150,000 – £300,000', timeline_months: 6, operator_model: 'owner-operator', experience_required: 'none' } }
@@ -255,6 +256,14 @@ export default async function DesignPreview({ searchParams }: { searchParams: Pr
         attention={{ heading: 'Your intro meeting is booked — prepare now', body: 'Think about what you want from this meeting — day-to-day operations, investment returns and support are all fair game.' }}
         kpis={[{ n: 3, l: 'Brands matched' }, { n: 1, l: "You're interested" }, { n: 1, l: 'Intros arranged' }, { n: 80, l: 'Profile complete', suffix: '%' }]}
         completeness={80} />
+    ),
+    'fee-profile': (
+      <div className="max-w-4xl">
+        <PageHeader title="My profile & settings" description="Keep this up to date so your matches stay relevant." />
+        <FranchiseeProfileForm
+          profile={{ id: 'preview-fee', full_name: 'Alex Rivera', phone: '' } as any}
+          franchiseeProfile={{ investment_min: 80000, investment_max: 180000, liquid_capital: 60000, preferred_locations: ['manchester', 'leeds'], operator_model: 'owner-operator', experience: '', full_time_available: true, multi_site_interest: false, timeline_months: 9, sectors: ['food-beverage'], format_types: ['dine-in'], goals: '' } as any} />
+      </div>
     ),
     'fee-start': (
       <FranchiseeHomeView firstName="Alex" profileExists hasPrimaryBrand={false} stageIndex={-1}
