@@ -11,6 +11,14 @@ export interface AgreementInfo {
   signed_pdf_path?: string | null
 }
 
+export interface AgreementComment {
+  id: string
+  body: string
+  section_ref: string | null
+  created_at: string
+  author_name: string
+}
+
 function statusPill(status: string) {
   if (status === 'signed') return <span className="inline-flex items-center text-xs font-medium text-ff-green bg-ff-green-soft border border-ff-green/20 px-2.5 py-0.5 rounded-full">Signed</span>
   if (status === 'sent') return <span className="inline-flex items-center text-xs font-medium text-amber-700 bg-amber-50 border border-amber-200 px-2.5 py-0.5 rounded-full">Awaiting signature</span>
@@ -19,7 +27,7 @@ function statusPill(status: string) {
 
 /** Agreement detail on a brand record — status, sent/signed timeline, download,
  *  and the comments slot. Sending/resending stays in the record header action. */
-export function AgreementSection({ agreement }: { agreement: AgreementInfo | null }) {
+export function AgreementSection({ agreement, comments = [] }: { agreement: AgreementInfo | null; comments?: AgreementComment[] }) {
   const status = agreement?.status ?? 'not_sent'
   const steps = [
     { label: 'Sent', done: !!agreement?.sent_at, date: agreement?.sent_at },
@@ -61,10 +69,25 @@ export function AgreementSection({ agreement }: { agreement: AgreementInfo | nul
         </>
       )}
 
-      {/* Comments — the brand's queries on the agreement */}
+      {/* Comments — the brand's queries on the agreement (from agreement_comments) */}
       <div className="mt-5 pt-4 border-t border-line-2">
-        <p className="text-[10px] font-bold text-ink-3 uppercase tracking-wide mb-2">Comments</p>
-        <p className="text-xs text-ink-3">No comments yet. Queries the brand raises on the agreement will appear here once the e-signature review flow is live.</p>
+        <p className="text-[10px] font-bold text-ink-3 uppercase tracking-wide mb-2">Comments{comments.length > 0 ? ` (${comments.length})` : ''}</p>
+        {comments.length === 0 ? (
+          <p className="text-xs text-ink-3">No comments yet. Queries the brand raises on the agreement appear here for you to review and address.</p>
+        ) : (
+          <ul className="space-y-3">
+            {comments.map(c => (
+              <li key={c.id}>
+                <div className="flex items-center gap-2 mb-0.5 flex-wrap">
+                  <span className="text-xs font-semibold text-ink">{c.author_name}</span>
+                  {c.section_ref && <span className="text-[10px] font-medium text-ff-gold-ink bg-ff-gold-soft rounded px-1.5 py-0.5">on {c.section_ref}</span>}
+                  <span className="text-[10px] text-ink-3">{formatDate(c.created_at)}</span>
+                </div>
+                <p className="text-xs text-ink-2 leading-relaxed">{c.body}</p>
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
     </Section>
   )
