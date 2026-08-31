@@ -17,6 +17,7 @@ import AgreementsTable from '../admin/agreements/AgreementsTable'
 import { AgreementSection } from '@/components/admin/AgreementSection'
 import TemplateEditor from '../admin/agreements/TemplateEditor'
 import { Avatar } from '@/components/ui/Avatar'
+import AgreementView from '../franchisor/agreement/AgreementView'
 
 const BRAND_LOGO = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='8' fill='%233a4a3a'/%3E%3Ctext x='20' y='27' font-size='20' fill='%23c8924a' text-anchor='middle' font-family='sans-serif' font-weight='bold'%3EZ%3C/text%3E%3C/svg%3E"
 import { PipelineBoard, type PipelineCard } from '@/components/franchisor/PipelineBoard'
@@ -101,7 +102,7 @@ const agmtFranchisors: any[] = [
 
 const NAV: [string, string][] = [
   ['profile', 'Brand profile'], ['candidates', 'Candidates'], ['pipeline', 'Pipeline'],
-  ['performance', 'Performance'], ['messages', 'Messages'], ['admin', 'Admin home'], ['admin-brands', 'Admin · Brands'], ['admin-messages', 'Admin · Messages'], ['admin-agreements', 'Admin · Agreements'],
+  ['performance', 'Performance'], ['brand-agreement', 'Brand · Agreement'], ['messages', 'Messages'], ['admin', 'Admin home'], ['admin-brands', 'Admin · Brands'], ['admin-messages', 'Admin · Messages'], ['admin-agreements', 'Admin · Agreements'],
   ['fee', 'Franchisee · Home'], ['fee-journey', 'Franchisee · My Journey'], ['fee-start', 'Franchisee · Start'],
 ]
 
@@ -154,6 +155,18 @@ export default async function DesignPreview({ searchParams }: { searchParams: Pr
       <div className="max-w-4xl">
         <PageHeader title="Performance" description="How your brand is doing across the recruitment funnel." />
         <PerformanceView kpis={perfKpis} funnel={perfFunnel} />
+      </div>
+    ),
+    'brand-agreement': (
+      <div>
+        <PageHeader title="Your agreement" description="Review, comment on and e-sign your Franchise Foundry franchise agreement." />
+        <AgreementView
+          franchisorAgreement={{ id: 'a1', status: 'sent', sent_at: '2026-08-22T11:00:00Z', signed_at: null, signer_name: null, signed_pdf_path: null }}
+          agreementTitle="Master Franchise Agreement"
+          agreementVersion={3}
+          agreementContent={'# Master Franchise Agreement\n\n## 1. Parties\n\nThis agreement is made between Franchise Foundry Ltd and the Franchisee.\n\n## 2. Grant of Franchise\n\nThe Franchisor grants the Franchisee the right to operate under the brand for the term set out below.\n\n## 3. Term\n\nThe initial term is five (5) years, renewable by mutual agreement.\n\n## 4. Territory\n\nThe Franchisee is granted an exclusive territory as defined in Schedule A.\n\n## 5. Fees\n\nAn initial franchise fee is payable on signing, followed by ongoing royalties as set out in Schedule B.'}
+          comments={[{ id: 'c1', body: 'Can we clarify the territory exclusivity radius in section 4? We assumed 3 miles.', section_ref: 'Section 4 — Territory', resolved: false, created_at: '2026-08-23T10:00:00Z', author_id: 'u1' }]}
+          userFullName="Ben Ortiz" />
       </div>
     ),
     messages: (
