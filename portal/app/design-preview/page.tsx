@@ -18,7 +18,8 @@ import { AgreementSection } from '@/components/admin/AgreementSection'
 import TemplateEditor from '../admin/agreements/TemplateEditor'
 import { SendWorkflow } from '@/components/admin/agreements/SendWorkflow'
 import { AgreementsList, type AgreementRow } from '@/components/admin/agreements/AgreementsList'
-import { SendIcon, ArchiveIcon } from '@/components/icons'
+import { SendIcon, ArchiveIcon, LeadsIcon, MatchIcon, PartnerIcon } from '@/components/icons'
+import { AgentHomeView, type AgentKpi } from '@/components/introducer/AgentHomeView'
 import { Avatar } from '@/components/ui/Avatar'
 import AgreementView from '../franchisor/agreement/AgreementView'
 
@@ -92,6 +93,20 @@ const adminBrands: BrandCard[] = [
 ]
 
 const feeUser: any = { id: 'preview-fee', role: 'franchisee', full_name: 'Alex Rivera', email: 'alex@example.com', avatar_url: null, setup_complete: true }
+const agentUser: any = { id: 'preview-agent', role: 'introducer', full_name: 'Jordan Blake', email: 'jordan@example.com', avatar_url: null, setup_complete: true }
+
+const agentKpis: AgentKpi[] = [
+  { label: 'Total leads', value: 24, sub: 'all time', icon: <LeadsIcon className="w-5 h-5 text-ink-2" />, iconBg: 'bg-surface-2' },
+  { label: 'Active pipeline', value: 9, sub: 'in progress', icon: <MatchIcon className="w-5 h-5 text-[#3b62c4]" />, iconBg: 'bg-[#eff4ff]' },
+  { label: 'Signed', value: 5, sub: 'agreements', icon: <AgreementIcon className="w-5 h-5 text-ff-green" />, iconBg: 'bg-ff-green-soft' },
+  { label: 'Commission earned', value: '£4,250.00', sub: 'paid to date', icon: <PartnerIcon className="w-5 h-5 text-ff-gold-ink" />, iconBg: 'bg-ff-gold-soft' },
+]
+const agentCounts: Record<string, number> = { submitted: 24, invited: 12, registered: 8, matched: 6, intro_made: 3, signed: 4, paid: 1, rejected: 2 }
+const agentLeads = [
+  { id: 'l1', first_name: 'Sarah', last_name: 'Kelly', status: 'matched', created_at: '2026-08-28T09:00:00Z' },
+  { id: 'l2', first_name: 'Tom', last_name: 'Reyes', status: 'invited', created_at: '2026-08-27T09:00:00Z' },
+  { id: 'l3', first_name: 'Priya', last_name: 'Shah', status: 'signed', created_at: '2026-08-25T09:00:00Z' },
+]
 
 const sendBrands = [
   { id: 'b1', name: 'Zambrero', email: 'ben@zambrero.co.uk', hasAgreement: true },
@@ -108,6 +123,7 @@ const NAV: [string, string][] = [
   ['profile', 'Brand profile'], ['candidates', 'Candidates'], ['pipeline', 'Pipeline'],
   ['performance', 'Performance'], ['brand-agreement', 'Brand · Agreement'], ['messages', 'Messages'], ['admin', 'Admin home'], ['admin-brands', 'Admin · Brands'], ['admin-messages', 'Admin · Messages'], ['admin-agreements', 'Admin · Agreements'],
   ['fee', 'Franchisee · Home'], ['fee-journey', 'Franchisee · My Journey'], ['fee-profile', 'Franchisee · Profile'], ['fee-start', 'Franchisee · Start'],
+  ['agent', 'Agent · Home'],
 ]
 
 const feePrimary: any = { id: 'm1', pipeline_stage: 'meeting_booked', franchisor_notes: 'Great fit on budget and location — I\'ve asked the brand to hold a call slot next week. Have a think about the questions you\'d like to cover.', franchisor_profiles: { id: 'b1', brand_name: 'Zambrero', category: 'Quick Service · Mexican', teaser: 'A purpose-led Mexican QSR with proven UK unit economics and full training and site support.', investment_display: '£150,000 – £300,000', timeline_months: 6, operator_model: 'owner-operator', experience_required: 'none' } }
@@ -183,6 +199,7 @@ export default async function DesignPreview({ searchParams }: { searchParams: Pr
 
   const isAdmin = view.startsWith('admin')
   const isFee = view.startsWith('fee')
+  const isAgent = view === 'agent'
   const adminScreens: Record<string, React.ReactNode> = {
     admin: <AdminHomeView greeting="Good afternoon" firstName="Ben" kpis={adminKpis} actions={adminActions} feed={adminFeed} />,
     'admin-brands': (
@@ -296,16 +313,17 @@ export default async function DesignPreview({ searchParams }: { searchParams: Pr
       </div>
     ),
   }
-  const sidebarProfile = isAdmin ? adminUser : isFee ? feeUser : brandOwner
+  const sidebarProfile = isAdmin ? adminUser : isAgent ? agentUser : isFee ? feeUser : brandOwner
+  const isClientRole = isAdmin || isFee || isAgent
   return (
     <div className="flex min-h-screen">
       <NavSidebar profile={sidebarProfile}
-        brands={isAdmin || isFee ? undefined : [{ id: 'preview-brand', brand_name: 'Zambrero', status: 'active' }]}
-        activeBrandId={isAdmin || isFee ? undefined : 'preview-brand'} adminPreview={false} />
+        brands={isClientRole ? undefined : [{ id: 'preview-brand', brand_name: 'Zambrero', status: 'active' }]}
+        activeBrandId={isClientRole ? undefined : 'preview-brand'} adminPreview={false} />
       <main className="flex-1 overflow-auto pt-14 md:pt-0">
         <div className="p-4 md:p-8">
           <PreviewNav active={view} />
-          {isAdmin ? adminScreens[view] : isFee ? feeScreens[view] : franchisorScreens[view]}
+          {isAdmin ? adminScreens[view] : isAgent ? <AgentHomeView firstName="Jordan" kpis={agentKpis} counts={agentCounts} recentLeads={agentLeads} rejectedCount={2} /> : isFee ? feeScreens[view] : franchisorScreens[view]}
         </div>
       </main>
     </div>
