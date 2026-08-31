@@ -52,11 +52,11 @@ export default async function FranchisorDetailPage({ params }: Props) {
   ])
 
   // Agreement comments (the brand's queries raised on the agreement)
-  let agreementComments: { id: string; body: string; section_ref: string | null; created_at: string; author_name: string }[] = []
+  let agreementComments: { id: string; body: string; section_ref: string | null; created_at: string; author_name: string; resolved: boolean }[] = []
   if (franchisorAgreement?.id) {
     const { data: rawComments } = await admin
       .from('agreement_comments')
-      .select('id, body, section_ref, created_at, author_id')
+      .select('id, body, section_ref, created_at, author_id, resolved')
       .eq('franchisor_agreement_id', franchisorAgreement.id)
       .order('created_at', { ascending: false })
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -64,7 +64,7 @@ export default async function FranchisorDetailPage({ params }: Props) {
     const { data: authors } = authorIds.length ? await admin.from('profiles').select('id, full_name').in('id', authorIds) : { data: [] }
     const nameMap = Object.fromEntries((authors ?? []).map(a => [a.id, a.full_name ?? 'Unknown']))
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    agreementComments = (rawComments ?? []).map((c: any) => ({ id: c.id, body: c.body, section_ref: c.section_ref, created_at: c.created_at, author_name: nameMap[c.author_id] ?? 'Brand' }))
+    agreementComments = (rawComments ?? []).map((c: any) => ({ id: c.id, body: c.body, section_ref: c.section_ref, created_at: c.created_at, author_name: nameMap[c.author_id] ?? 'Brand', resolved: !!c.resolved }))
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

@@ -1,6 +1,9 @@
 import { Section } from '@/components/crm/Section'
 import { formatDate, timeAgo } from '@/lib/utils'
 import { CheckIcon } from '@/components/icons'
+import { AgreementComments, type AgreementComment } from '@/components/admin/agreements/AgreementComments'
+
+export type { AgreementComment }
 
 export interface AgreementInfo {
   id?: string
@@ -9,14 +12,6 @@ export interface AgreementInfo {
   signed_at?: string | null
   signer_name?: string | null
   signed_pdf_path?: string | null
-}
-
-export interface AgreementComment {
-  id: string
-  body: string
-  section_ref: string | null
-  created_at: string
-  author_name: string
 }
 
 function statusPill(status: string) {
@@ -69,25 +64,10 @@ export function AgreementSection({ agreement, comments = [] }: { agreement: Agre
         </>
       )}
 
-      {/* Comments — the brand's queries on the agreement (from agreement_comments) */}
+      {/* Comments (redlines) — the brand's queries, with resolve/reopen */}
       <div className="mt-5 pt-4 border-t border-line-2">
         <p className="text-[10px] font-bold text-ink-3 uppercase tracking-wide mb-2">Comments{comments.length > 0 ? ` (${comments.length})` : ''}</p>
-        {comments.length === 0 ? (
-          <p className="text-xs text-ink-3">No comments yet. Queries the brand raises on the agreement appear here for you to review and address.</p>
-        ) : (
-          <ul className="space-y-3">
-            {comments.map(c => (
-              <li key={c.id}>
-                <div className="flex items-center gap-2 mb-0.5 flex-wrap">
-                  <span className="text-xs font-semibold text-ink">{c.author_name}</span>
-                  {c.section_ref && <span className="text-[10px] font-medium text-ff-gold-ink bg-ff-gold-soft rounded px-1.5 py-0.5">on {c.section_ref}</span>}
-                  <span className="text-[10px] text-ink-3">{formatDate(c.created_at)}</span>
-                </div>
-                <p className="text-xs text-ink-2 leading-relaxed">{c.body}</p>
-              </li>
-            ))}
-          </ul>
-        )}
+        <AgreementComments comments={comments} />
       </div>
     </Section>
   )
