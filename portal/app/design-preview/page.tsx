@@ -247,8 +247,8 @@ export default async function DesignPreview({ searchParams }: { searchParams: Pr
           <AgreementSection
             agreement={{ id: 'a2', status: 'sent', sent_at: '2026-08-22T11:00:00Z', signed_at: null, signer_name: null, signed_pdf_path: null }}
             comments={[
-              { id: 'c1', body: 'Can we clarify the territory exclusivity radius in section 4? We assumed 3 miles.', section_ref: 'Section 4 — Territory', created_at: '2026-08-23T10:00:00Z', author_name: 'Ben Ortiz' },
-              { id: 'c2', body: 'Fee schedule looks good, no changes needed there.', section_ref: null, created_at: '2026-08-23T10:04:00Z', author_name: 'Ben Ortiz' },
+              { id: 'c1', body: 'Can we clarify the territory exclusivity radius in section 4? We assumed 3 miles.', section_ref: 'Section 4 — Territory', created_at: '2026-08-23T10:00:00Z', author_name: 'Ben Ortiz', resolved: false },
+              { id: 'c2', body: 'Fee schedule looks good, no changes needed there.', section_ref: null, created_at: '2026-08-23T10:04:00Z', author_name: 'Ben Ortiz', resolved: true },
             ]} />
         </div>
       </div>
