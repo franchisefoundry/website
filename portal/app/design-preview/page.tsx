@@ -169,7 +169,7 @@ export default async function DesignPreview({ searchParams }: { searchParams: Pr
           agreementTitle="Master Franchise Agreement"
           agreementVersion={3}
           agreementContent={'# Master Franchise Agreement\n\n## 1. Parties\n\nThis agreement is made between Franchise Foundry Ltd and the Franchisee.\n\n## 2. Grant of Franchise\n\nThe Franchisor grants the Franchisee the right to operate under the brand for the term set out below.\n\n## 3. Term\n\nThe initial term is five (5) years, renewable by mutual agreement.\n\n## 4. Territory\n\nThe Franchisee is granted an exclusive territory as defined in Schedule A.\n\n## 5. Fees\n\nAn initial franchise fee is payable on signing, followed by ongoing royalties as set out in Schedule B.'}
-          comments={[{ id: 'c1', body: 'Can we clarify the territory exclusivity radius in section 4? We assumed 3 miles.', section_ref: 'Section 4 — Territory', resolved: false, created_at: '2026-08-23T10:00:00Z', author_id: 'u1' }]}
+          comments={[{ id: 'c1', body: 'Can we clarify the territory exclusivity radius in section 4? We assumed 3 miles.', section_ref: 'Section 4 — Territory', resolved: true, created_at: '2026-08-23T10:00:00Z', author_id: 'u1', admin_reply: 'We can reduce the exclusivity radius to 3 miles — reflected in the current version.', admin_reply_at: '2026-08-23T12:30:00Z' }]}
           userFullName="Ben Ortiz" />
       </div>
     ),
@@ -250,8 +250,8 @@ export default async function DesignPreview({ searchParams }: { searchParams: Pr
           <AgreementSection
             agreement={{ id: 'a2', status: 'sent', sent_at: '2026-08-22T11:00:00Z', signed_at: null, signer_name: null, signed_pdf_path: null }}
             comments={[
-              { id: 'c1', body: 'Can we clarify the territory exclusivity radius in section 4? We assumed 3 miles.', section_ref: 'Section 4 — Territory', created_at: '2026-08-23T10:00:00Z', author_name: 'Ben Ortiz', resolved: false },
-              { id: 'c2', body: 'Fee schedule looks good, no changes needed there.', section_ref: null, created_at: '2026-08-23T10:04:00Z', author_name: 'Ben Ortiz', resolved: true },
+              { id: 'c1', body: 'Can we clarify the territory exclusivity radius in section 4? We assumed 3 miles.', section_ref: 'Section 4 — Territory', created_at: '2026-08-23T10:00:00Z', author_name: 'Ben Ortiz', resolved: false, admin_reply: null, admin_reply_at: null },
+              { id: 'c2', body: 'Fee schedule looks good, no changes needed there.', section_ref: null, created_at: '2026-08-23T10:04:00Z', author_name: 'Ben Ortiz', resolved: true, admin_reply: 'Confirmed — no changes needed there.', admin_reply_at: '2026-08-23T12:00:00Z' },
             ]} />
         </div>
       </div>
