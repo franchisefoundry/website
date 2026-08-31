@@ -1,7 +1,9 @@
 import { createAdminClient } from '@/lib/supabase/admin'
 import { PageHeader } from '@/components/page-header'
+import { SettingsTabs } from '@/components/SettingsTabs'
 import TemplateEditor from './TemplateEditor'
 import AgreementsTable from './AgreementsTable'
+import { AgreementIcon, QuestionnaireIcon } from '@/components/icons'
 
 export default async function AdminAgreementsPage() {
   const admin = createAdminClient()
@@ -13,7 +15,7 @@ export default async function AdminAgreementsPage() {
     .eq('is_current', true)
     .order('version', { ascending: false })
     .limit(1)
-    .single()
+    .maybeSingle()
 
   // Fetch all franchisor agreements with profile info
   const { data: franchisorAgreements } = await admin
@@ -30,34 +32,37 @@ export default async function AdminAgreementsPage() {
     .select('id, brand_name, user_id, profiles(full_name, email)')
     .order('created_at', { ascending: false })
 
+  const tabs = [
+    {
+      id: 'active', label: 'Active agreements', icon: <AgreementIcon className="w-4 h-4" />,
+      content: (
+        <div>
+          <p className="text-sm text-ink-3 mb-4">Send a new agreement, track signatures, and open any brand&apos;s agreement to review or edit it.</p>
+          <AgreementsTable
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            franchisorAgreements={(franchisorAgreements ?? []) as any}
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            allFranchisors={(allFranchisors ?? []) as any}
+            hasTemplate={!!agreement}
+          />
+        </div>
+      ),
+    },
+    {
+      id: 'template', label: 'Template', icon: <QuestionnaireIcon className="w-4 h-4" />,
+      content: (
+        <div>
+          <p className="text-sm text-ink-3 mb-4">Upload a Word doc or edit the master agreement here. Every save creates a new version — brands always sign the version current at the time of sending.</p>
+          <TemplateEditor initial={agreement ?? null} />
+        </div>
+      ),
+    },
+  ]
+
   return (
-    <div className="space-y-10">
-      <PageHeader
-        title="Agreements"
-        description="Manage the master franchise agreement template and track signatures."
-      />
-
-      {/* Send + active agreements */}
-      <section>
-        <h2 className="text-base font-semibold text-ink mb-1">Active agreements</h2>
-        <p className="text-sm text-ink-3 mb-4">Send a new agreement, track signatures, and open any brand&apos;s agreement to review or edit it.</p>
-        <AgreementsTable
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          franchisorAgreements={(franchisorAgreements ?? []) as any}
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          allFranchisors={(allFranchisors ?? []) as any}
-          hasTemplate={!!agreement}
-        />
-      </section>
-
-      {/* Template editor */}
-      <section>
-        <h2 className="text-base font-semibold text-ink mb-1">Agreement template</h2>
-        <p className="text-sm text-ink-3 mb-4">
-          Edit the master agreement below. Every save creates a new version — franchisors always sign the version current at the time of sending.
-        </p>
-        <TemplateEditor initial={agreement ?? null} />
-      </section>
+    <div>
+      <PageHeader title="Agreements" description="Send and track agreements, and manage the master template." />
+      <SettingsTabs tabs={tabs} orientation="top" />
     </div>
   )
 }
