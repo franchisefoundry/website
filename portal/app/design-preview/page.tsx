@@ -15,9 +15,9 @@ import { JourneyBrandCard } from '@/components/franchisee/JourneyBrandCard'
 import FranchiseeProfileForm from '../franchisee/profile/profile-form'
 import { ClientComposer } from '@/components/client/ClientComposer'
 import { AgreementSection } from '@/components/admin/AgreementSection'
-import TemplateEditor from '../admin/agreements/TemplateEditor'
 import { SendWorkflow } from '@/components/admin/agreements/SendWorkflow'
 import { AgreementsList, type AgreementRow } from '@/components/admin/agreements/AgreementsList'
+import { TemplatesManager, type TemplateFull } from '@/components/admin/agreements/TemplatesManager'
 import { SendIcon, ArchiveIcon, LeadsIcon, MatchIcon, PartnerIcon } from '@/components/icons'
 import { AgentHomeView, type AgentKpi } from '@/components/introducer/AgentHomeView'
 import { Avatar } from '@/components/ui/Avatar'
@@ -113,6 +113,12 @@ const sendBrands = [
   { id: 'b2', name: 'Sides', email: 'ops@sides.co.uk', hasAgreement: true },
   { id: 'b3', name: 'Coffee & Co', email: 'sam@coffeeco.uk', hasAgreement: false },
 ]
+const previewTemplates: TemplateFull[] = [
+  { id: 't1', title: 'Master Franchise Agreement', name: 'Master Franchise Agreement', template_key: 'master', version: 3, updated_at: '2026-08-20T09:00:00Z', content: '# Master Franchise Agreement\n\n## 1. Parties\n\nThis agreement is made between Franchise Foundry Ltd and the Franchisee.\n\n## 2. Grant of Franchise\n\nThe Franchisor grants the Franchisee the right to operate under the brand.\n\n## 3. Term\n\nThe initial term is five (5) years.\n\n## 4. Territory\n\nThe Franchisee is granted an exclusive territory as defined in Schedule A.' },
+  { id: 't2', title: 'Multi-Unit Agreement', name: 'Multi-Unit Agreement', template_key: 'multi-unit', version: 1, updated_at: '2026-08-24T09:00:00Z', content: '# Multi-Unit Development Agreement\n\n## 1. Parties\n\n...\n\n## 2. Development Schedule\n\nThe Developer agrees to open a minimum number of units per the schedule in Schedule A.' },
+]
+const previewSendTemplates = previewTemplates.map(t => ({ id: t.id, name: t.name, version: t.version }))
+
 const agRows: AgreementRow[] = [
   { id: 'a1', brandId: 'b1', brandName: 'Zambrero', email: 'ben@zambrero.co.uk', status: 'signed', sent_at: '2026-08-10T09:00:00Z', signed_at: '2026-08-14T16:20:00Z', signer_name: 'Ben Ortiz', signed_pdf_path: 'x', openComments: 0 },
   { id: 'a2', brandId: 'b2', brandName: 'Sides', email: 'ops@sides.co.uk', status: 'sent', sent_at: '2026-08-22T11:00:00Z', signed_at: null, signer_name: null, signed_pdf_path: null, openComments: 2 },
@@ -250,13 +256,13 @@ export default async function DesignPreview({ searchParams }: { searchParams: Pr
         <PageHeader title="Agreements" description="Send and track franchise agreements, manage templates, and store signed copies." />
         <SettingsTabs orientation="top" tabs={[
           { id: 'send', label: 'Send', icon: <SendIcon className="w-4 h-4" />, content: (
-            <div><p className="text-sm text-ink-3 mb-4">Send an agreement to a brand in three quick steps.</p><SendWorkflow brands={sendBrands} templateTitle="Master Franchise Agreement" templateVersion={3} hasTemplate /></div>
+            <div><p className="text-sm text-ink-3 mb-4">Choose the brand, pick a template, and send.</p><SendWorkflow brands={sendBrands} templates={previewSendTemplates} hasTemplate /></div>
           ) },
           { id: 'active', label: 'Active', icon: <AgreementIcon className="w-4 h-4" />, content: (
             <div><p className="text-sm text-ink-3 mb-4">Agreements out for signature. Ones with open brand comments are grouped first.</p><AgreementsList agreements={agRows} mode="active" /></div>
           ) },
           { id: 'templates', label: 'Templates', icon: <QuestionnaireIcon className="w-4 h-4" />, content: (
-            <div><p className="text-sm text-ink-3 mb-4">Upload a Word doc or edit the master agreement. Every save creates a new version.</p><TemplateEditor initial={{ id: 't1', title: 'Master Franchise Agreement', content: '# Master Franchise Agreement\n\n## 1. Parties\n\nThis agreement is made between Franchise Foundry Ltd and the Franchisee.\n\n## 2. Grant of Franchise\n\nThe Franchisor grants the Franchisee the right to operate under the brand.\n\n## 3. Term\n\nThe initial term is five (5) years.\n\n## 4. Territory\n\nThe Franchisee is granted an exclusive territory as defined in Schedule A.', version: 3, updated_at: '2026-08-20T09:00:00Z' }} /></div>
+            <div><p className="text-sm text-ink-3 mb-4">Create and edit templates — pick which one to send in the Send tab.</p><TemplatesManager templates={previewTemplates} /></div>
           ) },
           { id: 'archive', label: 'Archive', icon: <ArchiveIcon className="w-4 h-4" />, content: (
             <div><p className="text-sm text-ink-3 mb-4">Signed and executed agreements — downloadable as PDF.</p><AgreementsList agreements={agRows} mode="archive" /></div>
