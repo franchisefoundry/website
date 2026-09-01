@@ -11,31 +11,34 @@ export interface SendableBrand {
   hasAgreement: boolean
 }
 
+export interface SendableTemplate { id: string; name: string; version: number }
+
 const STEPS = ['Choose brand', 'Confirm template', 'Send'] as const
 
 /** Guided workflow for sending a franchise agreement to a brand. */
-export function SendWorkflow({ brands, templateTitle, templateVersion, hasTemplate }: {
+export function SendWorkflow({ brands, templates, hasTemplate }: {
   brands: SendableBrand[]
-  templateTitle: string
-  templateVersion: number
+  templates: SendableTemplate[]
   hasTemplate: boolean
 }) {
   const [step, setStep] = useState(0)
   const [search, setSearch] = useState('')
   const [selectedId, setSelectedId] = useState<string | null>(null)
+  const [templateId, setTemplateId] = useState<string>(templates[0]?.id ?? '')
   const [sending, setSending] = useState(false)
   const [done, setDone] = useState(false)
 
   const selected = brands.find(b => b.id === selectedId) ?? null
+  const template = templates.find(t => t.id === templateId) ?? templates[0] ?? null
   const filtered = brands.filter(b => !search.trim() || b.name.toLowerCase().includes(search.toLowerCase()) || (b.email ?? '').toLowerCase().includes(search.toLowerCase()))
 
   async function send() {
-    if (!selectedId) return
+    if (!selectedId || !templateId) return
     setSending(true)
     try {
       const res = await fetch('/api/admin/agreements/send', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ franchisorProfileId: selectedId }),
+        body: JSON.stringify({ franchisorProfileId: selectedId, templateId }),
       })
       const d = await res.json()
       if (!res.ok) { alert(d.error ?? 'Failed to send'); return }
@@ -58,7 +61,7 @@ export function SendWorkflow({ brands, templateTitle, templateVersion, hasTempla
       <div className="bg-surface border border-line rounded-2xl p-8 text-center shadow-[0_1px_2px_rgba(27,33,26,0.05)] max-w-xl">
         <div className="w-12 h-12 rounded-full bg-ff-green/10 text-ff-green flex items-center justify-center mx-auto mb-4"><CheckIcon className="w-6 h-6" /></div>
         <p className="text-base font-bold text-ink">Agreement sent to {selected.name}</p>
-        <p className="text-sm text-ink-2 mt-1 max-w-sm mx-auto">They&apos;ll be notified to review, comment on and e-sign {templateTitle} (v{templateVersion}). Track it in the Active tab.</p>
+        <p className="text-sm text-ink-2 mt-1 max-w-sm mx-auto">They&apos;ll be notified to review, comment on and e-sign {template?.name ?? 'the agreement'}{template ? ` (v${template.version})` : ''}. Track it in the Active tab.</p>
         <button onClick={() => { setDone(false); setStep(0); setSelectedId(null); setSearch('') }} className="mt-5 text-sm font-medium text-ff-green hover:underline">Send another →</button>
       </div>
     )
@@ -115,17 +118,28 @@ export function SendWorkflow({ brands, templateTitle, templateVersion, hasTempla
 
         {step === 1 && selected && (
           <div>
-            <h3 className="text-base font-bold text-ink mb-1">Confirm and send</h3>
-            <p className="text-xs text-ink-2 mb-4">Review before sending. {selected.name} will be able to read, comment on and e-sign it.</p>
+            <h3 className="text-base font-bold text-ink mb-1">Choose the template and send</h3>
+            <p className="text-xs text-ink-2 mb-4">Pick which agreement to send. {selected.name} will be able to read, comment on and e-sign it.</p>
+            <div className="mb-4">
+              <label className="block text-xs font-medium text-ink-2 mb-1.5">Template</label>
+              {templates.length === 0 ? (
+                <p className="text-xs text-ff-gold-ink bg-ff-gold-soft border border-[#e6cfa6] rounded-lg px-3 py-2">No templates yet — create one in the Templates tab.</p>
+              ) : (
+                <select value={templateId} onChange={e => setTemplateId(e.target.value)}
+                  className="w-full text-sm border border-line rounded-xl px-3 py-2.5 bg-surface-2 text-ink focus:bg-surface focus:outline-none focus:ring-2 focus:ring-ff-green/30">
+                  {templates.map(t => <option key={t.id} value={t.id}>{t.name} · v{t.version}</option>)}
+                </select>
+              )}
+            </div>
             <dl className="rounded-xl border border-line divide-y divide-line-2 mb-4">
               <div className="flex justify-between px-4 py-3 text-sm"><dt className="text-ink-3">Brand</dt><dd className="font-medium text-ink">{selected.name}</dd></div>
               <div className="flex justify-between px-4 py-3 text-sm"><dt className="text-ink-3">Recipient</dt><dd className="font-medium text-ink">{selected.email ?? '—'}</dd></div>
-              <div className="flex justify-between px-4 py-3 text-sm"><dt className="text-ink-3">Document</dt><dd className="font-medium text-ink">{templateTitle} · v{templateVersion}</dd></div>
+              <div className="flex justify-between px-4 py-3 text-sm"><dt className="text-ink-3">Document</dt><dd className="font-medium text-ink">{template ? `${template.name} · v${template.version}` : '—'}</dd></div>
             </dl>
             {selected.hasAgreement && <p className="text-xs text-ff-gold-ink bg-ff-gold-soft border border-[#e6cfa6] rounded-lg px-3 py-2 mb-4">This brand already has an agreement on file — sending will re-issue the current template version.</p>}
             <div className="flex items-center justify-between">
               <button onClick={() => setStep(0)} className="text-sm font-medium text-ink-2 hover:text-ink">‹ Back</button>
-              <button disabled={sending} onClick={send} className="inline-flex items-center gap-1.5 bg-ff-green text-white text-sm font-medium px-5 py-2 rounded-xl disabled:opacity-50 hover:brightness-110 transition-all">{sending ? 'Sending…' : 'Send agreement'}</button>
+              <button disabled={sending || !templateId} onClick={send} className="inline-flex items-center gap-1.5 bg-ff-green text-white text-sm font-medium px-5 py-2 rounded-xl disabled:opacity-50 hover:brightness-110 transition-all">{sending ? 'Sending…' : 'Send agreement'}</button>
             </div>
           </div>
         )}

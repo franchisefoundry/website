@@ -11,17 +11,15 @@ export async function POST(req: NextRequest) {
   const { data: profile } = await supabase.from('profiles').select('role').eq('id', user.id).single()
   if (profile?.role !== 'admin') return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
 
-  const { franchisorProfileId } = await req.json()
+  const { franchisorProfileId, templateId } = await req.json()
   if (!franchisorProfileId) return NextResponse.json({ error: 'franchisorProfileId required' }, { status: 400 })
 
   const admin = createAdminClient()
 
-  // Get current agreement template
-  const { data: agreement, error: agreementError } = await admin
-    .from('agreements')
-    .select('id, title, version')
-    .eq('is_current', true)
-    .single()
+  // Use the chosen template's current version, or fall back to the master.
+  const { data: agreement, error: agreementError } = templateId
+    ? await admin.from('agreements').select('id, title, version').eq('id', templateId).maybeSingle()
+    : await admin.from('agreements').select('id, title, version').eq('is_current', true).eq('template_key', 'master').order('version', { ascending: false }).limit(1).maybeSingle()
 
   if (agreementError || !agreement) {
     return NextResponse.json({ error: 'No agreement template found. Please create one first.' }, { status: 404 })

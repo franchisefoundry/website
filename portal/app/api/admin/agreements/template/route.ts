@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
+import { slugify } from '@/lib/utils'
 
 // GET — fetch the current template
 export async function GET() {
@@ -36,35 +37,33 @@ export async function PUT(req: NextRequest) {
   const { data: profile } = await supabase.from('profiles').select('role').eq('id', user.id).single()
   if (profile?.role !== 'admin') return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
 
-  const { title, content } = await req.json()
+  const { title, content, templateKey } = await req.json()
   if (!content?.trim()) return NextResponse.json({ error: 'Content required' }, { status: 400 })
+  const name = (title?.trim() || 'Franchise Agreement')
 
   const admin = createAdminClient()
 
-  // Get current version number
-  const { data: current } = await admin
-    .from('agreements')
-    .select('version')
-    .eq('is_current', true)
-    .order('version', { ascending: false })
-    .limit(1)
-    .single()
+  // Each template is identified by template_key; saving versions that key.
+  // A new template (no key given) derives a stable key from its name.
+  const baseKey = templateKey?.trim() || slugify(name) || 'master'
+  let key = baseKey
+  if (!templateKey) {
+    // New template — ensure the derived key is unique.
+    const { data: clash } = await admin.from('agreements').select('id').eq('template_key', baseKey).limit(1).maybeSingle()
+    if (clash) key = `${baseKey}-${Date.now().toString(36)}`
+  }
 
+  // Next version within this template.
+  const { data: current } = await admin
+    .from('agreements').select('version').eq('template_key', key).order('version', { ascending: false }).limit(1).maybeSingle()
   const nextVersion = (current?.version ?? 0) + 1
 
-  // Mark old as not current
-  await admin.from('agreements').update({ is_current: false }).eq('is_current', true)
+  // Mark the previous current version of THIS template as not current.
+  await admin.from('agreements').update({ is_current: false }).eq('template_key', key).eq('is_current', true)
 
-  // Insert new version
   const { data: inserted, error } = await admin
     .from('agreements')
-    .insert({
-      title: title?.trim() || 'Franchise Agreement',
-      content,
-      version: nextVersion,
-      created_by: user.id,
-      is_current: true,
-    })
+    .insert({ title: name, name, content, version: nextVersion, template_key: key, created_by: user.id, is_current: true })
     .select()
     .single()
 

@@ -1,16 +1,23 @@
 import { createAdminClient } from '@/lib/supabase/admin'
 import { PageHeader } from '@/components/page-header'
 import { SettingsTabs } from '@/components/SettingsTabs'
-import TemplateEditor from './TemplateEditor'
-import { SendWorkflow, type SendableBrand } from '@/components/admin/agreements/SendWorkflow'
+import { SendWorkflow, type SendableBrand, type SendableTemplate } from '@/components/admin/agreements/SendWorkflow'
 import { AgreementsList, type AgreementRow } from '@/components/admin/agreements/AgreementsList'
+import { TemplatesManager, type TemplateFull } from '@/components/admin/agreements/TemplatesManager'
 import { SendIcon, AgreementIcon, QuestionnaireIcon, ArchiveIcon } from '@/components/icons'
 
 export default async function AdminAgreementsPage() {
   const admin = createAdminClient()
 
-  const { data: agreement } = await admin
-    .from('agreements').select('*').eq('is_current', true).order('version', { ascending: false }).limit(1).maybeSingle()
+  // All templates = the current version of each template_key.
+  const { data: templatesRaw } = await admin
+    .from('agreements').select('*').eq('is_current', true).order('name', { ascending: true })
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const templatesFull: TemplateFull[] = (templatesRaw ?? []).map((t: any) => ({
+    id: t.id, title: t.title, content: t.content, version: t.version, updated_at: t.updated_at,
+    template_key: t.template_key ?? 'master', name: t.name || t.title || 'Franchise Agreement',
+  }))
+  const sendTemplates: SendableTemplate[] = templatesFull.map(t => ({ id: t.id, name: t.name, version: t.version }))
 
   const { data: franchisorAgreements } = await admin
     .from('franchisor_agreements')
@@ -57,13 +64,13 @@ export default async function AdminAgreementsPage() {
 
   const tabs = [
     { id: 'send', label: 'Send', icon: <SendIcon className="w-4 h-4" />, content: (
-      <div>{helper('Send an agreement to a brand in three quick steps. They’ll be notified to review, comment and e-sign.')}<SendWorkflow brands={brands} templateTitle={agreement?.title ?? 'Franchise Agreement'} templateVersion={agreement?.version ?? 1} hasTemplate={!!agreement} /></div>
+      <div>{helper('Send an agreement to a brand in three quick steps — choose the brand, pick the template, and send.')}<SendWorkflow brands={brands} templates={sendTemplates} hasTemplate={sendTemplates.length > 0} /></div>
     ) },
     { id: 'active', label: 'Active', icon: <AgreementIcon className="w-4 h-4" />, content: (
       <div>{helper('Agreements out for signature. Ones with open brand comments are grouped first so you know what needs your reply.')}<AgreementsList agreements={rows} mode="active" /></div>
     ) },
     { id: 'templates', label: 'Templates', icon: <QuestionnaireIcon className="w-4 h-4" />, content: (
-      <div>{helper('Upload a Word doc or edit the master agreement. Every save creates a new version — brands sign the version current at send time.')}<TemplateEditor initial={agreement ?? null} /></div>
+      <div>{helper('Create and edit agreement templates — each is versioned, and brands sign the version current at send time. Pick which template to send in the Send tab.')}<TemplatesManager templates={templatesFull} /></div>
     ) },
     { id: 'archive', label: 'Archive', icon: <ArchiveIcon className="w-4 h-4" />, content: (
       <div>{helper('Signed and executed agreements — your legal record, downloadable as PDF.')}<AgreementsList agreements={rows} mode="archive" /></div>

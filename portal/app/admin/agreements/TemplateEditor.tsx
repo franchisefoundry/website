@@ -10,6 +10,8 @@ interface Agreement {
   content: string
   version: number
   updated_at: string
+  template_key?: string
+  name?: string
 }
 
 export default function TemplateEditor({ initial }: { initial: Agreement | null }) {
@@ -18,6 +20,7 @@ export default function TemplateEditor({ initial }: { initial: Agreement | null 
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
   const [uploading, setUploading] = useState(false)
+  const [savedKey, setSavedKey] = useState<string | null>(initial?.template_key ?? null)
   const [tab, setTab] = useState<'edit' | 'preview'>('edit')
   const fileRef = useRef<HTMLInputElement>(null)
   const contentRef = useRef<HTMLTextAreaElement>(null)
@@ -50,13 +53,14 @@ export default function TemplateEditor({ initial }: { initial: Agreement | null 
       const res = await fetch('/api/admin/agreements/template', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ title, content }),
+        body: JSON.stringify({ title, content, templateKey: savedKey ?? undefined }),
       })
+      const d = await res.json().catch(() => ({}))
       if (!res.ok) {
-        const d = await res.json()
         alert(d.error ?? 'Failed to save')
         return
       }
+      if (d.agreement?.template_key) setSavedKey(d.agreement.template_key)
       setSaved(true)
       setTimeout(() => setSaved(false), 3000)
     } finally {
