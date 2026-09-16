@@ -1,11 +1,12 @@
 ---
-title: "Why Beefeater Failed: What 106 Closures Reveal About Casual Dining"
-category: "Market Analysis"
-author: "Franchise Foundry"
-date: 2026-09-16T09:07:30.914Z
-excerpt: "Beefeater's collapse exposes a fundamental weakness in casual dining's cost structure. Here's what it means for franchise buyers and how to spot a viable hospitality investment."
-status: "Draft"
+title: 'Why Beefeater Failed: What 106 Closures Reveal About Casual Dining'
+status: Published
 featured: false
+date: 2026-09-20T10:01:00
+category: Market Analysis
+author: Franchise Foundry
+excerpt: Beefeater's collapse exposes a fundamental weakness in casual dining's cost structure. Here's what it means for franchise buyers and how to spot a viable hospitality investment.
+coverImage: ''
 ---
 
 On 10 September 2026, all 106 Beefeater restaurants closed for good. After 52 years trading and a peak of nearly 140 locations, the end came swiftly.
