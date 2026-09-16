@@ -1,11 +1,12 @@
 ---
-title: "VAT Campaign Explained: What a 10% Rate Means for Your Franchise"
-category: "Industry Insight"
-author: "Franchise Foundry"
-date: 2026-09-16T08:57:30.719Z
-excerpt: "800 hospitality businesses are demanding a VAT cut to 10%. Here's what it could mean for your unit economics—and why you shouldn't bank on it yet."
-status: "Draft"
-featured: false
+title: 'VAT Campaign Explained: What a 10% Rate Means for Your Franchise'
+status: Published
+featured: true
+date: 2026-09-16T09:57:00
+category: Industry Insight
+author: Franchise Foundry
+excerpt: 800 hospitality businesses are demanding a VAT cut to 10%. Here's what it could mean for your unit economics—and why you shouldn't bank on it yet.
+coverImage: ''
 ---
 
 ## The Campaign: 800 Businesses, One Ask
