@@ -1,10 +1,10 @@
 {
-  "logo": "/images/copy-of-franchise-foundry-logo-final-2.png",
-  "favicon": "/images/favicon.png",
-  "loadingLogo": "/images/foundry-logo-icon.png",
   "companyName": "Franchise Foundry",
   "email": "connect@franchisefoundry.co.uk",
   "tagline": "Discover. Connect. Franchise",
+  "logo": "/images/copy-of-franchise-foundry-logo-final-2.png",
+  "favicon": "/images/favicon.png",
+  "loadingLogo": "/images/foundry-logo-icon.png",
   "partners": [
     {
       "logo": "/images/images-2-.png",
@@ -49,6 +49,10 @@
     {
       "logo": "/images/download_3_fc474ca4-8131-427f-a93c-975ed30742c5.webp",
       "name": "Floozie Cookies"
+    },
+    {
+      "logo": "/images/Logo Jaune (2).png",
+      "name": "Quiz Room"
     }
   ]
 }
