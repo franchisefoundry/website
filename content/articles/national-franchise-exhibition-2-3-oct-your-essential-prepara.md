@@ -1,11 +1,12 @@
 ---
-title: "National Franchise Exhibition 2–3 Oct: Your Essential Preparation Guide"
-category: "Guides"
-author: "Franchise Foundry"
-date: 2026-09-25T14:47:24.290Z
-excerpt: "Visiting the National Franchise Exhibition? Proper preparation transforms it from a bag of brochures into genuine research. Here's exactly what to do before, during, and after."
-status: "Draft"
+title: 'National Franchise Exhibition 2–3 Oct: Your Essential Preparation Guide'
+status: Published
 featured: false
+date: 2026-09-25T15:47:00
+category: Guides
+author: Franchise Foundry
+excerpt: Visiting the National Franchise Exhibition? Proper preparation transforms it from a bag of brochures into genuine research. Here's exactly what to do before, during, and after.
+coverImage: ''
 ---
 
 The National Franchise Exhibition runs 2–3 October 2026 at Olympia London. Over 100 brands will be exhibiting across food and beverage, retail, services, and children's activities. Entry is free, and you'll have access to franchise lawyers, finance providers, the British Franchise Association, and a full seminar programme.
