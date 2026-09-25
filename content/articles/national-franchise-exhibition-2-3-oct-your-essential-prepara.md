@@ -1,7 +1,7 @@
 ---
 title: 'National Franchise Exhibition 2–3 Oct: Your Essential Preparation Guide'
 status: Published
-featured: false
+featured: true
 date: 2026-09-25T15:47:00
 category: Guides
 author: Franchise Foundry
