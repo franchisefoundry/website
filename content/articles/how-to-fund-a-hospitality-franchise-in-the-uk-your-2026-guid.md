@@ -1,11 +1,12 @@
 ---
-title: "How to Fund a Hospitality Franchise in the UK: Your 2026 Guide"
-category: "Guides"
-author: "Franchise Foundry"
-date: 2026-09-25T14:48:05.397Z
-excerpt: "Capital is the biggest barrier to franchise ownership. Here's what UK lenders actually want to see, how much you can borrow, and the fastest route to approved funding in 2026."
-status: "Draft"
-featured: false
+title: 'How to Fund a Hospitality Franchise in the UK: Your 2026 Guide'
+status: Draft
+featured: true
+date: 2026-10-02T07:00:00
+category: Guides
+author: Franchise Foundry
+excerpt: Capital is the biggest barrier to franchise ownership. Here's what UK lenders actually want to see, how much you can borrow, and the fastest route to approved funding in 2026.
+coverImage: ''
 ---
 
 Capital is the most common practical barrier between a prospective franchisee and the opportunity they want to pursue. It's also where the most confusion exists — about what's available, what lenders actually want, and how your choice of brand affects how much you can borrow.
