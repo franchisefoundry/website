@@ -15,12 +15,12 @@ interface Props {
 }
 
 const STATUS_BADGE: Record<string, { label: string; cls: string }> = {
-  draft:          { label: 'Draft',           cls: 'bg-slate-100 text-slate-600 border-slate-200' },
+  draft:          { label: 'Draft',           cls: 'bg-surface-2 text-ink-2 border-line' },
   pending_review: { label: 'Pending review',  cls: 'bg-amber-50 text-amber-700 border-amber-200' },
-  active:         { label: 'Approved · live', cls: 'bg-emerald-50 text-emerald-700 border-emerald-200' },
+  active:         { label: 'Approved · live', cls: 'bg-ff-green-soft text-ff-green border-ff-green/20' },
   needs_info:     { label: 'More info needed', cls: 'bg-sky-50 text-sky-700 border-sky-200' },
   rejected:       { label: 'Rejected',        cls: 'bg-red-50 text-red-600 border-red-200' },
-  inactive:       { label: 'Inactive',        cls: 'bg-slate-100 text-slate-500 border-slate-200' },
+  inactive:       { label: 'Inactive',        cls: 'bg-surface-2 text-ink-3 border-line' },
 }
 
 const FORMAT_LABELS: Record<string, string> = { 'dine-in': 'Dine-in', takeaway: 'Takeaway', kiosk: 'Kiosk', delivery: 'Delivery', flexible: 'Flexible' }
@@ -73,22 +73,22 @@ export default function QuestionnaireReview({ franchisorId, status: initialStatu
   function Field({ label: l, children }: { label: string; children: React.ReactNode }) {
     return (
       <div>
-        <p className="text-xs font-medium text-slate-500 mb-1">{l}</p>
-        <div className="text-sm text-slate-800">{children}</div>
+        <p className="text-xs font-medium text-ink-3 mb-1">{l}</p>
+        <div className="text-sm text-ink">{children}</div>
       </div>
     )
   }
   function Text({ value }: { value: unknown }) {
     const s = typeof value === 'string' ? value.trim() : value != null ? String(value) : ''
-    return s ? <p className="whitespace-pre-wrap leading-relaxed">{s}</p> : <span className="text-slate-300">—</span>
+    return s ? <p className="whitespace-pre-wrap leading-relaxed">{s}</p> : <span className="text-ink-3">—</span>
   }
   function Chips({ values, labels }: { values: unknown; labels?: Record<string, string> }) {
     const arr = Array.isArray(values) ? values : []
-    if (!arr.length) return <span className="text-slate-300">—</span>
+    if (!arr.length) return <span className="text-ink-3">—</span>
     return (
       <div className="flex flex-wrap gap-1.5">
         {arr.map((v, i) => (
-          <span key={i} className="px-2.5 py-1 rounded-lg text-xs bg-slate-100 text-slate-700 capitalize">
+          <span key={i} className="px-2.5 py-1 rounded-lg text-xs bg-surface-2 text-ink-2 capitalize">
             {labels?.[String(v)] ?? String(v)}
           </span>
         ))}
@@ -97,9 +97,9 @@ export default function QuestionnaireReview({ franchisorId, status: initialStatu
   }
   function Section({ title, children }: { title: string; children: React.ReactNode }) {
     return (
-      <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
-        <div className="px-5 py-3.5 border-b border-slate-100 bg-slate-50/50">
-          <p className="text-sm font-semibold text-slate-800">{title}</p>
+      <div className="bg-white rounded-xl border border-line overflow-hidden">
+        <div className="px-5 py-3.5 border-b border-line-2 bg-surface-2/50">
+          <p className="text-sm font-semibold text-ink">{title}</p>
         </div>
         <div className="px-5 py-4 space-y-4">{children}</div>
       </div>
@@ -117,14 +117,14 @@ export default function QuestionnaireReview({ franchisorId, status: initialStatu
   return (
     <div className="space-y-3">
       {/* ── Decision panel ─────────────────────────────────────────────── */}
-      <div className="bg-white rounded-xl border border-slate-200 p-5">
+      <div className="bg-white rounded-xl border border-line p-5">
         <div className="flex items-center justify-between gap-4 flex-wrap">
           <div>
             <div className="flex items-center gap-2">
-              <p className="text-sm font-semibold text-slate-800">Review decision</p>
+              <p className="text-sm font-semibold text-ink">Review decision</p>
               <span className={`text-[11px] font-semibold px-2 py-0.5 rounded-full border ${badge.cls}`}>{badge.label}</span>
             </div>
-            <p className="text-xs text-slate-400 mt-1">
+            <p className="text-xs text-ink-3 mt-1">
               Answers are managed by the franchisor and can&apos;t be edited here. Choose an outcome to set the matching status.
             </p>
           </div>

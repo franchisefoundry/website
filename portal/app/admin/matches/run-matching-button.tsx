@@ -26,7 +26,7 @@ export default function RunMatchingButton() {
 
   return (
     <div className="flex items-center gap-3">
-      {result && <span className="text-sm text-slate-500">{result}</span>}
+      {result && <span className="text-sm text-ink-3">{result}</span>}
       <Button onClick={handleRun} disabled={loading}>
         {loading ? 'Running…' : 'Run matching'}
       </Button>

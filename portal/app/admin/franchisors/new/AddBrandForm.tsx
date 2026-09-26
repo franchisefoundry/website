@@ -60,7 +60,7 @@ function Pill({ label, active, onClick }: { label: string; active: boolean; onCl
       type="button"
       onClick={onClick}
       className={`py-1.5 px-3 rounded-full text-sm border transition-colors ${
-        active ? 'bg-brand-green text-white border-brand-green' : 'border-slate-300 text-slate-700 hover:bg-slate-50'
+        active ? 'bg-ff-green text-white border-ff-green' : 'border-line text-ink-2 hover:bg-surface-2'
       }`}
     >
       {label}
@@ -82,8 +82,8 @@ function RadioRow({ options, value, onChange }: {
           onClick={() => onChange(opt.value)}
           className={`flex-1 py-2 px-3 rounded-lg text-sm border transition-colors ${
             value === opt.value
-              ? 'bg-brand-green text-white border-brand-green'
-              : 'border-slate-300 text-slate-700 hover:bg-slate-50'
+              ? 'bg-ff-green text-white border-ff-green'
+              : 'border-line text-ink-2 hover:bg-surface-2'
           }`}
         >
           {opt.label}
@@ -161,7 +161,7 @@ export default function AddBrandForm() {
       {/* Franchisor contact */}
       <Card>
         <CardHeader>
-          <CardTitle>Franchisor contact <span className="text-slate-400 font-normal text-sm ml-1">— optional, required only to send invite</span></CardTitle>
+          <CardTitle>Franchisor contact <span className="text-ink-3 font-normal text-sm ml-1">— optional, required only to send invite</span></CardTitle>
         </CardHeader>
         <CardBody className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <Field label="Full name">
@@ -181,7 +181,7 @@ export default function AddBrandForm() {
             />
           </Field>
           <div className="col-span-2">
-            <label className="block text-sm font-medium text-slate-700 mb-1">Profile status</label>
+            <label className="block text-sm font-medium text-ink-2 mb-1">Profile status</label>
             <div className="flex gap-3">
               {[
                 { value: 'active', label: 'Active — visible in matching immediately' },
@@ -193,8 +193,8 @@ export default function AddBrandForm() {
                   onClick={() => set('status', opt.value as 'active' | 'draft')}
                   className={`flex-1 py-2 px-3 rounded-lg text-sm border transition-colors ${
                     form.status === opt.value
-                      ? 'bg-brand-green text-white border-brand-green'
-                      : 'border-slate-300 text-slate-700 hover:bg-slate-50'
+                      ? 'bg-ff-green text-white border-ff-green'
+                      : 'border-line text-ink-2 hover:bg-surface-2'
                   }`}
                 >
                   {opt.label}
@@ -228,8 +228,8 @@ export default function AddBrandForm() {
             </Field>
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">
-              Concept teaser <span className="text-slate-400 font-normal text-xs">— shown to candidates without naming the brand</span>
+            <label className="block text-sm font-medium text-ink-2 mb-1">
+              Concept teaser <span className="text-ink-3 font-normal text-xs">— shown to candidates without naming the brand</span>
             </label>
             <Textarea
               value={form.teaser}
@@ -239,7 +239,7 @@ export default function AddBrandForm() {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">Key highlights (up to 3)</label>
+            <label className="block text-sm font-medium text-ink-2 mb-2">Key highlights (up to 3)</label>
             {form.highlights.map((h, i) => (
               <Input
                 key={i}
@@ -282,7 +282,7 @@ export default function AddBrandForm() {
         <CardHeader><CardTitle>Franchisee requirements</CardTitle></CardHeader>
         <CardBody className="space-y-5">
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">Operator model</label>
+            <label className="block text-sm font-medium text-ink-2 mb-2">Operator model</label>
             <RadioRow
               value={form.operator_model}
               onChange={v => set('operator_model', v)}
@@ -294,7 +294,7 @@ export default function AddBrandForm() {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">Experience required</label>
+            <label className="block text-sm font-medium text-ink-2 mb-2">Experience required</label>
             <RadioRow
               value={form.experience_required}
               onChange={v => set('experience_required', v)}
@@ -306,7 +306,7 @@ export default function AddBrandForm() {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">Site format(s)</label>
+            <label className="block text-sm font-medium text-ink-2 mb-2">Site format(s)</label>
             <div className="flex gap-3 flex-wrap">
               {['dine-in', 'takeaway', 'kiosk', 'flexible'].map(v => (
                 <Pill key={v} label={v.charAt(0).toUpperCase() + v.slice(1)} active={form.format.includes(v)}
@@ -316,12 +316,12 @@ export default function AddBrandForm() {
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">Full-time required?</label>
+              <label className="block text-sm font-medium text-ink-2 mb-2">Full-time required?</label>
               <RadioRow value={String(form.full_time_required)} onChange={v => set('full_time_required', v === 'true')}
                 options={[{ value: 'true', label: 'Yes' }, { value: 'false', label: 'No' }]} />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">Multi-site ready?</label>
+              <label className="block text-sm font-medium text-ink-2 mb-2">Multi-site ready?</label>
               <RadioRow value={String(form.multi_site_ready)} onChange={v => set('multi_site_ready', v === 'true')}
                 options={[{ value: 'true', label: 'Yes' }, { value: 'false', label: 'No' }]} />
             </div>
@@ -334,7 +334,7 @@ export default function AddBrandForm() {
         <CardHeader><CardTitle>Location coverage</CardTitle></CardHeader>
         <CardBody className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">Cities available</label>
+            <label className="block text-sm font-medium text-ink-2 mb-2">Cities available</label>
             <div className="flex flex-wrap gap-2">
               {UK_CITIES.map(city => (
                 <Pill key={city.value} label={city.label}
@@ -344,8 +344,8 @@ export default function AddBrandForm() {
             </div>
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">
-              Display text <span className="text-slate-400 font-normal text-xs">— shown to candidates</span>
+            <label className="block text-sm font-medium text-ink-2 mb-1">
+              Display text <span className="text-ink-3 font-normal text-xs">— shown to candidates</span>
             </label>
             <Input type="text" value={form.locations_display} onChange={e => set('locations_display', e.target.value)}
               placeholder="e.g. Major UK cities" />
@@ -378,7 +378,7 @@ export default function AddBrandForm() {
           type="button"
           onClick={() => handleSubmit(true)}
           disabled={saving !== null}
-          className="border-2 border-brand-green text-brand-green hover:bg-brand-green hover:text-white font-medium py-2.5 px-8 rounded-lg text-sm transition-colors disabled:opacity-60"
+          className="border-2 border-ff-green text-ff-green hover:bg-ff-green hover:text-white font-medium py-2.5 px-8 rounded-lg text-sm transition-colors disabled:opacity-60"
         >
           {saving === 'invite' ? 'Creating…' : 'Save & get invite link'}
         </button>
@@ -393,11 +393,11 @@ export default function AddBrandForm() {
         onClose={() => { router.push('/admin/franchisors'); router.refresh() }}
         maxWidth="max-w-md"
       >
-        <h3 className="text-base font-semibold text-slate-800 mb-1">✓ Franchisor created</h3>
-        <p className="text-xs text-slate-400 mb-4">
+        <h3 className="text-base font-semibold text-ink mb-1">✓ Franchisor created</h3>
+        <p className="text-xs text-ink-3 mb-4">
           Send this magic link to {form.franchisor_name}. It expires after first use.
         </p>
-        <div className="bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-xs text-slate-700 break-all mb-4">
+        <div className="bg-surface-2 border border-line rounded-lg px-3 py-2 text-xs text-ink-2 break-all mb-4">
           {inviteLink}
         </div>
         <Button onClick={handleCopy} fullWidth size="lg" className="mb-2">

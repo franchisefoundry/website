@@ -30,7 +30,7 @@ export default async function FranchisorAgreementPage() {
         .from('franchisor_agreements')
         .select('id, status, sent_at, signed_at, signer_name, signed_pdf_path, agreement_id')
         .eq('franchisor_profile_id', fp.id)
-        .single()
+        .maybeSingle()
     : { data: null }
 
   // Get the current agreement template content
@@ -40,18 +40,18 @@ export default async function FranchisorAgreementPage() {
         .from('agreements')
         .select('title, content, version')
         .eq('id', agreementId)
-        .single()
+        .maybeSingle()
     : await admin
         .from('agreements')
         .select('title, content, version')
         .eq('is_current', true)
-        .single()
+        .maybeSingle()
 
   // Get comments for this franchisor's agreement
   const { data: comments } = fa
     ? await admin
         .from('agreement_comments')
-        .select('id, body, section_ref, resolved, created_at, author_id')
+        .select('id, body, section_ref, resolved, created_at, author_id, admin_reply, admin_reply_at')
         .eq('franchisor_agreement_id', fa.id)
         .order('created_at', { ascending: false })
     : { data: [] }
@@ -59,8 +59,8 @@ export default async function FranchisorAgreementPage() {
   return (
     <div>
       <PageHeader
-        title="Your Agreement"
-        description="Review and sign your Franchise Foundry franchise agreement."
+        title="Your agreement"
+        description="Review, comment on and e-sign your Franchise Foundry franchise agreement."
       />
       <AgreementView
         franchisorAgreement={fa ?? null}

@@ -74,14 +74,14 @@ function Textarea({ label, value, onChange, placeholder, rows = 3 }: {
   const [local, setLocal] = useState(value)
   return (
     <div>
-      <label className="block text-sm font-medium text-slate-700 mb-1">{label}</label>
+      <label className="block text-sm font-medium text-ink-2 mb-1">{label}</label>
       <textarea
         value={local}
         onChange={e => setLocal(e.target.value)}
         onBlur={e => onChange(e.target.value)}
         placeholder={placeholder}
         rows={rows}
-        className="w-full px-3 py-2.5 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-green focus:border-transparent resize-none text-slate-800 placeholder:text-slate-400"
+        className="w-full px-3 py-2.5 border border-line rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-ff-green focus:border-transparent resize-none text-ink placeholder:text-ink-3"
       />
     </div>
   )
@@ -98,14 +98,14 @@ function MultiSelect({ label, options, selected, onChange }: {
   }
   return (
     <div>
-      <label className="block text-sm font-medium text-slate-700 mb-2">{label}</label>
+      <label className="block text-sm font-medium text-ink-2 mb-2">{label}</label>
       <div className="flex flex-wrap gap-2">
         {options.map(opt => (
           <button key={opt} type="button" onClick={() => toggle(opt)}
             className={`px-3 py-1.5 rounded-lg text-sm border transition-colors ${
               selected.includes(opt)
-                ? 'bg-brand-green text-white border-brand-green'
-                : 'border-slate-300 text-slate-700 hover:bg-slate-50'
+                ? 'bg-ff-green text-white border-ff-green'
+                : 'border-line text-ink-2 hover:bg-surface-2'
             }`}
           >
             {opt}
@@ -119,12 +119,12 @@ function MultiSelect({ label, options, selected, onChange }: {
 function YesNo({ label, value, onChange }: { label: string; value: boolean | null; onChange: (v: boolean) => void }) {
   return (
     <div>
-      <label className="block text-sm font-medium text-slate-700 mb-2">{label}</label>
+      <label className="block text-sm font-medium text-ink-2 mb-2">{label}</label>
       <div className="flex gap-2">
         {[{ l: 'Yes', v: true }, { l: 'No', v: false }].map(opt => (
           <button key={opt.l} type="button" onClick={() => onChange(opt.v)}
             className={`flex-1 py-2 px-4 rounded-lg text-sm border transition-colors font-medium ${
-              value === opt.v ? 'bg-brand-green text-white border-brand-green' : 'border-slate-300 text-slate-700 hover:bg-slate-50'
+              value === opt.v ? 'bg-ff-green text-white border-ff-green' : 'border-line text-ink-2 hover:bg-surface-2'
             }`}>
             {opt.l}
           </button>
@@ -137,9 +137,9 @@ function YesNo({ label, value, onChange }: { label: string; value: boolean | nul
 function SliderField({ label, hint, children }: { label: string; hint?: string; children: React.ReactNode }) {
   return (
     <div>
-      <label className="block text-sm font-medium text-slate-700 mb-1">{label}</label>
-      {hint && <p className="text-xs text-slate-400 mb-3">{hint}</p>}
-      <div className="bg-slate-50 rounded-xl border border-slate-200 p-4">
+      <label className="block text-sm font-medium text-ink-2 mb-1">{label}</label>
+      {hint && <p className="text-xs text-ink-3 mb-3">{hint}</p>}
+      <div className="bg-surface-2 rounded-xl border border-line p-4">
         {children}
       </div>
     </div>
@@ -156,15 +156,15 @@ function SectionCard({ title, children, onSave, saving, saved }: {
   const [open, setOpen] = useState(false)
 
   return (
-    <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+    <div className="bg-surface rounded-2xl border border-line overflow-hidden">
       <button
         type="button"
         onClick={() => setOpen(o => !o)}
-        className="w-full flex items-center justify-between px-6 py-4 text-left hover:bg-slate-50 transition-colors"
+        className="w-full flex items-center justify-between px-6 py-4 text-left hover:bg-surface-2 transition-colors"
       >
-        <span className="font-semibold text-slate-800 text-sm">{title}</span>
+        <span className="font-semibold text-ink text-sm">{title}</span>
         <svg
-          className={`w-4 h-4 text-slate-400 transition-transform ${open ? 'rotate-180' : ''}`}
+          className={`w-4 h-4 text-ink-3 transition-transform ${open ? 'rotate-180' : ''}`}
           fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}
         >
           <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
@@ -172,18 +172,18 @@ function SectionCard({ title, children, onSave, saving, saved }: {
       </button>
 
       {open && (
-        <div className="px-6 pb-6 border-t border-slate-100 pt-5 space-y-5">
+        <div className="px-6 pb-6 border-t border-line-2 pt-5 space-y-5">
           {children}
           <div className="flex items-center gap-3 pt-2">
             <button
               type="button"
               onClick={onSave}
               disabled={saving}
-              className="bg-brand-green hover:bg-brand-green-dark text-white font-medium py-2 px-5 rounded-lg text-sm transition-colors disabled:opacity-60"
+              className="bg-ff-green hover:bg-ff-green-deep text-white font-medium py-2 px-5 rounded-lg text-sm transition-colors disabled:opacity-60"
             >
               {saving ? 'Saving…' : 'Save changes'}
             </button>
-            {saved && <span className="text-sm text-emerald-600 font-medium">✓ Saved</span>}
+            {saved && <span className="text-sm text-ff-green font-medium">✓ Saved</span>}
           </div>
         </div>
       )}
@@ -397,12 +397,12 @@ export default function QuestionnaireForm({ franchisorId, existing }: Props) {
         <Textarea label="Ideal franchisee profile" value={idealFranchisee} onChange={setIdealFranchisee} placeholder="Age range, background, personality, motivations..." />
         <Textarea label="Required or preferred experience" value={backgroundExp} onChange={setBackgroundExp} placeholder="Management, F&B, business ownership..." rows={2} />
         <div>
-          <label className="block text-sm font-medium text-slate-700 mb-2">Minimum experience level required</label>
+          <label className="block text-sm font-medium text-ink-2 mb-2">Minimum experience level required</label>
           <div className="space-y-2">
             {EXPERIENCE_OPTIONS.map(opt => (
               <button key={opt.value} type="button" onClick={() => setExperienceRequired(opt.value)}
                 className={`w-full text-left px-4 py-2.5 rounded-lg border text-sm transition-colors ${
-                  experienceRequired === opt.value ? 'bg-brand-green text-white border-brand-green' : 'border-slate-300 text-slate-700 hover:bg-slate-50'
+                  experienceRequired === opt.value ? 'bg-ff-green text-white border-ff-green' : 'border-line text-ink-2 hover:bg-surface-2'
                 }`}>
                 {opt.label}
               </button>
@@ -411,7 +411,7 @@ export default function QuestionnaireForm({ franchisorId, existing }: Props) {
         </div>
         <YesNo label="Is full-time commitment required?" value={fullTimeRequired} onChange={setFullTimeRequired} />
         <div>
-          <label className="block text-sm font-medium text-slate-700 mb-2">Operating model</label>
+          <label className="block text-sm font-medium text-ink-2 mb-2">Operating model</label>
           <OperatingModelCards value={operatingModel} onChange={setOperatingModel} variant="light" />
         </div>
         <YesNo label="Do you grant single-location franchise licences?" value={singleLicence} onChange={setSingleLicence} />
@@ -439,31 +439,31 @@ export default function QuestionnaireForm({ franchisorId, existing }: Props) {
         saved={savedSection === 4}
       >
         <div>
-          <label className="block text-sm font-medium text-slate-700 mb-2">Franchise formats</label>
+          <label className="block text-sm font-medium text-ink-2 mb-2">Franchise formats</label>
           <div className="flex flex-wrap gap-2">
             {FORMAT_OPTIONS.map(fmt => (
               <button key={fmt} type="button"
                 onClick={() => setFormatTypes(formatTypes.includes(fmt) ? formatTypes.filter(f => f !== fmt) : [...formatTypes, fmt])}
-                className={`px-3 py-1.5 rounded-lg text-sm border transition-colors ${formatTypes.includes(fmt) ? 'bg-brand-green text-white border-brand-green' : 'border-slate-300 text-slate-700 hover:bg-slate-50'}`}>
+                className={`px-3 py-1.5 rounded-lg text-sm border transition-colors ${formatTypes.includes(fmt) ? 'bg-ff-green text-white border-ff-green' : 'border-line text-ink-2 hover:bg-surface-2'}`}>
                 {FORMAT_LABELS[fmt]}
               </button>
             ))}
           </div>
         </div>
         <div>
-          <label className="block text-sm font-medium text-slate-700 mb-2">Active UK territories</label>
-          <p className="text-xs text-slate-400 mb-2">Cities you are actively seeking franchisees in right now</p>
+          <label className="block text-sm font-medium text-ink-2 mb-2">Active UK territories</label>
+          <p className="text-xs text-ink-3 mb-2">Cities you are actively seeking franchisees in right now</p>
           <div className="flex flex-wrap gap-2 mb-3">
             {UK_CITY_OPTIONS.map(city => (
               <button key={city} type="button"
                 onClick={() => setLocationsAvailable(locationsAvailable.includes(city) ? locationsAvailable.filter(c => c !== city) : [...locationsAvailable, city])}
-                className={`px-3 py-1.5 rounded-full text-sm border capitalize transition-colors ${locationsAvailable.includes(city) ? 'bg-brand-green text-white border-brand-green' : 'border-slate-300 text-slate-700 hover:bg-slate-50'}`}>
+                className={`px-3 py-1.5 rounded-full text-sm border capitalize transition-colors ${locationsAvailable.includes(city) ? 'bg-ff-green text-white border-ff-green' : 'border-line text-ink-2 hover:bg-surface-2'}`}>
                 {city.charAt(0).toUpperCase() + city.slice(1)}
               </button>
             ))}
           </div>
           <div>
-            <label className="block text-xs font-medium text-slate-500 mb-1">Other locations (comma-separated)</label>
+            <label className="block text-xs font-medium text-ink-3 mb-1">Other locations (comma-separated)</label>
             <input
               type="text"
               placeholder="e.g. Cambridge, Oxford, Brighton"
@@ -473,7 +473,7 @@ export default function QuestionnaireForm({ franchisorId, existing }: Props) {
                 const presets = locationsAvailable.filter(l => UK_CITY_OPTIONS.includes(l))
                 setLocationsAvailable([...presets, ...custom])
               }}
-              className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-green focus:border-transparent"
+              className="w-full px-3 py-2 border border-line rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-ff-green focus:border-transparent"
             />
           </div>
         </div>
@@ -542,8 +542,8 @@ export default function QuestionnaireForm({ franchisorId, existing }: Props) {
       >
         <MultiSelect label="Where enquiries come from" options={INQUIRY_CHANNEL_OPTIONS} selected={inquiryChannels} onChange={setInquiryChannels} />
         <div>
-          <label className="block text-sm font-medium text-slate-700 mb-2">Screening process steps</label>
-          <p className="text-xs text-slate-400 mb-3">Add each stage — hover a step to reorder or remove it</p>
+          <label className="block text-sm font-medium text-ink-2 mb-2">Screening process steps</label>
+          <p className="text-xs text-ink-3 mb-3">Add each stage — hover a step to reorder or remove it</p>
           <StepBuilder steps={screeningSteps} onChange={setScreeningSteps} placeholder="Describe this step…" variant="light" />
         </div>
         <Textarea label="When approval decision is typically made" value={approvalTiming} onChange={setApprovalTiming} placeholder="Usually after the discovery day..." rows={2} />
@@ -553,7 +553,7 @@ export default function QuestionnaireForm({ franchisorId, existing }: Props) {
         <Textarea label="Timeline: signing to opening day" value={timelineLaunch} onChange={setTimelineLaunch} placeholder="e.g. 4–6 months..." rows={2} />
         <Textarea label="Biggest recruitment bottlenecks" value={bottlenecks} onChange={setBottlenecks} placeholder="Too many unqualified leads, slow decision stages..." />
         <div>
-          <label className="block text-sm font-medium text-slate-700 mb-3">Self-rating: recruitment process (1–10)</label>
+          <label className="block text-sm font-medium text-ink-2 mb-3">Self-rating: recruitment process (1–10)</label>
           <GradientRating value={rating} onChange={setRating} />
         </div>
       </SectionCard>

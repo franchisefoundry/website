@@ -28,7 +28,7 @@ function Pill({ label, active, onClick }: { label: string; active: boolean; onCl
       type="button"
       onClick={onClick}
       className={`py-1.5 px-3 rounded-full text-sm border transition-colors ${
-        active ? 'bg-brand-green text-white border-brand-green' : 'border-slate-300 text-slate-700 hover:bg-slate-50'
+        active ? 'bg-ff-green text-white border-ff-green' : 'border-line text-ink-2 hover:bg-surface-2'
       }`}
     >
       {label}
@@ -50,8 +50,8 @@ function RadioRow({ options, value, onChange }: {
           onClick={() => onChange(opt.value)}
           className={`flex-1 py-2 px-3 rounded-lg text-sm border transition-colors ${
             value === opt.value
-              ? 'bg-brand-green text-white border-brand-green'
-              : 'border-slate-300 text-slate-700 hover:bg-slate-50'
+              ? 'bg-ff-green text-white border-ff-green'
+              : 'border-line text-ink-2 hover:bg-surface-2'
           }`}
         >
           {opt.label}
@@ -168,15 +168,15 @@ export default function EditBrandForm({ franchisor }: Props) {
         <CardHeader><CardTitle>Contact details</CardTitle></CardHeader>
         <CardBody className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">Contact name</label>
+            <label className="block text-sm font-medium text-ink-2 mb-1">Contact name</label>
             <input type="text" value={form.contact_name} onChange={e => set('contact_name', e.target.value)}
-              className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-green focus:border-transparent"
+              className="w-full px-3 py-2 border border-line rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-ff-green focus:border-transparent"
               placeholder="Jane Smith" />
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">Contact email</label>
+            <label className="block text-sm font-medium text-ink-2 mb-1">Contact email</label>
             <input type="email" value={form.contact_email} onChange={e => set('contact_email', e.target.value)}
-              className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-green focus:border-transparent"
+              className="w-full px-3 py-2 border border-line rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-ff-green focus:border-transparent"
               placeholder="jane@brand.com" />
           </div>
         </CardBody>
@@ -187,7 +187,7 @@ export default function EditBrandForm({ franchisor }: Props) {
       <Card>
         <CardHeader><CardTitle>Brand logo</CardTitle></CardHeader>
         <CardBody className="flex items-center gap-5">
-          <div className="w-20 h-20 rounded-xl border-2 border-dashed border-slate-200 flex items-center justify-center bg-slate-50 overflow-hidden flex-shrink-0">
+          <div className="w-20 h-20 rounded-xl border-2 border-dashed border-line flex items-center justify-center bg-surface-2 overflow-hidden flex-shrink-0">
             {logoUrl ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img src={logoUrl} alt="Logo" className="w-full h-full object-contain p-1" />
@@ -196,16 +196,16 @@ export default function EditBrandForm({ franchisor }: Props) {
             )}
           </div>
           <div>
-            <p className="text-sm font-medium text-slate-700 mb-1">
+            <p className="text-sm font-medium text-ink-2 mb-1">
               {logoUrl ? 'Replace logo' : 'Upload logo'}
             </p>
-            <p className="text-xs text-slate-400 mb-3">PNG or SVG recommended. Shown on match cards once brand is revealed.</p>
+            <p className="text-xs text-ink-3 mb-3">PNG or SVG recommended. Shown on match cards once brand is revealed.</p>
             <input ref={logoInputRef} type="file" accept="image/*" onChange={handleLogoUpload} className="hidden" />
             <button
               type="button"
               onClick={() => logoInputRef.current?.click()}
               disabled={logoUploading}
-              className="text-sm px-4 py-2 border border-slate-300 rounded-lg text-slate-700 hover:bg-slate-50 transition-colors disabled:opacity-60"
+              className="text-sm px-4 py-2 border border-line rounded-lg text-ink-2 hover:bg-surface-2 transition-colors disabled:opacity-60"
             >
               {logoUploading ? 'Uploading…' : 'Choose file'}
             </button>
@@ -218,30 +218,30 @@ export default function EditBrandForm({ franchisor }: Props) {
         <CardBody className="space-y-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1">Brand name</label>
+              <label className="block text-sm font-medium text-ink-2 mb-1">Brand name</label>
               <input type="text" value={form.brand_name} onChange={e => set('brand_name', e.target.value)}
-                className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-green focus:border-transparent"
+                className="w-full px-3 py-2 border border-line rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-ff-green focus:border-transparent"
                 placeholder="e.g. Sides, Zambrero" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1">Category</label>
+              <label className="block text-sm font-medium text-ink-2 mb-1">Category</label>
               <select value={form.category} onChange={e => set('category', e.target.value)}
-                className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-green focus:border-transparent bg-white">
+                className="w-full px-3 py-2 border border-line rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-ff-green focus:border-transparent bg-white">
                 <option value="">— Select category —</option>
                 {BRAND_CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
               </select>
             </div>
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">
-              Concept teaser <span className="text-slate-400 font-normal text-xs">— shown to candidates without naming the brand</span>
+            <label className="block text-sm font-medium text-ink-2 mb-1">
+              Concept teaser <span className="text-ink-3 font-normal text-xs">— shown to candidates without naming the brand</span>
             </label>
             <textarea value={form.teaser} onChange={e => set('teaser', e.target.value)} rows={3}
-              className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-green focus:border-transparent resize-none"
+              className="w-full px-3 py-2 border border-line rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-ff-green focus:border-transparent resize-none"
               placeholder="Describe the concept without naming it…" />
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">Key highlights (up to 3)</label>
+            <label className="block text-sm font-medium text-ink-2 mb-2">Key highlights (up to 3)</label>
             {form.highlights.map((h, i) => (
               <input key={i} type="text" value={h}
                 onChange={e => {
@@ -250,7 +250,7 @@ export default function EditBrandForm({ franchisor }: Props) {
                   set('highlights', updated)
                 }}
                 placeholder={`Highlight ${i + 1}`}
-                className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-green focus:border-transparent mb-2" />
+                className="w-full px-3 py-2 border border-line rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-ff-green focus:border-transparent mb-2" />
             ))}
           </div>
         </CardBody>
@@ -261,36 +261,36 @@ export default function EditBrandForm({ franchisor }: Props) {
         <CardHeader><CardTitle>Investment</CardTitle></CardHeader>
         <CardBody className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">Minimum (£)</label>
+            <label className="block text-sm font-medium text-ink-2 mb-1">Minimum (£)</label>
             <input type="number" value={form.investment_min} onChange={e => set('investment_min', e.target.value)}
-              className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-green focus:border-transparent"
+              className="w-full px-3 py-2 border border-line rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-ff-green focus:border-transparent"
               placeholder="e.g. 150000" />
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">Maximum (£)</label>
+            <label className="block text-sm font-medium text-ink-2 mb-1">Maximum (£)</label>
             <input type="number" value={form.investment_max} onChange={e => set('investment_max', e.target.value)}
-              className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-green focus:border-transparent"
+              className="w-full px-3 py-2 border border-line rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-ff-green focus:border-transparent"
               placeholder="e.g. 300000" />
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">Setup timeline (months)</label>
+            <label className="block text-sm font-medium text-ink-2 mb-1">Setup timeline (months)</label>
             <input type="number" value={form.timeline_months} onChange={e => set('timeline_months', e.target.value)}
-              className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-green focus:border-transparent"
+              className="w-full px-3 py-2 border border-line rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-ff-green focus:border-transparent"
               placeholder="e.g. 6" />
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">Minimum liquid capital (£)</label>
+            <label className="block text-sm font-medium text-ink-2 mb-1">Minimum liquid capital (£)</label>
             <input type="number" value={form.liquid_capital_min} onChange={e => set('liquid_capital_min', e.target.value)}
-              className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-green focus:border-transparent"
+              className="w-full px-3 py-2 border border-line rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-ff-green focus:border-transparent"
               placeholder="e.g. 50000" />
-            <p className="text-xs text-slate-400 mt-1">Cash the franchisee must have available now</p>
+            <p className="text-xs text-ink-3 mt-1">Cash the franchisee must have available now</p>
           </div>
           <div className="col-span-3">
-            <label className="block text-sm font-medium text-slate-700 mb-1">
-              Display text <span className="text-slate-400 font-normal text-xs">— shown to candidates e.g. &ldquo;£150,000 – £300,000&rdquo;</span>
+            <label className="block text-sm font-medium text-ink-2 mb-1">
+              Display text <span className="text-ink-3 font-normal text-xs">— shown to candidates e.g. &ldquo;£150,000 – £300,000&rdquo;</span>
             </label>
             <input type="text" value={form.investment_display} onChange={e => set('investment_display', e.target.value)}
-              className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-green focus:border-transparent"
+              className="w-full px-3 py-2 border border-line rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-ff-green focus:border-transparent"
               placeholder="e.g. £150,000 – £300,000" />
           </div>
         </CardBody>
@@ -301,7 +301,7 @@ export default function EditBrandForm({ franchisor }: Props) {
         <CardHeader><CardTitle>Franchisee requirements</CardTitle></CardHeader>
         <CardBody className="space-y-5">
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">Operator model</label>
+            <label className="block text-sm font-medium text-ink-2 mb-2">Operator model</label>
             <RadioRow value={form.operator_model} onChange={v => set('operator_model', v)}
               options={[
                 { value: 'owner-operator', label: 'Owner-operator (hands-on)' },
@@ -310,7 +310,7 @@ export default function EditBrandForm({ franchisor }: Props) {
               ]} />
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">Experience required</label>
+            <label className="block text-sm font-medium text-ink-2 mb-2">Experience required</label>
             <RadioRow value={form.experience_required} onChange={v => set('experience_required', v)}
               options={[
                 { value: 'none', label: 'None — welcomes first-timers' },
@@ -319,7 +319,7 @@ export default function EditBrandForm({ franchisor }: Props) {
               ]} />
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">Site format(s)</label>
+            <label className="block text-sm font-medium text-ink-2 mb-2">Site format(s)</label>
             <div className="flex gap-3 flex-wrap">
               {FORMAT_TYPES.map(ft => (
                 <Pill key={ft.value} label={ft.label}
@@ -330,17 +330,17 @@ export default function EditBrandForm({ franchisor }: Props) {
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">Full-time required?</label>
+              <label className="block text-sm font-medium text-ink-2 mb-2">Full-time required?</label>
               <RadioRow value={String(form.full_time_required)} onChange={v => set('full_time_required', v === 'true')}
                 options={[{ value: 'true', label: 'Yes' }, { value: 'false', label: 'No' }]} />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">Multi-site ready?</label>
+              <label className="block text-sm font-medium text-ink-2 mb-2">Multi-site ready?</label>
               <RadioRow value={String(form.multi_site_ready)} onChange={v => set('multi_site_ready', v === 'true')}
                 options={[{ value: 'true', label: 'Yes' }, { value: 'false', label: 'No' }]} />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">Minimum sites required</label>
+              <label className="block text-sm font-medium text-ink-2 mb-2">Minimum sites required</label>
               <RadioRow value={form.min_sites_required} onChange={v => set('min_sites_required', v)}
                 options={[
                   { value: '1', label: 'Single site OK' },
@@ -356,7 +356,7 @@ export default function EditBrandForm({ franchisor }: Props) {
         <CardHeader><CardTitle>Location coverage</CardTitle></CardHeader>
         <CardBody className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">Cities available</label>
+            <label className="block text-sm font-medium text-ink-2 mb-2">Cities available</label>
             <div className="flex flex-wrap gap-2">
               {UK_CITIES.map(city => (
                 <Pill key={city.value} label={city.label}
@@ -366,11 +366,11 @@ export default function EditBrandForm({ franchisor }: Props) {
             </div>
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">
-              Display text <span className="text-slate-400 font-normal text-xs">— shown to candidates</span>
+            <label className="block text-sm font-medium text-ink-2 mb-1">
+              Display text <span className="text-ink-3 font-normal text-xs">— shown to candidates</span>
             </label>
             <input type="text" value={form.locations_display} onChange={e => set('locations_display', e.target.value)}
-              className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-green focus:border-transparent"
+              className="w-full px-3 py-2 border border-line rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-ff-green focus:border-transparent"
               placeholder="e.g. Major UK cities" />
           </div>
         </CardBody>
@@ -384,7 +384,7 @@ export default function EditBrandForm({ franchisor }: Props) {
             <Pill label="Hospitality" active={form.sectors.includes('hospitality')}
               onClick={() => set('sectors', toggle(form.sectors, 'hospitality'))} />
           </div>
-          <p className="text-xs text-slate-400 mt-3">More sectors coming soon.</p>
+          <p className="text-xs text-ink-3 mt-3">More sectors coming soon.</p>
         </CardBody>
       </Card>
 
@@ -394,11 +394,11 @@ export default function EditBrandForm({ franchisor }: Props) {
 
       <div className="flex gap-3 pb-8">
         <button type="button" onClick={handleSave} disabled={saving}
-          className="bg-brand-green hover:bg-brand-green-dark text-white font-medium py-2.5 px-8 rounded-lg text-sm transition-colors disabled:opacity-60">
+          className="bg-ff-green hover:bg-ff-green-deep text-white font-medium py-2.5 px-8 rounded-lg text-sm transition-colors disabled:opacity-60">
           {saving ? 'Saving…' : 'Save changes'}
         </button>
         <button type="button" onClick={() => router.back()} disabled={saving}
-          className="border border-slate-300 text-slate-700 text-sm font-medium py-2.5 px-6 rounded-lg hover:bg-slate-50 transition-colors disabled:opacity-60">
+          className="border border-line text-ink-2 text-sm font-medium py-2.5 px-6 rounded-lg hover:bg-surface-2 transition-colors disabled:opacity-60">
           Cancel
         </button>
       </div>

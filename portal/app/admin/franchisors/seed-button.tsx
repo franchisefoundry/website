@@ -31,7 +31,7 @@ export default function SeedFranchisorsButton() {
       <button
         onClick={handleSeed}
         disabled={loading}
-        className="border border-slate-300 text-slate-700 text-sm font-medium px-4 py-2 rounded-lg hover:bg-slate-50 transition-colors disabled:opacity-60"
+        className="border border-line text-ink-2 text-sm font-medium px-4 py-2 rounded-lg hover:bg-surface-2 transition-colors disabled:opacity-60"
       >
         {loading ? 'Updating…' : 'Sync brands from website'}
       </button>
@@ -41,12 +41,12 @@ export default function SeedFranchisorsButton() {
       )}
 
       {results && (
-        <div className="mt-3 bg-white border border-slate-200 rounded-lg p-3 text-xs space-y-1 max-w-sm">
-          <p className="font-medium text-slate-700 mb-2">Import results:</p>
+        <div className="mt-3 bg-white border border-line rounded-lg p-3 text-xs space-y-1 max-w-sm">
+          <p className="font-medium text-ink-2 mb-2">Import results:</p>
           {results.map(r => (
             <div key={r.brand} className="flex justify-between gap-4">
-              <span className="text-slate-600">{r.brand}</span>
-              <span className={r.status === 'upserted' ? 'text-emerald-600 font-medium' : r.status.startsWith('error') ? 'text-red-500 font-medium' : 'text-slate-400'}>
+              <span className="text-ink-2">{r.brand}</span>
+              <span className={r.status === 'upserted' ? 'text-ff-green font-medium' : r.status.startsWith('error') ? 'text-red-500 font-medium' : 'text-ink-3'}>
                 {r.status}
               </span>
             </div>

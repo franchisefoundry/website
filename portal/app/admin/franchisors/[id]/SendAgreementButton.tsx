@@ -34,7 +34,7 @@ export default function SendAgreementButton({
 
   if (status === 'signed') {
     return (
-      <span className="text-sm text-emerald-600 font-medium border border-emerald-200 bg-emerald-50 px-4 py-2 rounded-lg">
+      <span className="text-sm text-ff-green font-medium border border-ff-green/20 bg-ff-green-soft px-4 py-2 rounded-lg">
         ✓ Agreement signed
       </span>
     )
@@ -44,7 +44,7 @@ export default function SendAgreementButton({
     <button
       onClick={handleSend}
       disabled={loading}
-      className="text-sm font-medium px-4 py-2 rounded-lg border border-slate-200 hover:bg-slate-50 transition-colors disabled:opacity-50"
+      className="text-sm font-medium px-4 py-2 rounded-lg border border-line hover:bg-surface-2 transition-colors disabled:opacity-50"
     >
       {loading ? 'Sending…' : status === 'sent' ? 'Resend agreement' : 'Send agreement'}
     </button>

@@ -6,6 +6,8 @@ import { MATCH_PIPELINE_STAGES } from '@/lib/supabase/types'
 import Link from 'next/link'
 import MatchPipelineSelect from './match-pipeline-select'
 import MatchNotesInline from './match-notes-inline'
+import RunMatchingButton from './run-matching-button'
+import RevealToggle from './reveal-toggle'
 
 export default async function MatchesPage() {
   const admin = createAdminClient()
@@ -85,18 +87,19 @@ export default async function MatchesPage() {
       <PageHeader
         title="Match pipeline"
         description="Active matches grouped by brand — advance stages and add notes inline."
+        action={<RunMatchingButton />}
       />
 
       {groups.length === 0 && (
-        <div className="bg-white rounded-xl border border-slate-200 p-12 text-center">
+        <div className="bg-white rounded-xl border border-line p-12 text-center">
           <div className="text-3xl mb-3">🎯</div>
-          <p className="text-slate-800 font-semibold text-sm mb-1">Pipeline is clear</p>
-          <p className="text-slate-400 text-xs max-w-xs mx-auto leading-relaxed">
+          <p className="text-ink font-semibold text-sm mb-1">Pipeline is clear</p>
+          <p className="text-ink-3 text-xs max-w-xs mx-auto leading-relaxed">
             Assign a primary brand to a franchisee and their journey will appear here.
           </p>
           <Link
             href="/admin/franchisees"
-            className="mt-4 inline-block text-xs font-semibold text-brand-green hover:underline"
+            className="mt-4 inline-block text-xs font-semibold text-ff-green hover:underline"
           >
             Go to franchisees →
           </Link>
@@ -105,27 +108,27 @@ export default async function MatchesPage() {
 
       <div className="space-y-6">
         {groups.map(group => (
-          <div key={group.franchisorId} className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+          <div key={group.franchisorId} className="bg-white rounded-xl border border-line shadow-sm overflow-hidden">
             {/* Brand header */}
-            <div className="flex items-center gap-3 px-6 py-4 border-b border-slate-100 bg-slate-50">
+            <div className="flex items-center gap-3 px-6 py-4 border-b border-line-2 bg-surface-2">
               {group.logoUrl ? (
                 // eslint-disable-next-line @next/next/no-img-element
-                <img src={group.logoUrl} alt={group.brandName} className="w-8 h-8 rounded-lg object-contain bg-white border border-slate-200 p-0.5" />
+                <img src={group.logoUrl} alt={group.brandName} className="w-8 h-8 rounded-lg object-contain bg-white border border-line p-0.5" />
               ) : (
-                <div className="w-8 h-8 rounded-lg bg-brand-green/10 flex items-center justify-center text-brand-green font-bold text-sm">
+                <div className="w-8 h-8 rounded-lg bg-ff-green/10 flex items-center justify-center text-ff-green font-bold text-sm">
                   {group.brandName.charAt(0)}
                 </div>
               )}
               <div>
-                <p className="text-sm font-semibold text-slate-900">{group.brandName}</p>
-                {group.category && <p className="text-xs text-slate-400">{group.category}</p>}
+                <p className="text-sm font-semibold text-ink">{group.brandName}</p>
+                {group.category && <p className="text-xs text-ink-3">{group.category}</p>}
               </div>
               <div className="ml-auto flex items-center gap-2">
-                <span className="text-xs text-slate-500 bg-slate-100 rounded-full px-2.5 py-1 font-medium">
+                <span className="text-xs text-ink-3 bg-surface-2 rounded-full px-2.5 py-1 font-medium">
                   {group.primary.length} primary
                 </span>
                 {group.backups.length > 0 && (
-                  <span className="text-xs text-slate-400 bg-slate-50 border border-slate-200 rounded-full px-2.5 py-1">
+                  <span className="text-xs text-ink-3 bg-surface-2 border border-line rounded-full px-2.5 py-1">
                     +{group.backups.length} backup
                   </span>
                 )}
@@ -134,9 +137,9 @@ export default async function MatchesPage() {
 
             {/* Primary match rows */}
             {group.primary.length === 0 ? (
-              <p className="px-6 py-4 text-xs text-slate-400 italic">No primary assignments yet.</p>
+              <p className="px-6 py-4 text-xs text-ink-3 italic">No primary assignments yet.</p>
             ) : (
-              <div className="divide-y divide-slate-50">
+              <div className="divide-y divide-line">
                 {group.primary.map(m => {
                   // eslint-disable-next-line @typescript-eslint/no-explicit-any
                   const franchisee = m.franchisee_profiles as any
@@ -148,7 +151,7 @@ export default async function MatchesPage() {
                           <div className="flex items-center gap-2 mb-1">
                             <Link
                               href={`/admin/franchisees/${franchisee?.id}`}
-                              className="text-sm font-medium text-slate-900 hover:text-brand-green transition-colors"
+                              className="text-sm font-medium text-ink hover:text-ff-green transition-colors"
                             >
                               {name}
                             </Link>
@@ -158,11 +161,15 @@ export default async function MatchesPage() {
                               </span>
                             )}
                           </div>
-                          <MatchPipelineSelect
-                            matchId={m.id}
-                            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                            currentStage={(m as any).pipeline_stage ?? null}
-                          />
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <MatchPipelineSelect
+                              matchId={m.id}
+                              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                              currentStage={(m as any).pipeline_stage ?? null}
+                            />
+                            {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+                            <RevealToggle matchId={m.id} revealed={(m as any).franchisor_revealed ?? false} />
+                          </div>
                         </div>
                         <div className="shrink-0 w-72">
                           <MatchNotesInline
@@ -182,12 +189,12 @@ export default async function MatchesPage() {
 
             {/* Backup matches — collapsible */}
             {group.backups.length > 0 && (
-              <details className="group border-t border-slate-100">
-                <summary className="px-6 py-3 text-xs font-medium text-slate-400 cursor-pointer hover:text-slate-600 hover:bg-slate-50 transition-colors list-none flex items-center gap-1.5 select-none">
+              <details className="group border-t border-line-2">
+                <summary className="px-6 py-3 text-xs font-medium text-ink-3 cursor-pointer hover:text-ink-2 hover:bg-surface-2 transition-colors list-none flex items-center gap-1.5 select-none">
                   <span className="group-open:rotate-90 transition-transform inline-block">▶</span>
                   {group.backups.length} franchisee{group.backups.length !== 1 ? 's' : ''} also have this as a backup option
                 </summary>
-                <div className="divide-y divide-slate-100 bg-slate-50/50">
+                <div className="divide-y divide-line-2 bg-surface-2/50">
                   {group.backups.map(m => {
                     // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     const franchisee = m.franchisee_profiles as any
@@ -200,18 +207,18 @@ export default async function MatchesPage() {
                     return (
                       <div key={m.id} className="px-6 py-3">
                         <div className="flex items-center gap-2 flex-wrap">
-                          <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded bg-slate-200 text-slate-500 shrink-0">
+                          <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded bg-surface-2 text-ink-3 shrink-0">
                             {isBackup2 ? 'Backup 2' : 'Backup 1'}
                           </span>
                           <Link
                             href={`/admin/franchisees/${franchisee?.id}`}
-                            className="text-sm text-slate-600 hover:text-brand-green transition-colors"
+                            className="text-sm text-ink-2 hover:text-ff-green transition-colors"
                           >
                             {name}
                           </Link>
                           <div className="ml-auto flex items-center gap-2 shrink-0">
                             {pipelineStage && (
-                              <span className="text-xs text-slate-400 flex items-center gap-1">
+                              <span className="text-xs text-ink-3 flex items-center gap-1">
                                 {pipelineStage.emoji} {pipelineStage.label}
                               </span>
                             )}

@@ -27,6 +27,7 @@ export const NOTIFICATION_EVENTS: NotificationEvent[] = [
   { key: 'franchisor_first_login',    role: 'admin', label: 'Franchisor first login',        description: 'A franchisor logs into the portal for the first time.', defaultEmail: false },
   { key: 'franchisor_answers_changed', role: 'admin', label: 'Approved brand edited answers', description: 'A live franchisor changes their questionnaire after approval.', defaultEmail: false },
   { key: 'franchisee_first_login',    role: 'admin', label: 'Franchisee first login',        description: 'A franchisee logs into the portal for the first time.', defaultEmail: false },
+  { key: 'new_message',               role: 'admin', label: 'New client message',            description: 'A franchisee, brand or agent replies in their message thread.', defaultEmail: false },
 
   // ── Franchisor ─────────────────────────────────────────────────────────────
   { key: 'candidate_matched',   role: 'franchisor', label: 'New candidate matched',     description: 'A new candidate is assigned to your brand.',        defaultEmail: true },
@@ -61,8 +62,20 @@ export const ANNOUNCEMENT_EVENT: NotificationEvent = {
   defaultEmail: true,
 }
 
+/**
+ * Direct message from the FF team to a portal user (any role). Not role-specific;
+ * delivered in-app + push + email (subject to each user's prefs).
+ */
+export const MESSAGE_EVENT: NotificationEvent = {
+  key: 'new_message',
+  role: 'admin',
+  label: 'New message',
+  description: 'A message sent to you by the Franchise Foundry team.',
+  defaultEmail: true,
+}
+
 const BY_KEY = new Map(
-  [...NOTIFICATION_EVENTS, ANNOUNCEMENT_EVENT].map(e => [e.key, e]),
+  [...NOTIFICATION_EVENTS, ANNOUNCEMENT_EVENT, MESSAGE_EVENT].map(e => [e.key, e]),
 )
 
 /** Returns the events relevant to a given role, in display order. */

@@ -112,7 +112,9 @@ function LoginForm() {
   // ── Login panel ──────────────────────────────────────────────────────────────
   return (
     <div className="w-full max-w-sm">
-      <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-8">
+      <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+        <div className="h-1.5 bg-gradient-to-r from-brand-gold to-brand-gold-light" />
+        <div className="p-8">
         <h1 className="text-xl font-semibold text-slate-900 mb-1">Sign in</h1>
         {reason === 'idle' ? (
           <p className="text-sm text-amber-700 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2 mb-6">
@@ -189,6 +191,7 @@ function LoginForm() {
             {loading ? 'Signing in…' : 'Sign in'}
           </Button>
         </form>
+        </div>
       </div>
 
       <p className="mt-6 text-center text-xs text-slate-400">

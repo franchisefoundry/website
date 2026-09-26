@@ -27,17 +27,17 @@ export default function CookieNotice() {
       aria-label="Cookie notice"
       className="fixed bottom-4 left-4 right-4 md:left-auto md:right-6 md:max-w-sm z-[9998]"
     >
-      <div className="bg-white border border-slate-200 rounded-2xl shadow-xl p-4">
-        <p className="text-xs text-slate-600 mb-3 leading-relaxed">
+      <div className="bg-surface border border-line rounded-2xl shadow-xl p-4">
+        <p className="text-xs text-ink-2 mb-3 leading-relaxed">
           This portal uses essential cookies to keep you securely signed in. No advertising
           or tracking cookies are used.{' '}
-          <Link href="/privacy" className="text-brand-green hover:underline font-medium">
+          <Link href="/privacy" className="text-ff-green hover:underline font-medium">
             Privacy policy
           </Link>
         </p>
         <button
           onClick={dismiss}
-          className="w-full text-xs font-medium bg-brand-green text-white rounded-lg px-3 py-2 hover:bg-brand-green/90 transition-colors"
+          className="w-full text-xs font-medium bg-ff-green text-white rounded-lg px-3 py-2 hover:bg-ff-green/90 transition-colors"
         >
           Got it
         </button>

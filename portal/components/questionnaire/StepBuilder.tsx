@@ -8,7 +8,7 @@ interface Props {
 }
 
 export function StepBuilder({ steps, onChange, placeholder = 'Describe this step…', variant = 'light' }: Props) {
-  const accent = variant === 'dark' ? '#3a4a3a' : 'var(--color-brand-green, #3a4a3a)'
+  const accent = variant === 'dark' ? '#3a4a3a' : 'var(--color-ff-green, #3a4a3a)'
 
   function update(idx: number, val: string) {
     const next = [...steps]
@@ -56,7 +56,7 @@ export function StepBuilder({ steps, onChange, placeholder = 'Describe this step
             value={step}
             onChange={e => update(idx, e.target.value)}
             placeholder={`${placeholder}`}
-            className="flex-1 px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:border-transparent"
+            className="flex-1 px-3 py-2 border border-line rounded-lg text-sm focus:outline-none focus:ring-2 focus:border-transparent"
             style={{ '--tw-ring-color': accent } as React.CSSProperties}
           />
 
@@ -66,7 +66,7 @@ export function StepBuilder({ steps, onChange, placeholder = 'Describe this step
               type="button"
               onClick={() => moveUp(idx)}
               disabled={idx === 0}
-              className="w-6 h-6 flex items-center justify-center text-slate-400 hover:text-slate-600 disabled:opacity-20 text-xs"
+              className="w-6 h-6 flex items-center justify-center text-ink-3 hover:text-ink-2 disabled:opacity-20 text-xs"
               title="Move up"
             >
               ↑
@@ -75,7 +75,7 @@ export function StepBuilder({ steps, onChange, placeholder = 'Describe this step
               type="button"
               onClick={() => moveDown(idx)}
               disabled={idx === steps.length - 1}
-              className="w-6 h-6 flex items-center justify-center text-slate-400 hover:text-slate-600 disabled:opacity-20 text-xs"
+              className="w-6 h-6 flex items-center justify-center text-ink-3 hover:text-ink-2 disabled:opacity-20 text-xs"
               title="Move down"
             >
               ↓
@@ -86,7 +86,7 @@ export function StepBuilder({ steps, onChange, placeholder = 'Describe this step
           <button
             type="button"
             onClick={() => removeStep(idx)}
-            className="w-7 h-7 flex items-center justify-center text-slate-300 hover:text-red-400 transition-colors flex-shrink-0 mt-1.5 rounded-lg hover:bg-red-50"
+            className="w-7 h-7 flex items-center justify-center text-ink-3 hover:text-red-400 transition-colors flex-shrink-0 mt-1.5 rounded-lg hover:bg-red-50"
             title="Remove step"
           >
             ×
@@ -98,7 +98,7 @@ export function StepBuilder({ steps, onChange, placeholder = 'Describe this step
       <button
         type="button"
         onClick={addStep}
-        className="flex items-center gap-2 text-sm font-medium transition-colors mt-1 px-2 py-1.5 rounded-lg hover:bg-slate-50"
+        className="flex items-center gap-2 text-sm font-medium transition-colors mt-1 px-2 py-1.5 rounded-lg hover:bg-surface-2"
         style={{ color: accent }}
       >
         <span className="w-7 h-7 rounded-full border-2 border-dashed flex items-center justify-center text-lg leading-none flex-shrink-0"

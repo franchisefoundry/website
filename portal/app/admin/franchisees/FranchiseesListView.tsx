@@ -45,27 +45,27 @@ export default function FranchiseesListView({
           placeholder="Search by name or email…"
           value={search}
           onChange={e => setSearch(e.target.value)}
-          className="w-full max-w-sm px-4 py-2 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-green focus:border-transparent placeholder:text-slate-400"
+          className="w-full max-w-sm px-4 py-2 border border-line rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ff-green focus:border-transparent placeholder:text-ink-3"
         />
       </div>
 
-      <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-x-auto">
+      <div className="bg-white rounded-xl border border-line shadow-sm overflow-x-auto">
         <table className="w-full text-sm">
-          <thead className="bg-slate-50 border-b border-slate-200">
+          <thead className="bg-surface-2 border-b border-line">
             <tr>
-              <th className="text-left px-6 py-3 text-xs font-medium text-slate-500 uppercase tracking-wide">Name</th>
-              <th className="text-left px-6 py-3 text-xs font-medium text-slate-500 uppercase tracking-wide">Budget</th>
-              <th className="text-left px-6 py-3 text-xs font-medium text-slate-500 uppercase tracking-wide">Status</th>
-              <th className="text-left px-6 py-3 text-xs font-medium text-slate-500 uppercase tracking-wide">Marketplace</th>
-              <th className="text-left px-6 py-3 text-xs font-medium text-slate-500 uppercase tracking-wide">Joined</th>
-              <th className="text-left px-6 py-3 text-xs font-medium text-slate-500 uppercase tracking-wide hidden lg:table-cell">Last seen</th>
+              <th className="text-left px-6 py-3 text-xs font-medium text-ink-3 uppercase tracking-wide">Name</th>
+              <th className="text-left px-6 py-3 text-xs font-medium text-ink-3 uppercase tracking-wide">Budget</th>
+              <th className="text-left px-6 py-3 text-xs font-medium text-ink-3 uppercase tracking-wide">Status</th>
+              <th className="text-left px-6 py-3 text-xs font-medium text-ink-3 uppercase tracking-wide">Marketplace</th>
+              <th className="text-left px-6 py-3 text-xs font-medium text-ink-3 uppercase tracking-wide">Joined</th>
+              <th className="text-left px-6 py-3 text-xs font-medium text-ink-3 uppercase tracking-wide hidden lg:table-cell">Last seen</th>
               <th className="px-6 py-3" />
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-100">
+          <tbody className="divide-y divide-line-2">
             {filtered.length === 0 && (
               <tr>
-                <td colSpan={6} className="px-6 py-8 text-slate-400 text-center">
+                <td colSpan={6} className="px-6 py-8 text-ink-3 text-center">
                   {search ? `No franchisees match "${search}"` : 'No franchisees yet.'}
                 </td>
               </tr>
@@ -76,29 +76,29 @@ export default function FranchiseesListView({
                 <tr
                   key={f.id}
                   onClick={() => router.push(`/admin/franchisees/${f.id}`)}
-                  className="hover:bg-slate-50 transition-colors cursor-pointer"
+                  className="hover:bg-surface-2 transition-colors cursor-pointer"
                 >
                   <td className="px-6 py-3">
                     <div className="flex items-center gap-3">
                       <Avatar name={p?.full_name} size="sm" />
                       <div>
-                        <p className="font-medium text-slate-900">{p?.full_name || 'Pending setup'}</p>
-                        <p className="text-xs text-slate-400">{p?.email}</p>
+                        <p className="font-medium text-ink">{p?.full_name || 'Pending setup'}</p>
+                        <p className="text-xs text-ink-3">{p?.email}</p>
                       </div>
                     </div>
                   </td>
-                  <td className="px-6 py-3 text-slate-600">
+                  <td className="px-6 py-3 text-ink-2">
                     {formatInvestmentRange(f.investment_min, f.investment_max)}
                   </td>
                   <td className="px-6 py-3">{statusBadge(f.status ?? 'unknown')}</td>
                   <td className="px-6 py-3">
                     {f.tier_2_unlocked
-                      ? <span className="text-emerald-600 text-xs font-medium">Unlocked</span>
-                      : <span className="text-slate-400 text-xs">Locked</span>}
+                      ? <span className="text-ff-green text-xs font-medium">Unlocked</span>
+                      : <span className="text-ink-3 text-xs">Locked</span>}
                   </td>
-                  <td className="px-6 py-3 text-slate-500">{formatDate(f.created_at)}</td>
+                  <td className="px-6 py-3 text-ink-3">{formatDate(f.created_at)}</td>
                   <td className="px-6 py-3 hidden lg:table-cell">
-                    <span className="text-slate-500 text-sm">{timeAgo(lastLoginMap[f.user_id])}</span>
+                    <span className="text-ink-3 text-sm">{timeAgo(lastLoginMap[f.user_id])}</span>
                   </td>
                   <td className="px-6 py-3" onClick={e => e.stopPropagation()}>
                     <DeleteUserButton

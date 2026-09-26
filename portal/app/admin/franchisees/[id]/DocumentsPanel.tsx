@@ -142,7 +142,7 @@ export default function DocumentsPanel({ franchiseeId, initialDocs }: Props) {
         <button
           onClick={() => fileInput.current?.click()}
           disabled={uploading}
-          className="w-full py-3 border-2 border-dashed border-slate-200 rounded-xl text-sm text-slate-400 hover:border-brand-green hover:text-brand-green transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+          className="w-full py-3 border-2 border-dashed border-line rounded-xl text-sm text-ink-3 hover:border-ff-green hover:text-ff-green transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
         >
           {uploading ? (
             <>
@@ -159,20 +159,20 @@ export default function DocumentsPanel({ franchiseeId, initialDocs }: Props) {
 
       {/* Documents list */}
       {docs.length === 0 ? (
-        <p className="text-sm text-slate-400 text-center py-4">No documents uploaded yet.</p>
+        <p className="text-sm text-ink-3 text-center py-4">No documents uploaded yet.</p>
       ) : (
         <div className="space-y-2">
           {docs.map(doc => (
-            <div key={doc.id} className="flex items-center gap-3 p-3 bg-slate-50 rounded-xl border border-slate-100 group">
+            <div key={doc.id} className="flex items-center gap-3 p-3 bg-surface-2 rounded-xl border border-line-2 group">
               <span className="text-lg flex-shrink-0">{fileIcon(doc.mime_type)}</span>
               <div className="flex-1 min-w-0">
                 <button
                   onClick={() => getDownloadUrl(doc)}
-                  className="text-sm font-medium text-slate-700 hover:text-brand-green truncate block text-left transition-colors"
+                  className="text-sm font-medium text-ink-2 hover:text-ff-green truncate block text-left transition-colors"
                 >
                   {doc.name}
                 </button>
-                <p className="text-xs text-slate-400">
+                <p className="text-xs text-ink-3">
                   {formatBytes(doc.file_size)}
                   {doc.file_size ? ' · ' : ''}
                   {new Date(doc.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
@@ -185,8 +185,8 @@ export default function DocumentsPanel({ franchiseeId, initialDocs }: Props) {
                 title={doc.shared_with_franchisor ? 'Visible to franchisor — click to hide' : 'Hidden from franchisor — click to share'}
                 className={`flex-shrink-0 px-2.5 py-1 rounded-full text-xs font-medium transition-colors ${
                   doc.shared_with_franchisor
-                    ? 'bg-emerald-100 text-emerald-700 hover:bg-emerald-200'
-                    : 'bg-slate-100 text-slate-400 hover:bg-slate-200'
+                    ? 'bg-ff-green-soft text-ff-green hover:bg-ff-green-soft'
+                    : 'bg-surface-2 text-ink-3 hover:bg-surface-2'
                 }`}
               >
                 {doc.shared_with_franchisor ? '👁 Shared' : '🔒 Private'}
@@ -195,7 +195,7 @@ export default function DocumentsPanel({ franchiseeId, initialDocs }: Props) {
               {/* Delete */}
               <button
                 onClick={() => deleteDoc(doc)}
-                className="flex-shrink-0 text-slate-300 hover:text-red-400 transition-colors opacity-0 group-hover:opacity-100 text-lg leading-none"
+                className="flex-shrink-0 text-ink-3 hover:text-red-400 transition-colors opacity-0 group-hover:opacity-100 text-lg leading-none"
                 title="Delete"
               >
                 ×
@@ -205,7 +205,7 @@ export default function DocumentsPanel({ franchiseeId, initialDocs }: Props) {
         </div>
       )}
 
-      <p className="text-xs text-slate-400">
+      <p className="text-xs text-ink-3">
         Documents marked <strong>Shared</strong> are visible to the franchisor when this franchisee is matched.
       </p>
     </div>

@@ -113,7 +113,7 @@ export default function AccountSettingsCard({ userId, fullName, avatarUrl }: Pro
       <Card>
         <CardHeader><CardTitle>Profile photo</CardTitle></CardHeader>
         <CardBody className="flex items-center gap-5">
-          <div className="w-16 h-16 rounded-full bg-brand-green flex items-center justify-center text-white text-lg font-bold flex-shrink-0 overflow-hidden">
+          <div className="w-16 h-16 rounded-full bg-ff-green flex items-center justify-center text-white text-lg font-bold flex-shrink-0 overflow-hidden">
             {currentAvatar
               ? <img src={currentAvatar} alt="Profile" className="w-full h-full object-cover" />
               : <span>{initials(fullName)}</span>
@@ -131,7 +131,7 @@ export default function AccountSettingsCard({ userId, fullName, avatarUrl }: Pro
               type="button"
               onClick={() => fileInputRef.current?.click()}
               disabled={avatarLoading}
-              className="px-4 py-2 text-sm border border-slate-300 rounded-lg hover:bg-slate-50 transition-colors disabled:opacity-60"
+              className="px-4 py-2 text-sm border border-line rounded-lg hover:bg-surface-2 transition-colors disabled:opacity-60"
             >
               {avatarLoading ? 'Uploading…' : 'Upload photo'}
             </button>
@@ -148,7 +148,7 @@ export default function AccountSettingsCard({ userId, fullName, avatarUrl }: Pro
                 Remove
               </button>
             )}
-            <p className="text-xs text-slate-400 mt-1.5">JPG, PNG or GIF · max 2 MB</p>
+            <p className="text-xs text-ink-3 mt-1.5">JPG, PNG or GIF · max 2 MB</p>
             {avatarError && <p className="text-xs text-red-500 mt-1">{avatarError}</p>}
           </div>
         </CardBody>
@@ -178,7 +178,7 @@ export default function AccountSettingsCard({ userId, fullName, avatarUrl }: Pro
             {pwMsg && (
               <p className={`text-sm px-3 py-2 rounded-lg border ${
                 pwMsg.type === 'success'
-                  ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                  ? 'bg-ff-green-soft text-ff-green border-ff-green/20'
                   : 'bg-red-50 text-red-600 border-red-200'
               }`}>
                 {pwMsg.text}
@@ -195,21 +195,21 @@ export default function AccountSettingsCard({ userId, fullName, avatarUrl }: Pro
       <Card>
         <CardHeader><CardTitle>Data &amp; privacy</CardTitle></CardHeader>
         <CardBody className="space-y-4">
-          <p className="text-sm text-slate-500">
+          <p className="text-sm text-ink-3">
             Read our{' '}
-            <Link href="/privacy" className="text-brand-green hover:underline font-medium">
+            <Link href="/privacy" className="text-ff-green hover:underline font-medium">
               Privacy Policy
             </Link>{' '}
             to understand how we collect, use and protect your personal data.
             To request a copy of your data or raise any GDPR query, email{' '}
-            <a href="mailto:connect@franchisefoundry.co.uk" className="text-brand-green hover:underline font-medium">
+            <a href="mailto:connect@franchisefoundry.co.uk" className="text-ff-green hover:underline font-medium">
               connect@franchisefoundry.co.uk
             </a>.
           </p>
 
-          <div className="border-t border-slate-100 pt-4">
+          <div className="border-t border-line-2 pt-4">
             <p className="text-sm font-medium text-red-600 mb-1">Delete account</p>
-            <p className="text-xs text-slate-500 mb-3">
+            <p className="text-xs text-ink-3 mb-3">
               Permanently delete your account and all associated data. This cannot be undone.
             </p>
             {!deleteConfirm ? (
@@ -227,7 +227,7 @@ export default function AccountSettingsCard({ userId, fullName, avatarUrl }: Pro
                   Your profile, matches and all data will be permanently deleted. This action cannot be reversed.
                 </p>
                 {deleteError && (
-                  <p className="text-xs text-red-600 bg-white border border-red-200 rounded-lg px-3 py-2">{deleteError}</p>
+                  <p className="text-xs text-red-600 bg-surface border border-red-200 rounded-lg px-3 py-2">{deleteError}</p>
                 )}
                 <div className="flex gap-2">
                   <Button type="button" variant="danger" onClick={handleDeleteAccount} disabled={deleteLoading}>

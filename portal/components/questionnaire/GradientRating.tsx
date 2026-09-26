@@ -94,14 +94,14 @@ export function GradientRating({
         {[1,2,3,4,5,6,7,8,9,10].map(n => (
           <div
             key={n}
-            className="absolute w-0.5 h-3 rounded-full bg-white/60 pointer-events-none"
+            className="absolute w-0.5 h-3 rounded-full bg-surface/60 pointer-events-none"
             style={{ left: `${((n-1)/9)*100}%`, top: '50%', transform: 'translate(-50%,-50%)' }}
           />
         ))}
         {/* Thumb */}
         <div
           ref={thumbRef}
-          className="absolute w-5 h-5 bg-white rounded-full shadow-md border-2 pointer-events-none -translate-x-1/2"
+          className="absolute w-5 h-5 bg-surface rounded-full shadow-md border-2 pointer-events-none -translate-x-1/2"
           style={{ left: `${initPct}%`, borderColor: initColor }}
         />
         {/* Range input — zero-lag via DOM refs */}
@@ -121,7 +121,7 @@ export function GradientRating({
         {[1,5,10].map(n => (
           <span
             key={n}
-            className="absolute text-[10px] text-slate-400 -translate-x-1/2"
+            className="absolute text-[10px] text-ink-3 -translate-x-1/2"
             style={{ left: `${((n-1)/9)*100}%` }}
           >
             {n}
@@ -131,8 +131,8 @@ export function GradientRating({
 
       {/* Staggered min / max labels */}
       <div className="relative h-7">
-        <span className="absolute left-0 bottom-0 text-xs text-slate-400">{lowLabel}</span>
-        <span className="absolute right-0 top-0 text-xs text-slate-400 text-right">{highLabel}</span>
+        <span className="absolute left-0 bottom-0 text-xs text-ink-3">{lowLabel}</span>
+        <span className="absolute right-0 top-0 text-xs text-ink-3 text-right">{highLabel}</span>
       </div>
     </div>
   )

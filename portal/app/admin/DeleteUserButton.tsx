@@ -37,7 +37,7 @@ export default function DeleteUserButton({ id, name, endpoint, redirectTo }: Pro
   if (confirming) {
     return (
       <div className="flex items-center gap-2">
-        <span className="text-xs text-slate-500">Remove {name}?</span>
+        <span className="text-xs text-ink-3">Remove {name}?</span>
         <button
           onClick={handleDelete}
           disabled={deleting}
@@ -47,7 +47,7 @@ export default function DeleteUserButton({ id, name, endpoint, redirectTo }: Pro
         </button>
         <button
           onClick={() => setConfirming(false)}
-          className="text-xs text-slate-400 hover:text-slate-600"
+          className="text-xs text-ink-3 hover:text-ink-2"
         >
           Cancel
         </button>

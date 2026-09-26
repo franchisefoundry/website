@@ -44,7 +44,7 @@ export default function MeetingNotes({ franchiseeId, initialNotes, initialRating
     <div className="space-y-4">
       {/* Rating */}
       <div>
-        <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider block mb-2">
+        <label className="text-xs font-semibold text-ink-3 uppercase tracking-wider block mb-2">
           Internal rating
         </label>
         <div className="flex gap-2 flex-wrap">
@@ -58,8 +58,8 @@ export default function MeetingNotes({ franchiseeId, initialNotes, initialRating
               }}
               className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors ${
                 rating === opt.value
-                  ? 'bg-brand-green text-white border-brand-green'
-                  : 'bg-white text-slate-600 border-slate-200 hover:border-brand-green hover:text-brand-green'
+                  ? 'bg-ff-green text-white border-ff-green'
+                  : 'bg-white text-ink-2 border-line hover:border-ff-green hover:text-ff-green'
               }`}
             >
               {opt.label}
@@ -70,7 +70,7 @@ export default function MeetingNotes({ franchiseeId, initialNotes, initialRating
 
       {/* Notes textarea */}
       <div>
-        <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider block mb-2">
+        <label className="text-xs font-semibold text-ink-3 uppercase tracking-wider block mb-2">
           Meeting notes
         </label>
         <textarea
@@ -79,14 +79,14 @@ export default function MeetingNotes({ franchiseeId, initialNotes, initialRating
           onBlur={() => save(notes, rating)}
           rows={6}
           placeholder="Add notes from your meeting, observations about the candidate, key discussion points…"
-          className="w-full px-3 py-2.5 border border-slate-200 rounded-lg text-sm text-slate-700 placeholder-slate-300 focus:outline-none focus:ring-2 focus:ring-brand-green/30 focus:border-brand-green resize-none transition-colors"
+          className="w-full px-3 py-2.5 border border-line rounded-lg text-sm text-ink-2 placeholder:text-ink-3 focus:outline-none focus:ring-2 focus:ring-ff-green/30 focus:border-ff-green resize-none transition-colors"
         />
       </div>
 
       {/* Save status */}
       <div className="flex items-center justify-end h-5">
-        {saving && <span className="text-xs text-slate-400">Saving…</span>}
-        {saved && !saving && <span className="text-xs text-emerald-600">✓ Saved</span>}
+        {saving && <span className="text-xs text-ink-3">Saving…</span>}
+        {saved && !saving && <span className="text-xs text-ff-green">✓ Saved</span>}
       </div>
     </div>
   )

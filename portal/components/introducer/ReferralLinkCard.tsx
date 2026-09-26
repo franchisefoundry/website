@@ -21,7 +21,7 @@ export default function ReferralLinkCard({ link, referredCount }: { link: string
     <Card>
       <CardHeader><CardTitle>Your referral link</CardTitle></CardHeader>
       <CardBody className="space-y-4">
-        <p className="text-sm text-slate-500">
+        <p className="text-sm text-ink-3">
           Share this link with potential franchisees. Anyone who completes the matching quiz
           through it is automatically attributed to you — you&apos;ll see them in your leads below
           and earn commission if they sign.
@@ -32,7 +32,7 @@ export default function ReferralLinkCard({ link, referredCount }: { link: string
             readOnly
             value={link}
             onFocus={e => e.currentTarget.select()}
-            className="flex-1 px-3 py-2 border border-slate-300 rounded-lg text-sm text-slate-700 bg-slate-50 focus:outline-none focus:ring-2 focus:ring-brand-green"
+            className="flex-1 px-3 py-2 border border-line rounded-lg text-sm text-ink-2 bg-surface-2 focus:outline-none focus:ring-2 focus:ring-ff-green"
           />
           <Button onClick={copy} className="sm:w-auto">
             {copied ? '✓ Copied' : 'Copy link'}
@@ -40,8 +40,8 @@ export default function ReferralLinkCard({ link, referredCount }: { link: string
         </div>
 
         <div className="flex items-center gap-2 pt-1">
-          <span className="text-2xl font-bold tracking-tight text-slate-900 tabular-nums">{referredCount}</span>
-          <span className="text-sm text-slate-500">
+          <span className="text-2xl font-bold tracking-tight text-ink tabular-nums">{referredCount}</span>
+          <span className="text-sm text-ink-3">
             {referredCount === 1 ? 'lead' : 'leads'} referred through your link
           </span>
         </div>

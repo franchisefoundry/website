@@ -24,6 +24,7 @@ export async function middleware(request: NextRequest) {
   // password reset, account setup). Note: /api/auth/delete-account is NOT here —
   // it deletes the signed-in user and must stay behind auth.
   const publicPaths = [
+    '/design-preview',            // TEMP: auth-free design review route (remove before merge)
     '/login',
     '/setup-account',
     '/invite',                    // invite landing page (consumes 72h token)

@@ -20,7 +20,7 @@ export function SingleSlider({
   // Local state drives visuals on every drag tick — parent is only notified on release
   const [local, setLocal] = useState(value)
   const pct = ((local - min) / (max - min)) * 100
-  const accent = variant === 'dark' ? '#3a4a3a' : 'var(--color-brand-green, #3a4a3a)'
+  const accent = variant === 'dark' ? '#3a4a3a' : 'var(--color-ff-green, #3a4a3a)'
 
   return (
     <div className="space-y-3">
@@ -32,7 +32,7 @@ export function SingleSlider({
       {/* Slider */}
       <div className="relative h-10 flex items-center">
         {/* Track background */}
-        <div className="absolute left-0 right-0 h-2 bg-slate-200 rounded-full">
+        <div className="absolute left-0 right-0 h-2 bg-surface-2 rounded-full">
           {/* Fill */}
           <div
             className="absolute h-full rounded-full"
@@ -42,7 +42,7 @@ export function SingleSlider({
 
         {/* Thumb */}
         <div
-          className="absolute w-5 h-5 bg-white rounded-full shadow-md border-2 pointer-events-none -translate-x-1/2"
+          className="absolute w-5 h-5 bg-surface rounded-full shadow-md border-2 pointer-events-none -translate-x-1/2"
           style={{ left: `${pct}%`, borderColor: accent }}
         />
 
@@ -62,7 +62,7 @@ export function SingleSlider({
 
       {/* Labels */}
       {(lowLabel || highLabel) && (
-        <div className="flex justify-between text-xs text-slate-400 px-0.5">
+        <div className="flex justify-between text-xs text-ink-3 px-0.5">
           <span>{lowLabel ?? ''}</span>
           <span>{highLabel ?? ''}</span>
         </div>

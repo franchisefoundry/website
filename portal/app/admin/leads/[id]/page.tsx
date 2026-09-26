@@ -75,28 +75,28 @@ export default async function LeadDetailPage({ params }: { params: Promise<{ id:
         {/* Left — profile details */}
         <div className="lg:col-span-1 space-y-4">
           {/* Contact */}
-          <div className="bg-white rounded-2xl border border-slate-200 p-5">
-            <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">Contact</h3>
+          <div className="bg-white rounded-2xl border border-line p-5">
+            <h3 className="text-xs font-semibold text-ink-3 uppercase tracking-wider mb-3">Contact</h3>
             <div className="space-y-2 text-sm">
               <div>
-                <span className="text-slate-400">Email</span>
-                <p className="text-slate-800 font-medium">{typedLead.email}</p>
+                <span className="text-ink-3">Email</span>
+                <p className="text-ink font-medium">{typedLead.email}</p>
               </div>
               <div>
-                <span className="text-slate-400">Phone</span>
-                <p className="text-slate-800 font-medium">{typedLead.phone ?? '—'}</p>
+                <span className="text-ink-3">Phone</span>
+                <p className="text-ink font-medium">{typedLead.phone ?? '—'}</p>
               </div>
               <div>
-                <span className="text-slate-400">Status</span>
-                <p className="text-slate-800 font-medium capitalize">{typedLead.status.replace('_', ' ')}</p>
+                <span className="text-ink-3">Status</span>
+                <p className="text-ink font-medium capitalize">{typedLead.status.replace('_', ' ')}</p>
               </div>
             </div>
           </div>
 
           {/* Budget */}
-          <div className="bg-white rounded-2xl border border-slate-200 p-5">
-            <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">Budget</h3>
-            <p className="text-slate-800 text-sm font-medium">
+          <div className="bg-white rounded-2xl border border-line p-5">
+            <h3 className="text-xs font-semibold text-ink-3 uppercase tracking-wider mb-3">Budget</h3>
+            <p className="text-ink text-sm font-medium">
               {typedLead.investment_min && typedLead.investment_max
                 ? `£${typedLead.investment_min.toLocaleString()} – £${typedLead.investment_max.toLocaleString()}`
                 : '—'}
@@ -104,69 +104,69 @@ export default async function LeadDetailPage({ params }: { params: Promise<{ id:
           </div>
 
           {/* Preferences */}
-          <div className="bg-white rounded-2xl border border-slate-200 p-5">
-            <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">Preferences</h3>
+          <div className="bg-white rounded-2xl border border-line p-5">
+            <h3 className="text-xs font-semibold text-ink-3 uppercase tracking-wider mb-3">Preferences</h3>
             <div className="space-y-2 text-sm">
               <div>
-                <span className="text-slate-400">Operator model</span>
-                <p className="text-slate-800">{typedLead.operator_model ? OPERATOR_LABELS[typedLead.operator_model] : '—'}</p>
+                <span className="text-ink-3">Operator model</span>
+                <p className="text-ink">{typedLead.operator_model ? OPERATOR_LABELS[typedLead.operator_model] : '—'}</p>
               </div>
               <div>
-                <span className="text-slate-400">Experience</span>
-                <p className="text-slate-800">{typedLead.experience ? EXPERIENCE_LABELS[typedLead.experience] : '—'}</p>
+                <span className="text-ink-3">Experience</span>
+                <p className="text-ink">{typedLead.experience ? EXPERIENCE_LABELS[typedLead.experience] : '—'}</p>
               </div>
               <div>
-                <span className="text-slate-400">Full-time</span>
-                <p className="text-slate-800">{typedLead.full_time_available ? 'Yes' : 'No'}</p>
+                <span className="text-ink-3">Full-time</span>
+                <p className="text-ink">{typedLead.full_time_available ? 'Yes' : 'No'}</p>
               </div>
               <div>
-                <span className="text-slate-400">Multi-site interest</span>
-                <p className="text-slate-800">{typedLead.multi_site_interest ? 'Yes' : 'No'}</p>
+                <span className="text-ink-3">Multi-site interest</span>
+                <p className="text-ink">{typedLead.multi_site_interest ? 'Yes' : 'No'}</p>
               </div>
               <div>
-                <span className="text-slate-400">Timeline</span>
-                <p className="text-slate-800">{typedLead.timeline_months ? `${typedLead.timeline_months} months` : '—'}</p>
+                <span className="text-ink-3">Timeline</span>
+                <p className="text-ink">{typedLead.timeline_months ? `${typedLead.timeline_months} months` : '—'}</p>
               </div>
               {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
               {(typedLead as any).heard_about_us && (
                 <div>
-                  <span className="text-slate-400">Heard about us</span>
+                  <span className="text-ink-3">Heard about us</span>
                   {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-                  <p className="text-slate-800">{(typedLead as any).heard_about_us}</p>
+                  <p className="text-ink">{(typedLead as any).heard_about_us}</p>
                 </div>
               )}
             </div>
           </div>
 
           {/* Locations */}
-          <div className="bg-white rounded-2xl border border-slate-200 p-5">
-            <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">Locations</h3>
+          <div className="bg-white rounded-2xl border border-line p-5">
+            <h3 className="text-xs font-semibold text-ink-3 uppercase tracking-wider mb-3">Locations</h3>
             {typedLead.preferred_locations?.length ? (
               <div className="flex flex-wrap gap-1.5">
                 {typedLead.preferred_locations.map(l => (
-                  <span key={l} className="px-2 py-0.5 bg-slate-100 text-slate-600 text-xs rounded-full capitalize">{l}</span>
+                  <span key={l} className="px-2 py-0.5 bg-surface-2 text-ink-2 text-xs rounded-full capitalize">{l}</span>
                 ))}
               </div>
-            ) : <p className="text-slate-400 text-sm">—</p>}
+            ) : <p className="text-ink-3 text-sm">—</p>}
           </div>
 
           {/* Sectors */}
-          <div className="bg-white rounded-2xl border border-slate-200 p-5">
-            <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">Sectors</h3>
+          <div className="bg-white rounded-2xl border border-line p-5">
+            <h3 className="text-xs font-semibold text-ink-3 uppercase tracking-wider mb-3">Sectors</h3>
             {typedLead.sectors?.length ? (
               <div className="flex flex-wrap gap-1.5">
                 {typedLead.sectors.map(s => (
-                  <span key={s} className="px-2 py-0.5 bg-slate-100 text-slate-600 text-xs rounded-full capitalize">{s.replace('-', ' ')}</span>
+                  <span key={s} className="px-2 py-0.5 bg-surface-2 text-ink-2 text-xs rounded-full capitalize">{s.replace('-', ' ')}</span>
                 ))}
               </div>
-            ) : <p className="text-slate-400 text-sm">—</p>}
+            ) : <p className="text-ink-3 text-sm">—</p>}
           </div>
 
           {/* Goals */}
           {typedLead.goals && (
-            <div className="bg-white rounded-2xl border border-slate-200 p-5">
-              <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">Background & goals</h3>
-              <p className="text-sm text-slate-700 leading-relaxed">{typedLead.goals}</p>
+            <div className="bg-white rounded-2xl border border-line p-5">
+              <h3 className="text-xs font-semibold text-ink-3 uppercase tracking-wider mb-3">Background & goals</h3>
+              <p className="text-sm text-ink-2 leading-relaxed">{typedLead.goals}</p>
             </div>
           )}
 
@@ -180,11 +180,11 @@ export default async function LeadDetailPage({ params }: { params: Promise<{ id:
 
         {/* Right — matches */}
         <div className="lg:col-span-2">
-          <h3 className="text-sm font-semibold text-slate-700 mb-3">
+          <h3 className="text-sm font-semibold text-ink-2 mb-3">
             Pre-computed matches ({typedMatches.length})
           </h3>
           {typedMatches.length === 0 ? (
-            <div className="bg-white rounded-2xl border border-slate-200 p-8 text-center text-slate-400 text-sm">
+            <div className="bg-white rounded-2xl border border-line p-8 text-center text-ink-3 text-sm">
               No matches found for this lead&apos;s criteria.
             </div>
           ) : (
@@ -202,11 +202,11 @@ export default async function LeadDetailPage({ params }: { params: Promise<{ id:
                 } | undefined
 
                 return (
-                  <div key={match.id} className="bg-white rounded-2xl border border-slate-200 p-5">
+                  <div key={match.id} className="bg-white rounded-2xl border border-line p-5">
                     <div className="flex items-start justify-between mb-3">
                       <div>
-                        <p className="font-semibold text-slate-800 text-sm">{f?.brand_name ?? 'Unknown brand'}</p>
-                        {f?.category && <p className="text-xs text-slate-400 mt-0.5">{f.category}</p>}
+                        <p className="font-semibold text-ink text-sm">{f?.brand_name ?? 'Unknown brand'}</p>
+                        {f?.category && <p className="text-xs text-ink-3 mt-0.5">{f.category}</p>}
                       </div>
                       <div className="flex items-center gap-2">
                         <span className={`px-2.5 py-1 rounded-full text-xs font-semibold ${scoreColour(match.score)}`}>
@@ -219,8 +219,8 @@ export default async function LeadDetailPage({ params }: { params: Promise<{ id:
                         />
                       </div>
                     </div>
-                    {f?.teaser && <p className="text-sm text-slate-600 mb-3 leading-relaxed">{f.teaser}</p>}
-                    <div className="flex gap-4 text-xs text-slate-500">
+                    {f?.teaser && <p className="text-sm text-ink-2 mb-3 leading-relaxed">{f.teaser}</p>}
+                    <div className="flex gap-4 text-xs text-ink-3">
                       <span>
                         💰 {f?.investment_display ?? (f?.investment_min && f?.investment_max
                           ? `£${f.investment_min.toLocaleString()} – £${f.investment_max.toLocaleString()}`
@@ -231,8 +231,8 @@ export default async function LeadDetailPage({ params }: { params: Promise<{ id:
                     {f?.highlights?.length ? (
                       <ul className="mt-3 space-y-1">
                         {f.highlights.map((h, i) => (
-                          <li key={i} className="text-xs text-slate-600 flex items-start gap-2">
-                            <span className="text-brand-green mt-0.5">▪</span> {h}
+                          <li key={i} className="text-xs text-ink-2 flex items-start gap-2">
+                            <span className="text-ff-green mt-0.5">▪</span> {h}
                           </li>
                         ))}
                       </ul>
