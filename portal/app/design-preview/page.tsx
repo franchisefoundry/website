@@ -10,6 +10,10 @@ import { CandidatesView, type Candidate } from '../franchisor/matches/Candidates
 import { AdminHomeView, type AdminHomeAction } from '@/components/admin/AdminHomeView'
 import FranchisorsCards, { type BrandCard } from '../admin/franchisors/FranchisorsCards'
 import AgentsTable from '../admin/introducers/AgentsTable'
+import ViewToggle from '@/components/admin/ViewToggle'
+import { KanbanBoard } from '@/components/admin/KanbanBoard'
+import { ListTable } from '@/components/admin/ListTable'
+import { statusBadge } from '@/components/ui/badge'
 import { BrandLogo } from '@/components/ui/BrandLogo'
 import { FranchiseeHomeView } from '@/components/franchisee/FranchiseeHomeView'
 import { JourneyBrandCard } from '@/components/franchisee/JourneyBrandCard'
@@ -258,9 +262,33 @@ export default async function DesignPreview({ searchParams }: { searchParams: Pr
   const adminScreens: Record<string, React.ReactNode> = {
     admin: <AdminHomeView greeting="Good afternoon" firstName="Ben" kpis={adminKpis} actions={adminActions} feed={adminFeed} />,
     'admin-brands': (
-      <div>
-        <PageHeader title="Brands" description="Every franchise brand on the platform." />
-        <FranchisorsCards brands={adminBrands} />
+      <div className="space-y-10">
+        <div>
+          <div className="flex items-center justify-between gap-3 mb-4"><PageHeader title="Brands" description="Cards / Kanban / Table — switch with the toggle." /><ViewToggle current="cards" basePath="#" /></div>
+          <FranchisorsCards brands={adminBrands} />
+        </div>
+        <div>
+          <p className="text-[11px] font-bold uppercase tracking-widest text-ff-gold-ink mb-2">▁ Kanban view (by status)</p>
+          <KanbanBoard
+            columns={[{ key: 'draft', label: 'Draft', dot: 'var(--ff-ink-3)' }, { key: 'pending_review', label: 'Pending review', dot: 'var(--ff-gold)' }, { key: 'active', label: 'Active', dot: 'var(--ff-green)' }]}
+            items={adminBrands}
+            groupBy={b => (['draft', 'pending_review', 'active'].includes(b.status ?? '') ? (b.status as string) : 'draft')}
+            renderCard={b => (<><p className="text-xs font-semibold text-ink truncate">{b.brand_name}</p><p className="text-[11px] text-ink-3 truncate">{b.category}</p><div className="flex gap-3 mt-2 text-[11px] text-ink-3 tabular-nums"><span>{b.cands} candidates</span><span>{b.prog}%</span></div></>)}
+          />
+        </div>
+        <div>
+          <p className="text-[11px] font-bold uppercase tracking-widest text-ff-gold-ink mb-2">▁ Table view</p>
+          <ListTable
+            rows={adminBrands}
+            columns={[
+              { header: 'Brand', cell: b => <div><p className="font-medium text-ink">{b.brand_name}</p><p className="text-xs text-ink-3">{b.email}</p></div> },
+              { header: 'Category', cell: b => <span className="text-ink-2">{b.category}</span>, className: 'hidden md:table-cell' },
+              { header: 'Status', cell: b => statusBadge(b.status ?? 'unknown') },
+              { header: 'Candidates', cell: b => <span className="tabular-nums text-ink-2">{b.cands}</span>, className: 'hidden sm:table-cell' },
+              { header: 'Profile', cell: b => <span className="tabular-nums text-ink-2">{b.prog}%</span>, className: 'hidden sm:table-cell' },
+            ]}
+          />
+        </div>
       </div>
     ),
     'admin-agents': (
