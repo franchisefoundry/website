@@ -20,6 +20,8 @@ import { AgreementsList, type AgreementRow } from '@/components/admin/agreements
 import { TemplatesManager, type TemplateFull } from '@/components/admin/agreements/TemplatesManager'
 import { SendIcon, ArchiveIcon, LeadsIcon, MatchIcon, PartnerIcon } from '@/components/icons'
 import { AgentHomeView, type AgentKpi } from '@/components/introducer/AgentHomeView'
+import { ComingSoon } from '@/components/client/ComingSoon'
+import { BoltIcon, WalletIcon } from '@/components/icons'
 import { Avatar } from '@/components/ui/Avatar'
 import AgreementView from '../franchisor/agreement/AgreementView'
 
@@ -129,7 +131,7 @@ const NAV: [string, string][] = [
   ['profile', 'Brand profile'], ['candidates', 'Candidates'], ['pipeline', 'Pipeline'],
   ['performance', 'Performance'], ['brand-agreement', 'Brand · Agreement'], ['messages', 'Messages'], ['admin', 'Admin home'], ['admin-brands', 'Admin · Brands'], ['admin-messages', 'Admin · Messages'], ['admin-agreements', 'Admin · Agreements'],
   ['fee', 'Franchisee · Home'], ['fee-journey', 'Franchisee · My Journey'], ['fee-profile', 'Franchisee · Profile'], ['fee-start', 'Franchisee · Start'],
-  ['agent', 'Agent · Home'],
+  ['agent', 'Agent · Home'], ['agent-commission', 'Agent · Commission'], ['agent-tools', 'Agent · Tools'],
 ]
 
 const feePrimary: any = { id: 'm1', pipeline_stage: 'meeting_booked', franchisor_notes: 'Great fit on budget and location — I\'ve asked the brand to hold a call slot next week. Have a think about the questions you\'d like to cover.', franchisor_profiles: { id: 'b1', brand_name: 'Zambrero', category: 'Quick Service · Mexican', teaser: 'A purpose-led Mexican QSR with proven UK unit economics and full training and site support.', investment_display: '£150,000 – £300,000', timeline_months: 6, operator_model: 'owner-operator', experience_required: 'none' } }
@@ -205,7 +207,53 @@ export default async function DesignPreview({ searchParams }: { searchParams: Pr
 
   const isAdmin = view.startsWith('admin')
   const isFee = view.startsWith('fee')
-  const isAgent = view === 'agent'
+  const isAgent = view.startsWith('agent')
+  const agentScreens: Record<string, React.ReactNode> = {
+    agent: <AgentHomeView firstName="Jordan" kpis={agentKpis} counts={agentCounts} recentLeads={agentLeads} rejectedCount={2} />,
+    'agent-tools': <ComingSoon title="Tools" description="Resources to help you find and convert leads." blurb="We're building out prospecting and conversion resources here — pitch materials, brand one-pagers and outreach templates. Your referral link lives on your Account page." icon={<BoltIcon className="w-7 h-7" />} />,
+    'agent-commission': (
+      <div>
+        <PageHeader title="Commission" description="Track your earnings and upcoming payouts." />
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+          {[
+            { label: 'Total earned', amount: '£4,250.00', colour: 'text-ff-green', bg: 'bg-ff-green-soft', border: 'border-ff-green/20' },
+            { label: 'Due next month', amount: '£850.00', colour: 'text-amber-600', bg: 'bg-amber-50', border: 'border-amber-200' },
+            { label: 'Pending', amount: '£1,200.00', colour: 'text-ink-2', bg: 'bg-surface-2', border: 'border-line' },
+          ].map((s, i) => (
+            <div key={s.label} className={`lift rise rounded-2xl border ${s.border} ${s.bg} p-5`} style={{ animationDelay: `${0.05 + i * 0.06}s` }}>
+              <p className={`text-3xl font-extrabold tracking-tight tabular-nums ${s.colour} mb-0.5`}>{s.amount}</p>
+              <p className="text-xs font-medium text-ink-3">{s.label}</p>
+            </div>
+          ))}
+        </div>
+        <div className="bg-surface-2 border border-line rounded-2xl p-5 mb-6">
+          <p className="text-sm font-semibold text-ink-2 mb-1">How commission works</p>
+          <p className="text-xs text-ink-3 leading-relaxed">You earn 20% of the fee Franchise Foundry receives from the franchisor when a franchise agreement is signed. Your commission is paid in the calendar month after we receive payment.</p>
+        </div>
+        <div className="bg-surface rounded-2xl border border-line overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead><tr className="border-b border-line-2 text-ink-3 text-xs">
+              <th className="text-left px-4 py-3 font-medium">Lead</th><th className="text-left px-4 py-3 font-medium hidden sm:table-cell">FF Fee</th><th className="text-left px-4 py-3 font-medium">Your commission</th><th className="text-left px-4 py-3 font-medium hidden sm:table-cell">Due date</th><th className="text-left px-4 py-3 font-medium">Status</th>
+            </tr></thead>
+            <tbody>
+              {[
+                { lead: 'Priya Shah', fee: '£12,500.00', comm: '£2,500.00', due: 'September 2026', status: 'paid' },
+                { lead: 'Sarah Kelly', fee: '£4,250.00', comm: '£850.00', due: 'October 2026', status: 'due' },
+              ].map((r, i) => (
+                <tr key={i} className="border-b border-line hover:bg-surface-2 transition-colors">
+                  <td className="px-4 py-3 font-medium text-ink">{r.lead}</td>
+                  <td className="px-4 py-3 text-ink-3 hidden sm:table-cell">{r.fee}</td>
+                  <td className="px-4 py-3 font-semibold text-ink">{r.comm}</td>
+                  <td className="px-4 py-3 text-ink-3 hidden sm:table-cell">{r.due}</td>
+                  <td className="px-4 py-3"><span className={`px-2 py-0.5 rounded-full text-xs font-medium ${r.status === 'paid' ? 'bg-ff-green-soft text-ff-green' : 'bg-amber-50 text-amber-700'}`}>{r.status === 'paid' ? 'Paid' : 'Due'}</span></td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    ),
+  }
   const adminScreens: Record<string, React.ReactNode> = {
     admin: <AdminHomeView greeting="Good afternoon" firstName="Ben" kpis={adminKpis} actions={adminActions} feed={adminFeed} />,
     'admin-brands': (
@@ -329,7 +377,7 @@ export default async function DesignPreview({ searchParams }: { searchParams: Pr
       <main className="flex-1 overflow-auto pt-14 md:pt-0">
         <div className="p-4 md:p-8">
           <PreviewNav active={view} />
-          {isAdmin ? adminScreens[view] : isAgent ? <AgentHomeView firstName="Jordan" kpis={agentKpis} counts={agentCounts} recentLeads={agentLeads} rejectedCount={2} /> : isFee ? feeScreens[view] : franchisorScreens[view]}
+          {isAdmin ? adminScreens[view] : isAgent ? agentScreens[view] : isFee ? feeScreens[view] : franchisorScreens[view]}
         </div>
       </main>
     </div>
