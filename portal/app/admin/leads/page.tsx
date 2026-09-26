@@ -3,8 +3,17 @@ import { PageHeader } from '@/components/page-header'
 import { Avatar } from '@/components/ui/Avatar'
 import Link from 'next/link'
 import type { Lead } from '@/lib/supabase/types'
-import { cn } from '@/lib/utils'
 import DeleteLeadButton from './DeleteLeadButton'
+import ViewToggle, { currentView } from '@/components/admin/ViewToggle'
+import { KanbanBoard } from '@/components/admin/KanbanBoard'
+import { ListTable, type ListColumn } from '@/components/admin/ListTable'
+
+const LEAD_COLUMNS = [
+  { key: 'new', label: 'New', dot: '#2563eb' },
+  { key: 'meeting_requested', label: 'Meeting booked', dot: 'var(--ff-gold)' },
+  { key: 'converted', label: 'Approved', dot: 'var(--ff-green)' },
+  { key: 'rejected', label: 'Rejected', dot: 'var(--ff-ink-3)' },
+]
 
 const STATUS_STYLES: Record<string, string> = {
   new: 'bg-blue-50 text-blue-700',
@@ -75,7 +84,7 @@ function LeadsGrid({ leads, agentNames }: { leads: Lead[]; agentNames: Record<st
 }
 
 export default async function AdminLeadsPage({ searchParams }: { searchParams: Promise<{ view?: string }> }) {
-  const view = (await searchParams).view === 'archived' ? 'archived' : 'active'
+  const current = currentView((await searchParams).view)
   const admin = createAdminClient()
 
   const { data: leads } = await admin
@@ -94,13 +103,19 @@ export default async function AdminLeadsPage({ searchParams }: { searchParams: P
     agentNames = Object.fromEntries((agents ?? []).map(a => [a.id, a.full_name ?? 'Agent']))
   }
 
+  // Cards default to the active working set (New + Meeting booked); List and
+  // Kanban show every lead, with Approved/Rejected in their own place.
   const activeLeads = typedLeads.filter(l => l.status === 'new' || l.status === 'meeting_requested')
-  const archivedLeads = typedLeads.filter(l => l.status === 'converted' || l.status === 'rejected')
-  const shown = view === 'archived' ? archivedLeads : activeLeads
 
-  const TABS: [string, string, number][] = [
-    ['active', 'Active', activeLeads.length],
-    ['archived', 'Archived', archivedLeads.length],
+  const budget = (l: Lead) => l.investment_min && l.investment_max ? `£${l.investment_min.toLocaleString()} – £${l.investment_max.toLocaleString()}` : '—'
+  const listColumns: ListColumn<Lead>[] = [
+    { header: 'Lead', cell: l => (
+      <div className="flex items-center gap-2.5"><Avatar name={l.full_name} size="sm" /><div className="min-w-0"><p className="font-medium text-ink truncate">{l.full_name}</p><p className="text-xs text-ink-3 truncate">{l.email}</p></div></div>
+    ) },
+    { header: 'Source', cell: l => <SourceBadge lead={l} agentNames={agentNames} />, className: 'hidden md:table-cell' },
+    { header: 'Budget', cell: l => <span className="text-ink-2 tabular-nums whitespace-nowrap">{budget(l)}</span>, className: 'hidden sm:table-cell' },
+    { header: 'Status', cell: l => <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${STATUS_STYLES[l.status] ?? 'bg-surface-2 text-ink-3'}`}>{STATUS_LABELS[l.status] ?? l.status}</span> },
+    { header: 'Added', cell: l => <span className="text-ink-3 whitespace-nowrap">{new Date(l.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}</span>, className: 'hidden lg:table-cell' },
   ]
 
   return (
@@ -108,31 +123,33 @@ export default async function AdminLeadsPage({ searchParams }: { searchParams: P
       <PageHeader
         title="Leads"
         description="Quiz submissions from the public matching form."
+        action={<ViewToggle current={current} basePath="/admin/leads" />}
       />
 
-      {/* Active / Archived tabs — archived (approved & rejected) stay tucked away */}
-      <div className="flex gap-1 border-b border-line mb-6">
-        {TABS.map(([v, label, count]) => (
-          <Link key={v} href={`/admin/leads?view=${v}`}
-            className={cn(
-              'relative -mb-px inline-flex items-center gap-2 px-4 py-2.5 text-sm font-medium border-b-2 transition-colors',
-              view === v ? 'border-ff-green text-ink' : 'border-transparent text-ink-3 hover:text-ink-2',
-            )}>
-            {label}
-            <span className={cn('text-[11px] font-bold rounded-full px-1.5 py-0.5 tabular-nums',
-              view === v ? 'bg-ff-green/10 text-ff-green' : 'bg-surface-2 text-ink-3')}>{count}</span>
-          </Link>
-        ))}
-      </div>
-
-      {shown.length === 0 ? (
-        <div className="text-center py-16 text-ink-3 text-sm">
-          {view === 'archived'
-            ? 'No archived leads yet.'
-            : <>No active leads. Share the <strong className="text-ink-2">/get-matched</strong> link to start collecting.</>}
-        </div>
+      {typedLeads.length === 0 ? (
+        <div className="text-center py-16 text-ink-3 text-sm">No leads yet. Share the <strong className="text-ink-2">/get-matched</strong> link to start collecting.</div>
+      ) : current === 'cards' ? (
+        activeLeads.length === 0
+          ? <div className="text-center py-16 text-ink-3 text-sm">No active leads. Switch to Kanban or Table to see approved and rejected leads.</div>
+          : <LeadsGrid leads={activeLeads} agentNames={agentNames} />
+      ) : current === 'kanban' ? (
+        <KanbanBoard
+          columns={LEAD_COLUMNS}
+          items={typedLeads}
+          groupBy={l => l.status}
+          hrefFor={l => `/admin/leads/${l.id}`}
+          renderCard={l => (
+            <>
+              <div className="flex items-center justify-between gap-2">
+                <span className="text-xs font-semibold text-ink truncate">{l.full_name}</span>
+              </div>
+              <p className="text-[11px] text-ink-3 mt-1 tabular-nums">{budget(l)}</p>
+              <div className="mt-1.5"><SourceBadge lead={l} agentNames={agentNames} /></div>
+            </>
+          )}
+        />
       ) : (
-        <LeadsGrid leads={shown} agentNames={agentNames} />
+        <ListTable columns={listColumns} rows={typedLeads} hrefFor={l => `/admin/leads/${l.id}`} />
       )}
     </div>
   )
