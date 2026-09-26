@@ -7,6 +7,8 @@ import { Button } from '@/components/ui/button'
 import { Avatar } from '@/components/ui/Avatar'
 import { referralLink } from '@/lib/referral'
 import { toast } from '@/lib/toast'
+import { cn } from '@/lib/utils'
+import { SearchIcon } from '@/components/icons'
 
 type Agent = {
   id: string
@@ -27,6 +29,8 @@ export default function AgentsTable({
   countsByAgent: Record<string, Counts>
 }) {
   const router = useRouter()
+  const [search, setSearch] = useState('')
+  const [filter, setFilter] = useState<'all' | 'active' | 'pending'>('all')
   const [confirmId, setConfirmId]   = useState<string | null>(null)
   const [deleting, setDeleting]     = useState(false)
   const [deleteError, setDeleteError] = useState<string | null>(null)
@@ -116,10 +120,40 @@ export default function AgentsTable({
 
   const confirmAgent = agents.find(a => a.id === confirmId)
 
+  const FILTERS: [typeof filter, string][] = [['all', 'All'], ['active', 'Active'], ['pending', 'Not invited']]
+  const filtered = agents.filter(a => {
+    if (search.trim()) {
+      const q = search.toLowerCase()
+      if (!((a.full_name ?? '').toLowerCase().includes(q) || (a.email ?? '').toLowerCase().includes(q) || (a.referral_code ?? '').toLowerCase().includes(q))) return false
+    }
+    const c = countsByAgent[a.id] ?? { total: 0, pending: 0, active: 0 }
+    if (filter === 'active') return c.active > 0
+    if (filter === 'pending') return c.pending > 0
+    return true
+  })
+
   return (
     <>
+      <div className="flex flex-wrap items-center gap-2.5 mb-5">
+        <div className="flex items-center gap-2 bg-surface border border-line rounded-xl px-3 py-2 text-sm text-ink-3 flex-1 min-w-[200px] max-w-sm">
+          <SearchIcon className="w-4 h-4 flex-shrink-0" />
+          <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search agents by name, email or code…" className="flex-1 bg-transparent outline-none text-ink placeholder:text-ink-3" />
+        </div>
+        <div className="inline-flex flex-wrap bg-surface border border-line rounded-xl p-1 gap-0.5">
+          {FILTERS.map(([value, label]) => (
+            <button key={value} onClick={() => setFilter(value)}
+              className={cn('px-3 py-1.5 rounded-lg text-xs font-medium transition-colors whitespace-nowrap', filter === value ? 'bg-ff-green text-white' : 'text-ink-2 hover:text-ink')}>
+              {label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {filtered.length === 0 ? (
+        <div className="text-center py-16 text-ink-3 text-sm">No agents match this filter.</div>
+      ) : (
       <div className="grid gap-4" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(290px, 1fr))' }}>
-        {agents.map(agent => {
+        {filtered.map(agent => {
           const counts = countsByAgent[agent.id] ?? { total: 0, pending: 0, active: 0 }
           return (
             <div
@@ -164,6 +198,7 @@ export default function AgentsTable({
           )
         })}
       </div>
+      )}
 
       {/* Referral link modal */}
       <Modal
@@ -218,7 +253,7 @@ export default function AgentsTable({
       {confirmId && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="fixed inset-0 bg-black/40" onClick={() => !deleting && setConfirmId(null)} />
-          <div className="relative bg-white rounded-2xl shadow-xl w-full max-w-sm p-6">
+          <div className="relative bg-surface rounded-2xl shadow-xl w-full max-w-sm p-6">
             <h3 className="text-base font-semibold text-ink mb-2">Remove agent?</h3>
             <p className="text-sm text-ink-3 mb-1">
               This will permanently delete{' '}

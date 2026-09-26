@@ -3,6 +3,7 @@ import { PageHeader } from '@/components/page-header'
 import InviteAgentButton from './InviteIntroducerButton'
 import AgentsTable from './AgentsTable'
 import { ensureReferralCode } from '@/lib/referral'
+import { AgentIcon } from '@/components/icons'
 
 export default async function AdminIntroducersPage() {
   const admin = createAdminClient()
@@ -47,8 +48,8 @@ export default async function AdminIntroducersPage() {
       />
 
       {(introducers ?? []).length === 0 ? (
-        <div className="bg-white rounded-2xl border border-line p-12 text-center">
-          <div className="text-3xl mb-3">👤</div>
+        <div className="bg-surface rounded-2xl border border-line p-12 text-center">
+          <div className="w-12 h-12 rounded-full bg-ff-green/10 text-ff-green flex items-center justify-center mx-auto mb-4"><AgentIcon className="w-6 h-6" /></div>
           <p className="text-ink font-semibold text-sm mb-1">No agents yet</p>
           <p className="text-ink-3 text-xs">Use the button above to invite your first agent.</p>
         </div>
