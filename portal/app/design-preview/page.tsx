@@ -9,6 +9,7 @@ import BrandProfileForm from '../franchisor/brand-profile/brand-profile-form'
 import { CandidatesView, type Candidate } from '../franchisor/matches/CandidatesView'
 import { AdminHomeView, type AdminHomeAction } from '@/components/admin/AdminHomeView'
 import FranchisorsCards, { type BrandCard } from '../admin/franchisors/FranchisorsCards'
+import AgentsTable from '../admin/introducers/AgentsTable'
 import { BrandLogo } from '@/components/ui/BrandLogo'
 import { FranchiseeHomeView } from '@/components/franchisee/FranchiseeHomeView'
 import { JourneyBrandCard } from '@/components/franchisee/JourneyBrandCard'
@@ -129,7 +130,7 @@ const agRows: AgreementRow[] = [
 
 const NAV: [string, string][] = [
   ['profile', 'Brand profile'], ['candidates', 'Candidates'], ['pipeline', 'Pipeline'],
-  ['performance', 'Performance'], ['brand-agreement', 'Brand · Agreement'], ['messages', 'Messages'], ['admin', 'Admin home'], ['admin-brands', 'Admin · Brands'], ['admin-messages', 'Admin · Messages'], ['admin-agreements', 'Admin · Agreements'],
+  ['performance', 'Performance'], ['brand-agreement', 'Brand · Agreement'], ['messages', 'Messages'], ['admin', 'Admin home'], ['admin-brands', 'Admin · Brands'], ['admin-agents', 'Admin · Agents'], ['admin-messages', 'Admin · Messages'], ['admin-agreements', 'Admin · Agreements'],
   ['fee', 'Franchisee · Home'], ['fee-journey', 'Franchisee · My Journey'], ['fee-profile', 'Franchisee · Profile'], ['fee-start', 'Franchisee · Start'],
   ['agent', 'Agent · Home'], ['agent-commission', 'Agent · Commission'], ['agent-tools', 'Agent · Tools'],
 ]
@@ -260,6 +261,18 @@ export default async function DesignPreview({ searchParams }: { searchParams: Pr
       <div>
         <PageHeader title="Brands" description="Every franchise brand on the platform." />
         <FranchisorsCards brands={adminBrands} />
+      </div>
+    ),
+    'admin-agents': (
+      <div>
+        <PageHeader title="Agents" description="Manage agent accounts and their pipeline." />
+        <AgentsTable
+          agents={[
+            { id: 'ag1', full_name: 'Jordan Blake', email: 'jordan@example.com', phone: null, referral_code: 'jordan-blake', created_at: '2026-07-01T09:00:00Z' },
+            { id: 'ag2', full_name: 'Mia Chen', email: 'mia@example.com', phone: null, referral_code: 'mia-chen', created_at: '2026-07-15T09:00:00Z' },
+            { id: 'ag3', full_name: 'Raj Patel', email: 'raj@example.com', phone: null, referral_code: 'raj-patel', created_at: '2026-08-01T09:00:00Z' },
+          ]}
+          countsByAgent={{ ag1: { total: 24, pending: 3, active: 9 }, ag2: { total: 11, pending: 1, active: 4 }, ag3: { total: 5, pending: 2, active: 2 } }} />
       </div>
     ),
     'admin-messages': (
