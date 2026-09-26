@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { PageHeader } from '@/components/page-header'
 import { Card } from '@/components/ui/card'
+import { WalletIcon } from '@/components/icons'
 
 export default async function CommissionPage() {
   const supabase = await createClient()
@@ -36,9 +37,9 @@ export default async function CommissionPage() {
           { label: 'Total earned', amount: totalEarned,  colour: 'text-ff-green', bg: 'bg-ff-green-soft', border: 'border-ff-green/20' },
           { label: 'Due next month', amount: totalDue,   colour: 'text-amber-600',   bg: 'bg-amber-50',   border: 'border-amber-200'   },
           { label: 'Pending',        amount: totalPending, colour: 'text-ink-2', bg: 'bg-surface-2',   border: 'border-line'   },
-        ].map(s => (
-          <div key={s.label} className={`rounded-2xl border ${s.border} ${s.bg} p-5`}>
-            <p className={`text-2xl font-bold ${s.colour} mb-0.5`}>
+        ].map((s, i) => (
+          <div key={s.label} className={`lift rise rounded-2xl border ${s.border} ${s.bg} p-5`} style={{ animationDelay: `${0.05 + i * 0.06}s` }}>
+            <p className={`text-3xl font-extrabold tracking-tight tabular-nums ${s.colour} mb-0.5`}>
               £{(s.amount / 100).toLocaleString('en-GB', { minimumFractionDigits: 2 })}
             </p>
             <p className="text-xs font-medium text-ink-3">{s.label}</p>
@@ -58,7 +59,7 @@ export default async function CommissionPage() {
       {/* Commission table */}
       {all.length === 0 ? (
         <div className="bg-surface rounded-2xl border border-line p-12 text-center">
-          <div className="text-3xl mb-3">💰</div>
+          <div className="w-12 h-12 rounded-full bg-ff-green/10 text-ff-green flex items-center justify-center mx-auto mb-4"><WalletIcon className="w-6 h-6" /></div>
           <p className="text-ink font-semibold text-sm mb-1">No commissions yet</p>
           <p className="text-ink-3 text-xs">Commission records appear when a lead signs a franchise agreement.</p>
         </div>
