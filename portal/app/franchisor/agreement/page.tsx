@@ -45,6 +45,9 @@ export default async function FranchisorAgreementPage() {
         .from('agreements')
         .select('title, content, version')
         .eq('is_current', true)
+        .eq('template_key', 'master')
+        .order('version', { ascending: false })
+        .limit(1)
         .maybeSingle()
 
   // Get comments for this franchisor's agreement

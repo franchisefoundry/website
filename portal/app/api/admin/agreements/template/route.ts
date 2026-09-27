@@ -17,9 +17,10 @@ export async function GET() {
     .from('agreements')
     .select('*')
     .eq('is_current', true)
+    .eq('template_key', 'master')
     .order('version', { ascending: false })
     .limit(1)
-    .single()
+    .maybeSingle()
 
   if (error && error.code !== 'PGRST116') {
     return NextResponse.json({ error: error.message }, { status: 500 })
