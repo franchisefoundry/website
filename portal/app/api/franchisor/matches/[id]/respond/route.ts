@@ -1,6 +1,7 @@
 import { NextResponse, type NextRequest } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
+import { notifyAdmins } from '@/lib/notifications'
 
 export async function POST(
   request: NextRequest,
@@ -29,7 +30,7 @@ export async function POST(
   // Confirm the match belongs to this franchisor before updating
   const { data: match } = await admin
     .from('matches')
-    .select('id, franchisor_id')
+    .select('id, franchisor_id, franchisee_id')
     .eq('id', matchId)
     .eq('franchisor_id', brandProfile.id)
     .single()
@@ -42,5 +43,39 @@ export async function POST(
     .eq('id', matchId)
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+
+  // When a brand expresses interest, alert the admins so a consultant can
+  // follow up and arrange the intro. Non-fatal — the response already succeeded.
+  if (action === 'interested') {
+    try {
+      const { data: brand } = await admin
+        .from('franchisor_profiles')
+        .select('brand_name')
+        .eq('id', brandProfile.id)
+        .single()
+
+      const { data: fe } = await admin
+        .from('franchisee_profiles')
+        .select('user_id')
+        .eq('id', match.franchisee_id)
+        .single()
+      const { data: candidate } = fe?.user_id
+        ? await admin.from('profiles').select('full_name').eq('id', fe.user_id).single()
+        : { data: null }
+
+      const brandName = brand?.brand_name ?? 'A brand'
+      const candidateName = candidate?.full_name ?? 'a candidate'
+
+      await notifyAdmins({
+        type: 'candidate_interested',
+        title: `${brandName} expressed interest`,
+        body: `${brandName} is interested in ${candidateName}. Follow up to arrange an intro.`,
+        link: '/admin/matches',
+      })
+    } catch (err) {
+      console.error('[respond] admin notify failed', err)
+    }
+  }
+
   return NextResponse.json({ success: true, status: newStatus })
 }

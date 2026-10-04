@@ -28,10 +28,10 @@ export const NOTIFICATION_EVENTS: NotificationEvent[] = [
   { key: 'franchisor_answers_changed', role: 'admin', label: 'Approved brand edited answers', description: 'A live franchisor changes their questionnaire after approval.', defaultEmail: false },
   { key: 'franchisee_first_login',    role: 'admin', label: 'Franchisee first login',        description: 'A franchisee logs into the portal for the first time.', defaultEmail: false },
   { key: 'new_message',               role: 'admin', label: 'New client message',            description: 'A franchisee, brand or agent replies in their message thread.', defaultEmail: false },
+  { key: 'candidate_interested',      role: 'admin', label: 'Brand expressed interest',       description: 'A brand expresses interest in a matched candidate — follow up to arrange an intro.', defaultEmail: true },
 
   // ── Franchisor ─────────────────────────────────────────────────────────────
   { key: 'candidate_matched',   role: 'franchisor', label: 'New candidate matched',     description: 'A new candidate is assigned to your brand.',        defaultEmail: true },
-  { key: 'candidate_interested', role: 'franchisor', label: 'Candidate expressed interest', description: 'A candidate accepts a match with your brand.',    defaultEmail: true },
   { key: 'agreement_ready',     role: 'franchisor', label: 'Agreement ready to sign',   description: 'Your Franchise Foundry agreement is ready.',        defaultEmail: true },
   { key: 'agreement_reply',     role: 'franchisor', label: 'Reply on your agreement',   description: 'The FF team replies to a comment on your agreement.', defaultEmail: true },
 

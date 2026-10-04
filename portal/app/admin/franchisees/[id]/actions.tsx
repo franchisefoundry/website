@@ -194,8 +194,12 @@ export default function FranchiseeActions({
   async function updatePipelineStage(stage: string) {
     setPipelineStage(stage as typeof pipelineStage)
     setLoading(`stage-${stage}`)
-    const supabase = createClient()
-    await supabase.from('franchisee_profiles').update({ pipeline_stage: stage }).eq('id', franchisee.id)
+    // Server route (not a direct write) so it can notify the franchisee.
+    await fetch(`/api/admin/franchisees/${franchisee.id}/stage`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ stage }),
+    })
     setLoading(null)
     const label = FRANCHISEE_PIPELINE_STAGES.find(s => s.value === stage)?.label
     toast(`Stage → ${label ?? stage}`)
