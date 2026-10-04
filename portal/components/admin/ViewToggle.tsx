@@ -40,7 +40,3 @@ export default function ViewToggle({ current, basePath }: { current: 'cards' | '
     </div>
   )
 }
-
-export function currentView(view: string | undefined): 'cards' | 'kanban' | 'list' {
-  return view === 'kanban' ? 'kanban' : view === 'list' ? 'list' : 'cards'
-}
