@@ -28,14 +28,14 @@ export function SpectrumSlider({
 }: Props) {
   // Local state drives visuals on every drag tick — parent notified only on release
   const [local, setLocal] = useState(value)
-  const accent = variant === 'dark' ? '#3a4a3a' : 'var(--color-brand-green, #3a4a3a)'
+  const accent = variant === 'dark' ? '#3a4a3a' : 'var(--color-ff-green, #3a4a3a)'
 
   return (
     <div className="space-y-4">
       {/* Description */}
       <div className="text-center px-4">
-        <p className="text-sm font-semibold text-slate-700">{describe(local)}</p>
-        <p className="text-xs text-slate-400 mt-1">{local}% quality-weighted</p>
+        <p className="text-sm font-semibold text-ink-2">{describe(local)}</p>
+        <p className="text-xs text-ink-3 mt-1">{local}% quality-weighted</p>
       </div>
 
       {/* Slider */}
@@ -50,7 +50,7 @@ export function SpectrumSlider({
 
         {/* Thumb */}
         <div
-          className="absolute w-6 h-6 bg-white rounded-full shadow-lg border-2 pointer-events-none -translate-x-1/2"
+          className="absolute w-6 h-6 bg-surface rounded-full shadow-lg border-2 pointer-events-none -translate-x-1/2"
           style={{ left: `${local}%`, borderColor: accent }}
         />
 

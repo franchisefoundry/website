@@ -14,7 +14,7 @@ const INPUT_TYPE_LABELS: Record<string, string> = {
 
 function TypeBadge({ type }: { type: string }) {
   return (
-    <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-slate-100 text-slate-500 border border-slate-200">
+    <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-surface-2 text-ink-3 border border-line">
       {INPUT_TYPE_LABELS[type] ?? type}
     </span>
   )
@@ -103,15 +103,15 @@ export default function TemplateEditor({ sections }: { sections: SectionRow[] })
       )}
 
       {sections.map(section => (
-        <div key={section.id} className="bg-white rounded-xl border border-slate-200 overflow-hidden">
+        <div key={section.id} className="bg-white rounded-xl border border-line overflow-hidden">
           {/* Section header */}
-          <div className="px-5 py-3.5 bg-slate-50 border-b border-slate-200 flex items-center justify-between">
-            <h2 className="text-sm font-semibold text-slate-800">{section.id}. {section.title}</h2>
-            <span className="text-xs text-slate-400">{section.questions.length} question{section.questions.length !== 1 ? 's' : ''}</span>
+          <div className="px-5 py-3.5 bg-surface-2 border-b border-line flex items-center justify-between">
+            <h2 className="text-sm font-semibold text-ink">{section.id}. {section.title}</h2>
+            <span className="text-xs text-ink-3">{section.questions.length} question{section.questions.length !== 1 ? 's' : ''}</span>
           </div>
 
           {/* Questions */}
-          <div className="divide-y divide-slate-100">
+          <div className="divide-y divide-line-2">
             {section.questions.map(q => (
               <div key={q.id} className="px-5 py-3.5">
                 {editingId === q.id ? (
@@ -121,28 +121,28 @@ export default function TemplateEditor({ sections }: { sections: SectionRow[] })
                       type="text"
                       value={editText}
                       onChange={e => setEditText(e.target.value)}
-                      className="w-full px-3 py-1.5 border border-brand-green rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-green"
+                      className="w-full px-3 py-1.5 border border-ff-green rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-ff-green"
                       autoFocus
                     />
                     {['multiselect', 'select_one'].includes(q.input_type) && (
                       <div>
-                        <label className="block text-xs text-slate-500 mb-1">Options (comma-separated)</label>
+                        <label className="block text-xs text-ink-3 mb-1">Options (comma-separated)</label>
                         <input
                           type="text"
                           value={editOptionsRaw}
                           onChange={e => setEditOptionsRaw(e.target.value)}
-                          className="w-full px-3 py-1.5 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-green"
+                          className="w-full px-3 py-1.5 border border-line rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-ff-green"
                           placeholder="Option A, Option B, Option C"
                         />
                       </div>
                     )}
                     <div className="flex gap-2">
                       <button onClick={() => saveEdit(q)} disabled={saving || !editText.trim()}
-                        className="px-3 py-1 text-xs font-medium bg-brand-green text-white rounded-lg disabled:opacity-60">
+                        className="px-3 py-1 text-xs font-medium bg-ff-green text-white rounded-lg disabled:opacity-60">
                         {saving ? 'Saving…' : 'Save'}
                       </button>
                       <button onClick={() => setEditingId(null)}
-                        className="px-3 py-1 text-xs font-medium border border-slate-300 text-slate-600 rounded-lg">
+                        className="px-3 py-1 text-xs font-medium border border-line text-ink-2 rounded-lg">
                         Cancel
                       </button>
                     </div>
@@ -156,7 +156,7 @@ export default function TemplateEditor({ sections }: { sections: SectionRow[] })
                       {saving ? 'Removing…' : 'Remove'}
                     </button>
                     <button onClick={() => setDeletingId(null)}
-                      className="px-3 py-1 text-xs font-medium border border-slate-300 text-slate-600 rounded-lg">
+                      className="px-3 py-1 text-xs font-medium border border-line text-ink-2 rounded-lg">
                       Cancel
                     </button>
                   </div>
@@ -172,9 +172,9 @@ export default function TemplateEditor({ sections }: { sections: SectionRow[] })
                         )}
                         <TypeBadge type={q.input_type} />
                       </div>
-                      <p className="text-sm text-slate-800 mt-1">{q.question_text}</p>
+                      <p className="text-sm text-ink mt-1">{q.question_text}</p>
                       {q.options && q.options.length > 0 && (
-                        <p className="text-xs text-slate-400 mt-1 truncate">
+                        <p className="text-xs text-ink-3 mt-1 truncate">
                           Options: {q.options.join(' · ')}
                         </p>
                       )}
@@ -183,7 +183,7 @@ export default function TemplateEditor({ sections }: { sections: SectionRow[] })
                       <div className="flex gap-1.5 flex-shrink-0">
                         <button
                           onClick={() => startEdit(q)}
-                          className="px-2.5 py-1 text-xs font-medium border border-slate-200 text-slate-600 hover:bg-slate-50 rounded-lg transition-colors"
+                          className="px-2.5 py-1 text-xs font-medium border border-line text-ink-2 hover:bg-surface-2 rounded-lg transition-colors"
                         >
                           Edit
                         </button>
@@ -202,7 +202,7 @@ export default function TemplateEditor({ sections }: { sections: SectionRow[] })
           </div>
 
           {/* Add question */}
-          <div className="px-5 py-3 border-t border-slate-100 bg-slate-50/50">
+          <div className="px-5 py-3 border-t border-line-2 bg-surface-2/50">
             {addingToSection === section.id ? (
               <div className="space-y-2">
                 <input
@@ -210,14 +210,14 @@ export default function TemplateEditor({ sections }: { sections: SectionRow[] })
                   value={addForm.question_text}
                   onChange={e => setAddForm(f => ({ ...f, question_text: e.target.value }))}
                   placeholder="Question text…"
-                  className="w-full px-3 py-1.5 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-green"
+                  className="w-full px-3 py-1.5 border border-line rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-ff-green"
                   autoFocus
                 />
                 <div className="flex gap-2">
                   <select
                     value={addForm.input_type}
                     onChange={e => setAddForm(f => ({ ...f, input_type: e.target.value }))}
-                    className="px-2 py-1.5 border border-slate-300 rounded-lg text-xs text-slate-700 bg-white focus:outline-none focus:ring-2 focus:ring-brand-green"
+                    className="px-2 py-1.5 border border-line rounded-lg text-xs text-ink-2 bg-white focus:outline-none focus:ring-2 focus:ring-ff-green"
                   >
                     {Object.entries(INPUT_TYPE_LABELS).map(([val, label]) => (
                       <option key={val} value={val}>{label}</option>
@@ -230,20 +230,20 @@ export default function TemplateEditor({ sections }: { sections: SectionRow[] })
                     value={addForm.options_raw}
                     onChange={e => setAddForm(f => ({ ...f, options_raw: e.target.value }))}
                     placeholder="Options (comma-separated)"
-                    className="w-full px-3 py-1.5 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-green"
+                    className="w-full px-3 py-1.5 border border-line rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-ff-green"
                   />
                 )}
                 <div className="flex gap-2">
                   <button
                     onClick={() => addQuestion(section.id)}
                     disabled={saving || !addForm.question_text.trim()}
-                    className="px-3 py-1 text-xs font-medium bg-brand-green text-white rounded-lg disabled:opacity-60"
+                    className="px-3 py-1 text-xs font-medium bg-ff-green text-white rounded-lg disabled:opacity-60"
                   >
                     {saving ? 'Adding…' : 'Add question'}
                   </button>
                   <button
                     onClick={() => { setAddingToSection(null); setAddForm(defaultAdd) }}
-                    className="px-3 py-1 text-xs font-medium border border-slate-300 text-slate-600 rounded-lg"
+                    className="px-3 py-1 text-xs font-medium border border-line text-ink-2 rounded-lg"
                   >
                     Cancel
                   </button>
@@ -252,7 +252,7 @@ export default function TemplateEditor({ sections }: { sections: SectionRow[] })
             ) : (
               <button
                 onClick={() => { setAddingToSection(section.id); setAddForm(defaultAdd) }}
-                className="text-xs text-brand-green hover:text-brand-green-dark font-medium flex items-center gap-1 transition-colors"
+                className="text-xs text-ff-green hover:text-ff-green-deep font-medium flex items-center gap-1 transition-colors"
               >
                 <span className="text-base leading-none">+</span> Add question to this section
               </button>

@@ -27,7 +27,7 @@ export default async function FranchisorPendingPage() {
   const firstName = profile?.full_name?.split(' ')[0] ?? 'there'
 
   return (
-    <div className="min-h-screen bg-slate-50 flex items-center justify-center p-6">
+    <div className="min-h-screen bg-surface-2 flex items-center justify-center p-6">
       <div className="max-w-lg w-full">
         <div className="text-center mb-8">
           <Image
@@ -37,16 +37,16 @@ export default async function FranchisorPendingPage() {
             height={56}
             className="mx-auto mb-6"
           />
-          <h1 className="text-2xl font-bold text-slate-900 mb-2">
+          <h1 className="text-2xl font-bold text-ink mb-2">
             Your portal is being built, {firstName}
           </h1>
-          <p className="text-slate-500 text-sm leading-relaxed">
+          <p className="text-ink-3 text-sm leading-relaxed">
             Thanks for completing the questionnaire. Our team is now setting up your
             profile and candidate matching — we&apos;ll have everything ready for you shortly.
           </p>
         </div>
 
-        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 space-y-4 mb-6">
+        <div className="bg-surface rounded-2xl border border-line shadow-sm p-6 space-y-4 mb-6">
           {[
             {
               step: '1',
@@ -76,16 +76,16 @@ export default async function FranchisorPendingPage() {
             <div key={item.step} className="flex gap-3">
               <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold shrink-0 mt-0.5 ${
                 item.done
-                  ? 'bg-brand-green text-white'
-                  : 'bg-slate-100 text-slate-400'
+                  ? 'bg-ff-green text-white'
+                  : 'bg-surface-2 text-ink-3'
               }`}>
                 {item.done ? '✓' : item.step}
               </div>
               <div>
-                <p className={`text-sm font-semibold ${item.done ? 'text-brand-green' : 'text-slate-700'}`}>
+                <p className={`text-sm font-semibold ${item.done ? 'text-ff-green' : 'text-ink-2'}`}>
                   {item.title}
                 </p>
-                <p className="text-xs text-slate-400 leading-relaxed">{item.body}</p>
+                <p className="text-xs text-ink-3 leading-relaxed">{item.body}</p>
               </div>
             </div>
           ))}
@@ -95,28 +95,28 @@ export default async function FranchisorPendingPage() {
         <div className="text-center mb-4 flex items-center justify-center gap-3 flex-wrap">
           <Link
             href="/franchisor/questionnaire"
-            className="inline-flex items-center gap-1.5 text-sm font-medium text-white bg-brand-green hover:bg-brand-green-dark px-4 py-2 rounded-lg transition-colors"
+            className="inline-flex items-center gap-1.5 text-sm font-medium text-white bg-ff-green hover:bg-ff-green-deep px-4 py-2 rounded-lg transition-colors"
           >
             Review or edit your answers
           </Link>
           <Link
             href="/franchisor/onboarding?add_brand=1"
-            className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-600 border border-slate-300 hover:border-slate-400 hover:text-slate-800 px-4 py-2 rounded-lg transition-colors"
+            className="inline-flex items-center gap-1.5 text-sm font-medium text-ink-2 border border-line hover:border-line hover:text-ink px-4 py-2 rounded-lg transition-colors"
           >
             + Add another brand
           </Link>
           {pendingCount > 1 && (
-            <p className="text-xs text-slate-400 mt-2">
+            <p className="text-xs text-ink-3 mt-2">
               {pendingCount} brands submitted — all are currently under review.
             </p>
           )}
         </div>
 
-        <p className="text-center text-xs text-slate-400">
+        <p className="text-center text-xs text-ink-3">
           Questions? Email us at{' '}
           <a
             href="mailto:connect@franchisefoundry.co.uk"
-            className="underline hover:text-slate-600 transition-colors"
+            className="underline hover:text-ink-2 transition-colors"
           >
             connect@franchisefoundry.co.uk
           </a>

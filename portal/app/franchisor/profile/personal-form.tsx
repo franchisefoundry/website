@@ -53,7 +53,7 @@ export default function FranchisorPersonalForm({ profile }: Props) {
             <Button type="submit" size="lg" disabled={saving}>
               {saving ? 'Saving…' : 'Save details'}
             </Button>
-            {saved && <span className="text-sm text-emerald-600">Saved successfully</span>}
+            {saved && <span className="text-sm text-ff-green">Saved successfully</span>}
           </div>
         </CardBody>
       </Card>

@@ -58,7 +58,7 @@ const emptyForm: FormState = {
 // ── Status helpers ─────────────────────────────────────────────────────────────
 
 const STATUS_COLOURS: Record<string, string> = {
-  submitted:  'bg-slate-100 text-slate-600',
+  submitted:  'bg-surface-2 text-ink-2',
   invited:    'bg-sky-50 text-sky-700',
   registered: 'bg-violet-50 text-violet-700',
   matched:    'bg-amber-50 text-amber-700',
@@ -77,7 +77,7 @@ const STATUS_LABELS: Record<string, string> = {
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div>
-      <label className="block text-xs font-medium text-slate-600 mb-1">{label}</label>
+      <label className="block text-xs font-medium text-ink-2 mb-1">{label}</label>
       {children}
     </div>
   )
@@ -92,7 +92,7 @@ function Input({ value, onChange, placeholder, type = 'text' }: {
       value={value}
       onChange={e => onChange(e.target.value)}
       placeholder={placeholder}
-      className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-green focus:border-transparent"
+      className="w-full px-3 py-2 border border-line rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-ff-green focus:border-transparent"
     />
   )
 }
@@ -120,8 +120,8 @@ function PillGroup({ options, value, onChange, multi = false }: {
           }}
           className={`px-3 py-1.5 rounded-full text-xs border transition-colors ${
             selected.includes(opt.value)
-              ? 'bg-brand-green text-white border-brand-green'
-              : 'border-slate-300 text-slate-700 hover:bg-slate-50'
+              ? 'bg-ff-green text-white border-ff-green'
+              : 'border-line text-ink-2 hover:bg-surface-2'
           }`}
         >
           {opt.label}
@@ -251,7 +251,7 @@ export default function LeadsClient({ leads }: { leads: Lead[] }) {
     <div>
       {/* Filter tabs + button */}
       <div className="flex items-center justify-between mb-5 flex-wrap gap-3">
-        <div className="flex gap-1 bg-slate-100 rounded-xl p-1">
+        <div className="flex gap-1 bg-surface-2 rounded-xl p-1">
           {([
             { key: 'all',      label: `All (${leads.length})` },
             { key: 'pending',  label: 'Not yet invited' },
@@ -262,7 +262,7 @@ export default function LeadsClient({ leads }: { leads: Lead[] }) {
               key={tab.key}
               onClick={() => setFilter(tab.key)}
               className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
-                filter === tab.key ? 'bg-white text-slate-800 shadow-sm' : 'text-slate-500 hover:text-slate-700'
+                filter === tab.key ? 'bg-surface text-ink shadow-sm' : 'text-ink-3 hover:text-ink-2'
               }`}
             >
               {tab.label}
@@ -271,7 +271,7 @@ export default function LeadsClient({ leads }: { leads: Lead[] }) {
         </div>
         <button
           onClick={() => setShowForm(true)}
-          className="bg-brand-green hover:bg-brand-green-dark text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors"
+          className="bg-ff-green hover:bg-ff-green-deep text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors"
         >
           + Submit new lead
         </button>
@@ -283,16 +283,16 @@ export default function LeadsClient({ leads }: { leads: Lead[] }) {
 
       {/* Leads table */}
       {filteredLeads.length === 0 ? (
-        <div className="bg-white rounded-2xl border border-slate-200 p-12 text-center">
+        <div className="bg-surface rounded-2xl border border-line p-12 text-center">
           <div className="text-3xl mb-3">👥</div>
-          <p className="text-slate-800 font-semibold text-sm mb-1">No leads yet</p>
-          <p className="text-slate-400 text-xs">Submit your first lead to get started.</p>
+          <p className="text-ink font-semibold text-sm mb-1">No leads yet</p>
+          <p className="text-ink-3 text-xs">Submit your first lead to get started.</p>
         </div>
       ) : (
-        <div className="bg-white rounded-2xl border border-slate-200 overflow-x-auto">
+        <div className="bg-surface rounded-2xl border border-line overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-slate-100 text-slate-500 text-xs">
+              <tr className="border-b border-line-2 text-ink-3 text-xs">
                 <th className="text-left px-4 py-3 font-medium">Name</th>
                 <th className="text-left px-4 py-3 font-medium hidden sm:table-cell">Location</th>
                 <th className="text-left px-4 py-3 font-medium hidden md:table-cell">Budget</th>
@@ -303,37 +303,37 @@ export default function LeadsClient({ leads }: { leads: Lead[] }) {
             </thead>
             <tbody>
               {filteredLeads.map(lead => (
-                <tr key={lead.id} className="border-b border-slate-50 hover:bg-slate-50 transition-colors">
+                <tr key={lead.id} className="border-b border-line hover:bg-surface-2 transition-colors">
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-2 flex-wrap">
-                      <p className="font-medium text-slate-800">{lead.first_name} {lead.last_name}</p>
+                      <p className="font-medium text-ink">{lead.first_name} {lead.last_name}</p>
                       {lead.source === 'referral_link' && (
                         <span className="text-[10px] font-semibold text-violet-700 bg-violet-50 border border-violet-200 rounded-full px-2 py-0.5">
                           Via your link
                         </span>
                       )}
                     </div>
-                    <p className="text-xs text-slate-400">{lead.email}</p>
+                    <p className="text-xs text-ink-3">{lead.email}</p>
                   </td>
-                  <td className="px-4 py-3 text-slate-500 hidden sm:table-cell">{lead.location ?? '—'}</td>
-                  <td className="px-4 py-3 text-slate-500 hidden md:table-cell">
+                  <td className="px-4 py-3 text-ink-3 hidden sm:table-cell">{lead.location ?? '—'}</td>
+                  <td className="px-4 py-3 text-ink-3 hidden md:table-cell">
                     {lead.investment_min && lead.investment_max
                       ? `£${(lead.investment_min/1000).toFixed(0)}k – £${(lead.investment_max/1000).toFixed(0)}k`
                       : '—'}
                   </td>
                   <td className="px-4 py-3">
-                    <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${STATUS_COLOURS[lead.status] ?? 'bg-slate-100 text-slate-500'}`}>
+                    <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${STATUS_COLOURS[lead.status] ?? 'bg-surface-2 text-ink-3'}`}>
                       {STATUS_LABELS[lead.status] ?? lead.status}
                     </span>
                   </td>
-                  <td className="px-4 py-3 text-slate-400 text-xs hidden sm:table-cell">
+                  <td className="px-4 py-3 text-ink-3 text-xs hidden sm:table-cell">
                     {new Date(lead.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
                   </td>
                   <td className="px-4 py-3 text-right">
                     {lead.source === 'referral_link' ? (
                       // Read-only: referral-link leads are handled by the FF team via
                       // the main pipeline; the agent just gets attribution + commission.
-                      <span className="text-xs text-slate-400">FF team handling</span>
+                      <span className="text-xs text-ink-3">FF team handling</span>
                     ) : (
                       <div className="flex items-center justify-end gap-2">
                         {lead.status === 'submitted' && (
@@ -355,7 +355,7 @@ export default function LeadsClient({ leads }: { leads: Lead[] }) {
                         )}
                         <button
                           onClick={() => { setNotesLead(lead); setNotesText(lead.introducer_notes ?? '') }}
-                          className="text-xs text-brand-green hover:underline"
+                          className="text-xs text-ff-green hover:underline"
                         >
                           Notes
                         </button>
@@ -373,12 +373,12 @@ export default function LeadsClient({ leads }: { leads: Lead[] }) {
       {inviteLink && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="fixed inset-0 bg-black/40" onClick={() => { setInviteLink(null); setInviteCopied(false) }} />
-          <div className="relative bg-white rounded-2xl shadow-xl w-full max-w-md p-6">
-            <h3 className="text-base font-semibold text-slate-800 mb-1">Invite link ready</h3>
-            <p className="text-xs text-slate-400 mb-4">
+          <div className="relative bg-surface rounded-2xl shadow-xl w-full max-w-md p-6">
+            <h3 className="text-base font-semibold text-ink mb-1">Invite link ready</h3>
+            <p className="text-xs text-ink-3 mb-4">
               Copy and send this magic link directly to your lead. It will log them straight into the platform.
             </p>
-            <div className="bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-xs text-slate-700 break-all mb-4">
+            <div className="bg-surface-2 border border-line rounded-lg px-3 py-2 text-xs text-ink-2 break-all mb-4">
               {inviteLink}
             </div>
             <button
@@ -387,13 +387,13 @@ export default function LeadsClient({ leads }: { leads: Lead[] }) {
                 setInviteCopied(true)
                 setTimeout(() => setInviteCopied(false), 2000)
               }}
-              className="w-full bg-brand-green hover:bg-brand-green-dark text-white font-medium py-2.5 rounded-lg text-sm transition-colors mb-2"
+              className="w-full bg-ff-green hover:bg-ff-green-deep text-white font-medium py-2.5 rounded-lg text-sm transition-colors mb-2"
             >
               {inviteCopied ? 'Copied!' : 'Copy link'}
             </button>
             <button
               onClick={() => { setInviteLink(null); setInviteCopied(false) }}
-              className="w-full px-4 py-2.5 border border-slate-300 text-slate-700 text-sm font-medium rounded-lg hover:bg-slate-50 transition-colors"
+              className="w-full px-4 py-2.5 border border-line text-ink-2 text-sm font-medium rounded-lg hover:bg-surface-2 transition-colors"
             >
               Done
             </button>
@@ -405,16 +405,16 @@ export default function LeadsClient({ leads }: { leads: Lead[] }) {
       {showForm && (
         <div className="fixed inset-0 z-50 flex">
           <div className="fixed inset-0 bg-black/40" onClick={() => setShowForm(false)} />
-          <div className="relative ml-auto w-full max-w-xl bg-white h-full overflow-y-auto shadow-xl">
-            <div className="sticky top-0 bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between">
-              <h2 className="text-base font-semibold text-slate-800">Submit new lead</h2>
-              <button onClick={() => setShowForm(false)} className="text-slate-400 hover:text-slate-600 text-2xl leading-none">×</button>
+          <div className="relative ml-auto w-full max-w-xl bg-surface h-full overflow-y-auto shadow-xl">
+            <div className="sticky top-0 bg-surface border-b border-line px-6 py-4 flex items-center justify-between">
+              <h2 className="text-base font-semibold text-ink">Submit new lead</h2>
+              <button onClick={() => setShowForm(false)} className="text-ink-3 hover:text-ink-2 text-2xl leading-none">×</button>
             </div>
             <form onSubmit={handleSubmit} className="px-6 py-6 space-y-5">
 
               {/* Contact */}
               <div>
-                <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-3">Contact information</p>
+                <p className="text-xs font-semibold text-ink-3 uppercase tracking-wide mb-3">Contact information</p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <Field label="First name *">
                     <Input value={form.first_name} onChange={v => set('first_name', v)} placeholder="Jane" />
@@ -438,7 +438,7 @@ export default function LeadsClient({ leads }: { leads: Lead[] }) {
 
               {/* Investment */}
               <div>
-                <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-3">Investment</p>
+                <p className="text-xs font-semibold text-ink-3 uppercase tracking-wide mb-3">Investment</p>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                   <Field label="Min budget (£)">
                     <Input value={form.investment_min} onChange={v => set('investment_min', v)} placeholder="50000" type="number" />
@@ -454,7 +454,7 @@ export default function LeadsClient({ leads }: { leads: Lead[] }) {
 
               {/* Preferences */}
               <div className="space-y-4">
-                <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Preferences</p>
+                <p className="text-xs font-semibold text-ink-3 uppercase tracking-wide">Preferences</p>
                 <Field label="Operator model">
                   <PillGroup options={OPERATOR_OPTIONS} value={form.operator_model} onChange={v => set('operator_model', v as string)} />
                 </Field>
@@ -485,14 +485,14 @@ export default function LeadsClient({ leads }: { leads: Lead[] }) {
                     onChange={e => set('goals', e.target.value)}
                     rows={3}
                     placeholder="What drives them — financial freedom, leaving employment, passion for the sector…"
-                    className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-green focus:border-transparent resize-none"
+                    className="w-full px-3 py-2 border border-line rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-ff-green focus:border-transparent resize-none"
                   />
                 </Field>
               </div>
 
               {/* Introducer context */}
               <div className="space-y-4">
-                <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide">How you found them</p>
+                <p className="text-xs font-semibold text-ink-3 uppercase tracking-wide">How you found them</p>
                 <Field label="Source">
                   <PillGroup options={SOURCE_OPTIONS} value={form.source} onChange={v => set('source', v as string)} />
                 </Field>
@@ -505,7 +505,7 @@ export default function LeadsClient({ leads }: { leads: Lead[] }) {
                     onChange={e => set('introducer_notes', e.target.value)}
                     rows={3}
                     placeholder="Anything else the team should know about this person…"
-                    className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-green focus:border-transparent resize-none"
+                    className="w-full px-3 py-2 border border-line rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-ff-green focus:border-transparent resize-none"
                   />
                 </Field>
               </div>
@@ -518,14 +518,14 @@ export default function LeadsClient({ leads }: { leads: Lead[] }) {
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="flex-1 bg-brand-green hover:bg-brand-green-dark text-white font-semibold py-3 rounded-xl text-sm transition-colors disabled:opacity-60"
+                  className="flex-1 bg-ff-green hover:bg-ff-green-deep text-white font-semibold py-3 rounded-xl text-sm transition-colors disabled:opacity-60"
                 >
                   {submitting ? 'Submitting…' : 'Submit lead →'}
                 </button>
                 <button
                   type="button"
                   onClick={() => setShowForm(false)}
-                  className="px-6 py-3 border border-slate-300 text-slate-700 text-sm font-medium rounded-xl hover:bg-slate-50 transition-colors"
+                  className="px-6 py-3 border border-line text-ink-2 text-sm font-medium rounded-xl hover:bg-surface-2 transition-colors"
                 >
                   Cancel
                 </button>
@@ -539,27 +539,27 @@ export default function LeadsClient({ leads }: { leads: Lead[] }) {
       {notesLead && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="fixed inset-0 bg-black/40" onClick={() => setNotesLead(null)} />
-          <div className="relative bg-white rounded-2xl shadow-xl w-full max-w-md p-6">
-            <h3 className="text-base font-semibold text-slate-800 mb-1">Notes for {notesLead.first_name} {notesLead.last_name}</h3>
-            <p className="text-xs text-slate-400 mb-4">Private — only you and the FF team can see these.</p>
+          <div className="relative bg-surface rounded-2xl shadow-xl w-full max-w-md p-6">
+            <h3 className="text-base font-semibold text-ink mb-1">Notes for {notesLead.first_name} {notesLead.last_name}</h3>
+            <p className="text-xs text-ink-3 mb-4">Private — only you and the FF team can see these.</p>
             <textarea
               value={notesText}
               onChange={e => setNotesText(e.target.value)}
               rows={5}
-              className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-green focus:border-transparent resize-none mb-4"
+              className="w-full px-3 py-2 border border-line rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-ff-green focus:border-transparent resize-none mb-4"
               placeholder="Add your notes here…"
             />
             <div className="flex gap-3">
               <button
                 onClick={handleSaveNotes}
                 disabled={savingNotes}
-                className="flex-1 bg-brand-green hover:bg-brand-green-dark text-white font-medium py-2.5 rounded-lg text-sm transition-colors disabled:opacity-60"
+                className="flex-1 bg-ff-green hover:bg-ff-green-deep text-white font-medium py-2.5 rounded-lg text-sm transition-colors disabled:opacity-60"
               >
                 {savingNotes ? 'Saving…' : 'Save notes'}
               </button>
               <button
                 onClick={() => setNotesLead(null)}
-                className="px-4 py-2.5 border border-slate-300 text-slate-700 text-sm font-medium rounded-lg hover:bg-slate-50 transition-colors"
+                className="px-4 py-2.5 border border-line text-ink-2 text-sm font-medium rounded-lg hover:bg-surface-2 transition-colors"
               >
                 Close
               </button>

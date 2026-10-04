@@ -16,7 +16,7 @@ export interface InviteRow {
 }
 
 function statusInfo(row: InviteRow): { label: string; classes: string } {
-  if (row.accepted) return { label: 'Accepted', classes: 'bg-emerald-50 text-emerald-700 border-emerald-200' }
+  if (row.accepted) return { label: 'Accepted', classes: 'bg-ff-green-soft text-ff-green border-ff-green/20' }
   if (!row.invite_expires_at || new Date(row.invite_expires_at) < new Date()) {
     return { label: 'Expired', classes: 'bg-red-50 text-red-600 border-red-200' }
   }
@@ -62,7 +62,7 @@ function InviteActions({ invite }: { invite: InviteRow }) {
   if (confirm) {
     return (
       <div className="inline-flex items-center gap-3">
-        <span className="text-xs text-slate-500">Remove?</span>
+        <span className="text-xs text-ink-3">Remove?</span>
         <button
           onClick={handleRemove}
           disabled={removing}
@@ -70,7 +70,7 @@ function InviteActions({ invite }: { invite: InviteRow }) {
         >
           {removing ? 'Removing…' : 'Yes'}
         </button>
-        <button onClick={() => setConfirm(false)} disabled={removing} className="text-xs text-slate-400 hover:text-slate-600">
+        <button onClick={() => setConfirm(false)} disabled={removing} className="text-xs text-ink-3 hover:text-ink-2">
           Cancel
         </button>
       </div>
@@ -83,14 +83,14 @@ function InviteActions({ invite }: { invite: InviteRow }) {
         <button
           onClick={handleResend}
           disabled={resending}
-          className="text-xs text-brand-green hover:text-brand-green/80 font-medium disabled:opacity-50 transition-colors"
+          className="text-xs text-ff-green hover:text-ff-green/80 font-medium disabled:opacity-50 transition-colors"
         >
           {resending ? 'Sending…' : 'Resend'}
         </button>
       )}
       <button
         onClick={() => setConfirm(true)}
-        className="text-xs text-slate-400 hover:text-red-600 font-medium transition-colors"
+        className="text-xs text-ink-3 hover:text-red-600 font-medium transition-colors"
       >
         Remove
       </button>
@@ -101,40 +101,40 @@ function InviteActions({ invite }: { invite: InviteRow }) {
 export default function InvitesList({ invites }: { invites: InviteRow[] }) {
   if (invites.length === 0) {
     return (
-      <div className="bg-white rounded-xl border border-slate-200 px-6 py-8 text-center text-sm text-slate-400">
+      <div className="bg-surface rounded-xl border border-line px-6 py-8 text-center text-sm text-ink-3">
         No invites sent yet.
       </div>
     )
   }
 
   return (
-    <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-x-auto">
+    <div className="bg-surface rounded-xl border border-line shadow-sm overflow-x-auto">
       <table className="w-full text-sm">
-        <thead className="bg-slate-50 border-b border-slate-200">
+        <thead className="bg-surface-2 border-b border-line">
           <tr>
-            <th className="text-left px-6 py-3 text-xs font-medium text-slate-500 uppercase tracking-wide">Person</th>
-            <th className="text-left px-6 py-3 text-xs font-medium text-slate-500 uppercase tracking-wide">Status</th>
-            <th className="text-left px-6 py-3 text-xs font-medium text-slate-500 uppercase tracking-wide">Invited</th>
-            <th className="text-left px-6 py-3 text-xs font-medium text-slate-500 uppercase tracking-wide hidden md:table-cell">Expires</th>
+            <th className="text-left px-6 py-3 text-xs font-medium text-ink-3 uppercase tracking-wide">Person</th>
+            <th className="text-left px-6 py-3 text-xs font-medium text-ink-3 uppercase tracking-wide">Status</th>
+            <th className="text-left px-6 py-3 text-xs font-medium text-ink-3 uppercase tracking-wide">Invited</th>
+            <th className="text-left px-6 py-3 text-xs font-medium text-ink-3 uppercase tracking-wide hidden md:table-cell">Expires</th>
             <th className="px-6 py-3" />
           </tr>
         </thead>
-        <tbody className="divide-y divide-slate-100">
+        <tbody className="divide-y divide-line-2">
           {invites.map(invite => {
             const status = statusInfo(invite)
             return (
-              <tr key={invite.id} className="hover:bg-slate-50 transition-colors">
+              <tr key={invite.id} className="hover:bg-surface-2 transition-colors">
                 <td className="px-6 py-3">
-                  <p className="font-medium text-slate-900">{invite.full_name || '—'}</p>
-                  <p className="text-xs text-slate-400">{invite.email}</p>
+                  <p className="font-medium text-ink">{invite.full_name || '—'}</p>
+                  <p className="text-xs text-ink-3">{invite.email}</p>
                 </td>
                 <td className="px-6 py-3">
                   <span className={`inline-flex text-[11px] font-semibold px-2 py-0.5 rounded-full border ${status.classes}`}>
                     {status.label}
                   </span>
                 </td>
-                <td className="px-6 py-3 text-slate-500 text-xs">{timeAgo(invite.created_at)}</td>
-                <td className="px-6 py-3 text-slate-400 text-xs hidden md:table-cell">
+                <td className="px-6 py-3 text-ink-3 text-xs">{timeAgo(invite.created_at)}</td>
+                <td className="px-6 py-3 text-ink-3 text-xs hidden md:table-cell">
                   {invite.invite_expires_at ? formatDate(invite.invite_expires_at) : '—'}
                 </td>
                 <td className="px-6 py-3 text-right">

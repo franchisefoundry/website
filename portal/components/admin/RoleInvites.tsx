@@ -38,7 +38,7 @@ export default async function RoleInvites({ role }: { role: string }) {
   return (
     <div>
       {pending > 0 && (
-        <p className="text-xs text-slate-500 mb-3">{pending} invite{pending === 1 ? '' : 's'} awaiting acceptance</p>
+        <p className="text-xs text-ink-3 mb-3">{pending} invite{pending === 1 ? '' : 's'} awaiting acceptance</p>
       )}
       <InvitesList invites={invites} />
     </div>

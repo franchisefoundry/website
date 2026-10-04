@@ -33,7 +33,7 @@ export default function QuestionnairesClient({ rows }: { rows: QuestionnaireRow[
           value={search}
           onChange={e => setSearch(e.target.value)}
           placeholder="Filter by brand name…"
-          className="w-full max-w-xs px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-green focus:border-transparent"
+          className="w-full max-w-xs px-3 py-2 border border-line rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-ff-green focus:border-transparent"
         />
         <div className="flex gap-1">
           {(['all', 'submitted', 'missing'] as const).map(f => (
@@ -42,8 +42,8 @@ export default function QuestionnairesClient({ rows }: { rows: QuestionnaireRow[
               onClick={() => setFilter(f)}
               className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors capitalize ${
                 filter === f
-                  ? 'bg-brand-green text-white border-brand-green'
-                  : 'border-slate-300 text-slate-600 hover:bg-slate-50'
+                  ? 'bg-ff-green text-white border-ff-green'
+                  : 'border-line text-ink-2 hover:bg-surface-2'
               }`}
             >
               {f === 'all' ? 'All brands' : f === 'submitted' ? '✓ Submitted' : '⚠ Missing'}
@@ -52,56 +52,37 @@ export default function QuestionnairesClient({ rows }: { rows: QuestionnaireRow[
         </div>
       </div>
 
-      <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-x-auto">
-        <table className="w-full text-sm">
-          <thead className="bg-slate-50 border-b border-slate-200">
-            <tr>
-              <th className="text-left px-6 py-3 text-xs font-medium text-slate-500 uppercase tracking-wide">Brand</th>
-              <th className="text-left px-6 py-3 text-xs font-medium text-slate-500 uppercase tracking-wide">Category</th>
-              <th className="text-left px-6 py-3 text-xs font-medium text-slate-500 uppercase tracking-wide">Status</th>
-              <th className="text-left px-6 py-3 text-xs font-medium text-slate-500 uppercase tracking-wide">Submitted</th>
-              <th className="px-6 py-3" />
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-slate-100">
-            {filtered.length === 0 && (
-              <tr>
-                <td colSpan={5} className="px-6 py-8 text-slate-400 text-center text-sm">
-                  {search ? 'No brands match your search.' : 'No brands found.'}
-                </td>
-              </tr>
-            )}
-            {filtered.map(row => (
-              <tr key={row.franchisor_id} className="hover:bg-slate-50 transition-colors">
-                <td className="px-6 py-3 font-medium text-slate-900">{row.brand_name || 'Unnamed brand'}</td>
-                <td className="px-6 py-3 text-slate-500">{row.category || '—'}</td>
-                <td className="px-6 py-3">
-                  {row.has_submission ? (
-                    <span className="inline-flex items-center gap-1 text-xs font-medium text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full">
-                      ✓ Submitted
-                    </span>
-                  ) : (
-                    <span className="inline-flex items-center gap-1 text-xs font-medium text-amber-700 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-full">
-                      ⚠ Not submitted
-                    </span>
-                  )}
-                </td>
-                <td className="px-6 py-3 text-slate-500">
-                  {row.completed_at ? formatDate(row.completed_at) : '—'}
-                </td>
-                <td className="px-6 py-3 text-right">
-                  <Link
-                    href={`/admin/franchisors/${row.franchisor_id}/questionnaire`}
-                    className="text-brand-green text-xs font-medium hover:underline"
-                  >
-                    {row.has_submission ? 'View & edit →' : 'Add answers →'}
-                  </Link>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      {filtered.length === 0 ? (
+        <div className="text-center py-16 text-ink-3 text-sm">
+          {search ? 'No brands match your search.' : 'No brands found.'}
+        </div>
+      ) : (
+        <div className="grid gap-4" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))' }}>
+          {filtered.map(row => (
+            <Link
+              key={row.franchisor_id}
+              href={`/admin/franchisors/${row.franchisor_id}/questionnaire`}
+              className="block bg-surface border border-line rounded-2xl p-[17px] shadow-[0_1px_2px_rgba(27,33,26,0.04)] hover:-translate-y-0.5 hover:shadow-[0_8px_22px_rgba(27,33,26,0.08)] hover:border-[#d6dace] transition-all"
+            >
+              <div className="flex items-start justify-between gap-3 mb-3">
+                <div className="min-w-0">
+                  <p className="text-sm font-semibold text-ink truncate">{row.brand_name || 'Unnamed brand'}</p>
+                  <p className="text-xs text-ink-3 truncate">{row.category || '—'}</p>
+                </div>
+                {row.has_submission ? (
+                  <span className="inline-flex items-center gap-1 text-xs font-medium text-ff-green bg-ff-green-soft border border-ff-green/20 px-2 py-0.5 rounded-full flex-shrink-0">✓ Submitted</span>
+                ) : (
+                  <span className="inline-flex items-center gap-1 text-xs font-medium text-amber-700 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-full flex-shrink-0">⚠ Missing</span>
+                )}
+              </div>
+              <div className="flex items-center justify-between pt-3 border-t border-line-2">
+                <span className="text-xs text-ink-3">{row.completed_at ? formatDate(row.completed_at) : 'Not submitted'}</span>
+                <span className="text-xs font-medium text-ff-green">{row.has_submission ? 'View & edit →' : 'Add answers →'}</span>
+              </div>
+            </Link>
+          ))}
+        </div>
+      )}
     </div>
   )
 }

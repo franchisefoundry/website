@@ -45,17 +45,17 @@ export default function NotificationSettingsCard({ role, initialPrefs }: Props) 
         <CardTitle>Email notifications</CardTitle>
       </CardHeader>
       <CardBody className="p-0">
-        <p className="px-6 pt-4 pb-2 text-xs text-slate-500">
+        <p className="px-6 pt-4 pb-2 text-xs text-ink-3">
           Choose which updates email you. In-app notifications always appear in the bell.
         </p>
-        <div className="divide-y divide-slate-100">
+        <div className="divide-y divide-line-2">
           {events.map(event => {
             const on = prefs[event.key]
             return (
               <div key={event.key} className="flex items-center justify-between gap-4 px-6 py-3.5">
                 <div className="min-w-0">
-                  <p className="text-sm font-medium text-slate-800">{event.label}</p>
-                  <p className="text-xs text-slate-400 mt-0.5">{event.description}</p>
+                  <p className="text-sm font-medium text-ink">{event.label}</p>
+                  <p className="text-xs text-ink-3 mt-0.5">{event.description}</p>
                 </div>
                 <button
                   type="button"
@@ -64,12 +64,12 @@ export default function NotificationSettingsCard({ role, initialPrefs }: Props) 
                   aria-label={`Email me when: ${event.label}`}
                   disabled={saving}
                   onClick={() => toggle(event.key)}
-                  className={`relative inline-flex h-6 w-11 flex-shrink-0 items-center rounded-full transition-colors disabled:opacity-60 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-green focus-visible:ring-offset-1 ${
-                    on ? 'bg-brand-green' : 'bg-slate-200'
+                  className={`relative inline-flex h-6 w-11 flex-shrink-0 items-center rounded-full transition-colors disabled:opacity-60 focus:outline-none focus-visible:ring-2 focus-visible:ring-ff-green focus-visible:ring-offset-1 ${
+                    on ? 'bg-ff-green' : 'bg-surface-2'
                   }`}
                 >
                   <span
-                    className={`inline-block h-4 w-4 transform rounded-full bg-white shadow transition-transform ${
+                    className={`inline-block h-4 w-4 transform rounded-full bg-surface shadow transition-transform ${
                       on ? 'translate-x-6' : 'translate-x-1'
                     }`}
                   />

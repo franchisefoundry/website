@@ -31,10 +31,10 @@ export function ToastContainer() {
         <div
           key={t.id}
           className={`flex items-center gap-3 pl-4 pr-5 py-3 rounded-xl shadow-xl text-sm font-medium pointer-events-auto
-            ${t.type === 'error' ? 'bg-red-600 text-white' : 'bg-slate-900 text-white'}`}
+            ${t.type === 'error' ? 'bg-red-600 text-white' : 'bg-surface-2 text-white'}`}
         >
           {t.type === 'success' && (
-            <span className="w-4 h-4 rounded-full bg-emerald-400 flex items-center justify-center shrink-0">
+            <span className="w-4 h-4 rounded-full bg-ff-green-soft flex items-center justify-center shrink-0">
               <svg width="8" height="8" viewBox="0 0 10 10" fill="none">
                 <path d="M2 5l2.5 2.5L8 3" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>

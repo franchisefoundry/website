@@ -27,10 +27,11 @@ export const NOTIFICATION_EVENTS: NotificationEvent[] = [
   { key: 'franchisor_first_login',    role: 'admin', label: 'Franchisor first login',        description: 'A franchisor logs into the portal for the first time.', defaultEmail: false },
   { key: 'franchisor_answers_changed', role: 'admin', label: 'Approved brand edited answers', description: 'A live franchisor changes their questionnaire after approval.', defaultEmail: false },
   { key: 'franchisee_first_login',    role: 'admin', label: 'Franchisee first login',        description: 'A franchisee logs into the portal for the first time.', defaultEmail: false },
+  { key: 'new_message',               role: 'admin', label: 'New client message',            description: 'A franchisee, brand or agent replies in their message thread.', defaultEmail: false },
+  { key: 'candidate_interested',      role: 'admin', label: 'Brand expressed interest',       description: 'A brand expresses interest in a matched candidate — follow up to arrange an intro.', defaultEmail: true },
 
   // ── Franchisor ─────────────────────────────────────────────────────────────
   { key: 'candidate_matched',   role: 'franchisor', label: 'New candidate matched',     description: 'A new candidate is assigned to your brand.',        defaultEmail: true },
-  { key: 'candidate_interested', role: 'franchisor', label: 'Candidate expressed interest', description: 'A candidate accepts a match with your brand.',    defaultEmail: true },
   { key: 'agreement_ready',     role: 'franchisor', label: 'Agreement ready to sign',   description: 'Your Franchise Foundry agreement is ready.',        defaultEmail: true },
   { key: 'agreement_reply',     role: 'franchisor', label: 'Reply on your agreement',   description: 'The FF team replies to a comment on your agreement.', defaultEmail: true },
 
@@ -61,8 +62,20 @@ export const ANNOUNCEMENT_EVENT: NotificationEvent = {
   defaultEmail: true,
 }
 
+/**
+ * Direct message from the FF team to a portal user (any role). Not role-specific;
+ * delivered in-app + push + email (subject to each user's prefs).
+ */
+export const MESSAGE_EVENT: NotificationEvent = {
+  key: 'new_message',
+  role: 'admin',
+  label: 'New message',
+  description: 'A message sent to you by the Franchise Foundry team.',
+  defaultEmail: true,
+}
+
 const BY_KEY = new Map(
-  [...NOTIFICATION_EVENTS, ANNOUNCEMENT_EVENT].map(e => [e.key, e]),
+  [...NOTIFICATION_EVENTS, ANNOUNCEMENT_EVENT, MESSAGE_EVENT].map(e => [e.key, e]),
 )
 
 /** Returns the events relevant to a given role, in display order. */

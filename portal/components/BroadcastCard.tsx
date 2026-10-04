@@ -52,7 +52,7 @@ export default function BroadcastCard() {
   }
 
   const inputClass =
-    'w-full rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-brand-green'
+    'w-full rounded-lg border border-line px-3 py-2 text-sm text-ink focus:outline-none focus:ring-2 focus:ring-ff-green'
 
   return (
     <Card>
@@ -60,13 +60,13 @@ export default function BroadcastCard() {
         <CardTitle>Send an announcement</CardTitle>
       </CardHeader>
       <CardBody className="space-y-4">
-        <p className="text-xs text-slate-500">
+        <p className="text-xs text-ink-3">
           Broadcasts a notification to the chosen audience. Everyone gets it in the bell; those who
           allow it also receive push and email.
         </p>
 
         <div>
-          <label className="block text-xs font-medium text-slate-600 mb-1">Audience</label>
+          <label className="block text-xs font-medium text-ink-2 mb-1">Audience</label>
           <select value={audience} onChange={e => setAudience(e.target.value)} className={inputClass}>
             {AUDIENCES.map(a => (
               <option key={a.value} value={a.value}>{a.label}</option>
@@ -75,7 +75,7 @@ export default function BroadcastCard() {
         </div>
 
         <div>
-          <label className="block text-xs font-medium text-slate-600 mb-1">Title</label>
+          <label className="block text-xs font-medium text-ink-2 mb-1">Title</label>
           <input
             value={title}
             onChange={e => setTitle(e.target.value)}
@@ -86,7 +86,7 @@ export default function BroadcastCard() {
         </div>
 
         <div>
-          <label className="block text-xs font-medium text-slate-600 mb-1">Message (optional)</label>
+          <label className="block text-xs font-medium text-ink-2 mb-1">Message (optional)</label>
           <textarea
             value={body}
             onChange={e => setBody(e.target.value)}
@@ -98,7 +98,7 @@ export default function BroadcastCard() {
         </div>
 
         <div>
-          <label className="block text-xs font-medium text-slate-600 mb-1">Link (optional)</label>
+          <label className="block text-xs font-medium text-ink-2 mb-1">Link (optional)</label>
           <input
             value={link}
             onChange={e => setLink(e.target.value)}
@@ -111,7 +111,7 @@ export default function BroadcastCard() {
           type="button"
           onClick={send}
           disabled={sending || !title.trim()}
-          className="rounded-lg bg-brand-green px-4 py-2 text-sm font-medium text-white hover:bg-brand-green-dark disabled:opacity-60"
+          className="rounded-lg bg-ff-green px-4 py-2 text-sm font-medium text-white hover:bg-ff-green-deep disabled:opacity-60"
         >
           {sending ? 'Sending…' : 'Send announcement'}
         </button>

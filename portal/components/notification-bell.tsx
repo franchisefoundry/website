@@ -20,15 +20,15 @@ type Notification = {
 
 /** Maps a notification type to a distinct icon + tinted colour so the list scans fast. */
 function notificationStyle(type: string): { Icon: React.ComponentType<{ className?: string }>; bg: string; fg: string } {
-  if (type.startsWith('agreement_signed')) return { Icon: AgreementIcon, bg: 'bg-emerald-50', fg: 'text-emerald-600' }
+  if (type.startsWith('agreement_signed')) return { Icon: AgreementIcon, bg: 'bg-ff-green-soft', fg: 'text-ff-green' }
   if (type.startsWith('agreement_comment')) return { Icon: AgreementIcon, bg: 'bg-amber-50', fg: 'text-amber-600' }
   if (type.startsWith('agreement')) return { Icon: AgreementIcon, bg: 'bg-sky-50', fg: 'text-sky-600' }
   if (type.startsWith('franchisor_quiz')) return { Icon: QuestionnaireIcon, bg: 'bg-violet-50', fg: 'text-violet-600' }
-  if (type.startsWith('franchisor')) return { Icon: FranchisorIcon, bg: 'bg-slate-100', fg: 'text-slate-500' }
-  if (type.startsWith('franchisee')) return { Icon: FranchiseeIcon, bg: 'bg-slate-100', fg: 'text-slate-500' }
+  if (type.startsWith('franchisor')) return { Icon: FranchisorIcon, bg: 'bg-surface-2', fg: 'text-ink-3' }
+  if (type.startsWith('franchisee')) return { Icon: FranchiseeIcon, bg: 'bg-surface-2', fg: 'text-ink-3' }
   if (type.includes('lead') || type.includes('invite')) return { Icon: LeadsIcon, bg: 'bg-amber-50', fg: 'text-amber-600' }
   if (type.includes('intro') || type.includes('match')) return { Icon: MatchIcon, bg: 'bg-violet-50', fg: 'text-violet-600' }
-  return { Icon: BellIcon, bg: 'bg-slate-100', fg: 'text-slate-500' }
+  return { Icon: BellIcon, bg: 'bg-surface-2', fg: 'text-ink-3' }
 }
 
 interface NotificationBellProps {
@@ -128,35 +128,35 @@ export function NotificationBell({ compact = false }: NotificationBellProps) {
     <div
       ref={dropRef}
       style={{ position: 'fixed', top: dropPos.top, left: dropPos.left, zIndex: 200 }}
-      className="w-80 max-w-[calc(100vw-16px)] bg-white rounded-xl shadow-2xl border border-slate-200 overflow-hidden"
+      className="w-80 max-w-[calc(100vw-16px)] bg-surface rounded-xl shadow-2xl border border-line overflow-hidden"
     >
-      <div className="flex items-center justify-between px-4 py-3 border-b border-slate-100">
-        <p className="text-sm font-semibold text-slate-800">Notifications</p>
+      <div className="flex items-center justify-between px-4 py-3 border-b border-line-2">
+        <p className="text-sm font-semibold text-ink">Notifications</p>
         <div className="flex items-center gap-3">
           {unread > 0 && (
-            <button onClick={markAllRead} className="text-xs text-brand-green hover:underline">
+            <button onClick={markAllRead} className="text-xs text-ff-green hover:underline">
               Mark all read
             </button>
           )}
           {hasRead && (
-            <button onClick={clearRead} className="text-xs text-slate-400 hover:text-slate-600 hover:underline">
+            <button onClick={clearRead} className="text-xs text-ink-3 hover:text-ink-2 hover:underline">
               Clear read
             </button>
           )}
         </div>
       </div>
       {notifications.length === 0 ? (
-        <div className="px-4 py-8 text-center text-xs text-slate-400">No notifications yet</div>
+        <div className="px-4 py-8 text-center text-xs text-ink-3">No notifications yet</div>
       ) : (
-        <div className="max-h-96 overflow-y-auto divide-y divide-slate-50">
+        <div className="max-h-96 overflow-y-auto divide-y divide-line">
           {notifications.slice(0, 10).map(n => {
             const { Icon, bg, fg } = notificationStyle(n.type)
             return (
               <div
                 key={n.id}
                 className={cn(
-                  'group relative flex gap-3 items-start px-4 py-3 transition-colors hover:bg-slate-50',
-                  !n.read && 'bg-brand-green/[0.03]'
+                  'group relative flex gap-3 items-start px-4 py-3 transition-colors hover:bg-surface-2',
+                  !n.read && 'bg-ff-green/[0.03]'
                 )}
               >
                 <button
@@ -167,18 +167,18 @@ export function NotificationBell({ compact = false }: NotificationBellProps) {
                     <Icon className={cn('w-3.5 h-3.5', fg)} />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className={cn('text-xs', n.read ? 'font-medium text-slate-500' : 'font-semibold text-slate-800')}>
+                    <p className={cn('text-xs', n.read ? 'font-medium text-ink-3' : 'font-semibold text-ink')}>
                       {n.title}
                     </p>
-                    {n.body && <p className="text-xs text-slate-400 truncate mt-0.5">{n.body}</p>}
-                    <p className="text-[10px] text-slate-300 mt-1">{relativeTime(n.created_at)}</p>
+                    {n.body && <p className="text-xs text-ink-3 truncate mt-0.5">{n.body}</p>}
+                    <p className="text-[10px] text-ink-3 mt-1">{relativeTime(n.created_at)}</p>
                   </div>
-                  {!n.read && <div className="w-1.5 h-1.5 rounded-full bg-brand-green mt-1.5 flex-shrink-0" />}
+                  {!n.read && <div className="w-1.5 h-1.5 rounded-full bg-ff-green mt-1.5 flex-shrink-0" />}
                 </button>
                 <button
                   onClick={e => dismiss(n.id, e)}
                   aria-label="Dismiss notification"
-                  className="flex-shrink-0 w-5 h-5 -mr-1 rounded flex items-center justify-center text-slate-300 hover:text-slate-600 hover:bg-slate-100 opacity-0 group-hover:opacity-100 focus:opacity-100 transition-opacity"
+                  className="flex-shrink-0 w-5 h-5 -mr-1 rounded flex items-center justify-center text-ink-3 hover:text-ink-2 hover:bg-surface-2 opacity-0 group-hover:opacity-100 focus:opacity-100 transition-opacity"
                 >
                   <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
                     <line x1="5" y1="5" x2="19" y2="19" /><line x1="19" y1="5" x2="5" y2="19" />
@@ -199,7 +199,7 @@ export function NotificationBell({ compact = false }: NotificationBellProps) {
           ref={btnRef}
           onClick={handleOpen}
           aria-label="Notifications"
-          className="relative p-2 rounded-lg text-white/50 hover:text-white hover:bg-white/10 transition-colors"
+          className="relative p-2 rounded-lg text-white/50 hover:text-white hover:bg-surface/10 transition-colors"
         >
           <BellIcon className="w-4 h-4" />
           {unread > 0 && (
@@ -220,8 +220,8 @@ export function NotificationBell({ compact = false }: NotificationBellProps) {
         className={cn(
           'w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium transition-colors',
           open
-            ? 'text-white bg-white/10'
-            : 'text-white/60 hover:text-white hover:bg-white/10'
+            ? 'text-white bg-surface/10'
+            : 'text-white/60 hover:text-white hover:bg-surface/10'
         )}
         aria-label="Notifications"
       >

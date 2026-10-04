@@ -167,9 +167,9 @@ export default function AgreementDocument({
         }
       `}</style>
 
-      <div className="bg-slate-100 px-4 py-8 rounded-xl">
+      <div className="bg-surface-2 px-4 py-8 rounded-xl">
         {/* A4-style document card */}
-        <div className="max-w-3xl mx-auto bg-white shadow-lg rounded-sm">
+        <div className="max-w-3xl mx-auto bg-surface shadow-lg rounded-sm">
           {/* Header band */}
           <div className="bg-[#1a3a2a] px-10 py-6 flex items-center justify-between rounded-t-sm">
             <Image
@@ -186,19 +186,19 @@ export default function AgreementDocument({
           </div>
 
           {/* Title block */}
-          <div className="px-10 pt-8 pb-4 text-center border-b border-slate-100">
-            <p className="text-xs font-semibold uppercase tracking-widest text-slate-400 mb-2">Franchise Foundry Ltd</p>
-            <h1 className="text-2xl font-bold text-slate-900 tracking-tight">{title}</h1>
-            <p className="text-sm italic text-slate-400 mt-2">Discover. Connect. Franchise.</p>
+          <div className="px-10 pt-8 pb-4 text-center border-b border-line-2">
+            <p className="text-xs font-semibold uppercase tracking-widest text-ink-3 mb-2">Franchise Foundry Ltd</p>
+            <h1 className="text-2xl font-bold text-ink tracking-tight">{title}</h1>
+            <p className="text-sm italic text-ink-3 mt-2">Discover. Connect. Franchise.</p>
           </div>
 
           {/* Signed badge */}
           {signed && signerName && signedAt && (
-            <div className="mx-10 mt-5 flex items-center gap-3 bg-emerald-50 border border-emerald-200 rounded-lg px-4 py-3">
-              <svg className="w-4 h-4 text-emerald-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="mx-10 mt-5 flex items-center gap-3 bg-ff-green-soft border border-ff-green/20 rounded-lg px-4 py-3">
+              <svg className="w-4 h-4 text-ff-green flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
               </svg>
-              <p className="text-sm text-emerald-800">
+              <p className="text-sm text-ff-green">
                 <strong>Signed copy</strong> — executed by <strong>{signerName}</strong> on{' '}
                 {new Date(signedAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}
               </p>
@@ -212,9 +212,9 @@ export default function AgreementDocument({
           />
 
           {/* Footer */}
-          <div className="border-t border-slate-100 px-10 py-4 flex items-center justify-between bg-slate-50 rounded-b-sm">
-            <p className="text-xs text-slate-400">Franchise Foundry Ltd · connect@franchisefoundry.co.uk</p>
-            <p className="text-xs text-slate-400">Governed by the laws of England and Wales</p>
+          <div className="border-t border-line-2 px-10 py-4 flex items-center justify-between bg-surface-2 rounded-b-sm">
+            <p className="text-xs text-ink-3">Franchise Foundry Ltd · connect@franchisefoundry.co.uk</p>
+            <p className="text-xs text-ink-3">Governed by the laws of England and Wales</p>
           </div>
         </div>
       </div>

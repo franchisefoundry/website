@@ -73,7 +73,7 @@ export default function InviteUserButton() {
         description="They'll receive an email to set their password and access the portal."
       >
         {success ? (
-          <p className="text-sm text-emerald-600 bg-emerald-50 border border-emerald-200 rounded-lg px-4 py-3">
+          <p className="text-sm text-ff-green bg-ff-green-soft border border-ff-green/20 rounded-lg px-4 py-3">
             Invite sent successfully.
           </p>
         ) : (

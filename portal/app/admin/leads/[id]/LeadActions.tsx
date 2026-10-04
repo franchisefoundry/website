@@ -40,12 +40,12 @@ export default function LeadActions({ leadId, status, convertedFranchiseeId }: P
 
   if (status === 'converted') {
     return (
-      <div className="bg-emerald-50 border border-emerald-200 rounded-2xl p-4 space-y-2">
-        <p className="text-sm font-semibold text-emerald-700 text-center">✓ Approved &amp; invited</p>
+      <div className="bg-ff-green-soft border border-ff-green/20 rounded-2xl p-4 space-y-2">
+        <p className="text-sm font-semibold text-ff-green text-center">✓ Approved &amp; invited</p>
         {convertedFranchiseeId && (
           <Link
             href={`/admin/franchisees/${convertedFranchiseeId}`}
-            className="block text-xs text-center text-emerald-600 underline underline-offset-2 hover:text-emerald-800 transition-colors"
+            className="block text-xs text-center text-ff-green underline underline-offset-2 hover:text-ff-green transition-colors"
           >
             View franchisee profile →
           </Link>
@@ -56,14 +56,14 @@ export default function LeadActions({ leadId, status, convertedFranchiseeId }: P
 
   if (status === 'rejected') {
     return (
-      <div className="bg-slate-50 border border-slate-200 rounded-2xl p-5">
-        <h3 className="text-sm font-semibold text-slate-700 mb-1">Lead rejected</h3>
-        <p className="text-xs text-slate-400 mb-4">This lead was rejected. You can restore it to active if needed.</p>
+      <div className="bg-surface-2 border border-line rounded-2xl p-5">
+        <h3 className="text-sm font-semibold text-ink-2 mb-1">Lead rejected</h3>
+        <p className="text-xs text-ink-3 mb-4">This lead was rejected. You can restore it to active if needed.</p>
         {error && <p className="text-xs text-red-500 mb-3">{error}</p>}
         <button
           disabled={loading !== null}
           onClick={() => patchStatus('new', 'restore')}
-          className="w-full py-2 px-4 rounded-lg text-sm font-medium bg-white border border-slate-300 text-slate-700 hover:bg-slate-50 transition-colors disabled:opacity-50"
+          className="w-full py-2 px-4 rounded-lg text-sm font-medium bg-white border border-line text-ink-2 hover:bg-surface-2 transition-colors disabled:opacity-50"
         >
           {loading === 'restore' ? 'Restoring…' : 'Restore lead'}
         </button>
@@ -73,9 +73,9 @@ export default function LeadActions({ leadId, status, convertedFranchiseeId }: P
 
   // Active states: new | meeting_requested
   return (
-    <div className="bg-white border border-slate-200 rounded-2xl p-5">
-      <h3 className="text-sm font-semibold text-slate-800 mb-1">Approve or reject</h3>
-      <p className="text-xs text-slate-500 mb-4">
+    <div className="bg-white border border-line rounded-2xl p-5">
+      <h3 className="text-sm font-semibold text-ink mb-1">Approve or reject</h3>
+      <p className="text-xs text-ink-3 mb-4">
         Approving sends a portal invite, creates their franchisee profile, and transfers their matches.
         Rejecting archives the lead — it can be restored later.
       </p>
@@ -84,14 +84,14 @@ export default function LeadActions({ leadId, status, convertedFranchiseeId }: P
         <button
           disabled={loading !== null}
           onClick={() => patchStatus('converted', 'approve')}
-          className="w-full py-2.5 px-4 rounded-lg text-sm font-semibold bg-brand-green text-white hover:bg-brand-green/90 transition-colors disabled:opacity-50"
+          className="w-full py-2.5 px-4 rounded-lg text-sm font-semibold bg-ff-green text-white hover:bg-ff-green/90 transition-colors disabled:opacity-50"
         >
           {loading === 'approve' ? 'Approving…' : '✓ Approve & invite'}
         </button>
         <button
           disabled={loading !== null}
           onClick={() => patchStatus('rejected', 'reject')}
-          className="w-full py-2 px-4 rounded-lg text-sm font-medium text-slate-500 hover:text-red-600 hover:bg-red-50 transition-colors disabled:opacity-50"
+          className="w-full py-2 px-4 rounded-lg text-sm font-medium text-ink-3 hover:text-red-600 hover:bg-red-50 transition-colors disabled:opacity-50"
         >
           {loading === 'reject' ? 'Rejecting…' : '✕ Reject'}
         </button>

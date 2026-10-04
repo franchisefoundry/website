@@ -33,7 +33,7 @@ export function CandidateActions({ matchId, currentStatus }: Props) {
 
   if (currentStatus === 'declined') {
     return (
-      <p className="text-xs text-slate-400 flex items-center gap-1.5">
+      <p className="text-xs text-ink-3 flex items-center gap-1.5">
         <span>✗</span> You passed on this candidate
       </p>
     )
@@ -41,7 +41,7 @@ export function CandidateActions({ matchId, currentStatus }: Props) {
 
   if (currentStatus === 'interested') {
     return (
-      <p className="text-xs text-emerald-600 font-medium flex items-center gap-1.5">
+      <p className="text-xs text-ff-green font-medium flex items-center gap-1.5">
         <span>✓</span> You expressed interest — your consultant will be in touch
       </p>
     )
@@ -51,18 +51,18 @@ export function CandidateActions({ matchId, currentStatus }: Props) {
 
   return (
     <div className="flex items-center gap-2">
-      <p className="text-xs text-slate-500 mr-1">Is this candidate a good fit?</p>
+      <p className="text-xs text-ink-3 mr-1">Is this candidate a good fit?</p>
       <button
         onClick={() => respond('interested')}
         disabled={loading !== null}
-        className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-white bg-brand-green hover:bg-brand-green-dark rounded-lg transition-colors disabled:opacity-60"
+        className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-white bg-ff-green hover:bg-ff-green-deep rounded-lg transition-colors disabled:opacity-60"
       >
         {loading === 'interested' ? '…' : '👍 Interested'}
       </button>
       <button
         onClick={() => respond('pass')}
         disabled={loading !== null}
-        className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors disabled:opacity-60"
+        className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-ink-2 bg-surface-2 hover:bg-surface-2 rounded-lg transition-colors disabled:opacity-60"
       >
         {loading === 'pass' ? '…' : 'Pass'}
       </button>

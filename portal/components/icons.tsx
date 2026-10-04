@@ -169,6 +169,15 @@ export function StarIcon({ className }: IconProps) {
   )
 }
 
+export function SparklesIcon({ className }: IconProps) {
+  return (
+    <svg className={className} {...defaults}>
+      <path d="M12 3l1.6 4.4L18 9l-4.4 1.6L12 15l-1.6-4.4L6 9l4.4-1.6L12 3z" />
+      <path d="M18.5 14.5l.7 1.9 1.9.7-1.9.7-.7 1.9-.7-1.9-1.9-.7 1.9-.7.7-1.9z" />
+    </svg>
+  )
+}
+
 export function CheckIcon({ className }: IconProps) {
   return (
     <svg className={className} {...defaults}>
@@ -336,4 +345,102 @@ export function SortIcon({ className }: IconProps) {
       <line x1="9" y1="18" x2="15" y2="18" />
     </svg>
   )
+}
+
+// ── CRM record-shell actions ────────────────────────────────────────────────
+export function MailIcon({ className }: IconProps) {
+  return (
+    <svg className={className} {...defaults}>
+      <rect x="3" y="5" width="18" height="14" rx="2" />
+      <path d="m3 7 9 6 9-6" />
+    </svg>
+  )
+}
+
+export function MessageIcon({ className }: IconProps) {
+  return (
+    <svg className={className} {...defaults}>
+      <path d="M21 11.5a8.38 8.38 0 0 1-8.5 8.5 9.5 9.5 0 0 1-4-.9L3 20l1.9-5.5a8.38 8.38 0 0 1-.9-4A8.5 8.5 0 0 1 12.5 3 8.38 8.38 0 0 1 21 11.5Z" />
+    </svg>
+  )
+}
+
+export function ExpandIcon({ className }: IconProps) {
+  return (
+    <svg className={className} {...defaults}>
+      <path d="M15 3h6v6" />
+      <path d="M9 21H3v-6" />
+      <path d="M21 3l-7 7" />
+      <path d="M3 21l7-7" />
+    </svg>
+  )
+}
+
+export function MoreIcon({ className }: IconProps) {
+  return (
+    <svg className={className} {...defaults}>
+      <circle cx="12" cy="5" r="1" />
+      <circle cx="12" cy="12" r="1" />
+      <circle cx="12" cy="19" r="1" />
+    </svg>
+  )
+}
+
+export function ArchiveIcon({ className }: IconProps) {
+  return (
+    <svg className={className} {...defaults}>
+      <rect x="3" y="4" width="18" height="4" rx="1" />
+      <path d="M5 8v11a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8" />
+      <line x1="10" y1="12" x2="14" y2="12" />
+    </svg>
+  )
+}
+
+export function TrashIcon({ className }: IconProps) {
+  return (
+    <svg className={className} {...defaults}>
+      <path d="M3 6h18" />
+      <path d="M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2" />
+      <path d="M19 6v14a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V6" />
+      <line x1="10" y1="11" x2="10" y2="17" />
+      <line x1="14" y1="11" x2="14" y2="17" />
+    </svg>
+  )
+}
+
+export function ChartIcon({ className }: IconProps) {
+  return (
+    <svg className={className} {...defaults}>
+      <path d="M3 3v18h18" />
+      <rect x="7" y="11" width="3" height="7" />
+      <rect x="12" y="7" width="3" height="11" />
+      <rect x="17" y="4" width="3" height="14" />
+    </svg>
+  )
+}
+
+export function WalletIcon({ className }: IconProps) {
+  return (
+    <svg className={className} {...defaults}>
+      <path d="M3 7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+      <path d="M16 13h3M3 9h18" />
+    </svg>
+  )
+}
+
+export function SendIcon({ className }: IconProps) {
+  return (
+    <svg className={className} {...defaults}>
+      <path d="M22 2 11 13" />
+      <path d="M22 2l-7 20-4-9-9-4z" />
+    </svg>
+  )
+}
+
+export function CalendarIcon({ className }: IconProps) {
+  return (<svg className={className} {...defaults}><rect x="3" y="4" width="18" height="18" rx="2" /><path d="M16 2v4M8 2v4M3 10h18" /></svg>)
+}
+
+export function BoltIcon({ className }: IconProps) {
+  return (<svg className={className} {...defaults}><path d="M13 2 3 14h9l-1 8 10-12h-9z" /></svg>)
 }

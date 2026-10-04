@@ -70,7 +70,7 @@ export default function InstallAppCard() {
     }
   }
 
-  const stepClass = 'text-sm text-slate-600 leading-relaxed'
+  const stepClass = 'text-sm text-ink-2 leading-relaxed'
 
   return (
     <Card>
@@ -95,7 +95,7 @@ export default function InstallAppCard() {
               type="button"
               onClick={install}
               disabled={busy}
-              className="rounded-lg bg-brand-green px-4 py-2 text-sm font-medium text-white hover:bg-brand-green-dark disabled:opacity-60"
+              className="rounded-lg bg-ff-green px-4 py-2 text-sm font-medium text-white hover:bg-ff-green-deep disabled:opacity-60"
             >
               {busy ? 'Installing…' : 'Install app'}
             </button>
@@ -105,24 +105,24 @@ export default function InstallAppCard() {
         {state === 'ios' && (
           <>
             <p className={stepClass}>To install on your iPhone or iPad:</p>
-            <ol className="list-decimal pl-5 space-y-1 text-sm text-slate-600">
+            <ol className="list-decimal pl-5 space-y-1 text-sm text-ink-2">
               <li>Tap the <strong>Share</strong> icon in Safari (the square with an up-arrow).</li>
               <li>Scroll down and tap <strong>Add to Home Screen</strong>.</li>
               <li>Tap <strong>Add</strong>. Open “Franchise Foundry” from your home screen, then enable notifications in your profile.</li>
             </ol>
-            <p className="text-xs text-slate-400">Note: on iPhone, push notifications only work once the app is added to the home screen.</p>
+            <p className="text-xs text-ink-3">Note: on iPhone, push notifications only work once the app is added to the home screen.</p>
           </>
         )}
 
         {state === 'manual' && (
           <>
             <p className={stepClass}>To install Franchise Foundry on this device:</p>
-            <ol className="list-decimal pl-5 space-y-1 text-sm text-slate-600">
+            <ol className="list-decimal pl-5 space-y-1 text-sm text-ink-2">
               <li>Open the browser menu — the <strong>⋮</strong> icon (Android Chrome) or the install icon in the address bar (desktop).</li>
               <li>Tap <strong>Install app</strong> (or <strong>Add to Home screen</strong>).</li>
               <li>Confirm. Then open “Franchise Foundry” and enable notifications in your profile.</li>
             </ol>
-            <p className="text-xs text-slate-400">
+            <p className="text-xs text-ink-3">
               Just uninstalled it? The one-tap install button can take a little while to reappear —
               the menu steps above always work in the meantime.
             </p>

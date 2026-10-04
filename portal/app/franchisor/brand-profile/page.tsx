@@ -37,7 +37,7 @@ export default async function BrandProfilePage() {
         action={
           <Link
             href="/franchisor/questionnaire"
-            className="text-sm text-slate-500 border border-slate-300 hover:border-slate-400 px-4 py-2 rounded-lg transition-colors"
+            className="text-sm text-ink-3 border border-line hover:border-line px-4 py-2 rounded-lg transition-colors"
           >
             Edit questionnaire →
           </Link>

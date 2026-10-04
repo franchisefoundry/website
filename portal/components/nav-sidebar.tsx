@@ -9,10 +9,13 @@ import { cn, initials } from '@/lib/utils'
 import type { Profile } from '@/lib/supabase/types'
 import { NotificationBell } from '@/components/notification-bell'
 import { CommandPalette } from '@/components/command-palette'
+import { AccountSwitcher } from '@/components/admin/AccountSwitcher'
+import { ViewSwitcher } from '@/components/admin/ViewSwitcher'
 import {
   DashboardIcon, LeadsIcon, FranchiseeIcon, FranchisorIcon,
   MatchIcon, AgreementIcon, MarketplaceIcon, AgentIcon,
-  QuestionnaireIcon, SignOutIcon, PlusIcon, SearchIcon,
+  QuestionnaireIcon, SignOutIcon, SearchIcon, ChartIcon, WalletIcon,
+  MessageIcon, ArchiveIcon, SettingsIcon, CalendarIcon, BoltIcon,
 } from '@/components/icons'
 
 // ── Nav type system ──────────────────────────────────────────────────────────
@@ -29,72 +32,57 @@ function isDivider(item: NavItem): item is NavDivider {
 }
 
 // ── Nav definitions ──────────────────────────────────────────────────────────
+// Grouped like the confirmed CRM design — Network / Workspace / Business.
 const adminNav: NavItem[] = [
-  { sectionLabel: 'Pipeline' },
-  { label: 'Dashboard',   href: '/admin',       icon: <DashboardIcon className="w-4 h-4" /> },
-  { label: 'Leads',       href: '/admin/leads', icon: <LeadsIcon className="w-4 h-4" /> },
-  {
-    label: 'Franchisees',
-    icon: <FranchiseeIcon className="w-4 h-4" />,
-    children: [
-      { label: 'Franchisees', href: '/admin/franchisees',         icon: <FranchiseeIcon className="w-3.5 h-3.5" /> },
-      { label: 'Invites',     href: '/admin/franchisees/invites', icon: <PlusIcon className="w-3.5 h-3.5" /> },
-    ],
-  },
-  { sectionLabel: 'Brands' },
-  {
-    label: 'Franchisors',
-    icon: <FranchisorIcon className="w-4 h-4" />,
-    children: [
-      { label: 'Franchisors',    href: '/admin/franchisors',            icon: <FranchisorIcon className="w-3.5 h-3.5" /> },
-      { label: 'Questionnaires', href: '/admin/questionnaires',         icon: <QuestionnaireIcon className="w-3.5 h-3.5" /> },
-      { label: 'Questions',      href: '/admin/questionnaire-template', icon: <QuestionnaireIcon className="w-3.5 h-3.5" /> },
-      { label: 'Invites',        href: '/admin/franchisors/invites',    icon: <PlusIcon className="w-3.5 h-3.5" /> },
-    ],
-  },
-  { label: 'Matches',    href: '/admin/matches',    icon: <MatchIcon className="w-4 h-4" /> },
-  { label: 'Agreements', href: '/admin/agreements', icon: <AgreementIcon className="w-4 h-4" /> },
-  { sectionLabel: 'More' },
-  {
-    label: 'Agents',
-    icon: <AgentIcon className="w-4 h-4" />,
-    children: [
-      { label: 'Agents',  href: '/admin/introducers',         icon: <AgentIcon className="w-3.5 h-3.5" /> },
-      { label: 'Leads',   href: '/admin/introducer-leads',    icon: <LeadsIcon className="w-3.5 h-3.5" /> },
-      { label: 'Invites', href: '/admin/introducers/invites', icon: <PlusIcon className="w-3.5 h-3.5" /> },
-    ],
-  },
-  {
-    label: 'Marketplace',
-    icon: <MarketplaceIcon className="w-4 h-4" />,
-    children: [
-      { label: 'Partners', href: '/admin/partners',      icon: <MarketplaceIcon className="w-3.5 h-3.5" /> },
-      { label: 'Intros',   href: '/admin/intro-requests', icon: <MatchIcon className="w-3.5 h-3.5" /> },
-    ],
-  },
+  { label: 'Home', href: '/admin', icon: <DashboardIcon className="w-4 h-4" /> },
+  { sectionLabel: 'People & deals' },
+  { label: 'Leads',       href: '/admin/leads',        icon: <LeadsIcon className="w-4 h-4" /> },
+  { label: 'Franchisees', href: '/admin/franchisees',  icon: <FranchiseeIcon className="w-4 h-4" /> },
+  { label: 'Brands',      href: '/admin/franchisors',  icon: <FranchisorIcon className="w-4 h-4" /> },
+  { label: 'Agents',      href: '/admin/introducers',  icon: <AgentIcon className="w-4 h-4" /> },
+  { label: 'Matches',     href: '/admin/matches',      icon: <MatchIcon className="w-4 h-4" /> },
+  { sectionLabel: 'Operations' },
+  { label: 'Messages',    href: '/admin/messages',   icon: <MessageIcon className="w-4 h-4" /> },
+  { label: 'Agreements',  href: '/admin/agreements', icon: <AgreementIcon className="w-4 h-4" /> },
+  { label: 'Marketplace', href: '/admin/partners',   icon: <MarketplaceIcon className="w-4 h-4" /> },
+  { sectionLabel: 'Growth' },
+  { label: 'Insights', icon: <ChartIcon className="w-4 h-4" />, children: [
+    { label: 'Overview', href: '/admin/analytics', icon: <ChartIcon className="w-4 h-4" /> },
+    { label: 'Finance',  href: '/admin/finance',   icon: <WalletIcon className="w-4 h-4" /> },
+    { label: 'Reports',  href: '/admin/reports',   icon: <QuestionnaireIcon className="w-4 h-4" /> },
+  ] },
+  { label: 'System', icon: <SettingsIcon className="w-4 h-4" />, children: [
+    { label: 'Automations', href: '/admin/automations', icon: <BoltIcon className="w-4 h-4" /> },
+    { label: 'Archived',    href: '/admin/archived',    icon: <ArchiveIcon className="w-4 h-4" /> },
+    { label: 'Settings',    href: '/admin/settings',    icon: <SettingsIcon className="w-4 h-4" /> },
+  ] },
 ]
 
 const franchiseeNav: NavItem[] = [
   { label: 'Dashboard',   href: '/franchisee',             icon: <DashboardIcon className="w-4 h-4" /> },
   { label: 'My Journey',  href: '/franchisee/matches',     icon: <MatchIcon className="w-4 h-4" /> },
+  { label: 'Meetings',    href: '/franchisee/meetings',    icon: <CalendarIcon className="w-4 h-4" /> },
+  { label: 'Financing',   href: '/franchisee/financing',   icon: <WalletIcon className="w-4 h-4" /> },
   { label: 'Marketplace', href: '/franchisee/marketplace', icon: <MarketplaceIcon className="w-4 h-4" /> },
+  { label: 'Messages',    href: '/franchisee/messages',    icon: <MessageIcon className="w-4 h-4" /> },
   { label: 'My Profile',  href: '/franchisee/profile',     icon: <FranchiseeIcon className="w-4 h-4" /> },
 ]
 
 const franchisorNav: NavItem[] = [
-  { label: 'Dashboard',  href: '/franchisor',             icon: <DashboardIcon className="w-4 h-4" /> },
-  {
-    label: 'Brand Profile',
-    icon: <FranchisorIcon className="w-4 h-4" />,
-    children: [
-      { label: 'Brand Profile',  href: '/franchisor/brand-profile', icon: <FranchisorIcon className="w-3.5 h-3.5" /> },
-      { label: 'Questionnaire',  href: '/franchisor/questionnaire', icon: <QuestionnaireIcon className="w-3.5 h-3.5" /> },
-    ],
-  },
+  { label: 'Home',        href: '/franchisor',             icon: <DashboardIcon className="w-4 h-4" /> },
+  { sectionLabel: 'My brand' },
+  { label: 'Brand',       href: '/franchisor/brand',       icon: <FranchisorIcon className="w-4 h-4" /> },
+  { sectionLabel: 'Recruitment' },
   { label: 'Candidates',  href: '/franchisor/matches',     icon: <LeadsIcon className="w-4 h-4" /> },
-  { label: 'Marketplace', href: '/franchisor/marketplace', icon: <MarketplaceIcon className="w-4 h-4" /> },
+  { label: 'Pipeline',    href: '/franchisor/pipeline',    icon: <MatchIcon className="w-4 h-4" /> },
+  { label: 'Meetings',    href: '/franchisor/meetings',    icon: <CalendarIcon className="w-4 h-4" /> },
   { label: 'Agreement',   href: '/franchisor/agreement',   icon: <AgreementIcon className="w-4 h-4" /> },
-  { label: 'My Account',  href: '/franchisor/profile',     icon: <FranchiseeIcon className="w-4 h-4" /> },
+  { sectionLabel: 'Grow' },
+  { label: 'Performance', href: '/franchisor/performance', icon: <ChartIcon className="w-4 h-4" /> },
+  { label: 'Marketplace', href: '/franchisor/marketplace', icon: <MarketplaceIcon className="w-4 h-4" /> },
+  { sectionLabel: 'Workspace' },
+  { label: 'Messages',    href: '/franchisor/messages',    icon: <MessageIcon className="w-4 h-4" /> },
+  { label: 'Account',     href: '/franchisor/profile',     icon: <FranchiseeIcon className="w-4 h-4" /> },
 ]
 
 const introducerNav: NavItem[] = [
@@ -102,6 +90,7 @@ const introducerNav: NavItem[] = [
   { label: 'My Leads',   href: '/introducer/leads',   icon: <LeadsIcon className="w-4 h-4" /> },
   { label: 'Commission', href: '/introducer/commission', icon: <MatchIcon className="w-4 h-4" /> },
   { label: 'Tools',      href: '/introducer/tools',   icon: <MarketplaceIcon className="w-4 h-4" /> },
+  { label: 'Messages',   href: '/introducer/messages', icon: <MessageIcon className="w-4 h-4" /> },
   { label: 'My Account', href: '/introducer/profile', icon: <FranchiseeIcon className="w-4 h-4" /> },
 ]
 
@@ -158,8 +147,8 @@ function NavGroupItem({
         className={cn(
           'w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium transition-colors',
           anyChildActive
-            ? 'text-white bg-white/10'
-            : 'text-white/60 hover:text-white hover:bg-white/10'
+            ? 'text-white bg-surface/10'
+            : 'text-white/60 hover:text-white hover:bg-surface/10'
         )}
       >
         <div className="flex items-center gap-2.5">
@@ -186,8 +175,8 @@ function NavGroupItem({
                 className={cn(
                   'flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium transition-all',
                   active
-                    ? 'bg-white text-brand-green shadow-sm'
-                    : 'text-white/60 hover:text-white hover:bg-white/10'
+                    ? 'bg-surface text-ff-green shadow-sm'
+                    : 'text-white/60 hover:text-white hover:bg-surface/10'
                 )}
               >
                 {child.icon && <span className="flex-shrink-0 opacity-60">{child.icon}</span>}
@@ -206,9 +195,13 @@ interface NavSidebarProps {
   profile: Profile
   brands?: { id: string; brand_name: string | null; status: string }[]
   activeBrandId?: string
+  /** Attention counts keyed by nav href — rendered as a gold badge. */
+  badges?: Record<string, number>
+  /** True inside a client portal that an admin is previewing — shows the ViewSwitcher. */
+  adminPreview?: boolean
 }
 
-export function NavSidebar({ profile, brands, activeBrandId }: NavSidebarProps) {
+export function NavSidebar({ profile, brands, activeBrandId, badges, adminPreview }: NavSidebarProps) {
   const pathname = usePathname()
   const router = useRouter()
   const nav = navForRole(profile.role)
@@ -237,7 +230,7 @@ export function NavSidebar({ profile, brands, activeBrandId }: NavSidebarProps) 
         <button
           onClick={() => setMobileOpen(true)}
           aria-label="Open menu"
-          className="text-white p-2 rounded-lg hover:bg-white/10 transition-colors"
+          className="text-white p-2 rounded-lg hover:bg-surface/10 transition-colors"
         >
           <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
             <line x1="3" y1="5"  x2="17" y2="5" />
@@ -271,7 +264,7 @@ export function NavSidebar({ profile, brands, activeBrandId }: NavSidebarProps) 
             <button
               onClick={() => setMobileOpen(false)}
               aria-label="Close menu"
-              className="md:hidden text-white/50 hover:text-white w-8 h-8 flex items-center justify-center rounded-lg hover:bg-white/10 transition-colors text-xl leading-none"
+              className="md:hidden text-white/50 hover:text-white w-8 h-8 flex items-center justify-center rounded-lg hover:bg-surface/10 transition-colors text-xl leading-none"
             >
               ×
             </button>
@@ -282,11 +275,11 @@ export function NavSidebar({ profile, brands, activeBrandId }: NavSidebarProps) 
         <div className="px-3 pt-3 flex-shrink-0">
           <button
             onClick={() => { setMobileOpen(false); window.dispatchEvent(new Event('ff:cmdk')) }}
-            className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm text-white/50 hover:text-white bg-white/[0.06] hover:bg-white/10 border border-white/10 transition-colors"
+            className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm text-white/50 hover:text-white bg-surface/[0.06] hover:bg-surface/10 border border-white/10 transition-colors"
           >
             <SearchIcon className="w-4 h-4 flex-shrink-0" />
             <span className="flex-1 text-left">Search…</span>
-            <kbd className="text-[10px] font-medium text-white/45 bg-white/10 border border-white/10 rounded px-1.5 py-0.5 leading-none">⌘K</kbd>
+            <kbd className="text-[10px] font-medium text-white/45 bg-surface/10 border border-white/10 rounded px-1.5 py-0.5 leading-none">⌘K</kbd>
           </button>
         </div>
 
@@ -305,17 +298,17 @@ export function NavSidebar({ profile, brands, activeBrandId }: NavSidebarProps) 
                 className={cn(
                   'w-full text-left flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs transition-colors',
                   brand.id === activeBrandId
-                    ? 'text-white bg-white/15 font-medium'
-                    : 'text-white/60 hover:text-white hover:bg-white/10'
+                    ? 'text-white bg-surface/15 font-medium'
+                    : 'text-white/60 hover:text-white hover:bg-surface/10'
                 )}
               >
-                <span className={cn('w-1.5 h-1.5 rounded-full flex-shrink-0', brand.id === activeBrandId ? 'bg-emerald-400' : 'bg-transparent')} />
+                <span className={cn('w-1.5 h-1.5 rounded-full flex-shrink-0', brand.id === activeBrandId ? 'bg-ff-green-soft' : 'bg-transparent')} />
                 <span className="truncate">{brand.brand_name ?? 'Unnamed brand'}</span>
               </button>
             ))}
             <button
               onClick={() => { router.push('/franchisor/onboarding?add_brand=1'); setMobileOpen(false) }}
-              className="w-full text-left flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs text-white/40 hover:text-white/70 hover:bg-white/5 transition-colors mt-0.5"
+              className="w-full text-left flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs text-white/40 hover:text-white/70 hover:bg-surface/5 transition-colors mt-0.5"
             >
               <span className="text-base leading-none">+</span> Add another brand
             </button>
@@ -353,8 +346,8 @@ export function NavSidebar({ profile, brands, activeBrandId }: NavSidebarProps) 
                 className={cn(
                   'flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm font-medium transition-all',
                   active
-                    ? 'bg-white text-brand-green shadow-sm'
-                    : 'text-white/70 hover:text-white hover:bg-white/10'
+                    ? 'bg-surface text-ff-green shadow-sm'
+                    : 'text-white/70 hover:text-white hover:bg-surface/10'
                 )}
               >
                 {item.icon && (
@@ -363,30 +356,21 @@ export function NavSidebar({ profile, brands, activeBrandId }: NavSidebarProps) 
                   </span>
                 )}
                 {item.label}
+                {badges?.[item.href] ? (
+                  <span className="ml-auto text-[10px] font-bold bg-ff-gold text-[#2b382b] rounded-full min-w-[18px] h-[18px] grid place-items-center px-1.5 tabular-nums">
+                    {badges[item.href]}
+                  </span>
+                ) : null}
               </Link>
             )
           })}
         </nav>
 
-        {/* ── Admin preview switcher ──────────────────── */}
-        {profile.role === 'admin' && (
-          <div className="px-3 pb-3 border-t border-white/10 pt-3 flex-shrink-0">
-            <p className="px-3 text-white/30 text-[10px] font-bold uppercase tracking-widest mb-1">Preview as</p>
-            {[
-              { href: '/franchisee', label: 'Franchisee view' },
-              { href: '/franchisor', label: 'Franchisor view' },
-              { href: '/introducer', label: 'Agent view' },
-            ].map(({ href, label }) => (
-              <Link
-                key={href}
-                href={href}
-                onClick={() => setMobileOpen(false)}
-                className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs text-white/50 hover:text-white hover:bg-white/10 transition-colors"
-              >
-                <FranchiseeIcon className="w-3 h-3 opacity-60" />
-                {label}
-              </Link>
-            ))}
+        {/* ── View switcher + account switcher (admin) ──── */}
+        {(profile.role === 'admin' || adminPreview) && (
+          <div className="px-3 pb-2 border-t border-white/10 pt-3 flex-shrink-0 space-y-2.5">
+            <ViewSwitcher />
+            {profile.role === 'admin' && <AccountSwitcher currentName={profile.full_name ?? 'Admin'} />}
           </div>
         )}
 
@@ -395,9 +379,9 @@ export function NavSidebar({ profile, brands, activeBrandId }: NavSidebarProps) 
           <Link
             href={profileHref}
             onClick={() => setMobileOpen(false)}
-            className="flex items-center gap-3 px-3 py-2 mb-1 rounded-lg hover:bg-white/10 transition-colors group"
+            className="flex items-center gap-3 px-3 py-2 mb-1 rounded-lg hover:bg-surface/10 transition-colors group"
           >
-            <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center text-white text-xs font-semibold flex-shrink-0 overflow-hidden">
+            <div className="w-8 h-8 rounded-full bg-surface/20 flex items-center justify-center text-white text-xs font-semibold flex-shrink-0 overflow-hidden">
               {avatarUrl
                 ? <img src={avatarUrl} alt="" className="w-full h-full object-cover" />
                 : initials(profile.full_name)
@@ -410,7 +394,7 @@ export function NavSidebar({ profile, brands, activeBrandId }: NavSidebarProps) 
           </Link>
           <button
             onClick={handleSignOut}
-            className="w-full text-left flex items-center gap-2 px-3 py-2 text-xs text-white/50 hover:text-white/90 rounded-lg hover:bg-white/10 transition-colors"
+            className="w-full text-left flex items-center gap-2 px-3 py-2 text-xs text-white/50 hover:text-white/90 rounded-lg hover:bg-surface/10 transition-colors"
           >
             <SignOutIcon className="w-3.5 h-3.5 opacity-60" />
             Sign out

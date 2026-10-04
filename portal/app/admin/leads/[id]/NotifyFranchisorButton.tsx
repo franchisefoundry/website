@@ -36,7 +36,7 @@ export default function NotifyFranchisorButton({
 
   if (status === 'sent') {
     return (
-      <span className="inline-flex items-center gap-1.5 text-xs text-emerald-600 font-medium">
+      <span className="inline-flex items-center gap-1.5 text-xs text-ff-green font-medium">
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="20 6 9 17 4 12"/></svg>
         Notified
       </span>
@@ -58,7 +58,7 @@ export default function NotifyFranchisorButton({
     <button
       onClick={handleNotify}
       disabled={status === 'loading'}
-      className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg bg-brand-green/10 text-brand-green hover:bg-brand-green/20 transition-colors disabled:opacity-50"
+      className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg bg-ff-green/10 text-ff-green hover:bg-ff-green/20 transition-colors disabled:opacity-50"
       title={`Email ${brandName} about this match`}
     >
       {status === 'loading' ? (
