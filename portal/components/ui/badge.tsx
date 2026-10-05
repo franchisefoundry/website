@@ -33,6 +33,8 @@ export function statusBadge(status: string) {
     inactive:       { label: 'Inactive', variant: 'default' },
     draft:          { label: 'Draft', variant: 'default' },
     pending_review: { label: 'Pending review', variant: 'warning' },
+    needs_info:     { label: 'More info needed', variant: 'info' },
+    rejected:       { label: 'Rejected', variant: 'danger' },
     suggested:      { label: 'Suggested', variant: 'default' },
     shown:          { label: 'Shown', variant: 'info' },
     interested:     { label: 'Interested', variant: 'success' },

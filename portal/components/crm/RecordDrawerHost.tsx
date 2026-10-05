@@ -1,7 +1,7 @@
 'use client'
 
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useEffect, useState } from 'react'
+import { usePathname, useRouter } from 'next/navigation'
 import { Drawer } from '@/components/ui/drawer'
 import { ExpandIcon, CloseIcon } from '@/components/icons'
 
@@ -10,6 +10,11 @@ import { ExpandIcon, CloseIcon } from '@/components/icons'
  * exit transition, then navigates back (dismissing the intercepted route).
  * Expand is a hard navigation to the record's own full page (escapes the
  * interception). Shared by every record type's @modal route.
+ *
+ * Parallel-route slots keep their last active page on soft navigation, so a
+ * link inside the drawer to a nested page (e.g. the brand's questionnaire)
+ * would otherwise leave the drawer covering the page underneath. The drawer
+ * therefore only renders while the URL is still the record it was opened on.
  */
 export function RecordDrawerHost({
   children,
@@ -21,12 +26,16 @@ export function RecordDrawerHost({
   ariaLabel?: string
 }) {
   const router = useRouter()
+  const pathname = usePathname()
+  const [home] = useState(pathname)
   const [open, setOpen] = useState(true)
 
   const close = () => {
     setOpen(false)
     setTimeout(() => router.back(), 260)
   }
+
+  if (pathname !== home) return null
 
   return (
     <Drawer open={open} onClose={close} size="lg" ariaLabel={ariaLabel}>
@@ -43,4 +52,14 @@ export function RecordDrawerHost({
       <div className="flex-1 min-h-0 overflow-y-auto px-6 pb-6 pt-1">{children}</div>
     </Drawer>
   )
+}
+
+/**
+ * `(.)[id]` also intercepts static sibling routes (`/new`, `/invites`) on soft
+ * navigation. When that happens, reload so the real page renders instead of an
+ * empty drawer.
+ */
+export function LoadFullPage() {
+  useEffect(() => { window.location.reload() }, [])
+  return null
 }

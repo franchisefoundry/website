@@ -10,7 +10,7 @@ export const FORMAT_TYPES = [
   { value: 'flexible',  label: 'No preference' },
 ]
 export type FranchiseeStatus = 'pending_invite' | 'active' | 'signed' | 'inactive'
-export type FranchisorStatus = 'draft' | 'pending_review' | 'active' | 'inactive'
+export type FranchisorStatus = 'draft' | 'pending_review' | 'active' | 'inactive' | 'needs_info' | 'rejected'
 export type FranchiseePipelineStage =
   | 'new_enquiry'
   | 'profile_complete'
