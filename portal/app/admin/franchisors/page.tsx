@@ -16,8 +16,12 @@ const PROFILE_FIELDS = ['brand_name', 'category', 'teaser', 'investment_min', 'f
 const BRAND_COLUMNS = [
   { key: 'draft', label: 'Draft', dot: 'var(--ff-ink-3)' },
   { key: 'pending_review', label: 'Pending review', dot: 'var(--ff-gold)' },
+  { key: 'needs_info', label: 'More info needed', dot: '#0284c7' },
   { key: 'active', label: 'Active', dot: 'var(--ff-green)' },
+  { key: 'inactive', label: 'Inactive', dot: 'var(--ff-ink-3)' },
+  { key: 'rejected', label: 'Rejected', dot: 'var(--ff-crit)' },
 ]
+const BRAND_COLUMN_KEYS = BRAND_COLUMNS.map(c => c.key)
 
 export default async function FranchisorsPage({ searchParams }: { searchParams: Promise<{ view?: string }> }) {
   const current = currentView((await searchParams).view)
@@ -81,7 +85,7 @@ export default async function FranchisorsPage({ searchParams }: { searchParams: 
         <KanbanBoard
           columns={BRAND_COLUMNS}
           items={cardData}
-          groupBy={b => (['draft', 'pending_review', 'active'].includes(b.status ?? '') ? (b.status as string) : 'draft')}
+          groupBy={b => (BRAND_COLUMN_KEYS.includes(b.status ?? '') ? (b.status as string) : 'draft')}
           hrefFor={b => `/admin/franchisors/${b.id}`}
           renderCard={b => (
             <>

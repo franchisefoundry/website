@@ -37,9 +37,10 @@ export async function DELETE() {
     await admin.from('franchisee_profiles').delete().eq('user_id', user.id)
   } else if (role === 'franchisor') {
     await admin.from('franchisor_profiles').delete().eq('user_id', user.id)
-  } else if (role === 'introducer') {
-    await admin.from('introducer_profiles').delete().eq('user_id', user.id)
   }
+  // Introducers have no profile table of their own: their leads and commissions
+  // reference auth.users with ON DELETE CASCADE, so deleting the auth user below
+  // clears them.
 
   // Delete base profile and notifications
   await admin.from('notifications').delete().eq('user_id', user.id)
