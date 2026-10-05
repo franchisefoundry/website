@@ -33,6 +33,7 @@ export const NOTIFICATION_EVENTS: NotificationEvent[] = [
   // ── Franchisor ─────────────────────────────────────────────────────────────
   { key: 'candidate_matched',   role: 'franchisor', label: 'New candidate matched',     description: 'A new candidate is assigned to your brand.',        defaultEmail: true },
   { key: 'agreement_ready',     role: 'franchisor', label: 'Agreement ready to sign',   description: 'Your Franchise Foundry agreement is ready.',        defaultEmail: true },
+  { key: 'brand_info_requested', role: 'franchisor', label: 'More info requested',    description: 'The FF team needs more detail on your questionnaire before going live.', defaultEmail: true },
   { key: 'agreement_reply',     role: 'franchisor', label: 'Reply on your agreement',   description: 'The FF team replies to a comment on your agreement.', defaultEmail: true },
 
   // ── Franchisee ─────────────────────────────────────────────────────────────
