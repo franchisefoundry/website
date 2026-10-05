@@ -16,6 +16,15 @@ interface Props {
   linkedUser?: LinkedUser | null
 }
 
+const STATUS_OPTIONS: [string, string][] = [
+  ['draft', 'Draft'],
+  ['pending_review', 'Pending review'],
+  ['needs_info', 'More info needed'],
+  ['active', 'Active'],
+  ['inactive', 'Inactive'],
+  ['rejected', 'Rejected'],
+]
+
 export default function FranchisorStatusActions({ franchisor, linkedUser }: Props) {
   const router = useRouter()
   const [loading, setLoading] = useState<string | null>(null)
@@ -169,7 +178,7 @@ export default function FranchisorStatusActions({ franchisor, linkedUser }: Prop
       <Card>
         <CardHeader><CardTitle>Profile status</CardTitle></CardHeader>
         <CardBody className="space-y-2">
-          {['draft', 'pending_review', 'active', 'inactive'].map(s => (
+          {STATUS_OPTIONS.map(([s, label]) => (
             <button
               key={s}
               onClick={() => updateStatus(s)}
@@ -178,7 +187,7 @@ export default function FranchisorStatusActions({ franchisor, linkedUser }: Prop
                 border-line text-ink-2 hover:bg-surface-2 data-[active=true]:bg-ff-green data-[active=true]:text-white data-[active=true]:border-ff-green"
               data-active={status === s}
             >
-              {loading === s ? 'Saving…' : <span className="capitalize">{s.replace('_', ' ')}</span>}
+              {loading === s ? 'Saving…' : label}
             </button>
           ))}
           <p className="text-xs text-ink-3 pt-1">

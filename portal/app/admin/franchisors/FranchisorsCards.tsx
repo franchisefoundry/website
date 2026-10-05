@@ -27,8 +27,10 @@ export interface BrandCard {
 const FILTERS: [string, string][] = [
   ['all', 'All'],
   ['pending_review', 'Pending review'],
+  ['needs_info', 'More info needed'],
   ['active', 'Active'],
   ['draft', 'Draft'],
+  ['rejected', 'Rejected'],
 ]
 
 export default function FranchisorsCards({ brands }: { brands: BrandCard[] }) {
