@@ -59,3 +59,10 @@ export function initials(name: string | null): string {
 export function cn(...classes: (string | undefined | null | false)[]): string {
   return classes.filter(Boolean).join(' ')
 }
+
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+
+/** True when a route `[id]` segment is a real record id (not e.g. `new`). */
+export function isRecordId(id: string): boolean {
+  return UUID_RE.test(id)
+}

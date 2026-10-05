@@ -6,9 +6,9 @@ import { statusBadge } from '@/components/ui/badge'
 import { Section } from '@/components/crm/Section'
 import { RecordTabs } from '@/components/crm/RecordTabs'
 import { ThreadPanel } from '@/components/crm/ThreadPanel'
-import { formatInvestmentRange, formatDate } from '@/lib/utils'
+import { formatInvestmentRange, formatDate, isRecordId } from '@/lib/utils'
 import { MailIcon } from '@/components/icons'
-import { RecordDrawerHost as DrawerHost } from '@/components/crm/RecordDrawerHost'
+import { RecordDrawerHost as DrawerHost, LoadFullPage } from '@/components/crm/RecordDrawerHost'
 
 interface Props { params: Promise<{ id: string }> }
 
@@ -16,6 +16,7 @@ const gmail = (e: string) => `https://mail.google.com/mail/?view=cm&fs=1&to=${en
 
 export default async function BrandModal({ params }: Props) {
   const { id } = await params
+  if (!isRecordId(id)) return <LoadFullPage />
   const admin = createAdminClient()
 
   const [{ data: b }, { data: matches }, { data: messages }] = await Promise.all([

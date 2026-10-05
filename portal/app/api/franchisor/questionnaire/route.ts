@@ -71,6 +71,22 @@ export async function PATCH(request: NextRequest) {
       })
     }
 
+    // Brand was asked for more info and has now updated its answers: put it back
+    // in the review queue and tell the team it's ready to look at again.
+    if (profile.status === 'needs_info') {
+      await admin
+        .from('franchisor_profiles')
+        .update({ status: 'pending_review' })
+        .eq('id', franchisorId)
+
+      await notifyAdmins({
+        type: 'franchisor_quiz_submitted',
+        title: 'Brand sent the info you asked for',
+        body: `${profile.brand_name ?? 'A franchisor'} updated their questionnaire — ready to re-review.`,
+        link: `/admin/franchisors/${franchisorId}/questionnaire`,
+      })
+    }
+
     return NextResponse.json({ success: true })
   } catch (err) {
     console.error('Questionnaire PATCH error:', err)

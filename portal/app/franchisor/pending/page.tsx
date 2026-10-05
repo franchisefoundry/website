@@ -17,6 +17,7 @@ export default async function FranchisorPendingPage() {
   if (profiles?.some(p => p.status === 'active')) redirect('/franchisor')
 
   const pendingCount = profiles?.filter(p => p.quiz_completed_at).length ?? 0
+  const needsInfo = profiles?.some(p => p.status === 'needs_info') ?? false
 
   const { data: profile } = await supabase
     .from('profiles')
@@ -45,6 +46,19 @@ export default async function FranchisorPendingPage() {
             profile and candidate matching — we&apos;ll have everything ready for you shortly.
           </p>
         </div>
+
+        {needsInfo && (
+          <div className="bg-sky-50 border border-sky-200 rounded-2xl p-5 mb-6 text-sm text-sky-800">
+            <p className="font-semibold mb-1">We need a bit more info</p>
+            <p className="leading-relaxed">
+              Before we can go live we need a few more details on your questionnaire. Our team
+              will be in touch, or you can update your answers now and we&apos;ll pick it straight back up.
+            </p>
+            <Link href="/franchisor/questionnaire" className="inline-block mt-3 font-medium underline">
+              Update your answers →
+            </Link>
+          </div>
+        )}
 
         <div className="bg-surface rounded-2xl border border-line shadow-sm p-6 space-y-4 mb-6">
           {[
