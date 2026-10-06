@@ -1,7 +1,7 @@
 ---
 title: 'Choose Your Format First: How QSR, Coffee, Pubs and Casual Dining Compare in 2026'
 status: Published
-featured: false
+featured: true
 date: 2026-10-06T15:55:00
 category: Franchise Advice
 author: Franchise Foundry
