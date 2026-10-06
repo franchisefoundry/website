@@ -1,8 +1,8 @@
 ---
 title: 'Choose Your Format First: How QSR, Coffee, Pubs and Casual Dining Compare in 2026'
-status: Draft
+status: Published
 featured: false
-date: 2026-09-15T09:30
+date: 2026-10-06T15:55:00
 category: Franchise Advice
 author: Franchise Foundry
 excerpt: Most franchisees pick a brand first and assume the format. That's backwards. Your choice of QSR, coffee, pub or casual dining determines your entire cost structure—and your chances of profit. Here's how to decide.
