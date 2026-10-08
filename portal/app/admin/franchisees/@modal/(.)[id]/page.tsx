@@ -11,6 +11,8 @@ import { scoreColour } from '@/lib/matching'
 import { FRANCHISEE_PIPELINE_STAGES } from '@/lib/supabase/types'
 import { franchiseeStageIndex, franchiseeStage } from '@/lib/crm/pipeline'
 import { MailIcon } from '@/components/icons'
+import { ProfileCompleteness } from '@/components/admin/ProfileCompleteness'
+import { franchiseeCompleteness } from '@/lib/profile-completeness'
 import { RecordDrawerHost as DrawerHost, LoadFullPage } from '@/components/crm/RecordDrawerHost'
 
 interface Props { params: Promise<{ id: string }> }
@@ -23,7 +25,7 @@ export default async function FranchiseeModal({ params }: Props) {
   const admin = createAdminClient()
 
   const [{ data: fe }, { data: matches }, { data: messages }] = await Promise.all([
-    admin.from('franchisee_profiles').select('*, profiles!franchisee_profiles_user_id_fkey(full_name, email)').eq('id', id).single(),
+    admin.from('franchisee_profiles').select('*, profiles!franchisee_profiles_user_id_fkey(full_name, email, phone)').eq('id', id).single(),
     admin.from('matches').select('id, score, match_reasons, franchisor_profiles(brand_name, category)').eq('franchisee_id', id).order('score', { ascending: false }).limit(5),
     admin.from('messages').select('id, body, from_admin, created_at').eq('thread_type', 'franchisee').eq('thread_id', id).order('created_at'),
   ])
@@ -40,6 +42,7 @@ export default async function FranchiseeModal({ params }: Props) {
 
   const overview = (
     <div className="space-y-4">
+      <ProfileCompleteness data={franchiseeCompleteness(fe, profile)} />
       <div>
         <p className="text-[11px] font-bold uppercase tracking-[0.09em] text-ink-3 mb-2.5">Journey</p>
         <StageTracker stages={FRANCHISEE_PIPELINE_STAGES} currentIndex={idx} />

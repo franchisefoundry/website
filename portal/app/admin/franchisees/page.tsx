@@ -5,6 +5,7 @@ import FranchiseeKanban from './FranchiseeKanban'
 import FranchiseesListView from './FranchiseesListView'
 import FranchiseesCards from './FranchiseesCards'
 import ViewToggle from './ViewToggle'
+import { franchiseeCompleteness } from '@/lib/profile-completeness'
 
 interface SearchParams { view?: string }
 
@@ -60,6 +61,7 @@ export default async function FranchiseesPage({
     pipeline_stage: f.pipeline_stage ?? null,
     created_at: f.created_at,
     last_seen: lastLoginMap[f.user_id] ?? null,
+    completeness: franchiseeCompleteness(f, f.profiles),
   }))
 
   return (

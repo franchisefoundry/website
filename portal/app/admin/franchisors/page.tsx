@@ -10,8 +10,7 @@ import { KanbanBoard } from '@/components/admin/KanbanBoard'
 import { ListTable, type ListColumn } from '@/components/admin/ListTable'
 import { BrandLogo } from '@/components/ui/BrandLogo'
 import { statusBadge } from '@/components/ui/badge'
-
-const PROFILE_FIELDS = ['brand_name', 'category', 'teaser', 'investment_min', 'franchise_fee', 'logo_url', 'highlights']
+import { brandCompleteness } from '@/lib/profile-completeness'
 
 const BRAND_COLUMNS = [
   { key: 'draft', label: 'Draft', dot: 'var(--ff-ink-3)' },
@@ -37,13 +36,14 @@ export default async function FranchisorsPage({ searchParams }: { searchParams: 
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const cardData = (franchisors ?? []).map((b: any) => {
-    const filled = PROFILE_FIELDS.filter(k => b[k] != null && b[k] !== '').length
+    const completeness = brandCompleteness(b, { hasLogin: !!b.user_id, questionnaireDone: !!b.quiz_completed_at })
     return {
       id: b.id, brand_name: b.brand_name, category: b.category, email: b.profiles?.email ?? null,
       status: b.status, logo_url: b.logo_url ?? null,
       fee: b.franchise_fee ? `£${Math.round(b.franchise_fee / 1000)}k` : (b.investment_display || (b.investment_min ? `£${Math.round(b.investment_min / 1000)}k+` : '—')),
       cands: candCount[b.id] ?? 0,
-      prog: Math.round((filled / PROFILE_FIELDS.length) * 100),
+      prog: completeness.pct,
+      missing: completeness.missing,
     }
   })
   type BrandRow = typeof cardData[number]
@@ -58,7 +58,7 @@ export default async function FranchisorsPage({ searchParams }: { searchParams: 
     { header: 'Category', cell: b => <span className="text-ink-2">{b.category || '—'}</span>, className: 'hidden md:table-cell' },
     { header: 'Status', cell: b => statusBadge(b.status ?? 'unknown') },
     { header: 'Candidates', cell: b => <span className="tabular-nums text-ink-2">{b.cands}</span>, className: 'hidden sm:table-cell' },
-    { header: 'Profile', cell: b => <span className="tabular-nums text-ink-2">{b.prog}%</span>, className: 'hidden sm:table-cell' },
+    { header: 'Profile', cell: b => <span className="tabular-nums text-ink-2" title={b.missing.length ? `Missing: ${b.missing.join(', ')}` : 'Complete'}>{b.prog}%</span>, className: 'hidden sm:table-cell' },
   ]
 
   return (

@@ -3,6 +3,7 @@ import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { issueInvite } from '@/lib/supabase/issue-invite'
 import { sendInviteEmail } from '@/lib/supabase/send-invite-email'
+import { removeBlankDraftBrands } from '@/lib/franchisor-brands'
 
 export async function POST(
   request: NextRequest,
@@ -37,8 +38,9 @@ export async function POST(
     }
 
     if (!userId) {
-      const { data: { users } } = await admin.auth.admin.listUsers()
-      userId = users.find(u => u.email === email)?.id
+      // listUsers() only returns the first page, so look the existing login up by profile email
+      const { data: existing } = await admin.from('profiles').select('id').ilike('email', email.trim()).maybeSingle()
+      userId = existing?.id
     }
 
     if (!userId) return NextResponse.json({ error: 'Could not find or create user.' }, { status: 500 })
@@ -51,6 +53,10 @@ export async function POST(
     await admin.from('franchisor_profiles')
       .update({ user_id: userId, contact_email: email, contact_name: name })
       .eq('id', id)
+
+    // Drop the blank draft the DB trigger created for this new login, otherwise
+    // the brand shows up twice and the franchisor lands on the empty one.
+    await removeBlankDraftBrands(admin, userId, id)
 
     // Issue a 72h invite token and email it via Resend (unified account-creation path)
     const { token, error: inviteError } = await issueInvite(admin, {
@@ -71,3 +77,4 @@ export async function POST(
     )
   }
 }
+

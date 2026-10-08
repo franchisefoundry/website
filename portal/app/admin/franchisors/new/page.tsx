@@ -6,7 +6,7 @@ export default function NewBrandPage() {
     <div>
       <PageHeader
         title="Add brand"
-        description="Create a brand profile and send an invite to the franchisor in one step."
+        description="Only the name is required. Fill in what you know, invite the franchisor now or later."
       />
       <AddBrandForm />
     </div>

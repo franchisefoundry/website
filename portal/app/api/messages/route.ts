@@ -1,14 +1,16 @@
 import { NextResponse, type NextRequest } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { getClientThread } from '@/lib/client-thread'
-import { notifyAdmins } from '@/lib/notifications'
+import { notify } from '@/lib/notifications'
+import { threadAdminIds } from '@/lib/direct-messages'
 
 /**
  * POST /api/messages  { body }
  * A client (franchisee / brand / agent) sends a message on their own thread.
  * Server-mediated (messages are admin-RLS); the thread is resolved from the
  * signed-in user, so a client can only ever post to their own conversation.
- * Admins are notified.
+ * Only the admins already handling this thread are notified (everyone, if
+ * nobody has picked it up yet).
  */
 export async function POST(req: NextRequest) {
   const thread = await getClientThread()
@@ -29,13 +31,15 @@ export async function POST(req: NextRequest) {
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
 
   try {
-    await notifyAdmins({
-      type: 'new_message',
+    const adminIds = await threadAdminIds(thread.threadType, thread.threadId, admin)
+    await Promise.all(adminIds.map(userId => notify({
+      userId,
+      event: 'new_message',
       title: `New message from ${thread.name}`,
       body: text.slice(0, 120),
       link: `/admin/messages?thread=${thread.threadType}:${thread.threadId}`,
-    })
-  } catch (e) { console.error('[messages] notifyAdmins failed', e) }
+    })))
+  } catch (e) { console.error('[messages] notify admins failed', e) }
 
   return NextResponse.json({ success: true })
 }

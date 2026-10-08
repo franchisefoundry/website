@@ -36,7 +36,7 @@ function Group({ dot, label, children }: { dot: string; label: string; children:
       <h2 className="text-[11px] font-bold uppercase tracking-[0.06em] text-ink-3 mb-3 flex items-center gap-2">
         <span className="w-2 h-2 rounded-full" style={{ background: dot }} />{label}
       </h2>
-      <div className="space-y-2.5">{children}</div>
+      <div className="grid grid-cols-1 2xl:grid-cols-2 gap-2.5">{children}</div>
     </section>
   )
 }
@@ -121,7 +121,7 @@ export function CandidatesView({ candidates }: { candidates: Candidate[] }) {
           {progress.length > 0 && <Group dot="var(--ff-ok)" label={`In progress (${progress.length})`}>{progress.map(c => <Card key={c.id} c={c} />)}</Group>}
         </>
       ) : (
-        <div className="space-y-2.5">{shown.map(c => <Card key={c.id} c={c} />)}</div>
+        <div className="grid grid-cols-1 2xl:grid-cols-2 gap-2.5">{shown.map(c => <Card key={c.id} c={c} />)}</div>
       )}
 
       {/* Review slide-over */}

@@ -33,7 +33,7 @@ export default async function FranchisorPerformancePage() {
   ] as [string, number][]
 
   return (
-    <div className="max-w-4xl">
+    <div className="w-full">
       <PageHeader title="Performance" description="How your brand is doing across the recruitment funnel." />
       <PerformanceView kpis={kpis} funnel={funnel} />
     </div>

@@ -45,16 +45,16 @@ export default async function ArchivedPage() {
   const total = feRows.length + brRows.length + agRows.length
 
   return (
-    <div className="max-w-4xl">
+    <div className="w-full">
       <PageHeader title="Archived" description="Records that have been archived and had portal access removed. Restore to reactivate." />
       {total === 0 ? (
         <div className="text-center py-16 text-ink-3 text-sm">Nothing archived.</div>
       ) : (
-        <>
+        <div className="grid grid-cols-1 xl:grid-cols-3 gap-5 items-start [&>*]:!mb-0">
           <Group title="Franchisees" type="franchisees" rows={feRows} />
           <Group title="Brands" type="franchisors" rows={brRows} />
           <Group title="Agents" type="introducers" rows={agRows} />
-        </>
+        </div>
       )}
     </div>
   )

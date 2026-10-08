@@ -8,6 +8,8 @@ import { RecordTabs } from '@/components/crm/RecordTabs'
 import { ThreadPanel } from '@/components/crm/ThreadPanel'
 import { formatInvestmentRange, formatDate, isRecordId } from '@/lib/utils'
 import { MailIcon } from '@/components/icons'
+import { ProfileCompleteness } from '@/components/admin/ProfileCompleteness'
+import { brandCompleteness } from '@/lib/profile-completeness'
 import { RecordDrawerHost as DrawerHost, LoadFullPage } from '@/components/crm/RecordDrawerHost'
 
 interface Props { params: Promise<{ id: string }> }
@@ -19,10 +21,11 @@ export default async function BrandModal({ params }: Props) {
   if (!isRecordId(id)) return <LoadFullPage />
   const admin = createAdminClient()
 
-  const [{ data: b }, { data: matches }, { data: messages }] = await Promise.all([
+  const [{ data: b }, { data: matches }, { data: messages }, { data: quiz }] = await Promise.all([
     admin.from('franchisor_profiles').select('*, profiles(full_name, email)').eq('id', id).single(),
     admin.from('matches').select('id, score, franchisee_profiles(id, profiles!franchisee_profiles_user_id_fkey(full_name, role))').eq('franchisor_id', id).order('score', { ascending: false }).limit(6),
     admin.from('messages').select('id, body, from_admin, created_at').eq('thread_type', 'franchisor').eq('thread_id', id).order('created_at'),
+    admin.from('franchisor_questionnaires').select('completed_at').eq('franchisor_id', id).maybeSingle(),
   ])
 
   if (!b) notFound()
@@ -39,6 +42,10 @@ export default async function BrandModal({ params }: Props) {
 
   const overview = (
     <div className="space-y-4">
+      <ProfileCompleteness
+        data={brandCompleteness(b, { hasLogin: !!b.user_id, questionnaireDone: !!(quiz?.completed_at || b.quiz_completed_at) })}
+        editHref={`/admin/franchisors/${id}/edit`}
+      />
       <Section title="Snapshot">
         <dl className="grid grid-cols-2 gap-x-6 gap-y-3 text-sm">
           {[

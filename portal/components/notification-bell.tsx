@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useRef, useCallback } from 'react'
+import { createPortal } from 'react-dom'
 import { useRouter } from 'next/navigation'
 import { cn } from '@/lib/utils'
 import {
@@ -124,10 +125,13 @@ export function NotificationBell({ compact = false }: NotificationBellProps) {
     return `${Math.floor(hrs / 24)}d ago`
   }
 
-  const dropdown = open && (
+  // Portalled to <body>: the sidebar is transformed (translate-x), which makes it
+  // the containing block for `position: fixed` and traps the dropdown in its
+  // stacking context, so page images/cards painted over it.
+  const dropdown = open && typeof document !== 'undefined' && createPortal(
     <div
       ref={dropRef}
-      style={{ position: 'fixed', top: dropPos.top, left: dropPos.left, zIndex: 200 }}
+      style={{ position: 'fixed', top: dropPos.top, left: dropPos.left, zIndex: 1000 }}
       className="w-80 max-w-[calc(100vw-16px)] bg-surface rounded-xl shadow-2xl border border-line overflow-hidden"
     >
       <div className="flex items-center justify-between px-4 py-3 border-b border-line-2">
@@ -189,7 +193,8 @@ export function NotificationBell({ compact = false }: NotificationBellProps) {
           })}
         </div>
       )}
-    </div>
+    </div>,
+    document.body,
   )
 
   if (compact) {

@@ -86,7 +86,7 @@ export default async function AnalyticsPage() {
   const agentMax = Math.max(1, ...topAgents.map(a => a.n))
 
   return (
-    <div className="max-w-6xl">
+    <div className="w-full">
       <PageHeader title="Analytics" description="Live performance across the network — computed from your real data." />
 
       {/* KPI bar */}

@@ -129,7 +129,11 @@ export async function GET() {
       .from('franchisor_profiles')
       .select('id, brand_name')
       .eq('user_id', user.id)
-      .single()
+      // Earliest brand, like resolveBrand(). `.single()` errored for multi-brand
+      // accounts, which made the quiz think there was no brand and create another.
+      .order('created_at', { ascending: true })
+      .limit(1)
+      .maybeSingle()
 
     if (!fp) return NextResponse.json({ franchisorId: null, brandName: null, questionnaire: null })
 

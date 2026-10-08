@@ -16,7 +16,7 @@ export default async function AgentDetailPage({ params }: Props) {
   if (!agent) notFound()
 
   return (
-    <div className="max-w-4xl">
+    <div className="w-full">
       <Link href="/admin/introducers" className="inline-flex items-center gap-1.5 text-sm text-ink-2 hover:text-ink mb-4">‹ Back to agents</Link>
 
       <div className="bg-surface border border-line rounded-2xl shadow-[0_1px_2px_rgba(27,33,26,0.04)] p-5 mb-5">
@@ -53,7 +53,7 @@ export default async function AgentDetailPage({ params }: Props) {
         {leads.length === 0 ? (
           <p className="text-sm text-ink-3">No referrals yet.</p>
         ) : (
-          <div className="space-y-2">
+          <div className="grid grid-cols-1 xl:grid-cols-2 gap-2">
             {leads.map((l, i) => (
               <div key={i} className="flex items-center justify-between rounded-xl border border-line-2 px-3.5 py-2.5">
                 <span className="text-sm font-medium text-ink">{[l.first_name, l.last_name].filter(Boolean).join(' ') || 'Lead'}</span>

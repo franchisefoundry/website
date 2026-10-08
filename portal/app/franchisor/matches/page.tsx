@@ -55,7 +55,7 @@ export default async function FranchisorMatchesPage() {
   })
 
   return (
-    <div className="max-w-4xl">
+    <div className="w-full">
       <PageHeader title="Candidates" description="Qualified candidates matched to your brand — review and decide." />
       {brandProfile?.status !== 'active' && (
         <div className="bg-ff-gold-soft border border-[#e6cfa6] rounded-2xl px-5 py-4 text-sm text-ff-gold-ink mb-5">

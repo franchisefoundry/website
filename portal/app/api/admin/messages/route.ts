@@ -32,7 +32,7 @@ export async function POST(req: NextRequest) {
   }
   if (recipientId) {
     try {
-      await notify({ userId: recipientId, event: 'new_message', title: 'New message from Franchise Foundry', body: text.length > 140 ? `${text.slice(0, 140)}…` : text, link: `/${thread_type}` })
+      await notify({ userId: recipientId, event: 'new_message', title: 'New message from Franchise Foundry', body: text.length > 140 ? `${text.slice(0, 140)}…` : text, link: `/${thread_type}/messages?c=team` })
     } catch (e) { console.error('[messages] notify failed', e) }
   }
 

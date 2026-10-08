@@ -8,6 +8,7 @@ import { cn, formatDate, formatInvestmentRange, timeAgo } from '@/lib/utils'
 import { FRANCHISEE_PIPELINE_STAGES } from '@/lib/supabase/types'
 import { franchiseeStageIndex, franchiseeStageProgress } from '@/lib/crm/pipeline'
 import { SearchIcon } from '@/components/icons'
+import type { Completeness } from '@/lib/profile-completeness'
 
 /**
  * v5 CRM card grid for the Franchisees list — the real screen, real data.
@@ -25,6 +26,7 @@ export interface FranchiseeCard {
   pipeline_stage: string | null
   created_at: string
   last_seen: string | null
+  completeness: Completeness
 }
 
 export default function FranchiseesCards({ franchisees }: { franchisees: FranchiseeCard[] }) {
@@ -110,6 +112,12 @@ export default function FranchiseesCards({ franchisees }: { franchisees: Franchi
 
                 <p className="text-xs text-ink-2 mt-2.5">
                   {formatInvestmentRange(f.investment_min, f.investment_max)}
+                </p>
+                <p
+                  className={cn('text-xs mt-1', f.completeness.missing.length ? 'text-amber-700' : 'text-ink-3')}
+                  title={f.completeness.missing.length ? `Missing: ${f.completeness.missing.join(', ')}` : undefined}
+                >
+                  Profile {f.completeness.pct}%{f.completeness.missing.length ? ` · ${f.completeness.missing.length} missing` : ' · complete'}
                 </p>
 
                 <div className="flex items-center justify-between mt-3 pt-3 border-t border-line-2">

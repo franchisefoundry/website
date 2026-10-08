@@ -40,9 +40,10 @@ export function RecordDrawerHost({
   return (
     <Drawer open={open} onClose={close} size="lg" ariaLabel={ariaLabel}>
       <div className="flex items-center justify-end gap-1 px-4 pt-3 flex-shrink-0">
-        <a href={expandHref} title="Open full page" aria-label="Open full page"
-          className="p-1.5 rounded-lg text-ink-3 hover:text-ink hover:bg-surface-2 transition-colors">
-          <ExpandIcon className="w-4 h-4" />
+        <a href={expandHref}
+          className="inline-flex items-center gap-1.5 mr-1 px-3 py-1.5 rounded-lg text-xs font-semibold text-ff-green bg-ff-green/10 hover:bg-ff-green/15 transition-colors">
+          <ExpandIcon className="w-3.5 h-3.5" />
+          Full profile
         </a>
         <button onClick={close} aria-label="Close"
           className="p-1.5 rounded-lg text-ink-3 hover:text-ink hover:bg-surface-2 transition-colors">
