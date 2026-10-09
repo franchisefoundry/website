@@ -17,6 +17,8 @@ import { ArchiveButton } from '@/components/admin/ArchiveButton'
 import { BrandTerritories } from './BrandTerritories'
 import SendAgreementButton from './SendAgreementButton'
 import { AgreementSection } from '@/components/admin/AgreementSection'
+import { ProfileCompleteness } from '@/components/admin/ProfileCompleteness'
+import { brandCompleteness } from '@/lib/profile-completeness'
 
 interface Props {
   params: Promise<{ id: string }>
@@ -76,7 +78,7 @@ export default async function FranchisorDetailPage({ params }: Props) {
   })
 
   return (
-    <div className="max-w-6xl">
+    <div className="w-full">
       <Link href="/admin/franchisors" className="inline-flex items-center gap-1.5 text-sm text-ink-2 hover:text-ink mb-4">
         ‹ Back to brands
       </Link>
@@ -208,7 +210,11 @@ export default async function FranchisorDetailPage({ params }: Props) {
           </Section>
         </div>
 
-        <div>
+        <div className="space-y-5">
+          <ProfileCompleteness
+            data={brandCompleteness(franchisor, { hasLogin: !!franchisor.user_id, questionnaireDone: !!(questionnaire?.completed_at || franchisor.quiz_completed_at) })}
+            editHref={`/admin/franchisors/${id}/edit`}
+          />
           <FranchisorStatusActions franchisor={franchisor} linkedUser={profile ?? null} />
         </div>
       </div>

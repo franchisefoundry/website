@@ -1,136 +1,145 @@
+import { redirect } from 'next/navigation'
+import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { PageHeader } from '@/components/page-header'
-import { Avatar } from '@/components/ui/Avatar'
-import { formatDate } from '@/lib/utils'
-import { PlusIcon } from '@/components/icons'
-import { sendMessage } from './actions'
+import { Inbox, type InboxItem, type DirectoryEntry } from '@/components/messages/Inbox'
+import { ConversationView, EmptyPane } from '@/components/messages/ConversationView'
+import { Composer } from '@/components/messages/Composer'
+import { allowedContacts, findConversation, listConversations, openConversation } from '@/lib/direct-messages'
 
 export const dynamic = 'force-dynamic'
 
 const KIND: Record<string, string> = { franchisee: 'Franchisee', franchisor: 'Brand', introducer: 'Agent' }
 
-export default async function MessagesPage({ searchParams }: { searchParams: Promise<{ thread?: string; compose?: string }> }) {
+/**
+ * Admin inbox. Two kinds of conversation in one list:
+ *   • client threads (?thread=type:id) — the shared Franchise Foundry inbox
+ *     with a franchisee, brand or agent; every admin can see and reply.
+ *   • direct messages (?dm=conversationId) — private admin ↔ admin chats.
+ * ?to=<adminUserId> opens (or starts) a DM; ?compose=1 opens the directory.
+ */
+export default async function MessagesPage({ searchParams }: { searchParams: Promise<{ thread?: string; dm?: string; to?: string; compose?: string }> }) {
   const sp = await searchParams
-  const selected = sp.thread ?? ''
-  const composing = sp.compose === '1'
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) redirect('/login')
   const admin = createAdminClient()
 
-  const [{ data: messages }, { data: fes }, { data: brs }, { data: ags }] = await Promise.all([
-    admin.from('messages').select('*').order('created_at', { ascending: true }),
-    admin.from('franchisee_profiles').select('id, profiles!franchisee_profiles_user_id_fkey(full_name, role)'),
-    admin.from('franchisor_profiles').select('id, brand_name'),
-    admin.from('profiles').select('id, full_name').eq('role', 'introducer'),
+  if (sp.to) {
+    const existing = await findConversation(user.id, sp.to, admin)
+    if (existing) redirect(`/admin/messages?dm=${existing}`)
+  }
+
+  const [{ data: messages }, { data: fes }, { data: brs }, { data: people }, team] = await Promise.all([
+    admin.from('messages').select('id, thread_type, thread_id, body, from_admin, sender_id, read_at, created_at').order('created_at', { ascending: true }),
+    admin.from('franchisee_profiles').select('id, profiles!franchisee_profiles_user_id_fkey(full_name, email, role)').is('archived_at', null),
+    admin.from('franchisor_profiles').select('id, brand_name, contact_name').is('archived_at', null).not('brand_name', 'is', null),
+    admin.from('profiles').select('id, full_name, email, role').in('role', ['introducer', 'admin']),
+    allowedContacts(user.id, 'admin', admin),
   ])
 
   const M = messages ?? []
-  // Name lookups keyed by "type:id"
+  const personName = new Map((people ?? []).map(p => [p.id, p.full_name || p.email || 'Admin']))
+
+  // ── Client threads: names + directory ────────────────────────────────────
   const names = new Map<string, string>()
-  const feOpts: { v: string; l: string }[] = []
-  const brOpts: { v: string; l: string }[] = []
-  const agOpts: { v: string; l: string }[] = []
+  const directory: DirectoryEntry[] = team.map(t => ({ key: `to:${t.userId}`, href: `/admin/messages?to=${t.userId}`, name: t.name, subtitle: 'Direct message', group: 'Team' }))
   for (const f of fes ?? []) {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const p = (f.profiles as any)
+    const p = f.profiles as any
     if (p?.role !== 'franchisee') continue
-    const key = `franchisee:${f.id}`; names.set(key, p?.full_name || 'Franchisee'); feOpts.push({ v: key, l: p?.full_name || 'Franchisee' })
+    const key = `franchisee:${f.id}`
+    names.set(key, p.full_name || p.email || 'Franchisee')
+    directory.push({ key, href: `/admin/messages?thread=${encodeURIComponent(key)}`, name: names.get(key)!, subtitle: p.email ?? undefined, group: 'Franchisees' })
   }
-  for (const b of brs ?? []) { const key = `franchisor:${b.id}`; names.set(key, b.brand_name || 'Brand'); brOpts.push({ v: key, l: b.brand_name || 'Brand' }) }
-  for (const a of ags ?? []) { const key = `introducer:${a.id}`; names.set(key, a.full_name || 'Agent'); agOpts.push({ v: key, l: a.full_name || 'Agent' }) }
+  for (const b of brs ?? []) {
+    const key = `franchisor:${b.id}`
+    names.set(key, b.brand_name || 'Brand')
+    directory.push({ key, href: `/admin/messages?thread=${encodeURIComponent(key)}`, name: names.get(key)!, subtitle: b.contact_name ?? undefined, group: 'Brands', square: true })
+  }
+  for (const a of (people ?? []).filter(p => p.role === 'introducer')) {
+    const key = `introducer:${a.id}`
+    names.set(key, a.full_name || a.email || 'Agent')
+    directory.push({ key, href: `/admin/messages?thread=${encodeURIComponent(key)}`, name: names.get(key)!, subtitle: a.email ?? undefined, group: 'Agents' })
+  }
 
-  // Build threads from messages
-  const threadsMap = new Map<string, { key: string; last: string; at: string; count: number }>()
+  const threads = new Map<string, InboxItem>()
   for (const m of M) {
     const key = `${m.thread_type}:${m.thread_id}`
-    const t = threadsMap.get(key) ?? { key, last: '', at: '', count: 0 }
-    t.last = m.body; t.at = m.created_at; t.count++
-    threadsMap.set(key, t)
+    const t = threads.get(key) ?? {
+      key, href: `/admin/messages?thread=${encodeURIComponent(key)}`,
+      name: names.get(key) || 'Conversation', subtitle: KIND[m.thread_type], unread: 0,
+      square: m.thread_type === 'franchisor',
+    }
+    t.preview = m.body
+    t.at = m.created_at
+    if (!m.from_admin && !m.read_at) t.unread = (t.unread ?? 0) + 1
+    threads.set(key, t)
   }
-  const threads = [...threadsMap.values()].sort((a, b) => (a.at < b.at ? 1 : -1))
 
-  const activeKey = composing ? '' : (selected || threads[0]?.key || '')
-  const activeType = activeKey.split(':')[0]
-  const activeId = activeKey.split(':')[1]
-  const activeMsgs = M.filter(m => `${m.thread_type}:${m.thread_id}` === activeKey)
+  // ── Direct messages ──────────────────────────────────────────────────────
+  const dms = await listConversations(user.id, team, admin)
+  const items: InboxItem[] = [
+    ...threads.values(),
+    ...dms.map(c => ({
+      key: `dm:${c.id}`, href: `/admin/messages?dm=${c.id}`,
+      name: c.other?.name ?? 'Conversation', subtitle: 'Direct message',
+      preview: c.lastBody, at: c.lastAt, unread: c.unread,
+    })),
+  ].sort((a, b) => ((a.at ?? '') < (b.at ?? '') ? 1 : -1))
 
-  // Mark the client's messages in the open thread as read so the Messages nav
-  // badge clears once the admin has actually seen them (mirrors the client side).
-  if (activeKey) {
-    await admin.from('messages')
-      .update({ read_at: new Date().toISOString() })
-      .eq('thread_type', activeType).eq('thread_id', activeId)
-      .eq('from_admin', false).is('read_at', null)
+  // ── Active pane ──────────────────────────────────────────────────────────
+  let activeKey = ''
+  let pane: React.ReactNode = <EmptyPane text="Pick a conversation, or start one with New message." />
+
+  if (sp.dm) {
+    const msgs = await openConversation(sp.dm, user.id, admin)
+    const conv = dms.find(c => c.id === sp.dm)
+    if (msgs) {
+      activeKey = `dm:${sp.dm}`
+      const other = conv?.other?.name ?? 'Conversation'
+      pane = (
+        <ConversationView title={other} subtitle="Direct message · only the two of you can see this" backHref="/admin/messages"
+          messages={msgs.map(m => ({ id: m.id, body: m.body, mine: m.sender_id === user.id, author: other, at: m.created_at }))}
+          composer={<Composer kind="dm" payload={{ conversation_id: sp.dm }} placeholder={`Message ${other.split(' ')[0]}…`} />} />
+      )
+    }
+  } else if (sp.to) {
+    const contact = team.find(t => t.userId === sp.to)
+    if (contact) {
+      activeKey = `to:${contact.userId}`
+      pane = (
+        <ConversationView title={contact.name} subtitle="Direct message · only the two of you can see this" backHref="/admin/messages" messages={[]}
+          composer={<Composer kind="dm" payload={{ recipient_id: contact.userId }} redirectBase="/admin/messages?dm=" placeholder={`Message ${contact.name.split(' ')[0]}…`} />} />
+      )
+    }
+  } else if (sp.thread) {
+    const [type, id] = sp.thread.split(':')
+    if (KIND[type] && id) {
+      activeKey = sp.thread
+      const clientName = names.get(sp.thread) || 'Conversation'
+      const msgs = M.filter(m => m.thread_type === type && m.thread_id === id)
+      // Mark the client's messages read so the nav badge clears
+      await admin.from('messages').update({ read_at: new Date().toISOString() })
+        .eq('thread_type', type).eq('thread_id', id).eq('from_admin', false).is('read_at', null)
+      pane = (
+        <ConversationView title={clientName} subtitle={`${KIND[type]} · shared team inbox`} square={type === 'franchisor'} backHref="/admin/messages"
+          messages={msgs.map(m => ({
+            id: m.id, body: m.body, at: m.created_at,
+            mine: m.from_admin && m.sender_id === user.id,
+            author: m.from_admin ? `${personName.get(m.sender_id ?? '') ?? 'Team'} (FF)` : clientName,
+          }))}
+          composer={<Composer kind="admin" payload={{ thread_type: type, thread_id: id }} placeholder={`Message ${clientName}…`} />} />
+      )
+    }
   }
 
   return (
     <div>
-      <PageHeader title="Messages" description="Conversations with franchisees, brands and agents." />
-
-      <div className="grid grid-cols-1 lg:grid-cols-[300px_1fr] bg-surface border border-line rounded-2xl overflow-hidden shadow-[0_1px_2px_rgba(27,33,26,0.04)]" style={{ height: 'calc(100vh - 200px)', minHeight: 460 }}>
-        {/* Thread list */}
-        <div className="border-r border-line-2 overflow-y-auto">
-          <div className="sticky top-0 z-10 bg-surface/95 backdrop-blur px-3 py-2.5 border-b border-line-2">
-            <a href="/admin/messages?compose=1"
-              className={`flex items-center justify-center gap-1.5 text-sm font-medium rounded-lg px-3 py-2 transition-colors ${composing ? 'bg-ff-green text-white' : 'bg-ff-green/10 text-ff-green hover:bg-ff-green/15'}`}>
-              <PlusIcon className="w-4 h-4" /> New message
-            </a>
-          </div>
-          {threads.length === 0 ? (
-            <p className="px-4 py-8 text-sm text-ink-3 text-center">No conversations yet — start one with “New message” above.</p>
-          ) : threads.map(t => {
-            const active = t.key === activeKey
-            return (
-              <a key={t.key} href={`/admin/messages?thread=${encodeURIComponent(t.key)}`}
-                className={`flex gap-3 items-center px-4 py-3 border-b border-line-2 transition-colors ${active ? 'bg-ff-green/[0.06]' : 'hover:bg-surface-2'}`}>
-                <Avatar name={names.get(t.key)} size="md" square={t.key.startsWith('franchisor')} />
-                <div className="min-w-0 flex-1">
-                  <p className="text-sm font-semibold text-ink truncate">{names.get(t.key) || 'Conversation'}</p>
-                  <p className="text-xs text-ink-3 truncate">{t.last}</p>
-                </div>
-              </a>
-            )
-          })}
-        </div>
-
-        {/* Thread view */}
-        <div className="flex flex-col min-w-0">
-          <div className="px-5 py-3.5 border-b border-line-2 flex items-center gap-3">
-            {activeKey ? (
-              <>
-                <Avatar name={names.get(activeKey)} size="md" square={activeType === 'franchisor'} />
-                <div><p className="text-sm font-semibold text-ink">{names.get(activeKey) || 'Conversation'}</p>
-                  <p className="text-[11px] text-ink-3">{KIND[activeType] ?? ''} · portal + app</p></div>
-              </>
-            ) : <p className="text-sm text-ink-3">Start a conversation below</p>}
-          </div>
-
-          <div className="flex-1 overflow-y-auto p-5 space-y-2.5">
-            {activeMsgs.length === 0 ? (
-              <p className="text-sm text-ink-3 text-center py-8">No messages yet.</p>
-            ) : activeMsgs.map(m => (
-              <div key={m.id} className={`max-w-[82%] px-3.5 py-2.5 rounded-2xl text-sm ${m.from_admin ? 'ml-auto bg-ff-green text-white rounded-br-md' : 'bg-surface-2 border border-line-2 rounded-bl-md'}`}>
-                {m.body}
-                <div className={`text-[10.5px] mt-1 ${m.from_admin ? 'text-white/60' : 'text-ink-3'}`}>{m.from_admin ? 'You' : names.get(activeKey)} · {formatDate(m.created_at)}</div>
-              </div>
-            ))}
-          </div>
-
-          {/* Composer */}
-          <form action={sendMessage} className="border-t border-line-2 p-3 flex items-end gap-2">
-            {activeKey ? (
-              <input type="hidden" name="target" value={activeKey} />
-            ) : (
-              <select name="target" required defaultValue="" className="text-sm border border-line rounded-lg px-2.5 py-2 bg-surface text-ink max-w-[40%]">
-                <option value="" disabled>To…</option>
-                {feOpts.length > 0 && <optgroup label="Franchisees">{feOpts.map(o => <option key={o.v} value={o.v}>{o.l}</option>)}</optgroup>}
-                {brOpts.length > 0 && <optgroup label="Brands">{brOpts.map(o => <option key={o.v} value={o.v}>{o.l}</option>)}</optgroup>}
-                {agOpts.length > 0 && <optgroup label="Agents">{agOpts.map(o => <option key={o.v} value={o.v}>{o.l}</option>)}</optgroup>}
-              </select>
-            )}
-            <input name="body" required placeholder="Write a message…" className="flex-1 text-sm border border-line rounded-lg px-3 py-2 bg-surface text-ink outline-none focus:ring-2 focus:ring-ff-green" />
-            <button className="px-4 py-2 rounded-lg text-sm font-medium bg-ff-green text-white hover:brightness-110 transition-all">Send</button>
-          </form>
-        </div>
-      </div>
+      <PageHeader title="Messages" description="Client conversations are shared across the team. Direct messages between admins are private." />
+      <Inbox items={items} activeKey={activeKey} directory={directory} startInDirectory={sp.compose === '1'}>
+        {pane}
+      </Inbox>
     </div>
   )
 }

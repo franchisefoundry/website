@@ -16,6 +16,8 @@ import { FRANCHISEE_PIPELINE_STAGES, MATCH_PIPELINE_STAGES } from '@/lib/supabas
 import { franchiseeStageIndex } from '@/lib/crm/pipeline'
 import { ImpersonateButton } from '@/components/admin/ImpersonateButton'
 import { ArchiveButton } from '@/components/admin/ArchiveButton'
+import { ProfileCompleteness } from '@/components/admin/ProfileCompleteness'
+import { franchiseeCompleteness } from '@/lib/profile-completeness'
 
 interface Props { params: Promise<{ id: string }> }
 
@@ -51,7 +53,7 @@ export default async function FranchiseeDetailPage({ params }: Props) {
   const budget = formatInvestmentRange(franchisee.investment_min, franchisee.investment_max)
 
   return (
-    <div className="max-w-6xl">
+    <div className="w-full">
       <Link href="/admin/franchisees" className="inline-flex items-center gap-1.5 text-sm text-ink-2 hover:text-ink mb-4">
         ‹ Back to franchisees
       </Link>
@@ -190,8 +192,9 @@ export default async function FranchiseeDetailPage({ params }: Props) {
           </Section>
         </div>
 
-        {/* Right — assignment actions */}
-        <div>
+        {/* Right — completeness + assignment actions */}
+        <div className="space-y-5">
+          <ProfileCompleteness data={franchiseeCompleteness(franchisee, profile)} />
           <FranchiseeActions
             franchisee={franchisee}
             franchisors={franchisors ?? []}

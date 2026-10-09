@@ -58,7 +58,7 @@ export default async function FranchiseeJourneyPage() {
   const hasBackups = backup1Match || backup2Match || fpAny.backup_franchisor_1_id || fpAny.backup_franchisor_2_id
 
   return (
-    <div className="max-w-4xl">
+    <div className="w-full">
       <PageHeader
         title="Your journey"
         description="Track where you are with your matched brands. Your consultant manages these on your behalf."
@@ -75,7 +75,7 @@ export default async function FranchiseeJourneyPage() {
           </p>
         </div>
       ) : (
-        <div className="space-y-6">
+        <div className="grid grid-cols-1 2xl:grid-cols-2 gap-6 items-start">
           <JourneyBrandCard rank="primary" match={primaryMatch as JourneyBrandCardProps['match']} placeholder="Primary brand being confirmed…" />
 
           {hasBackups && (
@@ -88,7 +88,7 @@ export default async function FranchiseeJourneyPage() {
             </div>
           )}
 
-          <div className="bg-surface-2 rounded-xl border border-line-2 p-4 text-center">
+          <div className="bg-surface-2 rounded-xl border border-line-2 p-4 text-center 2xl:col-span-2">
             <p className="text-xs text-ink-3">Brand names are confirmed once an introduction is arranged. Speak to your consultant to discuss progress.</p>
           </div>
         </div>

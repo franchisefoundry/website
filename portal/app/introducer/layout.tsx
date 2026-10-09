@@ -32,7 +32,7 @@ export default async function IntroducerLayout({ children }: { children: React.R
       <NavSidebar profile={sidebarProfile} adminPreview={isPreview} />
       <main className="flex-1 overflow-auto pt-14 md:pt-0">
         {isPreview && <PreviewBanner role="introducer" />}
-        <div className="p-4 md:p-8">{children}</div>
+        <div className="w-full max-w-[1760px] mx-auto p-4 md:p-6 xl:p-8">{children}</div>
       </main>
     </div>
   )

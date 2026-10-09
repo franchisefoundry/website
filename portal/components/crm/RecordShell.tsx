@@ -83,10 +83,10 @@ export function RecordShell({
           {chrome.onExpand && (
             <button
               onClick={chrome.onExpand}
-              aria-label="Expand to full page"
-              className="p-1.5 rounded-lg text-ink-3 hover:text-ink hover:bg-surface-2 transition-colors"
+              className="inline-flex items-center gap-1.5 mr-1 px-3 py-1.5 rounded-lg text-xs font-semibold text-ff-green bg-ff-green/10 hover:bg-ff-green/15 transition-colors"
             >
-              <ExpandIcon className="w-4 h-4" />
+              <ExpandIcon className="w-3.5 h-3.5" />
+              Full profile
             </button>
           )}
           {chrome.onClose && (

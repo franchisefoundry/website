@@ -50,7 +50,7 @@ export default async function FinancePage({ searchParams }: { searchParams: Prom
   const td = 'px-4 py-3 text-sm'
 
   return (
-    <div className="max-w-5xl">
+    <div className="w-full">
       <PageHeader title="Finance" description="Revenue, agent payouts and fees — from your live data." />
 
       <div className="inline-flex bg-surface border border-line rounded-xl p-1 gap-1 mb-5">

@@ -44,7 +44,7 @@ export default async function BrandPage() {
   ]
 
   return (
-    <div className="max-w-6xl">
+    <div className="w-full">
       <div className="flex items-start gap-4">
         <BrandLogo src={brandProfile?.logo_url} name={brandProfile?.brand_name} size="xl" className="mt-1" />
         <div className="flex-1 min-w-0">

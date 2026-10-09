@@ -22,6 +22,7 @@ export interface BrandCard {
   fee: string
   cands: number
   prog: number
+  missing: string[]
 }
 
 const FILTERS: [string, string][] = [
@@ -116,6 +117,11 @@ export default function FranchisorsCards({ brands }: { brands: BrandCard[] }) {
                     </div>
                   ))}
                 </div>
+                {b.missing.length > 0 && (
+                  <p className="text-[11px] text-amber-700 mt-2 truncate" title={`Missing: ${b.missing.join(', ')}`}>
+                    Missing: {b.missing.slice(0, 3).join(', ')}{b.missing.length > 3 ? ` +${b.missing.length - 3}` : ''}
+                  </p>
+                )}
               </button>
             )
           })}
