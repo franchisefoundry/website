@@ -217,3 +217,10 @@ test('tracker links: signed per batch, tamper-proof, verify tokens hashed', () =
   assert.equal(hashToken(v.token), v.hash)
   assert.notEqual(v.token, v.hash)
 })
+
+test('sourcing stage reads as finding a partner', () => {
+  const s = introStatus('to_source')
+  assert.equal(s.status, 'Finding you a partner')
+  assert.equal(s.open, true)
+  assert.equal(s.contactVisible, false)
+})

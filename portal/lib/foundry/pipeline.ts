@@ -9,10 +9,12 @@ import { OPEN_STAGES, type IntroStage } from './intro-status.ts'
 import { briefTemplate, chaseTemplate, briefSubject, textEmailHtml, escapeHtml, type BriefInput } from './brief.ts'
 import { sendEmail } from '@/lib/email/resend'
 import { notify } from '@/lib/notifications'
-import { trackerUrl } from './tracker'
-import { sendVisitorUpdate } from './visitor-email'
+import { trackerUrl, newVerifyToken, verifyUrl } from './tracker'
+import { sendVisitorUpdate, sendVerifyEmail } from './visitor-email'
+import { briefDueAt } from './sla'
 
-export const BOARD_STAGES = ['to_brief', 'briefed', 'in_contact', 'outcome'] as const
+export const BOARD_STAGES = ['to_source', 'to_brief', 'briefed', 'in_contact', 'outcome'] as const
+export type PipelineView = 'open' | 'closed' | 'unconfirmed'
 export type BoardStage = typeof BOARD_STAGES[number]
 
 const CONTACT_SLA_HOURS = 24
@@ -32,8 +34,11 @@ export interface PipelineCard {
   need: string | null
   outcome: string | null
   rating: string | null
-  member: { id: string; name: string; email: string | null; phone: string | null; role: string | null }
+  member: { id: string; name: string; email: string | null; phone: string | null; role: string | null; contactId: string | null; leadId: string | null }
+  /** Placeholder (id '') while a sourcing request has no partner yet. */
   partner: { id: string; name: string; slug: string; categoryLabel: string; deal: string | null }
+  /** Set on "find me a partner" requests: what they asked us to source. */
+  sourcing: { category: string | null; categoryLabel: string; area: string | null } | null
   contacts: PartnerContact[]
   context: BriefInput['context']
   callTime: string | null
@@ -44,24 +49,25 @@ export interface PipelineCard {
 
 export async function loadPipeline(
   admin: SupabaseClient,
-  { includeDemo, view, senderName }: { includeDemo: boolean; view: 'open' | 'closed'; senderName: string },
+  { includeDemo, view, senderName }: { includeDemo: boolean; view: PipelineView; senderName: string },
 ): Promise<PipelineCard[]> {
-  const stages = view === 'open' ? OPEN_STAGES.filter(s => s !== 'awaiting_verification') : ['closed', 'withdrawn', 'expired']
+  const stages = view === 'open' ? OPEN_STAGES.filter(s => s !== 'awaiting_verification')
+    : view === 'unconfirmed' ? ['awaiting_verification'] : ['closed', 'withdrawn', 'expired']
   let q = admin.from('intro_requests')
     .select(`id, stage, is_demo, created_at, updated_at, briefed_at, contacted_at, outcome_at, closed_at, sla_due_at, chased_at,
-      need, message, outcome, rating, brief_email, partner_id, requester_id,
+      need, message, outcome, rating, brief_email, partner_id, requester_id, source_category, source_area,
       profiles!intro_requests_requester_id_fkey(id, full_name, email, phone, role),
       partners(id, name, slug, category, offer_text),
-      intro_batches(source, context, call_time, foundry_contacts(name, email, phone))`)
+      intro_batches(source, context, call_time, foundry_contacts(id, name, email, phone, lead_id))`)
     .in('stage', stages)
-    .order('created_at', { ascending: view === 'open' })
-    .limit(view === 'open' ? 300 : 100)
+    .order('created_at', { ascending: view !== 'closed' })
+    .limit(view === 'closed' ? 100 : 300)
   if (!includeDemo) q = q.eq('is_demo', false)
   const { data: rows, error } = await q
   if (error) throw new Error(`loadPipeline: ${error.message}`)
   if (!rows?.length) return []
 
-  const partnerIds = [...new Set(rows.map(r => r.partner_id))]
+  const partnerIds = [...new Set(rows.map(r => r.partner_id).filter(Boolean))]
   const [{ data: contacts }, { data: events }] = await Promise.all([
     admin.from('partner_contacts').select('id, partner_id, name, email, phone, role, is_primary')
       .in('partner_id', partnerIds).order('is_primary', { ascending: false }),
@@ -77,14 +83,17 @@ export async function loadPipeline(
     const p = x.partners ?? {}
     const b = x.intro_batches ?? {}
     const stage = r.stage as IntroStage
-    const stageSince = (stage === 'briefed' ? r.briefed_at : stage === 'in_contact' ? r.contacted_at : stage === 'outcome' ? r.outcome_at : stage === 'to_brief' ? r.created_at : r.closed_at) ?? r.updated_at ?? r.created_at
-    const pc = (contacts ?? []).filter(c => c.partner_id === r.partner_id) as (PartnerContact & { partner_id: string })[]
+    const stageSince = (stage === 'briefed' ? r.briefed_at : stage === 'in_contact' ? r.contacted_at : stage === 'outcome' ? r.outcome_at
+      : stage === 'to_brief' || stage === 'to_source' || stage === 'awaiting_verification' ? r.updated_at ?? r.created_at : r.closed_at) ?? r.updated_at ?? r.created_at
+    const pc = (r.partner_id ? (contacts ?? []).filter(c => c.partner_id === r.partner_id) : []) as (PartnerContact & { partner_id: string })[]
     const context = (b.context ?? {}) as BriefInput['context']
     const fc = b.foundry_contacts ?? {}
     // Website visitors have no profile until they verify with a matching email.
     const member = m.id
-      ? { id: m.id, name: m.full_name || m.email || 'Member', email: m.email ?? null, phone: m.phone ?? null, role: m.role ?? null }
-      : { id: '', name: fc.name || fc.email || 'Website visitor', email: fc.email ?? null, phone: fc.phone ?? null, role: 'visitor' }
+      ? { id: m.id, name: m.full_name || m.email || 'Member', email: m.email ?? null, phone: m.phone ?? null, role: m.role ?? null, contactId: fc.id ?? null, leadId: fc.lead_id ?? null }
+      : { id: '', name: fc.name || fc.email || 'Website visitor', email: fc.email ?? null, phone: fc.phone ?? null, role: 'visitor', contactId: fc.id ?? null, leadId: fc.lead_id ?? null }
+    const sourceLabel = NEED_LABEL[r.source_category as Need] ?? 'Partner'
+    const sourcing = r.partner_id ? null : { category: r.source_category ?? null, categoryLabel: sourceLabel, area: r.source_area ?? null }
     const need = r.need ?? r.message ?? null
     const overdue = (stage === 'to_brief' || stage === 'briefed') && !!r.sla_due_at && new Date(r.sla_due_at).getTime() < now
     return {
@@ -101,11 +110,14 @@ export async function loadPipeline(
       outcome: r.outcome,
       rating: r.rating,
       member,
-      partner: { id: p.id ?? r.partner_id, name: p.name ?? 'Partner', slug: p.slug ?? '', categoryLabel: NEED_LABEL[p.category as Need] ?? 'Partner', deal: p.offer_text ?? null },
+      partner: r.partner_id
+        ? { id: p.id ?? r.partner_id, name: p.name ?? 'Partner', slug: p.slug ?? '', categoryLabel: NEED_LABEL[p.category as Need] ?? 'Partner', deal: p.offer_text ?? null }
+        : { id: '', name: `Find a ${sourceLabel.toLowerCase()} partner`, slug: '', categoryLabel: sourceLabel, deal: null },
+      sourcing,
       contacts: pc.map(({ partner_id: _, ...c }) => c),
       context: { ...context, role: context.role ?? member.role },
       callTime: b.call_time ?? null,
-      briefDraft: briefTemplate({
+      briefDraft: !r.partner_id ? '' : briefTemplate({
         partnerName: p.name ?? 'Partner', contactName: pc[0]?.name ?? null,
         memberName: member.name, memberEmail: member.email, memberPhone: member.phone,
         context: { ...context, role: context.role ?? member.role }, need, callTime: b.call_time ?? null, deal: p.offer_text ?? null, senderName,
@@ -126,6 +138,9 @@ export type IntroAction =
   | { action: 'ask_outcome' }
   | { action: 'close'; outcome: 'hired' | 'not_hired' | 'undecided' }
   | { action: 'note'; body: string }
+  | { action: 'assign'; partnerId: string }
+  | { action: 'resend_verify' }
+  | { action: 'convert_lead' }
 
 interface Actor { id: string | null; name: string }
 
@@ -151,13 +166,15 @@ function memberLink(role: string | null) {
 
 export async function performIntroAction(admin: SupabaseClient, id: string, act: IntroAction, actor: Actor): Promise<{ ok: true } | { error: string }> {
   const { data: r } = await admin.from('intro_requests')
-    .select('id, stage, is_demo, requester_id, batch_id, partners(name), profiles!intro_requests_requester_id_fkey(full_name, role), intro_batches(foundry_contacts(name, email))')
+    .select(`id, stage, is_demo, requester_id, batch_id, partner_id, need, message, source_area, created_at, partners(name),
+      profiles!intro_requests_requester_id_fkey(full_name, role),
+      intro_batches(verified_at, context, foundry_contacts(id, name, email, phone, lead_id))`)
     .eq('id', id).maybeSingle()
   if (!r) return { error: 'Intro not found.' }
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const x = r as any
   const partner: string = x.partners?.name ?? 'the partner'
-  const visitor = x.intro_batches?.foundry_contacts as { name: string | null; email: string | null } | null
+  const visitor = x.intro_batches?.foundry_contacts as { id: string; name: string | null; email: string | null; phone: string | null; lead_id: string | null } | null
   const memberName: string = x.profiles?.full_name ?? visitor?.name ?? 'the member'
   const memberRole: string | null = x.profiles?.role ?? null
   const stage = r.stage as IntroStage
@@ -223,6 +240,66 @@ export async function performIntroAction(admin: SupabaseClient, id: string, act:
       const body = act.body.trim().slice(0, 2000)
       if (!body) return { error: 'Empty note.' }
       await event('note', `${actor.name}: ${body}`, false)
+      return { ok: true }
+    }
+    case 'assign': {
+      // Pick a partner for a sourcing request, or swap the partner before they've been in touch.
+      const first = stage === 'to_source'
+      if (!first && !['to_brief', 'briefed'].includes(stage)) return { error: 'You can only change the partner before they’ve made contact.' }
+      if (act.partnerId === r.partner_id) return { error: 'That’s already the partner on this intro.' }
+      const { data: np } = await admin.from('partners').select('id, name, status, is_demo').eq('id', act.partnerId).maybeSingle()
+      if (!np) return { error: 'Partner not found.' }
+      if (np.status !== 'live') return { error: `${np.name} isn’t live, so we can’t introduce them.` }
+      if (np.is_demo && !demo) return { error: 'That’s a demo partner. Pick a real one.' }
+      await admin.from('intro_requests').update({
+        partner_id: np.id, stage: 'to_brief', status: 'pending', briefed_at: null, brief_email: null, chased_at: null,
+        sla_due_at: briefDueAt(now).toISOString(), updated_at: iso,
+      }).eq('id', id)
+      if (first) {
+        await event('assigned', `We’ve found you a partner: ${np.name}. We’re briefing them now.`, true)
+        await event('assigned_by', `${actor.name} assigned ${np.name}`, false)
+        await tellMember(`We’ve found you a partner: ${np.name}`, 'We’re briefing them on what you need now. They’ll be in touch, usually within a working day.')
+      } else {
+        await event('reassigned', `We’ve swapped this intro to ${np.name}, a better fit for what you need.`, true)
+        await event('reassigned_by', `${actor.name} swapped ${partner} for ${np.name}${stage === 'briefed' ? ` (${partner} had already been briefed)` : ''}`, false)
+        await tellMember(`We’ve matched you with ${np.name} instead`, `We think they’re a better fit than ${partner}. We’re briefing them now.`)
+      }
+      return { ok: true }
+    }
+    case 'resend_verify': {
+      if (stage !== 'awaiting_verification') return { error: 'This request is already confirmed.' }
+      if (!visitor?.email || !r.batch_id || x.intro_batches?.verified_at) return { error: 'No email to resend to.' }
+      const verify = newVerifyToken()
+      await admin.from('intro_batches').update({ verify_token_hash: verify.hash }).eq('id', r.batch_id)
+      // The new link confirms the whole batch, so list every request in it.
+      const { data: siblings } = await admin.from('intro_requests').select('partner_id, source_category, source_area, partners(name)')
+        .eq('batch_id', r.batch_id).eq('stage', 'awaiting_verification')
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const names = ((siblings ?? []) as any[]).map(s => s.partners?.name
+        ?? `A ${(NEED_LABEL[s.source_category as Need] ?? 'partner').toLowerCase()} partner${s.source_area ? ` in ${s.source_area}` : ''} (we’ll find one)`)
+      await sendVerifyEmail(visitor.email, visitor.name, names.length ? names : [partner], verifyUrl(r.batch_id, verify.token))
+      await admin.from('intro_requests').update({ updated_at: iso }).eq('id', id)
+      await event('verify_resent', `Confirmation email resent to ${visitor.email} by ${actor.name}`, false)
+      return { ok: true }
+    }
+    case 'convert_lead': {
+      if (!visitor?.email) return { error: 'Only website contacts can be added to Leads.' }
+      if (visitor.lead_id) return { error: 'Already in Leads.' }
+      // Link an existing lead with the same email rather than duplicating it.
+      const { data: existing } = await admin.from('leads').select('id').ilike('email', visitor.email.replace(/[\\%_]/g, '\\$&')).limit(1).maybeSingle()
+      let leadId = existing?.id as string | undefined
+      if (!leadId) {
+        const area: string | null = x.intro_batches?.context?.area ?? r.source_area ?? null
+        const { data: lead, error } = await admin.from('leads').insert({
+          full_name: visitor.name || visitor.email, email: visitor.email, phone: visitor.phone, status: 'new', source: 'foundry',
+          goals: `From The Foundry: ${r.need ?? r.message ?? 'intro request'}`.slice(0, 2000),
+          preferred_locations: area ? [area] : [],
+        }).select('id').single()
+        if (error || !lead) return { error: 'Could not add them to Leads.' }
+        leadId = lead.id
+      }
+      await admin.from('foundry_contacts').update({ lead_id: leadId }).eq('id', visitor.id)
+      await event('lead_created', `${existing ? 'Linked to existing lead' : 'Added to Leads'} by ${actor.name}`, false)
       return { ok: true }
     }
   }

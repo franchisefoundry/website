@@ -50,7 +50,7 @@ export function ResultsView({ base, initialQ, initialOff, plan }: {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ need, area, q, searchId: res?.searchId ?? null }),
     })
-    if (r.ok) toast('Thanks. We’ll find someone we’d back and come back to you.')
+    if (r.ok) toast('Thanks. We’ll find someone we’d back. Track it in My intros.')
     else { setSourced(s => ({ ...s, [key]: false })); toast('Could not send that. Try again.', 'error') }
   }
 

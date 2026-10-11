@@ -5,12 +5,15 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { cn } from '@/lib/utils'
 import { toast } from '@/lib/toast'
-import type { PipelineCard } from '@/lib/foundry/pipeline'
+import type { PipelineCard, PipelineView } from '@/lib/foundry/pipeline'
 import { chaseTemplate } from '@/lib/foundry/brief'
 import { RATINGS } from '@/lib/foundry/intro-status'
 import { PartnerContacts, type Contact } from './PartnerContacts'
 
+export interface PartnerOption { id: string; name: string; category: string | null; isDemo: boolean }
+
 const COLUMNS = [
+  { key: 'to_source', label: 'To source' },
   { key: 'to_brief', label: 'To brief' },
   { key: 'briefed', label: 'Briefed' },
   { key: 'in_contact', label: 'In contact' },
@@ -18,7 +21,7 @@ const COLUMNS = [
 ] as const
 
 const STAGE_LABEL: Record<string, string> = {
-  to_brief: 'To brief', briefed: 'Briefed', in_contact: 'In contact', outcome: 'Outcome',
+  to_source: 'To source', to_brief: 'To brief', briefed: 'Briefed', in_contact: 'In contact', outcome: 'Outcome',
   closed: 'Closed', withdrawn: 'Withdrawn', expired: 'Expired', awaiting_verification: 'Awaiting email',
 }
 
@@ -37,8 +40,8 @@ function due(iso: string | null, now: number) {
   return { text: `Due ${when}`, late: false }
 }
 
-export function IntroPipeline({ cards, view, senderName, monthCount, serverNow }: {
-  cards: PipelineCard[]; view: 'open' | 'closed'; senderName: string; monthCount: number; serverNow: number
+export function IntroPipeline({ cards, view, senderName, monthCount, unconfirmedCount, partners, serverNow }: {
+  cards: PipelineCard[]; view: PipelineView; senderName: string; monthCount: number; unconfirmedCount: number; partners: PartnerOption[]; serverNow: number
 }) {
   // Ages render from the server's clock first (no hydration mismatch), then tick each minute.
   const [now, setNow] = useState(serverNow)
@@ -52,16 +55,22 @@ export function IntroPipeline({ cards, view, senderName, monthCount, serverNow }
   const sel = cards.find(c => c.id === selId) ?? null
   const overdue = cards.filter(c => c.overdue).length
   const toBrief = cards.filter(c => c.stage === 'to_brief').length
+  const toSource = cards.filter(c => c.stage === 'to_source').length
+  const tab = (on: boolean) => cn('rounded-lg px-4 py-2 text-sm font-medium', on ? 'bg-ff-green text-white' : 'text-ink-2 hover:text-ink')
 
   return (
     <div>
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
         <div className="inline-flex gap-1 rounded-xl border border-line bg-surface p-1">
-          <Link href="/admin/intro-requests" className={cn('rounded-lg px-4 py-2 text-sm font-medium', view === 'open' ? 'bg-ff-green text-white' : 'text-ink-2 hover:text-ink')}>Open</Link>
-          <Link href="/admin/intro-requests?view=closed" className={cn('rounded-lg px-4 py-2 text-sm font-medium', view === 'closed' ? 'bg-ff-green text-white' : 'text-ink-2 hover:text-ink')}>Closed</Link>
+          <Link href="/admin/intro-requests" className={tab(view === 'open')}>Open</Link>
+          <Link href="/admin/intro-requests?view=unconfirmed" className={tab(view === 'unconfirmed')}>
+            Awaiting confirmation{unconfirmedCount > 0 && <span className="ml-1.5 font-mono text-xs opacity-80">{unconfirmedCount}</span>}
+          </Link>
+          <Link href="/admin/intro-requests?view=closed" className={tab(view === 'closed')}>Closed</Link>
         </div>
         <div className="flex flex-wrap gap-4 text-sm text-ink-2">
           <span><b className={cn('font-mono', overdue ? 'text-[var(--ff-crit)]' : 'text-ink')}>{overdue}</b> overdue</span>
+          {toSource > 0 && <span><b className="font-mono text-[#8a5f26]">{toSource}</b> to source</span>}
           <span><b className="font-mono text-ink">{toBrief}</b> to brief</span>
           <span><b className="font-mono text-ink">{monthCount}</b> this month</span>
           <span className="text-ink-3">Brief within 4 working hours · chase at 24h</span>
@@ -70,13 +79,17 @@ export function IntroPipeline({ cards, view, senderName, monthCount, serverNow }
 
       {cards.length === 0 ? (
         <div className="rounded-2xl border border-dashed border-line bg-surface py-16 text-center text-sm text-ink-3">
-          {view === 'open' ? 'No open intro requests.' : 'Nothing closed yet.'}
+          {view === 'open' ? 'No open intro requests.' : view === 'unconfirmed' ? 'No unconfirmed website requests.' : 'Nothing closed yet.'}
         </div>
       ) : (
+        <>
+        {view === 'unconfirmed' && (
+          <p className="mb-3 text-sm text-ink-2">Website requests where the person hasn’t clicked the confirm link yet. Nothing has been shared with partners. They expire after 7 days.</p>
+        )}
         <div className="grid items-start gap-5 xl:grid-cols-[1fr_420px]">
           {view === 'open' ? (
             <div className="overflow-x-auto pb-1">
-              <div className="grid min-w-[760px] grid-cols-4 gap-3">
+              <div className="grid min-w-[940px] grid-cols-5 gap-3">
                 {COLUMNS.map(col => {
                   const items = cards.filter(c => c.stage === col.key)
                   return (
@@ -98,8 +111,9 @@ export function IntroPipeline({ cards, view, senderName, monthCount, serverNow }
               {cards.map(c => <CardButton key={c.id} c={c} now={now} on={c.id === selId} onPick={() => setSelId(c.id)} wide />)}
             </div>
           )}
-          {sel && <Detail key={sel.id} c={sel} senderName={senderName} now={now} />}
+          {sel && <Detail key={`${sel.id}:${sel.partner.id}:${sel.stage}`} c={sel} senderName={senderName} now={now} partners={partners} />}
         </div>
+        </>
       )}
     </div>
   )
@@ -114,7 +128,9 @@ function CardButton({ c, on, onPick, wide, now }: { c: PipelineCard; on: boolean
         <b className="truncate text-sm text-ink">{c.member.name}</b>
         <span className={cn('flex-shrink-0 font-mono text-[11px]', c.overdue ? 'font-semibold text-[var(--ff-crit)]' : 'text-ink-3')}>{age(c.stageSince, now)}</span>
       </span>
-      <span className="mt-0.5 block truncate text-xs font-semibold text-ff-green">→ {c.partner.name}</span>
+      {c.partner.id
+        ? <span className="mt-0.5 block truncate text-xs font-semibold text-ff-green">→ {c.partner.name}</span>
+        : <span className="mt-0.5 block truncate text-xs font-semibold text-[#8a5f26]">? {c.partner.name}{c.sourcing?.area ? ` · ${c.sourcing.area}` : ''}</span>}
       {c.need && <span className="mt-1 block text-xs text-ink-2 line-clamp-2">{c.need}</span>}
       <span className="mt-1.5 flex flex-wrap gap-1">
         {wide && <span className="rounded-full border border-line px-2 py-0.5 text-[10px] text-ink-2">{STAGE_LABEL[c.stage]}</span>}
@@ -126,7 +142,38 @@ function CardButton({ c, on, onPick, wide, now }: { c: PipelineCard; on: boolean
   )
 }
 
-function Detail({ c, senderName, now }: { c: PipelineCard; senderName: string; now: number }) {
+function AssignPartner({ c, partners, busy, onAssign, onCancel }: {
+  c: PipelineCard; partners: PartnerOption[]; busy: string | null; onAssign: (id: string) => void; onCancel?: () => void
+}) {
+  const want = c.sourcing?.category ?? null
+  const pool = partners.filter(p => p.id !== c.partner.id && (c.isDemo || !p.isDemo))
+  const fits = want ? pool.filter(p => p.category === want) : []
+  const rest = pool.filter(p => !fits.includes(p))
+  const [pick, setPick] = useState(fits[0]?.id ?? '')
+  return (
+    <div className="border-t border-line pt-4">
+      <label className="block">
+        <span className="font-mono text-[11px] tracking-[0.08em] text-ink-3">{c.partner.id ? 'SWAP PARTNER' : 'ASSIGN A PARTNER'}</span>
+        <select value={pick} onChange={e => setPick(e.target.value)}
+          className="mt-1.5 w-full rounded-lg border border-line bg-surface px-3 py-2 text-sm text-ink focus:outline-none focus:ring-2 focus:ring-ff-green">
+          <option value="">Choose a partner…</option>
+          {fits.length > 0 && <optgroup label={`${c.sourcing?.categoryLabel ?? 'Matching'} partners`}>{fits.map(p => <option key={p.id} value={p.id}>{p.name}{p.isDemo ? ' (demo)' : ''}</option>)}</optgroup>}
+          <optgroup label={fits.length ? 'Everyone else' : 'Live partners'}>{rest.map(p => <option key={p.id} value={p.id}>{p.name}{p.isDemo ? ' (demo)' : ''}</option>)}</optgroup>
+        </select>
+      </label>
+      {want && fits.length === 0 && <p className="mt-1.5 text-xs text-[#8a5f26]">No live {c.sourcing?.categoryLabel.toLowerCase()} partners yet. Add one under Partners, or pick another.</p>}
+      <div className="mt-2 flex gap-2">
+        <button type="button" disabled={!pick || !!busy} onClick={() => onAssign(pick)}
+          className="min-h-[44px] flex-1 rounded-xl bg-ff-green px-4 text-sm font-bold text-white transition hover:brightness-110 disabled:opacity-50">
+          {busy === 'assign' ? 'Saving…' : c.partner.id ? 'Swap + redraft briefing' : 'Assign + tell them'}
+        </button>
+        {onCancel && <button type="button" onClick={onCancel} className="px-3 text-sm text-ink-2">Cancel</button>}
+      </div>
+    </div>
+  )
+}
+
+function Detail({ c, senderName, now, partners }: { c: PipelineCard; senderName: string; now: number; partners: PartnerOption[] }) {
   const router = useRouter()
   const [contacts, setContacts] = useState<Contact[]>(c.contacts)
   const primary = contacts.find(x => x.is_primary && x.email) ?? contacts.find(x => x.email)
@@ -138,7 +185,8 @@ function Detail({ c, senderName, now }: { c: PipelineCard; senderName: string; n
   const [busy, setBusy] = useState<string | null>(null)
   const [showContacts, setShowContacts] = useState(contacts.length === 0)
   const d = c.stage === 'to_brief' || c.stage === 'briefed' ? due(c.slaDueAt, now) : null
-  const open = ['to_brief', 'briefed', 'in_contact', 'outcome'].includes(c.stage)
+  const open = ['awaiting_verification', 'to_source', 'to_brief', 'briefed', 'in_contact', 'outcome'].includes(c.stage)
+  const [swapping, setSwapping] = useState(c.stage === 'to_source')
 
   useEffect(() => { if (!to && primary?.email) setTo(primary.email) }, [primary?.email, to])
 
@@ -180,9 +228,38 @@ function Detail({ c, senderName, now }: { c: PipelineCard; senderName: string; n
 
       <div className="space-y-4 rounded-2xl border border-line bg-surface p-5">
         <div>
-          <div className="font-mono text-[11px] tracking-[0.08em] text-ink-3">THEIR MESSAGE</div>
+          <div className="font-mono text-[11px] tracking-[0.08em] text-ink-3">{c.sourcing ? 'THEY ASKED US TO FIND' : 'THEIR MESSAGE'}</div>
           <p className="mt-1 text-sm text-ink">{c.need ? `“${c.need}”` : 'No message.'}</p>
         </div>
+
+        {c.member.contactId && (
+          <div className="flex items-center justify-between gap-3 rounded-xl bg-surface-2 px-3 py-2.5 text-sm">
+            <span className="text-ink-2">Website contact{c.member.id ? ', now a portal member' : ''}</span>
+            {c.member.leadId
+              ? <Link href={`/admin/leads/${c.member.leadId}`} className="font-semibold text-ff-green hover:underline">In Leads ✓</Link>
+              : <button type="button" disabled={!!busy} onClick={() => act('convert_lead', {}, 'Added to Leads.')}
+                  className="min-h-[36px] rounded-lg border border-ff-green px-3 text-xs font-bold text-ff-green hover:bg-surface disabled:opacity-50">
+                  {busy === 'convert_lead' ? 'Adding…' : 'Add to Leads'}
+                </button>}
+          </div>
+        )}
+
+        {c.stage === 'awaiting_verification' && (
+          <div className="border-t border-line pt-4">
+            <p className="text-sm text-ink-2">They haven’t confirmed their email yet{c.member.email ? <> (<b className="text-ink">{c.member.email}</b>)</> : ''}. Sent {age(c.createdAt, now)} ago.</p>
+            <button type="button" disabled={!!busy || !c.member.email} onClick={() => act('resend_verify', {}, 'Confirmation email resent.')}
+              className={cn(btn, 'mt-2 w-full bg-ff-green text-white hover:brightness-110')}>{busy === 'resend_verify' ? 'Sending…' : 'Resend confirmation'}</button>
+          </div>
+        )}
+
+        {(c.stage === 'to_source' || c.stage === 'to_brief' || c.stage === 'briefed') && (
+          swapping
+            ? <AssignPartner c={c} partners={partners} busy={busy} onCancel={c.stage === 'to_source' ? undefined : () => setSwapping(false)}
+                onAssign={async id => { const name = partners.find(p => p.id === id)?.name ?? 'Partner'; if (await act('assign', { partnerId: id }, c.stage === 'to_source' ? `${name} assigned. Member told, now in To brief.` : `Swapped to ${name}. Briefing redrafted.`)) setSwapping(false) }} />
+            : <button type="button" onClick={() => setSwapping(true)} className="text-xs font-semibold text-ff-green hover:underline">
+                Change partner{c.stage === 'briefed' ? ' (already briefed)' : ''}
+              </button>
+        )}
 
         {(c.stage === 'to_brief' || c.stage === 'briefed') && (
           <div className="border-t border-line pt-4">

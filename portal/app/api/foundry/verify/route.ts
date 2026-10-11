@@ -46,10 +46,23 @@ export async function POST(request: NextRequest) {
   if (contact) await admin.from('foundry_contacts').update({ verified_at: iso, ...(profileId ? { profile_id: profileId } : {}) }).eq('id', contact.id)
   await admin.from('intro_batches').update({ verified_at: iso, verify_token_hash: null }).eq('id', batch.id)
 
+  const owner = profileId ? { requester_id: profileId } : {}
+  // Sourcing requests (no partner yet) go to "To source"; the rest to "To brief".
+  const { data: sourcing } = await admin.from('intro_requests')
+    .update({ stage: 'to_source', updated_at: iso, ...owner })
+    .eq('batch_id', batch.id).eq('stage', 'awaiting_verification').is('partner_id', null)
+    .select('id')
   const { data: reqs } = await admin.from('intro_requests')
-    .update({ stage: 'to_brief', sla_due_at: briefDueAt(now).toISOString(), updated_at: iso, ...(profileId ? { requester_id: profileId } : {}) })
+    .update({ stage: 'to_brief', sla_due_at: briefDueAt(now).toISOString(), updated_at: iso, ...owner })
     .eq('batch_id', batch.id).eq('stage', 'awaiting_verification')
     .select('id, partners(name)')
+  if (sourcing?.length) {
+    await admin.from('intro_events').insert(sourcing.map(r => ({ intro_request_id: r.id, kind: 'verified', body: 'You confirmed your email. We’re finding you a partner.', visible_to_requester: true })))
+    await notifyFoundryTeam({
+      event: 'intro_request', title: `To source (website): ${contact?.name ?? 'a visitor'}`,
+      body: 'A website visitor asked us to find a partner. Assign one from Requests.', link: '/admin/intro-requests',
+    }, { demo: batch.is_demo }).catch(e => console.error('[foundry/verify] notify failed', e))
+  }
   if (reqs?.length) {
     await admin.from('intro_events').insert(reqs.map(r => ({ intro_request_id: r.id, kind: 'verified', body: 'You confirmed your email. We’re briefing them now.', visible_to_requester: true })))
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

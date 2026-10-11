@@ -5,12 +5,12 @@
  */
 
 export type IntroStage =
-  | 'awaiting_verification' | 'to_brief' | 'briefed' | 'in_contact'
+  | 'awaiting_verification' | 'to_source' | 'to_brief' | 'briefed' | 'in_contact'
   | 'outcome' | 'closed' | 'withdrawn' | 'expired'
 
 export const INTRO_STEPS = ['Requested', 'Briefed', 'Contacted you', 'How did it go?'] as const
 
-export const OPEN_STAGES: IntroStage[] = ['awaiting_verification', 'to_brief', 'briefed', 'in_contact', 'outcome']
+export const OPEN_STAGES: IntroStage[] = ['awaiting_verification', 'to_source', 'to_brief', 'briefed', 'in_contact', 'outcome']
 
 export interface IntroStatus {
   /** Steps completed, 0 to 4. */
@@ -34,6 +34,8 @@ export function introStatus(stage: IntroStage, opts: { outcome?: string | null; 
   switch (stage) {
     case 'awaiting_verification':
       return { step: 0, status: 'Confirm your email', next: 'Check your inbox for our link', tone: 'progress', contactVisible: false, open: true }
+    case 'to_source':
+      return { step: 0, status: 'Finding you a partner', next: 'We’ll tell you as soon as we’ve found someone we’d back', tone: 'progress', contactVisible: false, open: true }
     case 'to_brief': {
       const by = whenLabel(opts.slaDueAt)
       return { step: 1, status: 'Requested, briefing them now', next: by ? `We’ll brief them by ${by}` : 'We’ll brief them shortly', tone: 'progress', contactVisible: false, open: true }

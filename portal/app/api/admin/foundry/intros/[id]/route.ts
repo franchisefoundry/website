@@ -3,7 +3,10 @@ import { requireAdmin } from '@/lib/foundry/require-admin'
 import { performIntroAction, type IntroAction } from '@/lib/foundry/pipeline'
 import { isUuid } from '@/lib/foundry/validate'
 
-/** Move an intro through the pipeline: brief, chase, contacted, ask_outcome, close, note. */
+/**
+ * Move an intro through the pipeline: brief, chase, contacted, ask_outcome, close, note,
+ * assign (pick or swap the partner), resend_verify, convert_lead.
+ */
 export async function POST(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const ctx = await requireAdmin()
   if (!ctx) return NextResponse.json({ error: 'Unauthorised' }, { status: 403 })
@@ -20,6 +23,9 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
     case 'ask_outcome': act = { action: 'ask_outcome' }; break
     case 'close': if (['hired', 'not_hired', 'undecided'].includes(b.outcome)) act = { action: 'close', outcome: b.outcome }; break
     case 'note': act = { action: 'note', body: String(b.body ?? '') }; break
+    case 'assign': if (isUuid(b.partnerId)) act = { action: 'assign', partnerId: b.partnerId }; break
+    case 'resend_verify': act = { action: 'resend_verify' }; break
+    case 'convert_lead': act = { action: 'convert_lead' }; break
   }
   if (!act) return NextResponse.json({ error: 'Unknown action.' }, { status: 400 })
 
