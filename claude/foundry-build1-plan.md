@@ -100,7 +100,7 @@ Plan context (the switch-off-able chips):
 ### Live bug
 
 `portal/app/admin/intro-requests/page.tsx` selects `partners(name, sector)`; migration 003 renamed
-`sector` to `category`, so the page always shows "No intro requests yet." One-line fix, first commit.
+`sector` to `category`, so the page always shows "No intro requests yet." One-line fix, first commit. (Live DB has 0 intro requests, so nothing has been missed yet.)
 
 ---
 
@@ -194,25 +194,45 @@ the data and admin live, and the website then becomes a straight reskin of a wor
 
 ---
 
-## 7. Demo
+## 7. Demo: private preview on the live sites
 
-Current state: one Supabase project (live, `ummpvmxkaxxninuinyzm`), no dev branches. Demoing on it
-means fake partners and intros mixing with real data, so we isolate.
+No separate database, branch or thread. Everything ships to the real website and portal, switched
+off for everyone except named people (Harry, plus Ben if wanted). Launch = flip one setting.
 
-**Recommended: a demo copy of both sites on a demo database.**
-- **Database:** a separate free Supabase project `ff-demo` (or a Supabase branch if on a paid plan).
-  Same migrations, seeded with the canvas sample data: Capital Forge, Northgate Counting,
-  Hartley & Bloom, Cornerstone Cover, Sitefit Studio, All Gravy; members Sarah Ahmed
-  (Brew & Co., Manchester, ~£120k), Tom Reid, Priya Shah; a franchisor; an agent; intros at every stage.
-- **Portal:** Netlify branch deploy of a `foundry-demo` branch with the demo database's keys. The
-  existing `DevRoleSwitcher` (test accounts via env vars) flips between admin, franchisee,
-  franchisor and agent in one click. A "Demo" banner on every page.
-- **Website:** branch deploy of the same branch, its Foundry pages pointed at the demo portal API.
-- Result: two shareable URLs (demo portal, demo website), fully clickable end to end, zero risk
-  to live data. Reset script re-seeds after each demo.
+Live DB check (Oct 2026): the 6 canvas sample partners are already in `partners` (active), 0 intro
+requests, members' marketplace pages still show "Coming soon". Nothing is exposed today.
 
-Needs from Harry/Ben: create the `ff-demo` Supabase project (or approve a branch), enable branch
-deploys on both Netlify sites, and authorise the Netlify connector so the deploys can be checked from here.
+**The switch**
+- `FOUNDRY_MODE` env var on both Netlify sites: `off` | `preview` | `live`. Starts at `preview`.
+- `FOUNDRY_PREVIEW_EMAILS` env var (portal): who can see it. Kept out of the code.
+
+**Portal**
+- In `preview`, every Foundry route, nav item and Ask panel renders only for allowlisted accounts.
+  Everyone else sees exactly what they see today (Coming soon).
+- Seeing other roles: the existing admin "View as" (impersonate) + preview banner lets Harry walk
+  through as a demo franchisee, franchisor or agent.
+
+**Website**
+- `/foundry` pages deploy but aren't linked, are `noindex`, and are left out of the sitemap.
+- A private link (`/foundry/?preview=<secret>`) sets a preview cookie. Without it the pages show
+  "Coming soon" and the public Foundry API refuses requests.
+- Partner profile pages aren't generated until `live`.
+
+**Demo data, safely in the live DB**
+- `is_demo boolean` on partners, foundry_contacts, intro_batches, intro_requests, search_events and
+  on demo personas (Sarah Ahmed, Tom Reid, Priya Shah, a demo franchisor, a demo agent).
+- Demo rows show only in preview mode and are excluded from real admin lists, analytics, CRM
+  counts and insights.
+- Any email triggered by demo data goes to Harry, never to a partner or the demo person.
+  Push and in-app notifications for demo data go to Harry only.
+- `scripts/foundry-demo.sql`: seed, reset, and a one-line purge before launch.
+
+**Deploying**
+- Work stays on this branch and goes to `main` in small PRs (each one invisible to the public
+  because of the switch). Netlify deploys `main` to both sites as today.
+- Optional: enable Netlify branch deploys to preview a PR before merging.
+
+**Go live:** purge demo rows, add real partners, set `FOUNDRY_MODE=live` on both sites, add nav links.
 
 Meanwhile the canvas stays the clickable design reference.
 
