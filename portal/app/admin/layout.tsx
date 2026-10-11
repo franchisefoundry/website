@@ -4,6 +4,7 @@ import { createAdminClient } from '@/lib/supabase/admin'
 import { NavSidebar } from '@/components/nav-sidebar'
 import InactivityTimeout from '@/components/inactivity-timeout'
 import { unreadDirectCount } from '@/lib/direct-messages'
+import { canSeeFoundry } from '@/lib/foundry/access'
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const supabase = await createClient()
@@ -37,7 +38,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   return (
     <div className="flex min-h-screen">
       <InactivityTimeout />
-      <NavSidebar profile={profile} badges={badges} />
+      <NavSidebar profile={profile} badges={badges} foundry={await canSeeFoundry()} />
       <main className="flex-1 overflow-auto pt-14 md:pt-0">
         <div className="w-full max-w-[1760px] mx-auto p-4 md:p-6 xl:p-8">{children}</div>
       </main>

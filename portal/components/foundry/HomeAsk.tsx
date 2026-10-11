@@ -10,7 +10,7 @@ export async function HomeAsk({ role }: { role: FoundryRole }) {
   const viewer = await currentViewer()
   if (!viewer) return null
   const plan = await planContextFor(createAdminClient(), viewer)
-  if (viewer.role === 'admin') plan.audience = role
+  if (viewer.role === 'admin') plan.audience = role === 'admin' ? 'any' : role
   return (
     <section className="mb-6" aria-label="The Foundry">
       <h2 className="mb-2.5 text-lg font-bold tracking-tight text-ink">What do you need next?</h2>
