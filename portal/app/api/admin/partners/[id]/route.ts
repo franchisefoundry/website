@@ -20,6 +20,13 @@ export async function PUT(
   if (!admin) return NextResponse.json({ error: 'Unauthorised' }, { status: 403 })
 
   const body = await request.json()
+  // Keep The Foundry's status in step with the directory's Active toggle (and back).
+  if (typeof body?.status === 'string') body.is_active = body.status === 'live'
+  else if (typeof body?.is_active === 'boolean') {
+    const { data: cur } = await admin.from('partners').select('status').eq('id', id).maybeSingle()
+    if (body.is_active) body.status = 'live'
+    else if (cur?.status === 'live') body.status = 'paused'
+  }
   const { data, error } = await admin.from('partners').update(body).eq('id', id).select().single()
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
   return NextResponse.json(data)

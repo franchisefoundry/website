@@ -68,7 +68,22 @@ update public.partners set
   client_count = 20, reply_hours_typical = 24
 where slug in ('a', 'all-gravy');
 
+-- Demo partner applications (phase 6).
+insert into public.partner_applications (company_name, website, companies_house, category, regions, clients_2y, references_text, deal, contact_name, contact_email, contact_role, status, checks, references_called, trust_level, notes, is_demo, created_at)
+select * from (values
+  ('Clyde Property Partners', 'https://example.com/clyde', '00000001', 'property', array['scot'], 9,
+   E'Demo Coffee Co, Glasgow\nDemo Burger Bar, Edinburgh\nDemo Fitness, Paisley', 'Free site shortlist for Foundry members',
+   'Morag Demo', 'morag@example.com', 'Director', 'vetting', '{"ch":true,"ins":true,"reg":true}'::jsonb, 1, 'trusted',
+   'Good references. Ask about turnaround in Scotland before approving.', true, now() - interval '2 days'),
+  ('Brightside Marketing', 'https://example.com/brightside', '00000002', 'marketing', array['uk'], 14,
+   E'Demo Pizza, Leeds\nDemo Tutors, Bristol\nDemo Cleaning, Leicester', '20% off launch campaigns',
+   'Sam Demo', 'sam@example.com', 'Founder', 'new', '{}'::jsonb, 0, 'listed', null, true, now() - interval '5 days')
+) v
+where not exists (select 1 from public.partner_applications where is_demo);
+
 -- ── PURGE BEFORE LAUNCH ──────────────────────────────────────
+-- delete from public.partner_applications where is_demo;
+-- delete from public.foundry_outreach where is_demo;
 -- delete from public.intro_batches  where is_demo;   -- cascades to intro_requests + intro_events
 -- delete from public.search_events  where is_demo;
 -- delete from public.foundry_events where is_demo;

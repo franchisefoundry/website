@@ -188,3 +188,23 @@ details.faq summary { min-height: 44px; display: flex; align-items: center; font
 .soon p { margin-top: 12px; color: var(--ink-2); }
 .skeleton { height: 140px; border-radius: 16px; background: linear-gradient(90deg, #eef1ee, #f6f8f6, #eef1ee); background-size: 200% 100%; animation: sk 1.2s infinite; }
 @keyframes sk { to { background-position: -200% 0; } }
+
+/* Become a partner */
+.apply { display: grid; gap: 28px; align-items: start; padding: 32px 0 56px; }
+@media (min-width: 1024px) { .apply { grid-template-columns: 1fr 1.1fr; } .apply .side { position: sticky; top: 16px; } }
+.pillars { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 20px 0 24px; }
+.pillars div { padding: 14px; border: 1px solid var(--line); border-radius: 12px; background: #fff; font-size: 13px; color: var(--ink-2); }
+.pillars b { display: block; font-size: 16px; color: var(--ink); margin-bottom: 2px; }
+.vet { list-style: none; display: grid; gap: 12px; margin-top: 12px; }
+.vet li { display: flex; gap: 12px; align-items: flex-start; font-size: 14px; color: var(--ink-2); }
+.vet .n { flex: 0 0 auto; width: 26px; height: 26px; border-radius: 50%; background: var(--green); color: #fff; font-family: var(--mono); font-size: 12px; display: inline-flex; align-items: center; justify-content: center; }
+.vet b { color: var(--ink); }
+.apply-form { background: #fff; border: 1px solid var(--line); border-radius: 18px; padding: 22px; display: grid; gap: 18px; }
+.apply-form fieldset { border: 0; display: grid; gap: 12px; }
+.apply-form legend { font-size: 16px; font-weight: 800; margin-bottom: 4px; }
+.field select { font: inherit; font-size: 14px; font-weight: 400; color: var(--ink); padding: 10px 12px; border: 1px solid var(--line); border-radius: 10px; width: 100%; background: #fff; }
+.opt { font-weight: 400; color: var(--ink-3); }
+.file { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; font-size: 13px; color: var(--ink-2); }
+.file label.btn { cursor: pointer; }
+.file input { position: absolute; width: 1px; height: 1px; opacity: 0; }
+.file input:focus-visible + label { outline: 3px solid var(--gold); outline-offset: 2px; }

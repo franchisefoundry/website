@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en-GB" data-api="https://portal.franchisefoundry.co.uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Become a partner · The Foundry</title>
+<meta name="description" content="Meet franchisees when they're ready to buy. Every intro briefed by Franchise Foundry first.">
+<link rel="icon" type="image/png" href="/images/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/foundry/foundry.css">
+</head>
+<body>
+<header class="f-header"><div class="in">
+  <a class="f-brand" href="/foundry/"><svg width="26" height="26" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="8" height="15" rx="1" fill="#A9C2A3"/><rect x="12.5" y="3" width="8.5" height="18" rx="1" fill="#fff"/></svg><b>The Foundry</b><span>by Franchise Foundry</span></a>
+  <nav class="f-nav" aria-label="The Foundry">
+    <a href="/foundry/">Foundry Search</a>
+    <a href="/foundry/apply.html" aria-current="page">Become a partner</a>
+    <a href="https://portal.franchisefoundry.co.uk/login">Members</a>
+  </nav>
+</div></header>
+<div class="preview-strip" hidden><b class="mono">PREVIEW</b> · Only people with the preview link can see this.</div>
+
+<main class="wrap">
+<div class="apply">
+  <section class="side">
+    <span class="eyebrow"><i aria-hidden="true"></i>BECOME A PARTNER</span>
+    <h1 class="h-big" style="font-size:clamp(32px,4.4vw,52px);line-height:1.02;margin-top:16px">Meet franchisees when they’re ready to buy<span class="accent">.</span></h1>
+    <p style="color:var(--ink-2);margin-top:12px;font-size:16px">Every intro comes briefed: what they’re opening, where, their budget and what they need from you.</p>
+    <div class="pillars">
+      <div><b>Warm</b>Every intro briefed by us first</div>
+      <div><b>Ready</b>Franchisees who’ve signed or are close</div>
+      <div><b>Picky</b>A few partners per category</div>
+    </div>
+    <div class="panel">
+      <b style="font-size:16px">How we vet</b>
+      <ol class="vet">
+        <li><span class="n">1</span><span><b>You apply.</b> Five minutes, right here.</span></li>
+        <li><span class="n">2</span><span><b>We check the basics.</b> Companies House, insurance, FCA or SRA where it applies.</span></li>
+        <li><span class="n">3</span><span><b>We call your clients.</b> Three franchise clients, on the phone.</span></li>
+        <li><span class="n">4</span><span><b>A call with the founders.</b> How you work, and whether we’d send our own franchisees to you.</span></li>
+        <li><span class="n">5</span><span><b>You go live.</b> Profile built with you, member deal agreed.</span></li>
+      </ol>
+    </div>
+    <p style="margin-top:14px;font-size:14px;color:var(--ink-2)">Got a member deal in mind? Partners with an offer for our franchisees get featured in deals.</p>
+  </section>
+
+  <form class="apply-form" id="apply" novalidate>
+    <fieldset>
+      <legend>Your business</legend>
+      <label class="field">Company name<input name="company" autocomplete="organization" maxlength="160" required></label>
+      <div class="grid2">
+        <label class="field">Website<input name="website" type="url" inputmode="url" placeholder="yourcompany.co.uk" maxlength="300"></label>
+        <label class="field"><span>Companies House number <span class="opt">(optional)</span></span><input name="companiesHouse" maxlength="20" inputmode="text"></label>
+      </div>
+      <label class="field"><span>Regulator number <span class="opt">FCA or SRA, if you have one</span></span><input name="regulator" maxlength="40"></label>
+    </fieldset>
+
+    <fieldset>
+      <legend>What you do</legend>
+      <div><div class="field" id="cat-l" style="margin-bottom:8px">Category</div><div class="seg" id="cats" role="group" aria-labelledby="cat-l"></div></div>
+      <label class="field">Franchise clients in the last 2 years<input name="clients" type="number" min="0" max="10000" inputmode="numeric" style="max-width:160px"></label>
+      <div><div class="field" id="reg-l" style="margin-bottom:8px">Where you work</div><div class="seg" id="regions" role="group" aria-labelledby="reg-l"></div></div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Proof</legend>
+      <label class="field">Three franchise clients we can call<textarea name="references" rows="4" maxlength="1500" placeholder="Name, brand, phone or email. One per line."></textarea></label>
+      <div class="field"><span>Insurance certificate <span class="opt">PDF or image, under 3MB (optional now, needed before you go live)</span></span>
+        <div class="file"><input type="file" id="ins" accept="application/pdf,image/jpeg,image/png,image/webp"><label for="ins" class="btn btn-line">Upload</label><span id="ins-name">No file chosen</span></div>
+      </div>
+      <label class="field"><span>Member deal <span class="opt">Optional, e.g. “No arrangement fee for Foundry members”</span></span><input name="deal" maxlength="300"></label>
+    </fieldset>
+
+    <fieldset>
+      <legend>You</legend>
+      <div class="grid2">
+        <label class="field">Your name<input name="name" autocomplete="name" maxlength="120" required></label>
+        <label class="field"><span>Role <span class="opt">(optional)</span></span><input name="role" autocomplete="organization-title" maxlength="80"></label>
+        <label class="field">Email<input name="email" type="email" autocomplete="email" maxlength="200" required></label>
+        <label class="field"><span>Phone <span class="opt">(optional)</span></span><input name="phone" type="tel" autocomplete="tel" maxlength="40"></label>
+      </div>
+      <label class="check"><input type="checkbox" name="consent">Franchise Foundry can run the checks above, including calling the clients I’ve listed.</label>
+    </fieldset>
+
+    <div class="err" role="alert" hidden></div>
+    <button type="submit" class="btn btn-gold btn-block" style="min-height:52px">Submit application →</button>
+    <p style="font-size:12px;color:var(--ink-3);text-align:center">Takes about 5 minutes. We reply within 3 working days. See our <a href="https://portal.franchisefoundry.co.uk/privacy">privacy notice</a>.</p>
+  </form>
+</div>
+</main>
+<footer class="footer">Partners are vetted by Franchise Foundry. <a href="/terms.html">Terms</a> · <a href="https://portal.franchisefoundry.co.uk/privacy">Privacy</a></footer>
+<script src="/foundry/foundry.js"></script>
+<script>
+(function () {
+  var F = Foundry, esc = F.esc
+  F.gate()
+  var CATS = [['funding', 'Funding'], ['legal', 'Legal'], ['accounting', 'Accounting & tax'], ['insurance', 'Insurance'], ['property', 'Property & fit-out'], ['technology', 'Tech & EPOS'], ['marketing', 'Marketing'], ['recruitment', 'Recruitment & HR']]
+  var REGIONS = [['uk', 'UK-wide'], ['lon', 'London'], ['se', 'South East'], ['sw', 'South West'], ['ee', 'East of England'], ['em', 'East Midlands'], ['wm', 'West Midlands'], ['nw', 'North West'], ['ne', 'North East'], ['yh', 'Yorkshire'], ['wal', 'Wales'], ['scot', 'Scotland'], ['ni', 'Northern Ireland']]
+  var cat = '', regions = []
+  var form = document.getElementById('apply'), err = form.querySelector('.err')
+  var cats = document.getElementById('cats'), regs = document.getElementById('regions')
+  cats.innerHTML = CATS.map(function (c) { return '<button type="button" data-cat="' + c[0] + '" aria-pressed="false">' + esc(c[1]) + '</button>' }).join('')
+  regs.innerHTML = REGIONS.map(function (r) { return '<button type="button" data-reg="' + r[0] + '" aria-pressed="false">' + esc(r[1]) + '</button>' }).join('')
+  cats.addEventListener('click', function (e) {
+    var b = e.target.closest('[data-cat]'); if (!b) return
+    cat = b.getAttribute('data-cat')
+    cats.querySelectorAll('[data-cat]').forEach(function (x) { x.setAttribute('aria-pressed', String(x === b)) })
+  })
+  regs.addEventListener('click', function (e) {
+    var b = e.target.closest('[data-reg]'); if (!b) return
+    var k = b.getAttribute('data-reg')
+    if (k === 'uk') regions = regions.indexOf('uk') >= 0 ? [] : ['uk']
+    else { regions = regions.filter(function (r) { return r !== 'uk' }); regions = regions.indexOf(k) >= 0 ? regions.filter(function (r) { return r !== k }) : regions.concat(k) }
+    regs.querySelectorAll('[data-reg]').forEach(function (x) { x.setAttribute('aria-pressed', String(regions.indexOf(x.getAttribute('data-reg')) >= 0)) })
+  })
+
+  var file = null
+  var ins = document.getElementById('ins'), insName = document.getElementById('ins-name')
+  ins.addEventListener('change', function () {
+    var f = ins.files && ins.files[0]
+    file = null; insName.textContent = 'No file chosen'
+    if (!f) return
+    if (['application/pdf', 'image/jpeg', 'image/png', 'image/webp'].indexOf(f.type) < 0) { ins.value = ''; return fail('Insurance certificate must be a PDF or an image.') }
+    if (f.size > 3 * 1024 * 1024) { ins.value = ''; return fail('Insurance certificate must be under 3MB.') }
+    var reader = new FileReader()
+    reader.onload = function () { file = { type: f.type, data: String(reader.result) }; insName.textContent = f.name; err.hidden = true }
+    reader.readAsDataURL(f)
+  })
+
+  function fail(msg) { err.textContent = msg; err.hidden = false; err.scrollIntoView({ block: 'center', behavior: 'smooth' }); return false }
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault()
+    err.hidden = true
+    var fd = new FormData(form), v = function (k) { return String(fd.get(k) || '').trim() }
+    if (!v('company')) return fail('Please add your company name.')
+    if (!cat) return fail('Pick what you do.')
+    if (!regions.length) return fail('Tell us where you work.')
+    if (!v('references')) return fail('Add three franchise clients we can call.')
+    if (!v('name')) return fail('Please add your name.')
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v('email'))) return fail('Please enter a valid email address.')
+    if (!fd.get('consent')) return fail('Please confirm we can run these checks.')
+    var btn = form.querySelector('[type=submit]'); btn.disabled = true; btn.textContent = 'Sending…'
+    F.api('/api/foundry/apply', { method: 'POST', body: {
+      company: v('company'), website: v('website'), companiesHouse: v('companiesHouse'), regulator: v('regulator'),
+      category: cat, regions: regions, clients: v('clients') === '' ? null : Number(v('clients')), references: v('references'),
+      deal: v('deal'), name: v('name'), role: v('role'), email: v('email'), phone: v('phone'), consent: true, insurance: file,
+    } }).then(function (r) {
+      if (!r.ok) { btn.disabled = false; btn.textContent = 'Submit application →'; return fail((r.data && r.data.error) || 'Something went wrong. Please try again.') }
+      form.innerHTML = '<div style="padding:12px 4px">' +
+        '<span class="ok-ico" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2f7a4a" stroke-width="2.5" stroke-linecap="round"><path d="M5 12l5 5 9-10"/></svg></span>' +
+        '<h2 class="h-big" style="margin-top:12px" tabindex="-1" id="done-h">Application in<span class="accent">.</span></h2>' +
+        '<p style="margin-top:8px;color:var(--ink-2)">Thanks. We’ve emailed a copy of the next steps to <b>' + esc(r.data.email) + '</b> and we’ll reply within 3 working days.</p>' +
+        '<p style="margin-top:16px"><a class="btn btn-line" href="/foundry/">See The Foundry</a></p></div>'
+      var h = document.getElementById('done-h'); if (h) h.focus()
+    })
+  })
+})()
+</script>
+</body>
+</html>

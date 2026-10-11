@@ -1,27 +1,23 @@
-'use client'
+import { canSeeFoundry, foundryMode } from '@/lib/foundry/access'
+import { createAdminClient } from '@/lib/supabase/admin'
+import { MarketplaceTabsClient } from './MarketplaceTabsClient'
 
-import Link from 'next/link'
-import { usePathname } from 'next/navigation'
-import { cn } from '@/lib/utils'
-
-const TABS: [string, string][] = [
-  ['/admin/partners', 'Directory'],
-  ['/admin/intro-requests', 'Requests'],
-  ['/admin/resales', 'Resales'],
-]
-
-/** Shared sub-nav so Marketplace, Intro requests and Resales read as one section. */
-export function MarketplaceTabs() {
-  const path = usePathname()
-  return (
-    <div className="inline-flex bg-surface border border-line rounded-xl p-1 gap-1 mb-5">
-      {TABS.map(([href, label]) => (
-        <Link key={href} href={href}
-          className={cn('px-4 py-2 rounded-lg text-sm font-medium transition-colors',
-            path === href ? 'bg-ff-green text-white' : 'text-ink-2 hover:text-ink')}>
-          {label}
-        </Link>
-      ))}
-    </div>
-  )
+/**
+ * Shared sub-nav so the marketplace admin reads as one section. With The
+ * Foundry visible it adds Applications and Search insights.
+ */
+export async function MarketplaceTabs() {
+  const tabs: { href: string; label: string; badge?: number }[] = [
+    { href: '/admin/partners', label: 'Directory' },
+    { href: '/admin/intro-requests', label: 'Requests' },
+  ]
+  if (await canSeeFoundry()) {
+    let q = createAdminClient().from('partner_applications').select('id', { count: 'exact', head: true }).in('status', ['new', 'vetting'])
+    if (foundryMode() !== 'preview') q = q.eq('is_demo', false)
+    const { count } = await q
+    tabs.push({ href: '/admin/foundry/applications', label: 'Applications', badge: count ?? 0 })
+    tabs.push({ href: '/admin/foundry/insights', label: 'Search insights' })
+  }
+  tabs.push({ href: '/admin/resales', label: 'Resales' })
+  return <MarketplaceTabsClient tabs={tabs} />
 }

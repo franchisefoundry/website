@@ -136,7 +136,7 @@
           '<div class="grid2">' +
             '<label class="field">Your name<input name="name" autocomplete="name" required></label>' +
             '<label class="field">Email<input name="email" type="email" autocomplete="email" required></label>' +
-            '<label class="field">Phone <span style="font-weight:400;color:var(--ink-3)">(optional)</span><input name="phone" type="tel" autocomplete="tel"></label>' +
+            '<label class="field"><span>Phone <span class="opt">(optional)</span></span><input name="phone" type="tel" autocomplete="tel"></label>' +
           '</div>' +
           '<fieldset style="border:0"><legend class="field" style="margin-bottom:8px">Best time for a call</legend><div class="seg">' +
             [['mornings', 'Mornings'], ['afternoons', 'Afternoons'], ['evenings', 'Evenings']].map(function (t) {
@@ -210,7 +210,7 @@
         '<button type="button" data-close aria-label="Close">×</button></div>' +
         '<form class="dialog-b" novalidate>' +
           (opts.label ? '<p style="margin:0;color:var(--ink-2)">' + esc(opts.label) + ' Tell us where to reach you and we’ll come back with someone we’d back.</p>' : '') +
-          '<label class="field">Anything we should know? <span style="font-weight:400;color:var(--ink-3)">(optional)</span><textarea name="note" rows="2" maxlength="500"></textarea></label>' +
+          '<label class="field"><span>Anything we should know? <span class="opt">(optional)</span></span><textarea name="note" rows="2" maxlength="500"></textarea></label>' +
           '<div class="grid2">' +
             '<label class="field">Your name<input name="name" autocomplete="name" required></label>' +
             '<label class="field">Email<input name="email" type="email" autocomplete="email" required></label>' +
