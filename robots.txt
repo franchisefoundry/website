@@ -1,5 +1,7 @@
 User-agent: *
 Allow: /
 Disallow: /admin/
+# The Foundry is in private preview: remove this line at launch
+Disallow: /foundry/
 
 Sitemap: https://franchisefoundry.co.uk/sitemap.xml

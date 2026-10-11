@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en-GB" data-api="https://portal.franchisefoundry.co.uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Confirming · The Foundry</title>
+<meta name="description" content="Confirm your intro request.">
+<link rel="icon" type="image/png" href="/images/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/foundry/foundry.css">
+</head>
+<body>
+<header class="f-header"><div class="in">
+  <a class="f-brand" href="/foundry/"><svg width="26" height="26" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="8" height="15" rx="1" fill="#A9C2A3"/><rect x="12.5" y="3" width="8.5" height="18" rx="1" fill="#fff"/></svg><b>The Foundry</b><span>by Franchise Foundry</span></a>
+  <nav class="f-nav" aria-label="The Foundry">
+    <a href="/">Find a franchise</a>
+    <a href="/foundry/">Foundry Search</a>
+    <a href="/foundry/track.html">Track my intros</a>
+    <a href="https://portal.franchisefoundry.co.uk/login">Members</a>
+  </nav>
+</div></header>
+<div class="preview-strip" hidden><b class="mono">PREVIEW</b> · Only people with the preview link can see this. Partners shown are demo data.</div>
+
+<main><div class="soon" id="box"><h1>Confirming<span class="accent">…</span></h1><p>One moment.</p></div></main>
+<footer class="footer">Free for franchisees. Partners are vetted by Franchise Foundry. <a href="/terms.html">Terms</a> · <a href="https://portal.franchisefoundry.co.uk/privacy">Privacy</a></footer>
+<script src="/foundry/foundry.js"></script>
+<script>
+(function () {
+  var F = Foundry, b = F.qs('b'), v = F.qs('v'), box = document.getElementById('box')
+  F.gate().then(function (ok) { if (ok) return F.api('/api/foundry/verify', { method: 'POST', body: { b: b, v: v } }).then(done) })
+  function done(r) {
+    if (r.ok && r.data && r.data.t) { location.replace('/foundry/track.html?b=' + encodeURIComponent(r.data.b) + '&t=' + encodeURIComponent(r.data.t) + '&new=1'); return }
+    box.innerHTML = '<h1>That link didn’t work<span class="accent">.</span></h1><p>' + F.esc((r.data && r.data.error) || 'Please try again.') + '</p><p style="margin-top:20px"><a class="btn btn-green" href="/foundry/track.html">Email me my link</a></p>'
+  }
+})()
+</script>
+</body>
+</html>

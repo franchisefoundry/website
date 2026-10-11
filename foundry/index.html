@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en-GB" data-api="https://portal.franchisefoundry.co.uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Foundry Search · Franchise Foundry</title>
+<meta name="description" content="Ask for anything your franchise needs. Vetted partners, member deals, free for franchisees.">
+<link rel="icon" type="image/png" href="/images/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/foundry/foundry.css">
+</head>
+<body>
+<header class="f-header"><div class="in">
+  <a class="f-brand" href="/foundry/"><svg width="26" height="26" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="8" height="15" rx="1" fill="#A9C2A3"/><rect x="12.5" y="3" width="8.5" height="18" rx="1" fill="#fff"/></svg><b>The Foundry</b><span>by Franchise Foundry</span></a>
+  <nav class="f-nav" aria-label="The Foundry">
+    <a href="/">Find a franchise</a>
+    <a href="/foundry/" aria-current="page">Foundry Search</a>
+    <a href="/foundry/track.html">Track my intros</a>
+    <a href="https://portal.franchisefoundry.co.uk/login">Members</a>
+  </nav>
+</div></header>
+<div class="preview-strip" hidden><b class="mono">PREVIEW</b> · Only people with the preview link can see this. Partners shown are demo data.</div>
+
+<main>
+<section class="hero"><div class="wrap">
+  <span class="eyebrow"><i aria-hidden="true"></i>FOUNDRY SEARCH · VETTED PARTNERS FOR FRANCHISEES</span>
+  <h1 class="display">Ask for anything your franchise needs<span class="accent">.</span></h1>
+  <section class="searchbox" aria-label="Foundry Search">
+    <form id="ask" role="search">
+      <label for="q" class="sr-only">What do you need?</label>
+      <input id="q" name="q" autocomplete="off" maxlength="300" placeholder="e.g. funding and an accountant for a coffee franchise in Manchester">
+      <button class="go" type="submit">Search <span class="mono" aria-hidden="true" style="font-size:12px;border:1px solid #161a16;border-radius:4px;padding:2px 6px">↵</span></button>
+    </form>
+    <div class="understood" id="understood" aria-live="polite" hidden></div>
+  </section>
+  <div class="chips-row" id="asks"><span class="label">People are asking</span></div>
+</div></section>
+<section class="wrap" style="padding:32px 20px 48px">
+  <div class="panel" style="display:flex;flex-wrap:wrap;gap:16px;justify-content:space-between;align-items:center">
+    <div><b style="font-size:17px">How it works</b><p style="color:var(--ink-2);margin-top:4px">Tell us what you need. We match you with partners we’ve vetted, brief them on your plan, and they get in touch. Free for you, with member deals on top.</p></div>
+    <a class="btn btn-line" href="/foundry/track.html">Already requested? Track my intros</a>
+  </div>
+</section>
+</main>
+<footer class="footer">Free for franchisees. Partners are vetted by Franchise Foundry. <a href="/terms.html">Terms</a> · <a href="https://portal.franchisefoundry.co.uk/privacy">Privacy</a></footer>
+<script src="/foundry/foundry.js"></script>
+<script>
+(function () {
+  var F = Foundry, esc = F.esc
+  var input = document.getElementById('q'), out = document.getElementById('understood'), t
+  var ASKS = ['Someone to check my franchise agreement', 'Funding and an accountant', 'Insurance for a new coffee unit', 'Shopfitter who can finish in 6 weeks']
+  var asks = document.getElementById('asks')
+  ASKS.forEach(function (a) {
+    var b = document.createElement('button'); b.type = 'button'; b.className = 'chip'; b.textContent = a
+    b.addEventListener('click', function () { location.href = '/foundry/search.html?q=' + encodeURIComponent(a) })
+    asks.appendChild(b)
+  })
+  // Is The Foundry switched on for this browser?
+  F.gate()
+  var NEED = { funding: 'funding', property: 'property & fit-out', legal: 'legal', accounting: 'accounting', technology: 'tech & EPOS', insurance: 'insurance', marketing: 'marketing', recruitment: 'recruitment' }
+  input.addEventListener('input', function () {
+    clearTimeout(t)
+    var q = input.value.trim()
+    if (q.length < 3) { out.hidden = true; return }
+    t = setTimeout(function () {
+      F.api('/api/foundry/parse?q=' + encodeURIComponent(q)).then(function (r) {
+        if (!r.ok || !r.data) return
+        var d = r.data, bits = []
+        if (d.needs && d.needs.length) bits.push('needs: ' + d.needs.map(function (n) { return NEED[n] || n }).join(', '))
+        if (d.sector) bits.push('sector: ' + d.sector.label)
+        if (d.area) bits.push('near: ' + d.area.label)
+        if (d.budget) bits.push('budget: ~£' + Math.round(d.budget / 1000) + 'k')
+        out.innerHTML = '<span class="k">UNDERSTOOD</span>' + (bits.length ? bits.map(function (b) { return '<span>' + esc(b) + '</span>' }).join('') : '<span>keep typing…</span>')
+        out.hidden = false
+      })
+    }, 300)
+  })
+  document.getElementById('ask').addEventListener('submit', function (e) {
+    e.preventDefault()
+    var q = input.value.trim(); if (!q) return input.focus()
+    location.href = '/foundry/search.html?q=' + encodeURIComponent(q)
+  })
+})()
+</script>
+</body>
+</html>

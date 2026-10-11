@@ -9,6 +9,8 @@ import { OPEN_STAGES, type IntroStage } from './intro-status.ts'
 import { briefTemplate, chaseTemplate, briefSubject, textEmailHtml, escapeHtml, type BriefInput } from './brief.ts'
 import { sendEmail } from '@/lib/email/resend'
 import { notify } from '@/lib/notifications'
+import { trackerUrl } from './tracker'
+import { sendVisitorUpdate } from './visitor-email'
 
 export const BOARD_STAGES = ['to_brief', 'briefed', 'in_contact', 'outcome'] as const
 export type BoardStage = typeof BOARD_STAGES[number]
@@ -50,7 +52,7 @@ export async function loadPipeline(
       need, message, outcome, rating, brief_email, partner_id, requester_id,
       profiles!intro_requests_requester_id_fkey(id, full_name, email, phone, role),
       partners(id, name, slug, category, offer_text),
-      intro_batches(source, context, call_time)`)
+      intro_batches(source, context, call_time, foundry_contacts(name, email, phone))`)
     .in('stage', stages)
     .order('created_at', { ascending: view === 'open' })
     .limit(view === 'open' ? 300 : 100)
@@ -78,7 +80,11 @@ export async function loadPipeline(
     const stageSince = (stage === 'briefed' ? r.briefed_at : stage === 'in_contact' ? r.contacted_at : stage === 'outcome' ? r.outcome_at : stage === 'to_brief' ? r.created_at : r.closed_at) ?? r.updated_at ?? r.created_at
     const pc = (contacts ?? []).filter(c => c.partner_id === r.partner_id) as (PartnerContact & { partner_id: string })[]
     const context = (b.context ?? {}) as BriefInput['context']
-    const member = { id: m.id ?? r.requester_id, name: m.full_name || m.email || 'Member', email: m.email ?? null, phone: m.phone ?? null, role: m.role ?? null }
+    const fc = b.foundry_contacts ?? {}
+    // Website visitors have no profile until they verify with a matching email.
+    const member = m.id
+      ? { id: m.id, name: m.full_name || m.email || 'Member', email: m.email ?? null, phone: m.phone ?? null, role: m.role ?? null }
+      : { id: '', name: fc.name || fc.email || 'Website visitor', email: fc.email ?? null, phone: fc.phone ?? null, role: 'visitor' }
     const need = r.need ?? r.message ?? null
     const overdue = (stage === 'to_brief' || stage === 'briefed') && !!r.sla_due_at && new Date(r.sla_due_at).getTime() < now
     return {
@@ -145,13 +151,14 @@ function memberLink(role: string | null) {
 
 export async function performIntroAction(admin: SupabaseClient, id: string, act: IntroAction, actor: Actor): Promise<{ ok: true } | { error: string }> {
   const { data: r } = await admin.from('intro_requests')
-    .select('id, stage, is_demo, requester_id, partners(name), profiles!intro_requests_requester_id_fkey(full_name, role)')
+    .select('id, stage, is_demo, requester_id, batch_id, partners(name), profiles!intro_requests_requester_id_fkey(full_name, role), intro_batches(foundry_contacts(name, email))')
     .eq('id', id).maybeSingle()
   if (!r) return { error: 'Intro not found.' }
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const x = r as any
   const partner: string = x.partners?.name ?? 'the partner'
-  const memberName: string = x.profiles?.full_name ?? 'the member'
+  const visitor = x.intro_batches?.foundry_contacts as { name: string | null; email: string | null } | null
+  const memberName: string = x.profiles?.full_name ?? visitor?.name ?? 'the member'
   const memberRole: string | null = x.profiles?.role ?? null
   const stage = r.stage as IntroStage
   const demo = r.is_demo as boolean
@@ -160,9 +167,12 @@ export async function performIntroAction(admin: SupabaseClient, id: string, act:
 
   const event = (kind: string, body: string, visible: boolean) =>
     admin.from('intro_events').insert({ intro_request_id: id, kind, actor_id: actor.id, body, visible_to_requester: visible })
+  // Portal members get in-app + email + push; website visitors get an email with their tracker link.
   const tellMember = (title: string, body: string) => r.requester_id
     ? notify({ userId: r.requester_id, event: 'intro_update', title, body, link: memberLink(memberRole) }).catch(e => console.error('[pipeline] notify member failed', e))
-    : Promise.resolve()
+    : visitor?.email && r.batch_id
+      ? sendVisitorUpdate(visitor.email, visitor.name, title, body, trackerUrl(r.batch_id)).catch(e => console.error('[pipeline] visitor email failed', e))
+      : Promise.resolve()
 
   switch (act.action) {
     case 'brief': {
