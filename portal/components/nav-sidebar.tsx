@@ -102,6 +102,17 @@ function navForRole(role: string): NavItem[] {
   return []
 }
 
+/** Swap the member "Marketplace" item for The Foundry. */
+function withFoundry(items: NavItem[], role: string): NavItem[] {
+  const swap = (leaf: NavLeaf): NavLeaf =>
+    leaf.href === `/${role}/marketplace` ? { ...leaf, label: 'The Foundry', href: `/${role}/foundry` } : leaf
+  return items.map(item => {
+    if (isDivider(item)) return item
+    if (isGroup(item)) return { ...item, children: item.children.map(swap) }
+    return swap(item)
+  })
+}
+
 function profileHrefForRole(role: string): string {
   if (role === 'admin')      return '/admin/profile'
   if (role === 'franchisor') return '/franchisor/profile'
@@ -199,12 +210,14 @@ interface NavSidebarProps {
   badges?: Record<string, number>
   /** True inside a client portal that an admin is previewing — shows the ViewSwitcher. */
   adminPreview?: boolean
+  /** The Foundry is visible to this user: "Marketplace" becomes "The Foundry". */
+  foundry?: boolean
 }
 
-export function NavSidebar({ profile, brands, activeBrandId, badges, adminPreview }: NavSidebarProps) {
+export function NavSidebar({ profile, brands, activeBrandId, badges, adminPreview, foundry }: NavSidebarProps) {
   const pathname = usePathname()
   const router = useRouter()
-  const nav = navForRole(profile.role)
+  const nav = foundry ? withFoundry(navForRole(profile.role), profile.role) : navForRole(profile.role)
   const [mobileOpen, setMobileOpen] = useState(false)
 
   async function handleSignOut() {

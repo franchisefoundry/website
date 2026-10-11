@@ -2,27 +2,29 @@ import { randomUUID } from 'node:crypto'
 import { NextResponse, type NextRequest } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { foundryAccess, corsHeaders, rateLimited } from '@/lib/foundry/access'
-import { loadPartners, planContextFor, type PlanChip } from '@/lib/foundry/data'
-import { parseQuery } from '@/lib/foundry/parse'
+import { loadPartners, planContextFor } from '@/lib/foundry/data'
+import { parseQuery, dropFromQuery, isOffKey } from '@/lib/foundry/parse'
 import { search } from '@/lib/foundry/rank'
-
-const CHIPS: PlanChip[] = ['brand', 'area', 'budget', 'stage', 'sector']
 
 /**
  * Foundry Search. Public (website visitors) and members (portal session).
- * Body: { q: string, off?: PlanChip[], surface?: 'website' | 'portal' }
+ * Body: { q: string, off?: OffKey[], surface?: 'website' | 'portal', log?: boolean }
  * Members' plan comes from their profile, never from the request body.
+ * `log: false` is for the live preview under the search bar (no search_events row).
  */
 export async function POST(request: NextRequest) {
   const cors = corsHeaders(request)
   const access = await foundryAccess(request)
   if (!access.allowed) return NextResponse.json({ error: 'Not found' }, { status: 404, headers: cors })
-  if (rateLimited(request)) return NextResponse.json({ error: 'Too many searches. Try again in a minute.' }, { status: 429, headers: cors })
 
-  let body: { q?: unknown; off?: unknown; surface?: unknown }
+  let body: { q?: unknown; off?: unknown; surface?: unknown; log?: unknown }
   try { body = await request.json() } catch { body = {} }
+  const log = body.log !== false
+  if (rateLimited(request, log ? 30 : 120)) {
+    return NextResponse.json({ error: 'Too many searches. Try again in a minute.' }, { status: 429, headers: cors })
+  }
   const q = typeof body.q === 'string' ? body.q : ''
-  const off = Array.isArray(body.off) ? body.off.filter((c): c is PlanChip => CHIPS.includes(c as PlanChip)) : []
+  const off = Array.isArray(body.off) ? body.off.filter(isOffKey) : []
   const surface = body.surface === 'website' ? 'website' : 'portal'
 
   const admin = createAdminClient()
@@ -30,7 +32,7 @@ export async function POST(request: NextRequest) {
     loadPartners(admin, { includeDemo: access.includeDemo }),
     planContextFor(admin, access.viewer, off),
   ])
-  const parsed = parseQuery(q)
+  const parsed = dropFromQuery(parseQuery(q), off)
   const result = search(parsed, partners, ctx)
 
   // Session id: website sends its own; portal uses a first-party cookie.
@@ -39,14 +41,14 @@ export async function POST(request: NextRequest) {
     ?? randomUUID()
 
   let searchId: string | null = null
-  if (parsed.raw) {
+  if (log && parsed.raw) {
     const { data, error } = await admin.from('search_events').insert({
       session_id: sessionId,
       profile_id: access.viewer?.id ?? null,
       role: access.viewer?.role ?? null,
       surface,
       raw_query: parsed.raw,
-      parsed: { ...parsed, applied: result.applied },
+      parsed: { ...parsed, applied: result.applied, off },
       partner_ids: result.partnerIds,
       result_count: result.partnerIds.length,
       unmet_needs: result.unmetNeeds,
@@ -57,7 +59,7 @@ export async function POST(request: NextRequest) {
     searchId = data?.id ?? null
   }
 
-  const res = NextResponse.json({ ...result, searchId, plan: ctx }, { headers: cors })
+  const res = NextResponse.json({ ...result, searchId, plan: ctx, off }, { headers: cors })
   if (!request.cookies.get('ff_sid') && !request.headers.get('x-foundry-session')) {
     res.cookies.set('ff_sid', sessionId, { httpOnly: true, sameSite: 'lax', secure: true, path: '/', maxAge: 60 * 60 * 24 * 180 })
   }

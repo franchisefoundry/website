@@ -47,6 +47,7 @@ const config: Config = {
       },
       fontFamily: {
         sans: ['Sora', 'system-ui', 'sans-serif'],
+        mono: ['var(--font-mono)', 'ui-monospace', 'SFMono-Regular', 'monospace'],
       },
     },
   },

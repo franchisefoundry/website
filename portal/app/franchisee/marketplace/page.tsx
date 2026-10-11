@@ -1,6 +1,9 @@
+import { redirect } from 'next/navigation'
 import { ComingSoon } from '@/components/client/ComingSoon'
+import { canSeeFoundry } from '@/lib/foundry/access'
 
-export default function MarketplacePage() {
+export default async function MarketplacePage() {
+  if (await canSeeFoundry()) redirect('/franchisee/foundry')
   return (
     <ComingSoon
       title="Marketplace"

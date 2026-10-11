@@ -24,6 +24,15 @@ and automations are decided here. UK English throughout.
   columns, 13/13 intro columns, RLS on all 6 new tables, 8 policies, no new advisor warnings.
   Note for future migrations: the Supabase MCP stalls on UPDATEs without a WHERE clause.
 
+**Phase 2 (portal Search, Results, Intro), done:**
+- Franchisee + franchisor: `/{role}/foundry` (Ask), `/{role}/foundry/search` (Results), `/{role}/foundry/[slug]` (Partner profile). Shared components in `portal/components/foundry/`.
+- Compact Ask panel on both portal homes; sidebar "Marketplace" becomes "The Foundry"; old marketplace pages redirect. All only when the switch allows.
+- Intro list (basket, per user, localStorage), multi-partner request dialog, one-click intros from Ask.
+- API: `POST /api/foundry/intros` (members), `/events`, `/gap`. 4-working-hour brief SLA set on every request.
+- Demo activity notifies only `FOUNDRY_PREVIEW_EMAILS`; demo intros hidden from other admins and tagged "Demo".
+- Consent box is unticked by default (UK GDPR), unlike the canvas.
+- Checked visually at 1440px and 390px with a throwaway harness (not committed).
+
 ---
 
 ## 0. Architecture

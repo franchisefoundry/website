@@ -3,6 +3,7 @@ import { createAdminClient } from '@/lib/supabase/admin'
 import { MATCH_PIPELINE_STAGES } from '@/lib/supabase/types'
 import { formatInvestmentRange } from '@/lib/utils'
 import { FranchiseeHomeView } from '@/components/franchisee/FranchiseeHomeView'
+import { HomeAsk } from '@/components/foundry/HomeAsk'
 
 export default async function FranchiseeDashboard() {
   const supabase = await createClient()
@@ -77,6 +78,8 @@ export default async function FranchiseeDashboard() {
   } : null
 
   return (
+    <>
+    <HomeAsk role="franchisee" />
     <FranchiseeHomeView
       firstName={firstName}
       profileExists={!!profileId}
@@ -88,5 +91,6 @@ export default async function FranchiseeDashboard() {
       kpis={kpis}
       completeness={completeness}
     />
+    </>
   )
 }

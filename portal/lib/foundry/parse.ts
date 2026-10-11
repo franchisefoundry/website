@@ -100,3 +100,30 @@ export function formatBudget(n: number): string {
   if (n >= 1_000) return `£${Math.round(n / 1_000)}k`
   return `£${n}`
 }
+
+/**
+ * Things the person switched off: a plan chip ('area', 'budget', ...) or a
+ * need from their query ('need:legal'). Removing a chip removes it whether it
+ * came from the words or from their plan.
+ */
+export type OffKey = 'brand' | 'area' | 'budget' | 'stage' | 'sector' | `need:${Need}`
+
+export function isOffKey(v: unknown): v is OffKey {
+  if (typeof v !== 'string') return false
+  if (['brand', 'area', 'budget', 'stage', 'sector'].includes(v)) return true
+  return v.startsWith('need:') && (NEEDS as string[]).includes(v.slice(5))
+}
+
+export function dropFromQuery(parsed: ParsedQuery, off: OffKey[]): ParsedQuery {
+  if (!off.length) return parsed
+  const needs = parsed.needs.filter(n => !off.includes(`need:${n}`))
+  return {
+    ...parsed,
+    needs,
+    needTerms: Object.fromEntries(Object.entries(parsed.needTerms).filter(([n]) => needs.includes(n as Need))),
+    sector: off.includes('sector') ? null : parsed.sector,
+    area: off.includes('area') ? null : parsed.area,
+    budget: off.includes('budget') ? null : parsed.budget,
+    stage: off.includes('stage') ? null : parsed.stage,
+  }
+}

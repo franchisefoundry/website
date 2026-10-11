@@ -140,3 +140,25 @@ test('formats budgets', () => {
   assert.equal(formatBudget(1_200_000), '£1.2m')
   assert.equal(formatBudget(2_000_000), '£2m')
 })
+
+import { dropFromQuery, isOffKey } from './parse.ts'
+import { addWorkingHours, isWorkingTime } from './sla.ts'
+
+test('switching chips off removes needs and dimensions', () => {
+  const p = dropFromQuery(parseQuery('solicitor and insurance in Leeds for £90k'), ['need:legal', 'area'])
+  assert.deepEqual(p.needs, ['insurance'])
+  assert.equal(p.area, null)
+  assert.equal(p.budget, 90_000)
+  assert.equal(isOffKey('need:legal'), true)
+  assert.equal(isOffKey('need:nonsense'), false)
+  assert.equal(isOffKey('budget'), true)
+})
+
+test('working hours: 4h brief SLA skips nights and weekends', () => {
+  // Fri 16:00 London (BST, UTC+1) → 2h left Friday, 2h Monday → Mon 11:00 London
+  const due = addWorkingHours(new Date('2026-10-09T15:00:00Z'), 4)
+  assert.equal(due.toISOString(), '2026-10-12T10:00:00.000Z')
+  // Tue 10:00 London → Tue 14:00 London
+  assert.equal(addWorkingHours(new Date('2026-10-13T09:00:00Z'), 4).toISOString(), '2026-10-13T13:00:00.000Z')
+  assert.equal(isWorkingTime(new Date('2026-10-10T11:00:00Z')), false) // Saturday
+})

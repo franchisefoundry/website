@@ -5,14 +5,19 @@ import { Avatar } from '@/components/ui/Avatar'
 import { statusBadge } from '@/components/ui/badge'
 import { formatDate } from '@/lib/utils'
 import IntroStatusSelect from './intro-status-select'
+import { canSeeFoundry } from '@/lib/foundry/access'
 
 export default async function IntroRequestsPage() {
   const supabase = await createClient()
 
-  const { data: requests } = await supabase
+  // Explicit FK: intro_events also links intro_requests to profiles, so a bare
+  // profiles(...) embed is ambiguous. Demo intros only show to preview viewers.
+  let query = supabase
     .from('intro_requests')
-    .select('*, profiles(full_name, email), partners(name, category)')
+    .select('*, profiles!intro_requests_requester_id_fkey(full_name, email), partners(name, category)')
     .order('created_at', { ascending: false })
+  if (!(await canSeeFoundry())) query = query.eq('is_demo', false)
+  const { data: requests } = await query
 
   return (
     <div>
@@ -39,6 +44,7 @@ export default async function IntroRequestsPage() {
                     <p className="text-sm font-semibold text-ink truncate">{requester?.full_name || 'Unknown'}</p>
                     <p className="text-xs text-ink-3 truncate">{requester?.email}</p>
                   </div>
+                  {r.is_demo && <span className="rounded-full border border-dashed border-ff-gold px-2 py-0.5 text-[10px] font-semibold text-[#8a5f26]">Demo</span>}
                   {statusBadge(r.status)}
                 </div>
 

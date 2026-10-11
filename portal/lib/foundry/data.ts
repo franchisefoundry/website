@@ -4,7 +4,7 @@
  * notes) can reach the website or a visitor.
  */
 import type { SupabaseClient } from '@supabase/supabase-js'
-import { parseQuery } from './parse.ts'
+import { parseQuery, type OffKey } from './parse.ts'
 import type { Stage } from './taxonomy.ts'
 import type { EnginePartner, PlanContext } from './types.ts'
 import type { FoundryViewer } from './access'
@@ -45,10 +45,10 @@ const STAGE_FROM_PIPELINE: Record<string, Stage> = {
  * { audience: 'any' }. Chips listed in `off` are left out.
  */
 export async function planContextFor(
-  admin: SupabaseClient, viewer: FoundryViewer | null, off: PlanChip[] = [],
+  admin: SupabaseClient, viewer: FoundryViewer | null, off: OffKey[] = [],
 ): Promise<PlanContext> {
   if (!viewer) return { audience: 'any' }
-  const use = (c: PlanChip) => !off.includes(c)
+  const use = (c: PlanChip) => !(off as string[]).includes(c)
 
   if (viewer.role === 'franchisee') {
     const { data: fp } = await admin.from('franchisee_profiles')
@@ -86,4 +86,40 @@ export async function planContextFor(
 
   // Agents and admins see everything; plan comes from the query alone.
   return { audience: 'any' }
+}
+
+export interface PartnerProfileData extends EnginePartner {
+  description: string | null
+  our_take: string | null
+  services: { title: string; description?: string; price?: string }[]
+  faqs: { q: string; a: string }[]
+  features: { label: string; value: string }[]
+  deal_terms: string | null
+}
+
+/** One partner's public profile. null if not live (or demo outside preview). */
+export async function loadPartnerProfile(
+  admin: SupabaseClient, slug: string, { includeDemo }: { includeDemo: boolean },
+): Promise<PartnerProfileData | null> {
+  let q = admin.from('partners')
+    .select(`${PUBLIC_PARTNER_COLUMNS}, description, our_take, services, faqs, features, deal_terms`)
+    .eq('slug', slug).eq('status', 'live')
+  if (!includeDemo) q = q.eq('is_demo', false)
+  const { data } = await q.maybeSingle()
+  if (!data) return null
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const r = data as any
+  return {
+    id: r.id, slug: r.slug, name: r.name, category: r.category, audience: r.audience ?? 'both',
+    tagline: r.tagline, offer_text: r.offer_text, trust_level: r.trust_level ?? 'listed',
+    regions: r.regions ?? [], base_location: r.base_location, price_from: r.price_from,
+    budget_min_gbp: r.budget_min_gbp, budget_max_gbp: r.budget_max_gbp,
+    sectors: r.sectors ?? [], keywords: r.keywords ?? [], client_count: r.client_count,
+    reply_hours: r.reply_hours_typical,
+    description: r.description, our_take: r.our_take,
+    services: Array.isArray(r.services) ? r.services : [],
+    faqs: Array.isArray(r.faqs) ? r.faqs : [],
+    features: Array.isArray(r.features) ? r.features : [],
+    deal_terms: r.deal_terms,
+  }
 }

@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from 'next'
-import { Sora } from 'next/font/google'
+import { Sora, IBM_Plex_Mono } from 'next/font/google'
 import './globals.css'
 import { DevRoleSwitcher } from '@/components/dev/DevRoleSwitcher'
 import { ToastContainer } from '@/components/ui/ToastContainer'
@@ -11,6 +11,14 @@ const sora = Sora({
   subsets: ['latin'],
   display: 'swap',
   variable: '--font-sora',
+})
+
+// Readouts, fit scores and timestamps in The Foundry
+const plexMono = IBM_Plex_Mono({
+  subsets: ['latin'],
+  weight: ['400', '500', '600'],
+  display: 'swap',
+  variable: '--font-mono',
 })
 
 export const metadata: Metadata = {
@@ -33,7 +41,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${sora.className} ${sora.variable}`}>
+    <html lang="en" className={`${sora.className} ${sora.variable} ${plexMono.variable}`}>
       <body>
         {children}
         <ToastContainer />
