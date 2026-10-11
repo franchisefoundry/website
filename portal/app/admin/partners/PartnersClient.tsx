@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useRef, useEffect, useMemo } from 'react'
+import { PartnerContacts } from '@/components/foundry/admin/PartnerContacts'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
@@ -420,6 +421,8 @@ export default function PartnersClient({ partners, introRequestCount }: Props) {
                     placeholder="e.g. Arrangement fee waived · save ~£1,500" />
                   <p className="text-xs text-ink-3 mt-1">Shown as a gold “deal” badge on the card. Leave blank if there’s no offer.</p>
                 </div>
+
+                {editing && editing !== 'new' && <PartnerContacts partnerId={editing} />}
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>

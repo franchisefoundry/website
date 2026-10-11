@@ -25,7 +25,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   const [{ count: newLeads }, { count: pendingReview }, { count: pendingIntros }, { count: unreadMsgs }, unreadDms] = await Promise.all([
     admin.from('leads').select('*', { count: 'exact', head: true }).in('status', ['new', 'meeting_requested']),
     admin.from('franchisor_profiles').select('*', { count: 'exact', head: true }).eq('status', 'pending_review').is('archived_at', null),
-    admin.from('intro_requests').select('*', { count: 'exact', head: true }).eq('status', 'pending'),
+    admin.from('intro_requests').select('*', { count: 'exact', head: true }).eq('status', 'pending').eq('is_demo', false),
     admin.from('messages').select('*', { count: 'exact', head: true }).eq('from_admin', false).is('read_at', null),
     unreadDirectCount(user.id, admin),
   ])

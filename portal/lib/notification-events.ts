@@ -35,12 +35,14 @@ export const NOTIFICATION_EVENTS: NotificationEvent[] = [
   { key: 'agreement_ready',     role: 'franchisor', label: 'Agreement ready to sign',   description: 'Your Franchise Foundry agreement is ready.',        defaultEmail: true },
   { key: 'brand_info_requested', role: 'franchisor', label: 'More info requested',    description: 'The FF team needs more detail on your questionnaire before going live.', defaultEmail: true },
   { key: 'agreement_reply',     role: 'franchisor', label: 'Reply on your agreement',   description: 'The FF team replies to a comment on your agreement.', defaultEmail: true },
+  { key: 'intro_update',        role: 'franchisor', label: 'Foundry intro updates',     description: 'A partner you asked to meet is briefed, gets in touch or needs your feedback.', defaultEmail: true },
 
   // ── Franchisee ─────────────────────────────────────────────────────────────
   { key: 'match_revealed',      role: 'franchisee', label: 'Your match revealed',       description: 'A franchise brand is matched to you.',              defaultEmail: true },
   { key: 'stage_updated',       role: 'franchisee', label: 'Pipeline progress',         description: 'Your application moves to a new stage.',            defaultEmail: true },
   { key: 'meeting_booked',      role: 'franchisee', label: 'Meeting confirmed',         description: 'A meeting with a brand is booked or confirmed.',    defaultEmail: true },
   { key: 'marketplace_unlocked', role: 'franchisee', label: 'Marketplace unlocked',     description: 'You gain access to the partner marketplace.',       defaultEmail: true },
+  { key: 'intro_update',        role: 'franchisee', label: 'Foundry intro updates',     description: 'A partner you asked to meet is briefed, gets in touch or needs your feedback.', defaultEmail: true },
 
   // ── Introducer ─────────────────────────────────────────────────────────────
   { key: 'referral_lead',  role: 'introducer', label: 'New referral lead',     description: 'Someone joins the matching platform via your referral link.', defaultEmail: true },

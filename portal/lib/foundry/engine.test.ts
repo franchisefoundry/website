@@ -176,3 +176,29 @@ test('intro status: steps, contact reveal and closing', () => {
   assert.equal(introStatus('withdrawn').step, 0)
   assert.match(introStatus('to_brief', { slaDueAt: '2026-10-12T10:00:00Z' }).next, /^We’ll brief them by Monday 11am$/)
 })
+
+import { briefTemplate, chaseTemplate, textEmailHtml } from './brief.ts'
+
+test('briefing email: names, plan facts, need, deal and contact', () => {
+  const t = briefTemplate({
+    partnerName: 'Capital Forge', contactName: 'Jo Patel', memberName: 'Sarah Ahmed',
+    memberEmail: 'sarah@example.com', memberPhone: '07700 900000',
+    context: { brand: 'Brew & Co.', sector: 'coffee', area: 'Manchester', budget: '£120k', stage: 'opening', role: 'franchisee' },
+    need: 'Funding for ~70% of £120k.', callTime: 'mornings', deal: 'Arrangement fee waived', senderName: 'Harry',
+  })
+  assert.match(t, /^Hi Jo,/)
+  assert.match(t, /Introducing Sarah Ahmed, franchisee with Brew & Co\. Coffee franchise, Manchester, budget around £120k, signed and opening\./)
+  assert.match(t, /What they need: Funding for ~70% of £120k\./)
+  assert.match(t, /Best time for a call: mornings\./)
+  assert.match(t, /member deal applies: Arrangement fee waived\./)
+  assert.match(t, /sarah@example\.com · 07700 900000/)
+  assert.match(t, /Harry, Franchise Foundry$/)
+  assert.match(chaseTemplate({ partnerName: 'Capital Forge', contactName: null, memberName: 'Sarah', senderName: 'Ben' }), /^Hi Capital Forge team,/)
+})
+
+test('email html escapes everything the member or admin typed', () => {
+  const html = textEmailHtml('Hi <script>alert(1)</script>\n\nTom & Jerry')
+  assert.ok(!html.includes('<script>'))
+  assert.ok(html.includes('&lt;script&gt;'))
+  assert.ok(html.includes('Tom &amp; Jerry'))
+})

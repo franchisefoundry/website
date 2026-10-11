@@ -15,6 +15,7 @@ export default async function AdminPartnersPage() {
     .from('intro_requests')
     .select('*', { count: 'exact', head: true })
     .eq('status', 'pending')
+    .eq('is_demo', false)
 
   return (
     <div>
