@@ -7,13 +7,17 @@
 -- partners.is_active or writes intro_requests.status keeps working.
 -- Every new table has RLS on; public traffic only ever reaches these
 -- tables through server routes using the service role.
+--
+-- Applied to the live project (ummpvmxkaxxninuinyzm) on 2026-10-11 via the
+-- Supabase MCP in chunks, recorded as migration 20261011120000 "foundry_build1".
+-- Updates carry explicit WHERE clauses: the MCP stalls on unscoped UPDATEs.
 
 -- 1. Partners: profile, search and trust fields ────────────────
 alter table public.partners add column if not exists trust_level text not null default 'listed'
   check (trust_level in ('listed', 'trusted', 'recommended'));
 alter table public.partners add column if not exists status text not null default 'live'
   check (status in ('draft', 'live', 'paused'));
-update public.partners set status = case when is_active then 'live' else 'paused' end;
+update public.partners set status = 'paused' where is_active = false and status <> 'paused';
 
 alter table public.partners add column if not exists our_take            text;
 alter table public.partners add column if not exists services            jsonb  not null default '[]';
@@ -127,9 +131,9 @@ alter table public.intro_requests add column if not exists outcome      text che
 alter table public.intro_requests add column if not exists rating       text check (rating in ('going_well', 'slow', 'not_fit'));
 alter table public.intro_requests add column if not exists is_demo      boolean not null default false;
 
-update public.intro_requests set
-  stage = case status when 'sent' then 'briefed' when 'completed' then 'closed' else 'to_brief' end,
-  need  = coalesce(need, message);
+update public.intro_requests set stage = 'briefed' where status = 'sent'      and stage = 'to_brief';
+update public.intro_requests set stage = 'closed'  where status = 'completed' and stage = 'to_brief';
+update public.intro_requests set need = message    where need is null and message is not null;
 
 create index if not exists intro_requests_stage_idx on public.intro_requests(stage);
 create index if not exists intro_requests_batch_idx on public.intro_requests(batch_id);
