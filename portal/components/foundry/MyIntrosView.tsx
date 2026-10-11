@@ -137,7 +137,9 @@ function IntroDetail({ intro, base, canMessage }: { intro: MyIntro; base: string
     <aside id="intro-detail" className="scroll-mt-20 space-y-4 lg:sticky lg:top-4" aria-label={`${intro.partner.name} intro`}>
       <div className="rounded-2xl bg-ff-green p-5 text-white">
         <div className="flex items-baseline justify-between gap-3">
-          <Link href={`${base}/${intro.partner.slug}`} className="text-lg font-extrabold hover:underline">{intro.partner.name}</Link>
+          {intro.partner.slug
+            ? <Link href={`${base}/${intro.partner.slug}`} className="text-lg font-extrabold hover:underline">{intro.partner.name}</Link>
+            : <span className="text-lg font-extrabold">{intro.partner.name}</span>}
           <span className="text-xs text-[#e8c9a0]">{intro.status.status}</span>
         </div>
         {intro.contact ? (

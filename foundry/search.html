@@ -117,7 +117,7 @@
     }
     if (!shown) html += '<p class="panel" style="margin-top:14px">' + (dealsOnly ? 'No member deals match this search. Switch off “Member deals only” to see everyone.' : 'Nothing matches yet. Try different words, or ask us to source someone.') + '</p>'
     if (tab === 'all') res.gaps.forEach(function (g) {
-      html += '<div class="gap"><div><b>' + esc(g.message) + '</b><small>Tell us and we’ll find someone we’d back.</small></div><button type="button" data-gap="' + esc(g.need) + '" data-area="' + esc(g.area || '') + '">Ask us to source one →</button></div>'
+      html += '<div class="gap"><div><b>' + esc(g.message) + '</b><small>Tell us and we’ll find someone we’d back.</small></div><button type="button" data-gap="' + esc(g.need) + '" data-area="' + esc(g.area || '') + '" data-label="' + esc(g.message) + '">Ask us to source one →</button></div>'
     })
     document.getElementById('results').innerHTML = html
     renderList()
@@ -155,9 +155,10 @@
     }
     else if (el.dataset.remove) { F.removeFromList(el.dataset.remove); render() }
     else if (el.dataset.gap) {
-      el.disabled = true
-      F.api('/api/foundry/gap', { method: 'POST', body: { need: el.dataset.gap, area: el.dataset.area || null, q: q, searchId: res && res.searchId } })
-        .then(function (r) { el.textContent = r.ok ? 'Asked ✓' : 'Try again'; if (!r.ok) el.disabled = false })
+      F.openSourceDialog({
+        need: el.dataset.gap, area: el.dataset.area || null, label: el.dataset.label || '', query: q, searchId: res && res.searchId,
+        onSent: function () { el.disabled = true; el.textContent = 'Asked ✓' },
+      })
     }
   })
   document.getElementById('deals').addEventListener('click', function () {

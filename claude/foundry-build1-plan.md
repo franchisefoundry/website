@@ -56,6 +56,14 @@ and automations are decided here. UK English throughout.
 - Admin pipeline shows website visitors and emails them updates with their tracker link.
 - Partner profiles are rendered client-side for now; build-time static pages for SEO come at launch.
 
+**Admin follow-ups (sourcing, swap, unconfirmed, leads), done:**
+- "Ask us to source one" now creates a real intro with no partner (stage `to_source`, migration 009 adds `source_category`, `source_area`). Members go straight on the board; website visitors fill in name + email and confirm first. The team is notified.
+- Pipeline: To source column first. Pick a partner (matching category listed first) and it moves to To brief with a fresh 4-hour SLA, and the member is told.
+- Swap partner on To brief and Briefed intros; the briefing email redrafts for the new partner and the member is told.
+- Awaiting confirmation tab: unconfirmed website requests, with Resend confirmation (new one-time link for the whole batch).
+- Add to Leads for website contacts (`source: foundry`, need as goals, area as location); links an existing lead with the same email instead of duplicating. Shows "In Leads ✓" after.
+- My intros and the website tracker show sourcing requests as "Finding you a {category} partner".
+
 ---
 
 ## 0. Architecture

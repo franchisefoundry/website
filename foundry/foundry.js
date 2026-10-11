@@ -194,3 +194,68 @@
 
   window.Foundry.openIntroDialog = open
 })()
+
+/* "Ask us to source one": no partner yet, so just who they are and consent. */
+;(function () {
+  'use strict'
+  var F = window.Foundry
+  var esc = F.esc
+
+  function open(opts) {
+    var overlay = document.createElement('div')
+    overlay.className = 'overlay'
+    overlay.innerHTML =
+      '<div class="dialog" role="dialog" aria-modal="true" aria-labelledby="ff-src-h" tabindex="-1">' +
+        '<div class="dialog-h"><h2 id="ff-src-h">We’ll find you one</h2>' +
+        '<button type="button" data-close aria-label="Close">×</button></div>' +
+        '<form class="dialog-b" novalidate>' +
+          (opts.label ? '<p style="margin:0;color:var(--ink-2)">' + esc(opts.label) + ' Tell us where to reach you and we’ll come back with someone we’d back.</p>' : '') +
+          '<label class="field">Anything we should know? <span style="font-weight:400;color:var(--ink-3)">(optional)</span><textarea name="note" rows="2" maxlength="500"></textarea></label>' +
+          '<div class="grid2">' +
+            '<label class="field">Your name<input name="name" autocomplete="name" required></label>' +
+            '<label class="field">Email<input name="email" type="email" autocomplete="email" required></label>' +
+          '</div>' +
+          '<label class="check"><input type="checkbox" name="consent">Contact me about this, and share my details with the partner you find. I can withdraw at any time.</label>' +
+          '<div class="err" role="alert" hidden></div>' +
+          '<button type="submit" class="btn btn-gold btn-block" style="min-height:52px">Find me a partner →</button>' +
+          '<p style="font-size:12px;color:var(--ink-3)">No account needed. We’ll email you a link to confirm first. See our <a href="/terms.html">terms</a>.</p>' +
+        '</form></div>'
+    document.body.appendChild(overlay)
+    var dlg = overlay.querySelector('.dialog')
+    var form = overlay.querySelector('form')
+    var err = overlay.querySelector('.err')
+    dlg.focus()
+
+    function close() { overlay.remove(); document.removeEventListener('keydown', onKey) }
+    function onKey(e) { if (e.key === 'Escape') close() }
+    document.addEventListener('keydown', onKey)
+    overlay.addEventListener('click', function (e) { if (e.target === overlay || e.target.hasAttribute('data-close')) close() })
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault()
+      err.hidden = true
+      var fd = new FormData(form)
+      if (!String(fd.get('name') || '').trim()) return fail('Please add your name.')
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(fd.get('email') || '').trim())) return fail('Please enter a valid email address.')
+      if (!fd.get('consent')) return fail('Please confirm we can contact you about this.')
+      var btn = form.querySelector('[type=submit]'); btn.disabled = true; btn.textContent = 'Sending…'
+      var note = String(fd.get('note') || '').trim()
+      F.api('/api/foundry/gap', { method: 'POST', body: {
+        need: opts.need, area: opts.area || null, q: [opts.query || '', note].filter(Boolean).join(' · '), searchId: opts.searchId || null,
+        name: String(fd.get('name')).trim(), email: String(fd.get('email')).trim(), consent: true,
+      } }).then(function (r) {
+        if (!r.ok) { btn.disabled = false; btn.textContent = 'Find me a partner →'; return fail((r.data && r.data.error) || 'Something went wrong. Please try again.') }
+        if (opts.onSent) opts.onSent()
+        dlg.innerHTML = '<div class="dialog-b" style="padding:28px 24px">' +
+          '<span class="ok-ico" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2f7a4a" stroke-width="2.5" stroke-linecap="round"><path d="M4 7l8 6 8-6M4 7v10h16V7"/></svg></span>' +
+          '<h2 class="h-big" id="ff-src-h">Check your email<span class="accent">.</span></h2>' +
+          '<p>We’ve sent a link to <b>' + esc((r.data && r.data.email) || String(fd.get('email')).trim()) + '</b>. Confirm it and we’ll start looking.</p>' +
+          '<p style="font-size:13px;color:var(--ink-3)">Can’t see it? Check spam.</p>' +
+          '<button type="button" class="btn btn-green" data-close>Done</button></div>'
+      })
+      function fail(msg) { err.textContent = msg; err.hidden = false; return false }
+    })
+  }
+
+  window.Foundry.openSourceDialog = open
+})()

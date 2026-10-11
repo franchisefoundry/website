@@ -19,11 +19,22 @@ export interface MyIntro {
   events: { id: string; body: string; at: string }[]
 }
 
+/** The partner line for an intro. Sourcing requests have no partner yet, so say what we're finding. */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function introPartner(row: any): MyIntro['partner'] {
+  const p = row.partners ?? {}
+  if (!row.partner_id) {
+    const label = NEED_LABEL[row.source_category as Need] ?? 'Partner'
+    return { id: '', name: `Finding you a ${label.toLowerCase()} partner`, slug: '', categoryLabel: row.source_area ? `${label} · ${row.source_area}` : label }
+  }
+  return { id: p.id ?? row.partner_id, name: p.name ?? 'Partner', slug: p.slug ?? '', categoryLabel: NEED_LABEL[p.category as Need] ?? 'Partner' }
+}
+
 export async function loadMyIntros(
   admin: SupabaseClient, viewerId: string, { includeDemo }: { includeDemo: boolean },
 ): Promise<MyIntro[]> {
   let q = admin.from('intro_requests')
-    .select('id, partner_id, need, message, stage, created_at, sla_due_at, outcome, rating, is_demo, partners(id, name, slug, category)')
+    .select('id, partner_id, need, message, stage, created_at, sla_due_at, outcome, rating, is_demo, source_category, source_area, partners(id, name, slug, category)')
     .eq('requester_id', viewerId)
     .order('created_at', { ascending: false })
     .limit(100)
@@ -34,7 +45,7 @@ export async function loadMyIntros(
 
   const ids = rows.map(r => r.id)
   const contactPartnerIds = rows
-    .filter(r => introStatus(r.stage as IntroStage).contactVisible)
+    .filter(r => r.partner_id && introStatus(r.stage as IntroStage).contactVisible)
     .map(r => r.partner_id)
 
   const [{ data: events }, { data: contacts }] = await Promise.all([
@@ -48,14 +59,12 @@ export async function loadMyIntros(
   ])
 
   return rows.map(r => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const p = (r as any).partners ?? {}
     const stage = r.stage as IntroStage
     const status = introStatus(stage, { outcome: r.outcome, slaDueAt: r.sla_due_at, rated: !!r.rating })
     const c = status.contactVisible ? (contacts ?? []).find(x => x.partner_id === r.partner_id) : undefined
     return {
       id: r.id,
-      partner: { id: p.id ?? r.partner_id, name: p.name ?? 'Partner', slug: p.slug ?? '', categoryLabel: NEED_LABEL[p.category as Need] ?? 'Partner' },
+      partner: introPartner(r),
       need: r.need ?? r.message ?? null,
       stage,
       createdAt: r.created_at,

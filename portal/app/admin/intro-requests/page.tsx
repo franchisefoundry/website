@@ -8,7 +8,7 @@ import { IntroPipeline } from '@/components/foundry/admin/IntroPipeline'
 
 export default async function IntroRequestsPage({ searchParams }: { searchParams: Promise<{ view?: string }> }) {
   const { view: v } = await searchParams
-  const view = v === 'closed' ? 'closed' : 'open'
+  const view = v === 'closed' ? 'closed' : v === 'unconfirmed' ? 'unconfirmed' : 'open'
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   const { data: me } = await supabase.from('profiles').select('full_name').eq('id', user!.id).single()
@@ -21,16 +21,24 @@ export default async function IntroRequestsPage({ searchParams }: { searchParams
   let monthQ = admin.from('intro_requests').select('id', { count: 'exact', head: true }).gte('created_at', monthStart.toISOString())
   if (!includeDemo) monthQ = monthQ.eq('is_demo', false)
 
-  const [cards, { count: monthCount }] = await Promise.all([
+  let partnersQ = admin.from('partners').select('id, name, category, is_demo').eq('status', 'live').order('name')
+  if (!includeDemo) partnersQ = partnersQ.eq('is_demo', false)
+  let unconfirmedQ = admin.from('intro_requests').select('id', { count: 'exact', head: true }).eq('stage', 'awaiting_verification')
+  if (!includeDemo) unconfirmedQ = unconfirmedQ.eq('is_demo', false)
+
+  const [cards, { count: monthCount }, { data: partners }, { count: unconfirmed }] = await Promise.all([
     loadPipeline(admin, { includeDemo, view, senderName }),
     monthQ,
+    partnersQ,
+    unconfirmedQ,
   ])
 
   return (
     <div>
       <PageHeader title="Marketplace" description="Intro requests: brief partners, chase, and close the loop with members." />
       <MarketplaceTabs />
-      <IntroPipeline cards={cards} view={view} senderName={senderName} monthCount={monthCount ?? 0} serverNow={Date.now()} />
+      <IntroPipeline cards={cards} view={view} senderName={senderName} monthCount={monthCount ?? 0} unconfirmedCount={unconfirmed ?? 0}
+        partners={(partners ?? []).map(p => ({ id: p.id, name: p.name, category: p.category, isDemo: p.is_demo }))} serverNow={Date.now()} />
     </div>
   )
 }
