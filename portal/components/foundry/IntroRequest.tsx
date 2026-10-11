@@ -228,6 +228,7 @@ export function IntroRequestDialog({ items, plan, off, searchId, defaultNeed, on
 }
 
 function Sent({ res, items, onClose }: { res: IntroResponse; items: ListItem[]; onClose: () => void }) {
+  const { base } = useIntroList()
   const by = briefByLabel(res.briefBy)
   const name = (id: string) => items.find(i => i.id === id)?.name ?? 'Partner'
   return (
@@ -266,10 +267,16 @@ function Sent({ res, items, onClose }: { res: IntroResponse; items: ListItem[]; 
         ))}
       </div>
       <p className="mt-5 text-[13px] text-ink-3">We’ll update you in the portal and by email at every step.</p>
-      <button type="button" onClick={onClose}
-        className="mt-5 flex min-h-[48px] w-full items-center justify-center rounded-xl bg-ff-green text-sm font-bold text-white hover:brightness-110">
-        Done
-      </button>
+      <div className="mt-5 grid gap-2 sm:grid-cols-2">
+        <a href={`${base}/intros`}
+          className="flex min-h-[48px] items-center justify-center rounded-xl bg-ff-green text-sm font-bold text-white hover:brightness-110">
+          Track in My intros →
+        </a>
+        <button type="button" onClick={onClose}
+          className="flex min-h-[48px] items-center justify-center rounded-xl border border-line text-sm font-bold text-ink hover:bg-surface-2">
+          Done
+        </button>
+      </div>
     </div>
   )
 }
