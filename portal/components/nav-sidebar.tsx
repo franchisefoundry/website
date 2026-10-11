@@ -15,7 +15,7 @@ import {
   DashboardIcon, LeadsIcon, FranchiseeIcon, FranchisorIcon,
   MatchIcon, AgreementIcon, MarketplaceIcon, AgentIcon,
   QuestionnaireIcon, SignOutIcon, SearchIcon, ChartIcon, WalletIcon,
-  MessageIcon, ArchiveIcon, SettingsIcon, CalendarIcon, BoltIcon,
+  MessageIcon, ArchiveIcon, SettingsIcon, CalendarIcon, BoltIcon, SendIcon,
 } from '@/components/icons'
 
 // ── Nav type system ──────────────────────────────────────────────────────────
@@ -104,18 +104,19 @@ function navForRole(role: string): NavItem[] {
 
 /** Swap the member "Marketplace" item for The Foundry; admins get it alongside Marketplace. */
 function withFoundry(items: NavItem[], role: string): NavItem[] {
+  const intros: NavLeaf = { label: 'My intros', href: `/${role}/foundry/intros`, icon: <SendIcon className="w-4 h-4" /> }
   if (role === 'admin') {
     return items.flatMap(item =>
       !isDivider(item) && !isGroup(item) && item.href === '/admin/partners'
-        ? [item, { label: 'The Foundry', href: '/admin/foundry', icon: <SearchIcon className="w-4 h-4" /> }]
+        ? [item, { label: 'The Foundry', href: '/admin/foundry', icon: <SearchIcon className="w-4 h-4" /> }, intros]
         : [item])
   }
-  const swap = (leaf: NavLeaf): NavLeaf =>
-    leaf.href === `/${role}/marketplace` ? { ...leaf, label: 'The Foundry', href: `/${role}/foundry` } : leaf
-  return items.map(item => {
-    if (isDivider(item)) return item
-    if (isGroup(item)) return { ...item, children: item.children.map(swap) }
-    return swap(item)
+  return items.flatMap((item): NavItem[] => {
+    if (isDivider(item)) return [item]
+    if (isGroup(item)) return [item]
+    return item.href === `/${role}/marketplace`
+      ? [{ ...item, label: 'The Foundry', href: `/${role}/foundry` }, intros]
+      : [item]
   })
 }
 
@@ -233,6 +234,11 @@ export function NavSidebar({ profile, brands, activeBrandId, badges, adminPrevie
     router.refresh()
   }
 
+  // Longest matching top-level item wins, so /x/foundry/intros lights "My intros", not "The Foundry".
+  const activeTopHref = nav
+    .filter((i): i is NavLeaf => !isDivider(i) && !isGroup(i))
+    .filter(i => pathname === i.href || (i.href !== `/${profile.role}` && pathname.startsWith(i.href + '/')))
+    .sort((a, b) => b.href.length - a.href.length)[0]?.href
   const profileHref = profileHrefForRole(profile.role)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const avatarUrl = (profile as any).avatar_url as string | null | undefined
@@ -356,7 +362,7 @@ export function NavSidebar({ profile, brands, activeBrandId, badges, adminPrevie
               )
             }
 
-            const active = pathname === item.href || (item.href !== `/${profile.role}` && pathname.startsWith(item.href + '/'))
+            const active = item.href === activeTopHref
             return (
               <Link
                 key={item.href}

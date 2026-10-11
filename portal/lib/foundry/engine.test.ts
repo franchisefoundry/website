@@ -162,3 +162,17 @@ test('working hours: 4h brief SLA skips nights and weekends', () => {
   assert.equal(addWorkingHours(new Date('2026-10-13T09:00:00Z'), 4).toISOString(), '2026-10-13T13:00:00.000Z')
   assert.equal(isWorkingTime(new Date('2026-10-10T11:00:00Z')), false) // Saturday
 })
+
+import { introStatus } from './intro-status.ts'
+
+test('intro status: steps, contact reveal and closing', () => {
+  assert.equal(introStatus('to_brief').step, 1)
+  assert.equal(introStatus('to_brief').contactVisible, false)
+  assert.equal(introStatus('briefed').status, 'Briefed, awaiting contact')
+  assert.equal(introStatus('in_contact').contactVisible, true)
+  assert.equal(introStatus('in_contact', { rated: true }).next, 'Thanks for the update')
+  assert.equal(introStatus('closed', { outcome: 'hired' }).status, 'Done · you worked with them')
+  assert.equal(introStatus('closed').open, false)
+  assert.equal(introStatus('withdrawn').step, 0)
+  assert.match(introStatus('to_brief', { slaDueAt: '2026-10-12T10:00:00Z' }).next, /^We’ll brief them by Monday 11am$/)
+})

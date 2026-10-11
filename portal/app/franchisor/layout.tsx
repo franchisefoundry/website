@@ -6,7 +6,8 @@ import { NavSidebar } from '@/components/nav-sidebar'
 import PreviewBanner from '@/components/preview-banner'
 import InactivityTimeout from '@/components/inactivity-timeout'
 import { notifyAdmins } from '@/lib/notifications'
-import { canSeeFoundry } from '@/lib/foundry/access'
+import { canSeeFoundry, foundryMode } from '@/lib/foundry/access'
+import { countOpenIntros } from '@/lib/foundry/my-intros'
 
 export default async function FranchisorLayout({ children }: { children: React.ReactNode }) {
   const supabase = await createClient()
@@ -75,6 +76,14 @@ export default async function FranchisorLayout({ children }: { children: React.R
     )
   }
 
+  // Open intros badge on "My intros" (only when The Foundry is visible)
+  const foundry = await canSeeFoundry()
+  const badges: Record<string, number> = {}
+  if (foundry) {
+    const n = await countOpenIntros(createAdminClient(), user.id, { includeDemo: foundryMode() === 'preview' })
+    if (n) badges['/franchisor/foundry/intros'] = n
+  }
+
   const sidebarProfile = isPreview
     ? { ...profile, role: 'franchisor' as const }
     : profile
@@ -82,7 +91,7 @@ export default async function FranchisorLayout({ children }: { children: React.R
   return (
     <div className="flex min-h-screen">
       <InactivityTimeout />
-      <NavSidebar profile={sidebarProfile} brands={brands} activeBrandId={activeBrandId} adminPreview={isPreview} foundry={await canSeeFoundry()} />
+      <NavSidebar profile={sidebarProfile} brands={brands} activeBrandId={activeBrandId} adminPreview={isPreview} foundry={foundry} badges={badges} />
       <main className="flex-1 overflow-auto pt-14 md:pt-0">
         {isPreview && <PreviewBanner role="franchisor" />}
         <div className="w-full max-w-[1760px] mx-auto p-4 md:p-6 xl:p-8">{children}</div>

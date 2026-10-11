@@ -14,6 +14,8 @@ import { PARTNER_CATEGORIES } from '@/lib/partner-categories'
 import { IntroListProvider } from './IntroList'
 import { AskPanel } from './AskPanel'
 import { ResultsView } from './ResultsView'
+import { MyIntrosView } from './MyIntrosView'
+import { loadMyIntros, countOpenIntros } from '@/lib/foundry/my-intros'
 import { PartnerProfile } from './PartnerProfile'
 import { Accent } from './bits'
 
@@ -45,6 +47,7 @@ export async function AskPage({ role }: { role: FoundryRole }) {
     counts.set(p.category, (counts.get(p.category) ?? 0) + 1)
   }
   const deals = ctx.partners.filter(p => p.offer_text).length
+  const openIntros = await countOpenIntros(createAdminClient(), ctx.viewer.id, { includeDemo: ctx.preview })
 
   return (
     <div className="mx-auto max-w-[1080px]">
@@ -56,6 +59,13 @@ export async function AskPage({ role }: { role: FoundryRole }) {
       </h1>
 
       <AskPanel base={ctx.base} plan={ctx.plan} />
+
+      {openIntros > 0 && (
+        <Link href={`${ctx.base}/intros`} className="mt-6 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-ff-gold bg-surface px-5 py-4 hover:bg-surface-2">
+          <span className="text-sm text-ink"><span className="font-mono font-semibold text-[#8a5f26]">{openIntros}</span> intro{openIntros === 1 ? '' : 's'} in progress</span>
+          <span className="text-sm font-bold text-ff-green">My intros →</span>
+        </Link>
+      )}
 
       <h2 className="mb-3 mt-10 font-mono text-xs tracking-[0.1em] text-ink-3">OR BROWSE BY NEED</h2>
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
@@ -102,4 +112,11 @@ export async function PartnerPage({ role, params }: { role: FoundryRole; params:
   const p = await loadPartnerProfile(createAdminClient(), slug, { includeDemo: foundryMode() === 'preview' })
   if (!p) notFound()
   return <PartnerProfile p={p} base={ctx.base} plan={ctx.plan} />
+}
+
+export async function IntrosPage({ role }: { role: FoundryRole }) {
+  const ctx = await foundryContext(role)
+  const intros = await loadMyIntros(createAdminClient(), ctx.viewer.id, { includeDemo: ctx.preview })
+  // Members message the team on their own thread; admins have no client thread.
+  return <MyIntrosView intros={intros} base={ctx.base} canMessage={ctx.viewer.role !== 'admin'} />
 }

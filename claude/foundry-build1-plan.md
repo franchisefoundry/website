@@ -33,6 +33,14 @@ and automations are decided here. UK English throughout.
 - Consent box is unticked by default (UK GDPR), unlike the canvas.
 - Checked visually at 1440px and 390px with a throwaway harness (not committed).
 
+**Admins (PR #12), done:** `/admin/foundry` with the same pages, every partner visible, sidebar link and home Ask panel.
+
+**Phase 3 (My intros), done:**
+- `/{role}/foundry/intros` for franchisee, franchisor and admin: list with 4-step progress and next step; detail with partner contact (only once they've made contact, from `partner_contacts`), update timeline (`intro_events` visible to the requester), private rating, "Message us" (posts to the member's existing thread) and withdraw.
+- `POST /api/foundry/intros/[id]/rating` and `/withdraw`, ownership-checked; slow / not-a-fit ratings and withdrawals notify the team.
+- Sidebar "My intros" with open-intro count; top-level nav now uses longest-match for the active item.
+- Sent screen links to My intros; Ask page shows intros in progress.
+
 ---
 
 ## 0. Architecture
