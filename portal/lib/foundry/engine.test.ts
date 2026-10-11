@@ -224,3 +224,11 @@ test('sourcing stage reads as finding a partner', () => {
   assert.equal(s.open, true)
   assert.equal(s.contactVisible, false)
 })
+
+test('applications: slugs and regions', async () => {
+  const { slugify, APPLY_REGIONS } = await import('./applications-shared.ts')
+  assert.equal(slugify('Hartley & Bloom Ltd'), 'hartley-and-bloom-ltd')
+  assert.equal(slugify('  Café Crème  '), 'cafe-creme')
+  assert.equal(slugify('!!!'), 'partner')
+  assert.equal(APPLY_REGIONS[0][0], 'uk')
+})

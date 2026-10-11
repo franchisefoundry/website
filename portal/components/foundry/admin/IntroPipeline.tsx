@@ -229,7 +229,7 @@ function Detail({ c, senderName, now, partners }: { c: PipelineCard; senderName:
       <div className="space-y-4 rounded-2xl border border-line bg-surface p-5">
         <div>
           <div className="font-mono text-[11px] tracking-[0.08em] text-ink-3">{c.sourcing ? 'THEY ASKED US TO FIND' : 'THEIR MESSAGE'}</div>
-          <p className="mt-1 text-sm text-ink">{c.need ? `“${c.need}”` : 'No message.'}</p>
+          <p className="mt-1 text-sm text-ink">{!c.need ? 'No message.' : c.sourcing ? c.need : `“${c.need}”`}</p>
         </div>
 
         {c.member.contactId && (

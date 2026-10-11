@@ -64,6 +64,16 @@ and automations are decided here. UK English throughout.
 - Add to Leads for website contacts (`source: foundry`, need as goals, area as location); links an existing lead with the same email instead of duplicating. Shows "In Leads ✓" after.
 - My intros and the website tracker show sourcing requests as "Finding you a {category} partner".
 
+**Phase 6 (supply side + insights), done:**
+- Website: `/foundry/apply.html` (Become a partner): business, category, regions, client count, three references, optional insurance certificate (private bucket `partner-applications`, max 3MB), member deal. Linked from every Foundry page footer. `POST /api/foundry/apply` (gated like the rest, 3 per email per day); applicant gets a next-steps email, the team is notified.
+- Migration 010: `partner_applications`, `foundry_outreach`, storage bucket. Applied live.
+- Admin `/admin/foundry/applications`: list with checklist progress, gap-to-fill hint from unanswered searches, detail with Companies House link, insurance certificate (signed link), six-step vetting checklist (references counted 0–3), trust level, notes. Approve: all six checks → live partner; fewer → draft partner to finish in Partners. Primary partner contact created from the applicant. Decline with an editable email, or quietly.
+- Admin `/admin/foundry/insights`: 7/30/90 days, website/portal, by role. Funnel (searches → profile views → intro requests → introduced → won), searches we couldn't answer (add to outreach list, or jump to a matching application), demand vs supply by category, top searches, partner performance.
+- Marketplace tabs gain Applications (with count) and Search insights when The Foundry is visible.
+- Partner directory's Active toggle now keeps Foundry `status` in step (active → live, inactive → paused).
+- Demo applications seeded (Clyde Property Partners, Brightside Marketing); application emails for demo rows go to the preview list.
+- Still to do from the plan: the full partner editor (our take, services, FAQs, keywords, live preview), website build hook and generated profile pages, agents.
+
 ---
 
 ## 0. Architecture
