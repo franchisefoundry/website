@@ -7,6 +7,7 @@ import { briefDueAt } from '@/lib/foundry/sla'
 import { notifyFoundryTeam } from '@/lib/foundry/notify'
 import { isUuid, cleanText } from '@/lib/foundry/validate'
 import { sendIntroRequestNotification } from '@/lib/email'
+import { createVisitorIntros } from '@/lib/foundry/visitor-intros'
 
 const MAX_PARTNERS = 6
 const OPEN_STAGES = ['awaiting_verification', 'to_brief', 'briefed', 'in_contact', 'outcome']
@@ -14,15 +15,16 @@ const CALL_TIMES = ['mornings', 'afternoons', 'evenings']
 
 /**
  * Request intros. Members (signed in): one click, no verification.
- * Website visitors: phase 5 (email verification flow).
+ * Website visitors (no session): name + email, then a confirm-your-email link
+ * before anything is shared with a partner.
  *
  * Body: { partners: [{ id, need? }], callTime?, consent: true, searchId?, off? }
+ *   visitors also send: { name, email, phone?, marketing?, q? }
  */
 export async function POST(request: NextRequest) {
   const cors = corsHeaders(request)
   const access = await foundryAccess(request)
   if (!access.allowed) return NextResponse.json({ error: 'Not found' }, { status: 404, headers: cors })
-  if (!access.viewer) return NextResponse.json({ error: 'Please sign in to request intros.' }, { status: 401, headers: cors })
   if (rateLimited(request, 10)) return NextResponse.json({ error: 'Too many requests. Try again in a minute.' }, { status: 429, headers: cors })
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -42,8 +44,13 @@ export async function POST(request: NextRequest) {
   const callTime = CALL_TIMES.includes(body?.callTime) ? body.callTime : null
   const searchId = isUuid(body?.searchId) ? body.searchId : null
   const off = Array.isArray(body?.off) ? body.off.filter(isOffKey) : []
-  const viewer = access.viewer
   const demo = access.includeDemo
+
+  if (!access.viewer) {
+    const res = await createVisitorIntros(createAdminClient(), { wanted, callTime, searchId, body, demo })
+    return NextResponse.json(res.json, { status: res.status, headers: cors })
+  }
+  const viewer = access.viewer
 
   const admin = createAdminClient()
   const [partners, ctx, { data: open }, { data: me }] = await Promise.all([

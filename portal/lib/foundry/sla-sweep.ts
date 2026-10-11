@@ -4,12 +4,14 @@
  *   - to_brief past its brief deadline       → team: "Overdue: brief X"
  *   - briefed 24h with no contact             → team: "Chase X"
  *   - in contact for 7 days                   → move to outcome, ask the member
+ *   - website requests unconfirmed for 7 days → expired
  */
 import type { SupabaseClient } from '@supabase/supabase-js'
 import { notifyFoundryTeam } from './notify'
 import { performIntroAction } from './pipeline'
 
 const OUTCOME_AFTER_DAYS = 7
+const UNVERIFIED_EXPIRE_DAYS = 7
 
 export async function runSlaSweep(admin: SupabaseClient) {
   const now = new Date()
@@ -50,5 +52,11 @@ export async function runSlaSweep(admin: SupabaseClient) {
     await performIntroAction(admin, r.id, { action: 'ask_outcome' }, { id: null, name: 'Automatic' })
     flagged++
   }
-  return { overdue: overdue?.length ?? 0, chase: chase?.length ?? 0, outcome: stale?.length ?? 0, actioned: flagged }
+  // Website requests never confirmed by email: expire after a week.
+  const expireCutoff = new Date(now.getTime() - UNVERIFIED_EXPIRE_DAYS * 86_400_000).toISOString()
+  const { data: expired } = await admin.from('intro_requests')
+    .update({ stage: 'expired', status: 'completed', closed_at: iso, updated_at: iso })
+    .eq('stage', 'awaiting_verification').lt('created_at', expireCutoff).select('id')
+
+  return { expired: expired?.length ?? 0, overdue: overdue?.length ?? 0, chase: chase?.length ?? 0, outcome: stale?.length ?? 0, actioned: flagged }
 }

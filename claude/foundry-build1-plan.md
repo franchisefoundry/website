@@ -48,6 +48,14 @@ and automations are decided here. UK English throughout.
 - Demo intros: partner emails go to `FOUNDRY_PREVIEW_EMAILS`, prefixed `[Demo → partner email]`. Demo excluded from legacy admin counts.
 - SLA sweep every 15 min: Netlify scheduled function `portal/netlify/functions/foundry-sla.mts` → `POST /api/cron/foundry-sla` (needs `CRON_SECRET`, set on ffportal). Overdue brief and chase-due alert the team once; 7 days in contact moves to outcome and asks the member.
 
+**Phase 5 (website marketplace), done:**
+- Static pages in `/foundry/` on franchisefoundry.co.uk: Search (`index.html`), Results (`search.html`), Partner profile (`partner.html?s=`), confirm link landing (`verify.html`), tracker (`track.html`). Shared `foundry.js` + `foundry.css`; all API data escaped before rendering.
+- Gated: each page asks the portal API first; without `?preview=<FOUNDRY_PREVIEW_SECRET>` (remembered per browser) it shows "Coming soon". `noindex` + `Disallow: /foundry/` in robots.txt until launch; no site nav links yet.
+- Visitor intros (`POST /api/foundry/intros` without a session): name + email, requests wait in `awaiting_verification`, one-time confirm email. Max 3 unconfirmed per email per day. Confirming moves them to the pipeline, links to a portal account if the email matches (so they show in My intros) and notifies the team. Unconfirmed expire after 7 days.
+- Tracker: stateless signed link (`FOUNDRY_TRACKER_SECRET`, set on ffportal), carried in every update email. Rate, withdraw, "email me my link" (same reply whether or not the email exists).
+- Admin pipeline shows website visitors and emails them updates with their tracker link.
+- Partner profiles are rendered client-side for now; build-time static pages for SEO come at launch.
+
 ---
 
 ## 0. Architecture

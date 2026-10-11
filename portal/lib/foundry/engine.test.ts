@@ -202,3 +202,18 @@ test('email html escapes everything the member or admin typed', () => {
   assert.ok(html.includes('&lt;script&gt;'))
   assert.ok(html.includes('Tom &amp; Jerry'))
 })
+
+import { trackerToken, checkTracker, newVerifyToken, hashToken } from './tracker.ts'
+
+test('tracker links: signed per batch, tamper-proof, verify tokens hashed', () => {
+  process.env.FOUNDRY_TRACKER_SECRET = 'test-secret'
+  const a = '11111111-1111-4111-8111-111111111111', b = '22222222-2222-4222-8222-222222222222'
+  const t = trackerToken(a)
+  assert.equal(checkTracker(a, t), true)
+  assert.equal(checkTracker(b, t), false)            // another batch's token
+  assert.equal(checkTracker(a, t.slice(0, -1) + 'x'), false)
+  assert.equal(checkTracker(a, ''), false)
+  const v = newVerifyToken()
+  assert.equal(hashToken(v.token), v.hash)
+  assert.notEqual(v.token, v.hash)
+})

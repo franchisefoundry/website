@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en-GB" data-api="https://portal.franchisefoundry.co.uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Results · Foundry Search</title>
+<meta name="description" content="Vetted partners matched to what you need.">
+<link rel="icon" type="image/png" href="/images/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/foundry/foundry.css">
+</head>
+<body>
+<header class="f-header"><div class="in">
+  <a class="f-brand" href="/foundry/"><svg width="26" height="26" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="8" height="15" rx="1" fill="#A9C2A3"/><rect x="12.5" y="3" width="8.5" height="18" rx="1" fill="#fff"/></svg><b>The Foundry</b><span>by Franchise Foundry</span></a>
+  <nav class="f-nav" aria-label="The Foundry">
+    <a href="/">Find a franchise</a>
+    <a href="/foundry/" aria-current="page">Foundry Search</a>
+    <a href="/foundry/track.html">Track my intros</a>
+    <a href="https://portal.franchisefoundry.co.uk/login">Members</a>
+  </nav>
+</div></header>
+<div class="preview-strip" hidden><b class="mono">PREVIEW</b> · Only people with the preview link can see this. Partners shown are demo data.</div>
+
+<main>
+<div class="qbar"><div class="wrap">
+  <form id="refine" role="search">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#c8924a" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
+    <span id="chips" style="display:contents"></span>
+    <label for="more" class="sr-only">Add to your search</label>
+    <input id="more" maxlength="300" placeholder="Add more…">
+    <button class="btn btn-gold" type="submit" style="min-height:38px">Search</button>
+  </form>
+</div></div>
+<div class="wrap">
+  <div class="toolbar">
+    <div class="tabs" role="tablist" aria-label="Filter by need" id="tabs"></div>
+    <div style="display:flex;flex-wrap:wrap;gap:12px;align-items:center">
+      <button type="button" class="toggle" id="deals" aria-pressed="false"><i aria-hidden="true"></i>Member deals only</button>
+      <span class="note">Ranked on fit · deals never change the order</span>
+    </div>
+  </div>
+  <div class="layout">
+    <section id="results" aria-live="polite"><div class="skeleton"></div></section>
+    <aside id="aside">
+      <div class="panel list">
+        <h2>Your intro list <span id="count">0 selected</span></h2>
+        <div class="list-items" id="items"></div>
+        <button type="button" class="btn btn-green btn-block" id="request" style="margin-top:14px;min-height:48px" disabled>Request intros →</button>
+        <ol class="steps"><li><b>1</b>Confirm your email</li><li><b>2</b>We brief each partner on what you need</li><li><b>3</b>They contact you, usually within a day</li></ol>
+      </div>
+      <p class="panel" style="margin-top:14px;font-size:13px;color:var(--ink-2)">Free for franchisees. Member deals apply automatically when you come through us. No account needed.</p>
+    </aside>
+  </div>
+</div>
+<div class="mobile-bar" id="mbar" hidden><button type="button" class="btn btn-green btn-block" id="mreq" style="min-height:52px"></button></div>
+</main>
+<footer class="footer">Free for franchisees. Partners are vetted by Franchise Foundry. <a href="/terms.html">Terms</a> · <a href="https://portal.franchisefoundry.co.uk/privacy">Privacy</a></footer>
+<script src="/foundry/foundry.js"></script>
+<script>
+(function () {
+  var F = Foundry, esc = F.esc
+  var q = F.qs('q'), off = [], tab = 'all', dealsOnly = false, res = null
+
+  function chipHtml(c) {
+    return '<button type="button" class="qchip" data-off="' + esc(c.key) + '" aria-label="Remove ' + esc(c.k + ' ' + c.v) + '"><span style="color:' + c.col + '">' + esc(c.k) + '</span>' + esc(c.v) + ' <span aria-hidden="true" style="color:var(--ink-3)">×</span></button>'
+  }
+
+  function card(p, searchId) {
+    var strong = p.fit >= 85, on = F.inList(p.id)
+    return '<article class="card' + (on ? ' in' : '') + '">' +
+      '<div class="fit' + (strong ? ' strong' : '') + '"><b>' + esc(p.fit) + '</b><small>' + esc(p.label) + '</small></div>' +
+      '<div style="min-width:0"><div class="name">' + F.monogram(p.name) + '<a href="/foundry/partner.html?s=' + encodeURIComponent(p.slug) + '">' + esc(p.name) + '</a>' + F.trust(p.trust) + '<span class="cat">' + esc(p.categoryLabel) + '</span></div>' +
+        (p.why.length ? '<ul class="why">' + p.why.map(function (w) { return '<li>' + esc(w) + '</li>' }).join('') + '</ul>' : '') +
+        (p.facts.length ? '<div class="facts">' + p.facts.map(function (f) { return '<span>' + esc(f) + '</span>' }).join('') + '</div>' : '') +
+      '</div>' +
+      '<div class="acts">' + (p.deal ? '<div class="deal">' + esc(p.deal) + '</div>' : '') +
+        '<button type="button" class="addbtn" data-add="' + esc(p.id) + '" aria-pressed="' + on + '">' + (on ? '✓ In intro list' : '+ Add to intro list') + '</button>' +
+        '<a class="link-sm" href="/foundry/partner.html?s=' + encodeURIComponent(p.slug) + '">View profile</a></div>' +
+    '</article>'
+  }
+
+  function render() {
+    if (!res) return
+    var u = res.understood, chips = []
+    u.needs.forEach(function (n) { chips.push({ key: 'need:' + n, k: 'need ', v: u.needTerms[n] || n, col: '#5f725f' }) })
+    if (u.sector) chips.push({ key: 'sector', k: 'sector ', v: u.sector.label, col: '#a2762f' })
+    if (u.area) chips.push({ key: 'area', k: 'near ', v: u.area.label, col: '#4c6a8c' })
+    if (u.budget) chips.push({ key: 'budget', k: 'budget ', v: '~£' + Math.round(u.budget / 1000) + 'k', col: '#8c4c6a' })
+    document.getElementById('chips').innerHTML = chips.map(chipHtml).join('')
+
+    var all = res.groups.reduce(function (n, g) { return n + g.items.length }, 0) + res.alsoNeed.length
+    var tabs = [{ id: 'all', l: 'All', n: all }].concat(res.groups.map(function (g) { return { id: g.need, l: g.label, n: g.items.length } }))
+    if (res.alsoNeed.length) tabs.push({ id: 'also', l: 'Also needed', n: res.alsoNeed.length })
+    if (!tabs.some(function (t) { return t.id === tab })) tab = 'all'
+    document.getElementById('tabs').innerHTML = tabs.map(function (t) {
+      return '<button type="button" role="tab" data-tab="' + esc(t.id) + '" aria-selected="' + (t.id === tab) + '">' + esc(t.l) + ' <span class="mono" style="opacity:.7">' + t.n + '</span></button>'
+    }).join('')
+
+    var keep = function (xs) { return dealsOnly ? xs.filter(function (x) { return x.deal }) : xs }
+    var html = '<div class="panel summary"><span class="ico" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24"><rect x="3" y="5" width="8" height="15" rx="1" fill="#A9C2A3"/><rect x="12.5" y="3" width="8.5" height="18" rx="1" fill="#fff"/></svg></span><div><p style="font-size:15px">' + esc(res.summary) + '</p><p class="note" style="margin-top:6px">' + esc(res.meta) + '</p></div></div>'
+    var shown = 0
+    res.groups.forEach(function (g) {
+      if (tab !== 'all' && tab !== g.need) return
+      var items = keep(g.items); if (!items.length) return
+      shown += items.length
+      html += '<div class="group-h"><h2>' + esc(g.title) + '</h2><span>' + esc(g.sub) + '</span></div>' + items.map(function (p) { return card(p, res.searchId) }).join('')
+    })
+    if (tab === 'all' || tab === 'also') {
+      var also = keep(res.alsoNeed)
+      if (also.length) {
+        shown += also.length
+        html += '<div class="group-h"><h2 class="also">YOU’LL ALSO NEED</h2><span>' + (res.groups.length ? 'Not in your search, but usually next' : 'Where most people start') + '</span></div>' + also.map(function (p) { return card(p, res.searchId) }).join('')
+      }
+    }
+    if (!shown) html += '<p class="panel" style="margin-top:14px">' + (dealsOnly ? 'No member deals match this search. Switch off “Member deals only” to see everyone.' : 'Nothing matches yet. Try different words, or ask us to source someone.') + '</p>'
+    if (tab === 'all') res.gaps.forEach(function (g) {
+      html += '<div class="gap"><div><b>' + esc(g.message) + '</b><small>Tell us and we’ll find someone we’d back.</small></div><button type="button" data-gap="' + esc(g.need) + '" data-area="' + esc(g.area || '') + '">Ask us to source one →</button></div>'
+    })
+    document.getElementById('results').innerHTML = html
+    renderList()
+  }
+
+  function renderList() {
+    var items = F.list(), n = items.length
+    document.getElementById('count').textContent = n + ' selected'
+    document.getElementById('items').innerHTML = n ? items.map(function (i) {
+      return '<div class="list-item">' + F.monogram(i.name) + '<div><b>' + esc(i.name) + '</b><small>' + esc(i.categoryLabel) + '</small></div><button type="button" data-remove="' + esc(i.id) + '" aria-label="Remove ' + esc(i.name) + '">×</button></div>'
+    }).join('') : '<div class="list-empty">Add partners and we’ll introduce you to all of them in one go.</div>'
+    var label = n ? 'Request ' + n + ' ' + (n === 1 ? 'intro' : 'intros') + ' →' : 'Request intros →'
+    var btn = document.getElementById('request'); btn.disabled = !n; btn.textContent = label
+    document.getElementById('mbar').hidden = !n
+    document.getElementById('mreq').textContent = label
+  }
+
+  function load() {
+    var params = new URLSearchParams({ q: q }); if (off.length) params.set('off', off.join(','))
+    history.replaceState(null, '', '/foundry/search.html?' + params)
+    F.api('/api/foundry/search', { method: 'POST', body: { q: q, off: off, surface: 'website' } }).then(function (r) {
+      if (!r.ok) { document.getElementById('results').innerHTML = '<p class="err">' + esc((r.data && r.data.error) || 'Search failed. Please try again.') + '</p>'; return }
+      res = r.data; render()
+    })
+  }
+
+  document.addEventListener('click', function (e) {
+    var el = e.target.closest('button'); if (!el) return
+    if (el.dataset.off) { off.push(el.dataset.off); load() }
+    else if (el.dataset.tab) { tab = el.dataset.tab; render() }
+    else if (el.dataset.add) {
+      var p = []; res.groups.forEach(function (g) { p = p.concat(g.items) }); p = p.concat(res.alsoNeed)
+      var x = p.filter(function (i) { return i.id === el.dataset.add })[0]
+      if (x) { F.toggleList({ id: x.id, slug: x.slug, name: x.name, categoryLabel: x.categoryLabel, deal: x.deal }, res.searchId); render() }
+    }
+    else if (el.dataset.remove) { F.removeFromList(el.dataset.remove); render() }
+    else if (el.dataset.gap) {
+      el.disabled = true
+      F.api('/api/foundry/gap', { method: 'POST', body: { need: el.dataset.gap, area: el.dataset.area || null, q: q, searchId: res && res.searchId } })
+        .then(function (r) { el.textContent = r.ok ? 'Asked ✓' : 'Try again'; if (!r.ok) el.disabled = false })
+    }
+  })
+  document.getElementById('deals').addEventListener('click', function () {
+    dealsOnly = !dealsOnly; this.setAttribute('aria-pressed', String(dealsOnly)); render()
+  })
+  document.getElementById('refine').addEventListener('submit', function (e) {
+    e.preventDefault()
+    var more = document.getElementById('more'); if (!more.value.trim()) return
+    q = (q + ' ' + more.value.trim()).trim(); more.value = ''; load()
+  })
+  function openDialog() {
+    F.openIntroDialog(F.list(), { query: q, searchId: res && res.searchId, onSent: function () { F.saveList([]); render() } })
+  }
+  document.getElementById('request').addEventListener('click', openDialog)
+  document.getElementById('mreq').addEventListener('click', openDialog)
+  document.addEventListener('ff:list', renderList)
+  if (!q) { location.href = '/foundry/'; return }
+  F.gate().then(function (ok) { if (ok) load() })
+})()
+</script>
+</body>
+</html>
