@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { formatDate } from '@/lib/utils'
 import { AdminHomeView, type AdminHomeAction } from '@/components/admin/AdminHomeView'
+import { HomeAsk } from '@/components/foundry/HomeAsk'
 import { CalendarIcon, QuestionnaireIcon, BellIcon } from '@/components/icons'
 
 export default async function AdminDashboard() {
@@ -59,5 +60,10 @@ export default async function AdminDashboard() {
     time: formatDate(l.created_at),
   }))
 
-  return <AdminHomeView greeting={greeting} firstName={firstName} kpis={kpis} actions={actions} feed={feed} />
+  return (
+    <>
+      <HomeAsk role="admin" />
+      <AdminHomeView greeting={greeting} firstName={firstName} kpis={kpis} actions={actions} feed={feed} />
+    </>
+  )
 }

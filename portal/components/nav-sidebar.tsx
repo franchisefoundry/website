@@ -102,8 +102,14 @@ function navForRole(role: string): NavItem[] {
   return []
 }
 
-/** Swap the member "Marketplace" item for The Foundry. */
+/** Swap the member "Marketplace" item for The Foundry; admins get it alongside Marketplace. */
 function withFoundry(items: NavItem[], role: string): NavItem[] {
+  if (role === 'admin') {
+    return items.flatMap(item =>
+      !isDivider(item) && !isGroup(item) && item.href === '/admin/partners'
+        ? [item, { label: 'The Foundry', href: '/admin/foundry', icon: <SearchIcon className="w-4 h-4" /> }]
+        : [item])
+  }
   const swap = (leaf: NavLeaf): NavLeaf =>
     leaf.href === `/${role}/marketplace` ? { ...leaf, label: 'The Foundry', href: `/${role}/foundry` } : leaf
   return items.map(item => {
