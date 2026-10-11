@@ -41,6 +41,13 @@ and automations are decided here. UK English throughout.
 - Sidebar "My intros" with open-intro count; top-level nav now uses longest-match for the active item.
 - Sent screen links to My intros; Ask page shows intros in progress.
 
+**Phase 4 (admin intro pipeline), done:**
+- `/admin/intro-requests` is now an SLA kanban (To brief, Briefed, In contact, Outcome; Closed view), with overdue states and a detail panel: member plan, their message, who we brief, editable briefing email, chase, contacted, ask for outcome, close (went ahead / not taken forward / just close), internal notes and full timeline.
+- `POST /api/admin/foundry/intros/[id]` for every move; each writes `intro_events`, keeps legacy `status` in step and notifies the member (`intro_update`, email + push by default).
+- Partner contacts (`partner_contacts`): managed in partner admin and from the pipeline panel. Never shown publicly; revealed to the member once in contact.
+- Demo intros: partner emails go to `FOUNDRY_PREVIEW_EMAILS`, prefixed `[Demo → partner email]`. Demo excluded from legacy admin counts.
+- SLA sweep every 15 min: Netlify scheduled function `portal/netlify/functions/foundry-sla.mts` → `POST /api/cron/foundry-sla` (needs `CRON_SECRET`, set on ffportal). Overdue brief and chase-due alert the team once; 7 days in contact moves to outcome and asks the member.
+
 ---
 
 ## 0. Architecture

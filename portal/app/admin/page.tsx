@@ -30,7 +30,7 @@ export default async function AdminDashboard() {
     admin.from('franchisor_profiles').select('*', { count: 'exact', head: true }).eq('status', 'pending_review'),
     // Only count matches that an admin has deliberately assigned (not auto-suggested)
     admin.from('franchisee_profiles').select('*', { count: 'exact', head: true }).not('assigned_franchisor_id', 'is', null),
-    admin.from('intro_requests').select('*', { count: 'exact', head: true }).eq('status', 'pending'),
+    admin.from('intro_requests').select('*', { count: 'exact', head: true }).eq('status', 'pending').eq('is_demo', false),
     admin.from('leads').select('*').in('status', ['new', 'meeting_requested']).order('created_at', { ascending: false }).limit(5),
     admin.from('profiles').select('full_name').eq('id', user!.id).single(),
   ])
