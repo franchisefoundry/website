@@ -179,7 +179,7 @@ New with v3:
 
 ## 6. Build order
 
-1. **Foundations:** bug fix, migration 008, engine (parse + rank, unit tested), `/api/foundry/search`, seed demo data.
+1. **Foundations:** bug fix, preview switch, migration 008 (incl. `is_demo`), engine (parse + rank, unit tested), `/api/foundry/search`, demo seed.
 2. **Search, Results, Intro in the portal (franchisee first, then franchisor):** Ask panel, results
    page, intro list, one-click intros, partner profile.
 3. **My intros** for franchisee and franchisor, with notifications.
