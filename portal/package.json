@@ -6,7 +6,8 @@
     "dev": "next dev --port 3001",
     "build": "next build",
     "start": "next start --port 3001",
-    "lint": "next lint"
+    "lint": "next lint",
+    "test:foundry": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --test lib/foundry/engine.test.ts"
   },
   "dependencies": {
     "@supabase/ssr": "^0.5.2",

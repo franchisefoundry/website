@@ -11,6 +11,19 @@ and automations are decided here. UK English throughout.
   portal's public Foundry API.
 - One engine, one intro pipeline, one set of partner data. Two shop fronts.
 
+## Progress
+
+**Phase 1 foundations, done on `claude/zen-tesla-mzg1ki`:**
+- Admin intro-requests query fixed (`partners(name, category)`).
+- Preview switch: `portal/lib/foundry/access.ts` (`FOUNDRY_MODE`, `FOUNDRY_PREVIEW_EMAILS`, `FOUNDRY_PREVIEW_SECRET`, `FOUNDRY_ALLOWED_ORIGINS`). Default is off.
+- Engine: `portal/lib/foundry/{taxonomy,parse,rank,types}.ts`, 14 tests (`npm run test:foundry`).
+- API: `POST /api/foundry/search`, `GET /api/foundry/parse` (404 unless the switch allows).
+- Migration `portal/supabase/migrations/008_foundry_build1.sql` and seed `portal/supabase/scripts/foundry-demo.sql` written.
+
+**Not yet applied to the live database.** The Supabase connector in this session reads fine but
+times out on writes. Apply 008 then the seed (Supabase dashboard → SQL editor, or re-authorise the
+connector) **before** setting `FOUNDRY_MODE=preview`.
+
 ---
 
 ## 0. Architecture

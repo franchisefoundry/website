@@ -11,7 +11,7 @@ export default async function IntroRequestsPage() {
 
   const { data: requests } = await supabase
     .from('intro_requests')
-    .select('*, profiles(full_name, email), partners(name, sector)')
+    .select('*, profiles(full_name, email), partners(name, category)')
     .order('created_at', { ascending: false })
 
   return (
