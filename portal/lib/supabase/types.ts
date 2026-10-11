@@ -177,6 +177,24 @@ export interface Partner {
   is_active: boolean
   display_order: number
   created_at: string
+  // The Foundry (migration 008)
+  trust_level?: 'listed' | 'trusted' | 'recommended'
+  status?: 'draft' | 'live' | 'paused'
+  our_take?: string | null
+  services?: { title: string; description?: string; price?: string }[]
+  faqs?: { q: string; a: string }[]
+  regions?: string[]
+  base_location?: string | null
+  price_from?: string | null
+  budget_min_gbp?: number | null
+  budget_max_gbp?: number | null
+  sectors?: string[]
+  keywords?: string[]
+  client_count?: number | null
+  reply_hours_typical?: number | null
+  deal_value_gbp?: number | null
+  deal_terms?: string | null
+  is_demo?: boolean
 }
 
 export interface PartnerFeature {

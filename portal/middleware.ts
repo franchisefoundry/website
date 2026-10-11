@@ -32,6 +32,7 @@ export async function middleware(request: NextRequest) {
     '/auth/reset-password',
     '/get-matched',
     '/api/leads',
+    '/api/foundry',              // Foundry search API — gated by FOUNDRY_MODE inside each route
     '/api/auth/invite',           // generates the on-demand magic link from a token
     '/api/auth/forgot-password',  // sends the Resend-backed reset email
     '/sw.js',                     // service worker must load before login (PWA + push)

@@ -6,6 +6,7 @@ import { NavSidebar } from '@/components/nav-sidebar'
 import PreviewBanner from '@/components/preview-banner'
 import InactivityTimeout from '@/components/inactivity-timeout'
 import { notifyAdmins } from '@/lib/notifications'
+import { canSeeFoundry } from '@/lib/foundry/access'
 
 export default async function FranchisorLayout({ children }: { children: React.ReactNode }) {
   const supabase = await createClient()
@@ -81,7 +82,7 @@ export default async function FranchisorLayout({ children }: { children: React.R
   return (
     <div className="flex min-h-screen">
       <InactivityTimeout />
-      <NavSidebar profile={sidebarProfile} brands={brands} activeBrandId={activeBrandId} adminPreview={isPreview} />
+      <NavSidebar profile={sidebarProfile} brands={brands} activeBrandId={activeBrandId} adminPreview={isPreview} foundry={await canSeeFoundry()} />
       <main className="flex-1 overflow-auto pt-14 md:pt-0">
         {isPreview && <PreviewBanner role="franchisor" />}
         <div className="w-full max-w-[1760px] mx-auto p-4 md:p-6 xl:p-8">{children}</div>

@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
+import { HomeAsk } from '@/components/foundry/HomeAsk'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { statusBadge } from '@/components/ui/badge'
 import { Ring } from '@/components/ui/Ring'
@@ -59,6 +60,7 @@ export default async function FranchisorDashboard() {
 
   return (
     <div className="w-full">
+      <HomeAsk role="franchisor" />
       {/* Hero */}
       <div className="rise relative overflow-hidden rounded-2xl p-6 text-white shadow-[0_18px_40px_rgba(27,33,26,0.22)] bg-gradient-to-br from-ff-green to-ff-green-deep">
         <div className="absolute inset-0" style={{ background: 'radial-gradient(560px 220px at 88% -30%, rgba(200,146,74,0.34), transparent 60%)' }} />
