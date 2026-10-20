@@ -1,11 +1,12 @@
 ---
-title: "Olive Garden UK: Opportunity or Timing Disaster?"
-category: "Market Analysis"
-author: "Franchise Foundry"
+title: 'Olive Garden UK: Opportunity or Timing Disaster?'
+status: Published
+featured: true
 date: 2026-10-20T08:41:28.460Z
-excerpt: "Darden Restaurants is bringing Olive Garden to the UK just weeks after Beefeater's collapse. We examine whether this is bold strategy or a dangerous gamble."
-status: "Draft"
-featured: false
+category: Market Analysis
+author: Franchise Foundry
+excerpt: Darden Restaurants is bringing Olive Garden to the UK just weeks after Beefeater's collapse. We examine whether this is bold strategy or a dangerous gamble.
+coverImage: ''
 ---
 
 Darden Restaurants — the Fortune 500 group behind 2,100+ restaurants across ten brands — has announced plans to bring three of its concepts to the UK: Olive Garden, Longhorn Steakhouse, and Capital Grille.
