@@ -1,11 +1,12 @@
 ---
-title: "Hospitality Wages Fall for First Time in 3 Years: What It Means"
-category: "Market Analysis"
-author: "Franchise Foundry"
-date: 2026-10-23T06:37:46.254Z
-excerpt: "Hospitality wages dropped 1.4% in August 2026, but the real story is darker: 100,000 jobs lost in two years and operators being priced out of hiring."
-status: "Draft"
-featured: false
+title: 'Hospitality Wages Fall for First Time in 3 Years: What It Means'
+status: Draft
+featured: true
+date: 2026-10-27T08:00:00
+category: Market Analysis
+author: Franchise Foundry
+excerpt: 'Hospitality wages dropped 1.4% in August 2026, but the real story is darker: 100,000 jobs lost in two years and operators being priced out of hiring.'
+coverImage: ''
 ---
 
 After three relentless years of wage inflation that has reshaped every hospitality business in the UK, something unexpected has happened.
