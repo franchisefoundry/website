@@ -18,6 +18,7 @@
   <nav class="f-nav" aria-label="The Foundry">
     <a href="/">Find a franchise</a>
     <a href="/foundry/" aria-current="page">Foundry Search</a>
+    <a href="/foundry/partners/">Partners</a>
     <a href="/foundry/track.html">Track my intros</a>
     <a href="https://portal.franchisefoundry.co.uk/login">Members</a>
   </nav>
@@ -72,13 +73,13 @@
     var strong = p.fit >= 85, on = F.inList(p.id)
     return '<article class="card' + (on ? ' in' : '') + '">' +
       '<div class="fit' + (strong ? ' strong' : '') + '"><b>' + esc(p.fit) + '</b><small>' + esc(p.label) + '</small></div>' +
-      '<div style="min-width:0"><div class="name">' + F.monogram(p.name) + '<a href="/foundry/partner.html?s=' + encodeURIComponent(p.slug) + '">' + esc(p.name) + '</a>' + F.trust(p.trust) + '<span class="cat">' + esc(p.categoryLabel) + '</span></div>' +
+      '<div style="min-width:0"><div class="name">' + F.monogram(p.name) + '<a href="' + F.partnerHref(p.slug) + '">' + esc(p.name) + '</a>' + F.trust(p.trust) + '<span class="cat">' + esc(p.categoryLabel) + '</span></div>' +
         (p.why.length ? '<ul class="why">' + p.why.map(function (w) { return '<li>' + esc(w) + '</li>' }).join('') + '</ul>' : '') +
         (p.facts.length ? '<div class="facts">' + p.facts.map(function (f) { return '<span>' + esc(f) + '</span>' }).join('') + '</div>' : '') +
       '</div>' +
       '<div class="acts">' + (p.deal ? '<div class="deal">' + esc(p.deal) + '</div>' : '') +
         '<button type="button" class="addbtn" data-add="' + esc(p.id) + '" aria-pressed="' + on + '">' + (on ? '✓ In intro list' : '+ Add to intro list') + '</button>' +
-        '<a class="link-sm" href="/foundry/partner.html?s=' + encodeURIComponent(p.slug) + '">View profile</a></div>' +
+        '<a class="link-sm" href="' + F.partnerHref(p.slug) + '">View profile</a></div>' +
     '</article>'
   }
 

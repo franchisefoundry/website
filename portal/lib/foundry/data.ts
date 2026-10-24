@@ -95,14 +95,17 @@ export interface PartnerProfileData extends EnginePartner {
   faqs: { q: string; a: string }[]
   features: { label: string; value: string }[]
   deal_terms: string | null
+  logo_url: string | null
 }
+
+const PROFILE_COLUMNS = 'description, our_take, services, faqs, features, deal_terms, logo_url'
 
 /** One partner's public profile. null if not live (or demo outside preview). */
 export async function loadPartnerProfile(
   admin: SupabaseClient, slug: string, { includeDemo }: { includeDemo: boolean },
 ): Promise<PartnerProfileData | null> {
   let q = admin.from('partners')
-    .select(`${PUBLIC_PARTNER_COLUMNS}, description, our_take, services, faqs, features, deal_terms`)
+    .select(`${PUBLIC_PARTNER_COLUMNS}, ${PROFILE_COLUMNS}`)
     .eq('slug', slug).eq('status', 'live')
   if (!includeDemo) q = q.eq('is_demo', false)
   const { data } = await q.maybeSingle()
@@ -121,5 +124,22 @@ export async function loadPartnerProfile(
     faqs: Array.isArray(r.faqs) ? r.faqs : [],
     features: Array.isArray(r.features) ? r.features : [],
     deal_terms: r.deal_terms,
+    logo_url: /^https:\/\//.test(r.logo_url ?? '') ? r.logo_url : null,
   }
+}
+
+/**
+ * Every live partner's public profile, for the website build. Preview builds
+ * get only demo partners, so a real partner never appears before launch.
+ */
+export async function loadProfilesForBuild(admin: SupabaseClient, { demo }: { demo: boolean }): Promise<PartnerProfileData[]> {
+  const { data, error } = await admin.from('partners').select('slug').eq('status', 'live').eq('is_demo', demo)
+    .order('display_order', { ascending: true })
+  if (error) throw new Error(`loadProfilesForBuild: ${error.message}`)
+  const out: PartnerProfileData[] = []
+  for (const { slug } of data ?? []) {
+    const p = await loadPartnerProfile(admin, slug, { includeDemo: demo })
+    if (p) out.push(p)
+  }
+  return out
 }

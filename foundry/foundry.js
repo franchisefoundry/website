@@ -104,10 +104,24 @@
     return '<span class="trust ' + esc(level) + '">' + l + '</span>'
   }
 
+  function partnerHref(slug) { return '/foundry/partners/' + encodeURIComponent(slug) + '/' }
+
+  var NEED_LABEL = { funding: 'Funding', property: 'Property & fit-out', legal: 'Legal', accounting: 'Accounting', technology: 'Tech & EPOS', insurance: 'Insurance', marketing: 'Marketing', recruitment: 'Recruitment & HR' }
+
+  /** Wire a rendered profile (#req, #add) and log the view. Used by the live and the pre-built page. */
+  function bindProfile(p) {
+    var item = { id: p.id, slug: p.slug, name: p.name, categoryLabel: NEED_LABEL[p.category] || p.category, deal: p.offer_text || null }
+    api('/api/foundry/events', { method: 'POST', body: { kind: 'profile_view', partnerId: p.id } })
+    var add = document.getElementById('add'), req = document.getElementById('req')
+    function sync() { var on = inList(p.id); add.setAttribute('aria-pressed', String(on)); add.textContent = on ? '✓ In your intro list' : '+ Add to intro list' }
+    if (req) req.addEventListener('click', function () { window.Foundry.openIntroDialog([item], {}) })
+    if (add) { sync(); add.addEventListener('click', function () { toggleList(item); sync() }) }
+  }
+
   window.Foundry = {
     api: api, esc: esc, qs: qs, gate: gate, comingSoon: comingSoon, markPreview: markPreview,
     list: list, inList: inList, toggleList: toggleList, removeFromList: removeFromList, saveList: saveList,
-    monogram: monogram, trust: trust,
+    monogram: monogram, trust: trust, partnerHref: partnerHref, bindProfile: bindProfile,
   }
 })()
 
