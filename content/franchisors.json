@@ -26,7 +26,8 @@
         "Semi-absentee model: operated by an approved GM, not hands-on",
         "18-month break-even target | €40,000 franchise fee (approx. £34,500) | 7% royalty, no hidden fees"
       ],
-      "investmentMin": 216000
+      "investmentMin": 216000,
+      "emoji": "🥙"
     },
     {
       "multiSiteReady": true,
@@ -57,7 +58,8 @@
         "No prior food experience needed — fully standardised operations",
         "Pioneer opportunity: 4–6 sites available in Greater Manchester & West Yorkshire"
       ],
-      "investmentMin": 150000
+      "investmentMin": 150000,
+      "emoji": "🌮"
     },
     {
       "multiSiteReady": false,
@@ -90,7 +92,8 @@
         "High-margin model: 70% in-store, 30% delivery | 6% royalty + 2% marketing",
         "2-year break-even target | Priority sites in London & Manchester"
       ],
-      "investmentMin": 150000
+      "investmentMin": 150000,
+      "emoji": "🫐"
     },
     {
       "multiSiteReady": true,
@@ -123,7 +126,8 @@
         "£15,000 franchise fee | 5% royalty + 1% marketing | full training & ops manuals provided",
         "Target locations across London & Surrey — mock P&L and site list available"
       ],
-      "investmentMin": 115000
+      "investmentMin": 115000,
+      "emoji": "🍦"
     },
     {
       "multiSiteReady": false,
@@ -163,7 +167,8 @@
         "Simple sales-only model — no franchisor staff or rent obligations | 4% monthly royalty",
         "Owner-operator model: hands-on franchisees, long-term growth ambition required"
       ],
-      "investmentMin": 150000
+      "investmentMin": 150000,
+      "emoji": "🧋"
     },
     {
       "multiSiteReady": true,
@@ -203,7 +208,8 @@
         "£150k–£300k investment | 6% royalty + 3% marketing | semi-absentee permitted with approved GM",
         "Multi-unit growth model targeting 10–14 sites across major UK cities — shopping centres and retail parks"
       ],
-      "investmentMin": 150000
+      "investmentMin": 150000,
+      "emoji": "🍗"
     },
     {
       "multiSiteReady": true,
@@ -211,9 +217,20 @@
       "operatorModel": "either",
       "experienceRequired": "management",
       "locationsAvailable": [
-        "manchester", "leeds", "liverpool", "sheffield", "newcastle",
-        "birmingham", "nottingham", "leicester", "bristol", "exeter",
-        "edinburgh", "glasgow", "belfast", "dublin"
+        "manchester",
+        "leeds",
+        "liverpool",
+        "sheffield",
+        "newcastle",
+        "birmingham",
+        "nottingham",
+        "leicester",
+        "bristol",
+        "exeter",
+        "edinburgh",
+        "glasgow",
+        "belfast",
+        "dublin"
       ],
       "name": "You Me Sushi",
       "sectors": [
@@ -237,7 +254,8 @@
         "5% royalty + 2% marketing | disciplined fast-casual operation with strong delivery-platform integration",
         "5 territories available across North, Midlands, South West, Ireland and Scotland"
       ],
-      "investmentMin": 160000
+      "investmentMin": 160000,
+      "emoji": "🍣"
     },
     {
       "multiSiteReady": true,
@@ -272,7 +290,8 @@
         "£2,500–£3,000 daily revenue potential | lean two-staff kiosk model | 6–8% royalty + 3–5% marketing fee",
         "Multi-unit growth model targeting 3–5 stores across London and major UK cities — perfectly timed for the surge in Indian food demand"
       ],
-      "investmentMin": 20000
+      "investmentMin": 20000,
+      "emoji": "🫓"
     },
     {
       "multiSiteReady": true,
@@ -314,7 +333,8 @@
         "£150k–£300k investment | 9% royalty + 3% marketing + £20k franchise fee | semi-absentee with approved GM",
         "Targeting 10 franchise partners in 12 months, each with 5–10 site development agreements — focus on major UK cities and university towns"
       ],
-      "investmentMin": 150000
+      "investmentMin": 150000,
+      "emoji": "🍔"
     }
   ]
 }

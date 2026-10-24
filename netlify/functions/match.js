@@ -2,8 +2,8 @@
 // Franchise Foundry — Matching Engine
 // Netlify serverless function: /.netlify/functions/match
 //
-// Franchisor data lives in content/franchisors/*.json
-// Add a new franchisor via Decap CMS → push → it's automatically included.
+// Franchisor data lives in content/franchisors.json — the single source the CMS edits.
+// Add or edit a franchisor via Decap CMS → push → it's automatically matched.
 // ─────────────────────────────────────────────────────────────────────────────
 
 const fs   = require('fs');
@@ -18,18 +18,17 @@ const BUDGET_RANGES = {
   "over-500k":   5000000
 };
 
-// ── Load franchisors from /content/franchisors/*.json ────────────────────────
+// ── Load franchisors from content/franchisors.json (single source of truth) ──
+//    This is the same file the CMS (admin/config.yml) writes, so the matcher and
+//    the published site can never drift apart. Previously this read per-brand files
+//    in content/franchisors/*.json, which silently excluded any brand missing a file
+//    (e.g. a brand added in the CMS but without a matching per-brand file).
 function loadFranchisors() {
-  const dir = path.join(__dirname, '../../content/franchisors');
+  const file = path.join(__dirname, '../../content/franchisors.json');
   try {
-    return fs.readdirSync(dir)
-      .filter(f => f.endsWith('.json'))
-      .map(f => {
-        const raw = fs.readFileSync(path.join(dir, f), 'utf8');
-        const data = JSON.parse(raw);
-        data.id = f.replace('.json', '');
-        return data;
-      });
+    const data = JSON.parse(fs.readFileSync(file, 'utf8'));
+    const list = Array.isArray(data) ? data : (data.partners || []);
+    return list.filter(f => f && f.id);
   } catch (e) {
     console.error('Could not load franchisors:', e.message);
     return [];
