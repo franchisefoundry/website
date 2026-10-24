@@ -4,13 +4,15 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-/* Layout: one column route map. A "pick up here" panel, then each track as a line of stations you tick off. */
+/* Layout: "Start here" panel (your to-dos, what Claude is building), then each area as a stack of
+   feature cards. A card opens into its checklist of steps, each owned by Harry, Ben or Claude. */
 :root {
   --bg: #f4f6f3; --surface: #ffffff; --surface-2: #eef2ee; --line: #d9e0da;
   --ink: #161a16; --ink-2: #4d564d; --ink-3: #6f786f;
-  --green: #3a4a3a; --green-soft: #e3ebe3; --on-green: #ffffff; --on-green-2: #c9d6c9;
+  --green: #3a4a3a; --green-soft: #e3ebe3; --on-green: #ffffff; --on-green-2: #c9d6c9; --on-green-soft: rgba(255,255,255,.1);
   --gold: #c8924a; --gold-ink: #8a5f26; --gold-soft: #f6ead8;
-  --ok: #2f7a4a; --crit: #b23a2e; --crit-soft: #f8e3df;
+  --ok: #2f7a4a; --ok-soft: #e3f1e8; --crit: #b23a2e;
+  --harry: #2c4c73; --harry-soft: #e3ebf5; --ben: #6b3f7a; --ben-soft: #f1e6f5; --claude: #8a5f26; --claude-soft: #f6ead8;
   --display: "Sora", "Segoe UI", system-ui, sans-serif;
   --body: "Sora", "Segoe UI", system-ui, sans-serif;
   --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
@@ -18,20 +20,25 @@
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
   --bg: #121612; --surface: #1a201a; --surface-2: #222a22; --line: #313b31;
   --ink: #eef2ee; --ink-2: #bcc6bc; --ink-3: #8f9a8f;
-  --green: #9fbf9a; --green-soft: #243024; --on-green: #121612; --on-green-2: #2c3a2c;
+  --green: #2f3d2f; --green-soft: #243024; --on-green: #eef2ee; --on-green-2: #a9bba9; --on-green-soft: rgba(255,255,255,.07);
   --gold: #d9a865; --gold-ink: #e2b878; --gold-soft: #33291b;
-  --ok: #7cc79a; --crit: #ec8a7e; --crit-soft: #3a2220; color-scheme: dark;
+  --ok: #7cc79a; --ok-soft: #1d3326; --crit: #ec8a7e;
+  --harry: #9dbbe6; --harry-soft: #1e2a3a; --ben: #d3a8e2; --ben-soft: #2e2234; --claude: #e2b878; --claude-soft: #33291b;
+  color-scheme: dark;
 } }
 :root[data-theme="dark"] {
   --bg: #121612; --surface: #1a201a; --surface-2: #222a22; --line: #313b31;
   --ink: #eef2ee; --ink-2: #bcc6bc; --ink-3: #8f9a8f;
-  --green: #9fbf9a; --green-soft: #243024; --on-green: #121612; --on-green-2: #2c3a2c;
+  --green: #2f3d2f; --green-soft: #243024; --on-green: #eef2ee; --on-green-2: #a9bba9; --on-green-soft: rgba(255,255,255,.07);
   --gold: #d9a865; --gold-ink: #e2b878; --gold-soft: #33291b;
-  --ok: #7cc79a; --crit: #ec8a7e; --crit-soft: #3a2220; color-scheme: dark;
+  --ok: #7cc79a; --ok-soft: #1d3326; --crit: #ec8a7e;
+  --harry: #9dbbe6; --harry-soft: #1e2a3a; --ben: #d3a8e2; --ben-soft: #2e2234; --claude: #e2b878; --claude-soft: #33291b;
+  color-scheme: dark;
 }
 * { box-sizing: border-box; }
+[hidden] { display: none !important; }
 body { background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 15px; line-height: 1.55; }
-.wrap { max-width: 920px; margin: 0 auto; padding-block: 28px 64px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: grid; gap: 28px; }
+.wrap { max-width: 980px; margin: 0 auto; padding-block: 28px 72px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: grid; gap: 26px; }
 h1, h2, h3 { font-family: var(--display); text-wrap: balance; margin: 0; }
 p { margin: 0; }
 button, input, select, textarea { font: inherit; color: inherit; }
@@ -39,98 +46,120 @@ button { cursor: pointer; }
 :focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
 .eyebrow { font-family: var(--mono); font-size: 11px; letter-spacing: .1em; color: var(--ink-3); text-transform: uppercase; }
 .mono { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
-/* Header */
 .top { display: flex; flex-wrap: wrap; gap: 16px; align-items: end; justify-content: space-between; }
 .top h1 { font-size: clamp(30px, 5vw, 44px); font-weight: 800; letter-spacing: -0.035em; line-height: 1.02; }
 .top h1 i { font-style: normal; color: var(--gold); }
-.overall { display: grid; gap: 6px; min-width: 220px; flex: 0 1 300px; }
-.overall .row { display: flex; justify-content: space-between; font-size: 13px; color: var(--ink-2); }
-.bar { height: 8px; border-radius: 99px; background: var(--surface-2); overflow: hidden; display: flex; }
-.bar span { display: block; height: 100%; }
-.bar .d { background: var(--green); }
-.bar .n { background: var(--gold); }
+.overall { display: grid; gap: 6px; flex: 0 1 320px; min-width: 220px; }
+.overall .row { display: flex; justify-content: space-between; gap: 10px; font-size: 13px; color: var(--ink-2); }
+.bar { height: 8px; border-radius: 99px; background: var(--surface-2); overflow: hidden; }
+.bar span { display: block; height: 100%; background: var(--green); border-radius: 99px; }
+:root .pickup .bar { background: var(--on-green-soft); }
 
-/* Pick up here */
-.pickup { background: var(--green); color: var(--on-green); border-radius: 20px; padding: 22px; display: grid; gap: 18px; }
+/* Start here */
+.pickup { background: var(--green); color: var(--on-green); border-radius: 20px; padding: 22px; display: grid; gap: 20px; }
 .pickup .eyebrow { color: var(--on-green-2); }
-:root .pickup { --pk-soft: rgba(255,255,255,.1); }
 .pickup h2 { font-size: 22px; font-weight: 800; letter-spacing: -0.02em; }
-.left-off { font-size: 15px; white-space: pre-wrap; }
-.left-off-meta { font-family: var(--mono); font-size: 11px; color: var(--on-green-2); margin-top: 6px; }
-.nexts { display: grid; gap: 8px; }
-.nx { display: grid; grid-template-columns: auto 1fr; gap: 12px; align-items: start; padding: 12px 14px; border-radius: 12px; background: var(--pk-soft, rgba(255,255,255,.1)); }
-.nx .k { font-family: var(--mono); font-size: 11px; padding: 2px 8px; border-radius: 99px; background: var(--gold); color: #161a16; font-weight: 600; margin-top: 2px; }
-.nx b { display: block; }
-.nx small { display: block; font-size: 13px; opacity: .85; }
-.pk-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.left-off { white-space: pre-wrap; margin-top: 6px; }
+.meta-line { font-family: var(--mono); font-size: 11px; color: var(--on-green-2); margin-top: 6px; }
+.cols { display: grid; gap: 14px; }
+@media (min-width: 760px) { .cols { grid-template-columns: 1fr 1fr; } }
+.col { background: var(--on-green-soft); border-radius: 14px; padding: 14px; display: grid; gap: 10px; align-content: start; min-width: 0; }
+.col h3 { font-size: 14px; font-weight: 700; display: flex; justify-content: space-between; gap: 8px; }
+.col ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.todo { display: grid; grid-template-columns: auto 1fr; gap: 10px; align-items: start; font-size: 14px; }
+.todo small { display: block; font-size: 12px; color: var(--on-green-2); }
+.todo .box { width: 20px; height: 20px; border-radius: 6px; border: 2px solid var(--on-green-2); background: transparent; margin-top: 1px; padding: 0; }
+.todo .box:hover { border-color: var(--on-green); }
+.pickup textarea { width: 100%; min-height: 96px; border-radius: 10px; border: 0; padding: 10px 12px; background: var(--surface); color: var(--ink); }
+.acts { display: flex; flex-wrap: wrap; gap: 8px; }
 .btn { min-height: 40px; padding: 0 14px; border-radius: 10px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); font-weight: 600; font-size: 14px; display: inline-flex; align-items: center; gap: 8px; }
 .btn.gold { background: var(--gold); border-color: var(--gold); color: #161a16; }
 .btn.ghost { background: transparent; border-color: var(--on-green-2); color: var(--on-green); }
 .btn.small { min-height: 32px; font-size: 13px; padding: 0 10px; }
+.btn.link { border: 0; background: none; padding: 0; min-height: 0; color: var(--ink-2); font-weight: 600; text-decoration: underline; }
 .btn:disabled { opacity: .5; cursor: default; }
-.pickup textarea { width: 100%; min-height: 90px; border-radius: 10px; border: 0; padding: 10px 12px; background: var(--surface); color: var(--ink); }
 
-/* Filters */
-.tools { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between; }
-.seg { display: inline-flex; gap: 4px; padding: 4px; background: var(--surface-2); border-radius: 12px; }
-.seg button { border: 0; background: transparent; padding: 6px 12px; border-radius: 8px; font-size: 13px; color: var(--ink-2); font-weight: 600; }
+/* Views */
+.tools { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; justify-content: space-between; position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--bg); padding-block: 10px; }
+.seg { display: inline-flex; flex-wrap: wrap; gap: 4px; padding: 4px; background: var(--surface-2); border-radius: 12px; }
+.seg button { border: 0; background: transparent; padding: 6px 11px; border-radius: 8px; font-size: 13px; color: var(--ink-2); font-weight: 600; }
 .seg button[aria-pressed="true"] { background: var(--surface); color: var(--ink); box-shadow: 0 1px 2px rgba(0,0,0,.08); }
+.seg .n { font-family: var(--mono); font-size: 11px; color: var(--ink-3); margin-left: 4px; }
 .jump { display: flex; flex-wrap: wrap; gap: 6px; }
 .jump a { font-size: 12px; color: var(--ink-2); text-decoration: none; padding: 4px 10px; border: 1px solid var(--line); border-radius: 99px; background: var(--surface); }
 
-/* Tracks */
-.track { display: grid; gap: 12px; scroll-margin-top: 16px; }
-.track-h { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: baseline; justify-content: space-between; }
-.track-h h2 { font-size: 20px; font-weight: 800; letter-spacing: -0.02em; }
-.track-h p { color: var(--ink-2); font-size: 14px; flex-basis: 100%; }
-.track-h .mono { font-size: 12px; color: var(--ink-3); }
-.route { list-style: none; margin: 0; padding: 0; position: relative; display: grid; gap: 6px; }
-.route::before { content: ""; position: absolute; left: 19px; top: 18px; bottom: 18px; width: 2px; background: var(--line); }
-.stop { position: relative; display: grid; grid-template-columns: 40px minmax(0, 1fr); gap: 10px; align-items: start; }
-.tick { width: 40px; height: 40px; border-radius: 50%; border: 0; background: transparent; display: grid; place-items: center; position: relative; z-index: 1; padding: 0; }
-.tick i { width: 22px; height: 22px; border-radius: 50%; border: 2px solid var(--line); background: var(--bg); display: grid; place-items: center; transition: background .15s, border-color .15s; }
-.tick:hover i { border-color: var(--green); }
-.stop[data-status="done"] .tick i { background: var(--green); border-color: var(--green); }
-.stop[data-status="done"] .tick i::after { content: ""; width: 9px; height: 5px; border-left: 2px solid var(--on-green); border-bottom: 2px solid var(--on-green); transform: rotate(-45deg) translate(1px, -1px); }
-.stop[data-status="now"] .tick i { border-color: var(--gold); box-shadow: 0 0 0 4px var(--gold-soft); }
-.stop[data-status="parked"] .tick i { border-style: dashed; }
-.card { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 12px 14px; min-width: 0; }
-.stop[data-status="now"] .card { border-color: var(--gold); }
-.stop[data-status="done"] .card { background: transparent; border-color: transparent; padding-block: 8px; }
-.card-h { display: flex; gap: 10px; align-items: baseline; justify-content: space-between; }
-.card-h button.t { border: 0; background: none; padding: 0; text-align: left; font-weight: 700; color: var(--ink); min-width: 0; overflow-wrap: anywhere; }
-.stop[data-status="done"] .card-h button.t { font-weight: 600; color: var(--ink-2); }
-.pill { flex: 0 0 auto; font-family: var(--mono); font-size: 11px; padding: 2px 8px; border-radius: 99px; border: 1px solid var(--line); color: var(--ink-2); white-space: nowrap; }
+/* Areas + features */
+.area { display: grid; gap: 10px; scroll-margin-top: 70px; }
+.area-h { display: grid; gap: 4px; padding-bottom: 4px; }
+.area-h .r { display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: baseline; justify-content: space-between; }
+.area-h h2 { font-size: 21px; font-weight: 800; letter-spacing: -0.02em; }
+.area-h p { color: var(--ink-2); font-size: 14px; max-width: 70ch; }
+.area-h .mono { font-size: 12px; color: var(--ink-3); }
+.feat { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; min-width: 0; }
+.feat[data-status="now"] { border-color: var(--gold); box-shadow: 0 0 0 3px var(--gold-soft); }
+.feat[data-status="done"] { background: transparent; }
+.feat-h { width: 100%; border: 0; background: none; text-align: left; padding: 14px 16px; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 6px 14px; align-items: center; color: var(--ink); border-radius: 14px; }
+.feat-h:hover { background: var(--surface-2); }
+.feat[data-status="done"] .feat-h:hover { background: var(--surface); }
+.fh-main { display: grid; gap: 3px; min-width: 0; }
+.fh-title { display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: center; }
+.fh-title b { font-size: 16px; overflow-wrap: anywhere; }
+.fh-what { font-size: 13px; color: var(--ink-2); }
+.fh-side { display: grid; gap: 6px; justify-items: end; }
+.prog { display: flex; align-items: center; gap: 8px; font-family: var(--mono); font-size: 12px; color: var(--ink-3); }
+.prog .bar { width: 72px; height: 6px; }
+.chev { font-size: 12px; color: var(--ink-3); transition: transform .15s; display: inline-block; }
+.feat.open .chev { transform: rotate(90deg); }
+.pill { font-family: var(--mono); font-size: 11px; padding: 2px 8px; border-radius: 99px; border: 1px solid var(--line); color: var(--ink-2); white-space: nowrap; }
 .pill.now { background: var(--gold); border-color: var(--gold); color: #161a16; font-weight: 600; }
 .pill.next { border-color: var(--gold); color: var(--gold-ink); }
-.pill.done { border-color: transparent; color: var(--ok); }
+.pill.done { background: var(--ok-soft); border-color: transparent; color: var(--ok); font-weight: 600; }
 .pill.parked { border-style: dashed; color: var(--ink-3); }
-.next-step { margin-top: 4px; font-size: 13px; color: var(--ink-2); }
-.next-step b { font-family: var(--mono); font-size: 11px; letter-spacing: .06em; color: var(--gold-ink); font-weight: 600; margin-right: 6px; }
-.stop[data-status="done"] .next-step { display: none; }
-.meta { margin-top: 4px; font-family: var(--mono); font-size: 11px; color: var(--ink-3); }
-.meta a { color: var(--ink-2); }
-.detail { margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--line); display: grid; gap: 10px; font-size: 14px; color: var(--ink-2); }
-.detail p { white-space: pre-wrap; }
-.edit { display: grid; gap: 8px; }
-.edit .row2 { display: grid; grid-template-columns: 1fr; gap: 8px; }
-@media (min-width: 620px) { .edit .row2 { grid-template-columns: 160px 1fr; } }
-label.f { display: grid; gap: 4px; font-size: 12px; font-weight: 600; color: var(--ink-2); }
-.f input, .f select, .f textarea { width: 100%; padding: 8px 10px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); color: var(--ink); font-weight: 400; font-size: 14px; }
-.edit-acts { display: flex; flex-wrap: wrap; gap: 8px; justify-content: space-between; }
-.danger { color: var(--crit); border-color: transparent; background: transparent; }
+.who { display: inline-flex; gap: 4px; flex-wrap: wrap; justify-content: flex-end; }
+.tag { font-size: 11px; font-weight: 700; padding: 1px 7px; border-radius: 99px; white-space: nowrap; border: 0; }
+.tag.harry { background: var(--harry-soft); color: var(--harry); }
+.tag.ben { background: var(--ben-soft); color: var(--ben); }
+.tag.claude { background: var(--claude-soft); color: var(--claude); }
+.tag.team { background: var(--surface-2); color: var(--ink-2); }
+.feat-b { padding: 0 16px 16px; display: grid; gap: 14px; }
+.facts { display: grid; gap: 6px; font-size: 13px; color: var(--ink-2); padding: 12px; background: var(--surface-2); border-radius: 10px; }
+.facts b { color: var(--ink); font-weight: 600; }
+.facts a { color: var(--ink); }
+.steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; counter-reset: s; }
+.step { display: grid; grid-template-columns: 28px minmax(0, 1fr) auto; gap: 10px; align-items: start; padding: 7px 6px; border-radius: 8px; counter-increment: s; }
+.step:hover { background: var(--surface-2); }
+.step .box { width: 22px; height: 22px; border-radius: 6px; border: 2px solid var(--line); background: var(--surface); display: grid; place-items: center; padding: 0; margin-top: 1px; }
+.step .box:hover { border-color: var(--green); }
+.step.done .box { background: var(--green); border-color: var(--green); }
+.step.done .box::after { content: ""; width: 9px; height: 5px; border-left: 2px solid #fff; border-bottom: 2px solid #fff; transform: rotate(-45deg) translate(1px, -1px); }
+.step .txt { font-size: 14px; overflow-wrap: anywhere; }
+.step .txt::before { content: counter(s) ". "; font-family: var(--mono); font-size: 12px; color: var(--ink-3); }
+.step.done .txt { color: var(--ink-3); text-decoration: line-through; text-decoration-color: var(--line); }
+.step .side { display: flex; gap: 6px; align-items: center; }
+.step .when { font-family: var(--mono); font-size: 11px; color: var(--ink-3); white-space: nowrap; }
+.step .del { border: 0; background: none; color: var(--ink-3); font-size: 15px; padding: 0 4px; line-height: 1; }
+.step .del:hover { color: var(--crit); }
+.add-step { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: 8px; }
+.add-step input, .add-step select, .f input, .f select, .f textarea { width: 100%; padding: 8px 10px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); color: var(--ink); font-size: 14px; }
+.feat-acts { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between; border-top: 1px solid var(--line); padding-top: 12px; }
+.feat-acts label { display: flex; gap: 8px; align-items: center; font-size: 13px; color: var(--ink-2); }
+.feat-acts select { padding: 6px 8px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); }
+.danger { color: var(--crit) !important; }
 
-/* Add goal */
+/* Add feature */
 .add { background: var(--surface); border: 1px dashed var(--line); border-radius: 16px; padding: 18px; display: grid; gap: 12px; }
 .add h2 { font-size: 18px; font-weight: 800; }
 .add .grid { display: grid; gap: 10px; }
-@media (min-width: 620px) { .add .grid { grid-template-columns: 1fr 1fr; } }
+@media (min-width: 640px) { .add .grid { grid-template-columns: 1fr 1fr; } }
 .add .wide { grid-column: 1 / -1; }
-
-.empty { padding: 40px 20px; text-align: center; color: var(--ink-3); border: 1px dashed var(--line); border-radius: 16px; background: var(--surface); }
+label.f { display: grid; gap: 4px; font-size: 12px; font-weight: 600; color: var(--ink-2); }
 .note { font-size: 12px; color: var(--ink-3); }
+.empty { padding: 36px 20px; text-align: center; color: var(--ink-3); border: 1px dashed var(--line); border-radius: 16px; background: var(--surface); }
+.key { display: flex; flex-wrap: wrap; gap: 8px 14px; font-size: 12px; color: var(--ink-3); align-items: center; }
 .toast { position: fixed; left: 50%; bottom: calc(20px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); background: var(--ink); color: var(--bg); padding: 10px 16px; border-radius: 10px; font-size: 14px; z-index: 20; max-width: calc(100% - 32px); }
+@media (max-width: 560px) { .feat-h { grid-template-columns: 1fr; } .fh-side { justify-items: start; } .who { justify-content: flex-start; } .add-step { grid-template-columns: 1fr 1fr; } .add-step input { grid-column: 1 / -1; } }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
 </style>
 
@@ -140,64 +169,49 @@ label.f { display: grid; gap: 4px; font-size: 12px; font-weight: 600; color: var
       <div class="eyebrow">Franchise Foundry · build roadmap</div>
       <h1>Foundry Roadmap<i>.</i></h1>
     </div>
-    <div class="overall" id="overall" aria-live="polite">
-      <div class="row"><span>Overall</span><span class="mono" id="overall-n">–</span></div>
-      <div class="bar" aria-hidden="true"><span class="d" id="bar-d" style="width:0"></span><span class="n" id="bar-n" style="width:0"></span></div>
+    <div class="overall" aria-live="polite">
+      <div class="row"><span id="ov-feat">Loading…</span><span class="mono" id="ov-steps"></span></div>
+      <div class="bar" aria-hidden="true"><span id="ov-bar" style="width:0"></span></div>
     </div>
   </header>
 
   <section class="pickup" aria-labelledby="pk-h">
     <div>
-      <div class="eyebrow">Pick up here</div>
+      <div class="eyebrow">Start here</div>
       <h2 id="pk-h">Where we left off</h2>
+      <div id="lo-view"><p class="left-off" id="lo">Loading the roadmap…</p><div class="meta-line" id="lo-meta"></div></div>
+      <div id="lo-edit" hidden><label class="sr" for="lo-input">Where we left off</label><textarea id="lo-input" maxlength="2000"></textarea></div>
     </div>
-    <div id="leftoff-view">
-      <p class="left-off" id="leftoff">Loading the roadmap…</p>
-      <div class="left-off-meta" id="leftoff-meta"></div>
+    <div class="cols">
+      <div class="col"><h3><span>Waiting on Harry</span><span class="mono" id="mine-n"></span></h3><ul id="mine"></ul></div>
+      <div class="col"><h3><span>Claude is building</span><span class="mono" id="cl-n"></span></h3><ul id="claude-now"></ul></div>
     </div>
-    <div id="leftoff-edit" hidden>
-      <label class="sr" for="leftoff-input" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Where we left off</label>
-      <textarea id="leftoff-input" maxlength="2000"></textarea>
-    </div>
-    <div>
-      <div class="eyebrow" style="margin-bottom:8px">Next steps</div>
-      <div class="nexts" id="nexts"></div>
-    </div>
-    <div class="pk-actions">
-      <button type="button" class="btn gold" id="copy-prompt">Copy prompt for Claude</button>
-      <button type="button" class="btn ghost" id="edit-leftoff">Edit note</button>
-      <button type="button" class="btn ghost" id="save-leftoff" hidden>Save note</button>
+    <div class="acts">
+      <button type="button" class="btn gold" id="copy">Copy prompt for Claude</button>
+      <button type="button" class="btn ghost" id="lo-edit-btn">Edit note</button>
+      <button type="button" class="btn ghost" id="lo-save" hidden>Save note</button>
     </div>
   </section>
 
   <div class="tools">
-    <div class="seg" role="group" aria-label="Show">
-      <button type="button" data-filter="open" aria-pressed="true">To do</button>
-      <button type="button" data-filter="all" aria-pressed="false">Everything</button>
-      <button type="button" data-filter="done" aria-pressed="false">Done</button>
-    </div>
-    <nav class="jump" id="jump" aria-label="Tracks"></nav>
+    <div class="seg" role="group" aria-label="Show" id="views"></div>
+    <nav class="jump" id="jump" aria-label="Areas"></nav>
   </div>
+  <div class="key"><span>Steps owned by</span><span class="tag harry">Harry</span><span class="tag ben">Ben</span><span class="tag team">Harry or Ben</span><span class="tag claude">Claude</span><span>· Click a feature to see its steps. Tick a step when it’s done.</span></div>
 
-  <main id="tracks">
-    <div class="empty" id="empty">The roadmap loads here: every track, what’s done, and the next step on each. If it stays empty, open this page in claude.ai while signed in.</div>
-  </main>
+  <main id="areas"><div class="empty">The roadmap loads here: every feature, broken into steps, with who’s doing each one. If it stays empty, open this page in claude.ai while signed in.</div></main>
 
-  <section class="add" aria-labelledby="add-h" id="add-box">
-    <h2 id="add-h">Add a goal</h2>
+  <section class="add" aria-labelledby="add-h">
+    <h2 id="add-h">Add a feature</h2>
     <form id="add-form" class="grid" novalidate>
-      <label class="f wide" for="add-title">Goal<input id="add-title" maxlength="160" placeholder="e.g. Partner self-serve login" required></label>
-      <label class="f" for="add-track">Track<select id="add-track"></select></label>
-      <label class="f" for="add-status">Status<select id="add-status">
-        <option value="next">Next</option><option value="now">Now</option><option value="later">Later</option><option value="parked">Parked</option>
-      </select></label>
-      <label class="f wide" for="add-newtrack" id="add-newtrack-l" hidden>New track name<input id="add-newtrack" maxlength="60" placeholder="e.g. Investor portal"></label>
-      <label class="f wide" for="add-next">Next step<input id="add-next" maxlength="300" placeholder="The first thing to do when you pick this up"></label>
-      <label class="f wide" for="add-detail">Notes <span style="font-weight:400;color:var(--ink-3)">(optional)</span><textarea id="add-detail" rows="2" maxlength="2000"></textarea></label>
-      <div class="wide" style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between">
-        <span class="note">Or just tell Claude in chat and it’ll add it here.</span>
-        <button type="submit" class="btn gold">Add goal</button>
-      </div>
+      <label class="f wide" for="af-title">Feature<input id="af-title" maxlength="120" placeholder="e.g. Investor update emails"></label>
+      <label class="f wide" for="af-what">What it is, in a sentence<input id="af-what" maxlength="240" placeholder="What it does and who it’s for"></label>
+      <label class="f" for="af-area">Area<select id="af-area"></select></label>
+      <label class="f" for="af-status">Status<select id="af-status"><option value="next">Up next</option><option value="now">Building now</option><option value="later">Later</option><option value="parked">Parked</option></select></label>
+      <label class="f wide" for="af-newarea" id="af-newarea-l" hidden>New area name<input id="af-newarea" maxlength="60" placeholder="e.g. Investor portal"></label>
+      <label class="f wide" for="af-steps">Steps <span style="font-weight:400;color:var(--ink-3)">(one per line, optional)</span><textarea id="af-steps" rows="4" placeholder="Agree what goes in the update&#10;Build the email&#10;Send the first one"></textarea></label>
+      <label class="f" for="af-owner">Steps owned by<select id="af-owner"><option value="claude">Claude</option><option value="harry">Harry</option><option value="ben">Ben</option><option value="team">Harry or Ben</option></select></label>
+      <div style="display:flex;align-items:end;justify-content:flex-end;gap:10px;flex-wrap:wrap"><span class="note">Or just tell Claude in chat.</span><button type="submit" class="btn gold">Add feature</button></div>
     </form>
   </section>
 </div>
@@ -206,284 +220,282 @@ label.f { display: grid; gap: 4px; font-size: 12px; font-weight: 600; color: var
 <script>
 (function () {
   'use strict'
-  var STATUS = { now: 'Now', next: 'Next', later: 'Later', parked: 'Parked', done: 'Done' }
+  var STATUS = { now: 'Building now', next: 'Up next', later: 'Later', parked: 'Parked', done: 'Done' }
   var RANK = { now: 0, next: 1, later: 2, parked: 3, done: 4 }
-  var state = { tracks: [], items: [], resume: null, filter: 'open', open: {} }
+  var OWNER = { harry: 'Harry', ben: 'Ben', team: 'Harry or Ben', claude: 'Claude' }
+  var OWNERS = ['claude', 'harry', 'ben', 'team']
+  var VIEWS = [['all', 'Everything'], ['harry', 'Waiting on Harry'], ['ben', 'Waiting on Ben'], ['claude', 'Waiting on Claude'], ['done', 'Done']]
+  var S = { areas: [], features: [], steps: [], resume: null, view: 'all', open: {} }
   var db = null, canWrite = true
   var $ = function (id) { return document.getElementById(id) }
+  try { S.view = localStorage.getItem('rm_view') || 'all'; S.open = JSON.parse(localStorage.getItem('rm_open') || '{}') } catch (e) {}
+  function remember() { try { localStorage.setItem('rm_view', S.view); localStorage.setItem('rm_open', JSON.stringify(S.open)) } catch (e) {} }
 
-  try { var f = localStorage.getItem('rm_filter'); if (f) state.filter = f } catch (e) {}
-
-  function toast(msg) {
-    var t = $('toast'); t.textContent = msg; t.hidden = false
-    clearTimeout(toast.t); toast.t = setTimeout(function () { t.hidden = true }, 2400)
-  }
-  function fmt(iso) {
-    if (!iso) return ''
-    try { return new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) } catch (e) { return '' }
-  }
-  function el(tag, attrs, kids) {
+  function toast(m) { var t = $('toast'); t.textContent = m; t.hidden = false; clearTimeout(toast.t); toast.t = setTimeout(function () { t.hidden = true }, 2400) }
+  function fmt(iso) { try { return iso ? new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }) : '' } catch (e) { return '' } }
+  function el(tag, a, kids) {
     var n = document.createElement(tag)
-    for (var k in (attrs || {})) {
-      if (k === 'text') n.textContent = attrs[k]
-      else if (k === 'class') n.className = attrs[k]
-      else if (k.slice(0, 2) === 'on') n.addEventListener(k.slice(2), attrs[k])
-      else if (attrs[k] != null && attrs[k] !== false) n.setAttribute(k, attrs[k])
+    for (var k in (a || {})) {
+      var v = a[k]
+      if (v == null || v === false) continue
+      if (k === 'text') n.textContent = v
+      else if (k === 'class') n.className = v
+      else if (k.slice(0, 2) === 'on') n.addEventListener(k.slice(2), v)
+      else n.setAttribute(k, v === true ? '' : v)
     }
     ;(kids || []).forEach(function (c) { if (c != null) n.appendChild(typeof c === 'string' ? document.createTextNode(c) : c) })
     return n
   }
-  function slug(s) { return String(s).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 40) || 'track' }
+  function slug(s) { return String(s).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 40) || 'area' }
   function safeUrl(u) { return /^https:\/\//.test(u || '') ? u : null }
+  var isMine = function (o, who) { return who === 'harry' ? (o === 'harry' || o === 'team') : who === 'ben' ? (o === 'ben' || o === 'team') : o === who }
 
-  function sortedItems(trackKey) {
-    return state.items.filter(function (i) { return i.track === trackKey })
-      .sort(function (a, b) { return (a.order || 0) - (b.order || 0) || String(a.title).localeCompare(String(b.title)) })
+  function stepsOf(fid) { return S.steps.filter(function (s) { return s.feature === fid }).sort(function (a, b) { return (a.order || 0) - (b.order || 0) }) }
+  function statusOf(f) { var st = stepsOf(f.id); return st.length && st.every(function (s) { return s.done }) ? 'done' : (f.status || 'next') }
+  function featById(id) { return S.features.filter(function (f) { return f.id === id })[0] }
+  function areaOrder(k) { for (var i = 0; i < S.areas.length; i++) if (S.areas[i].key === k) return i; return 99 }
+
+  function openSteps(who) {
+    return S.steps.filter(function (s) { return !s.done && isMine(s.owner, who) && featById(s.feature) && statusOf(featById(s.feature)) !== 'parked' })
+      .sort(function (a, b) {
+        var fa = featById(a.feature), fb = featById(b.feature)
+        return RANK[statusOf(fa)] - RANK[statusOf(fb)] || areaOrder(fa.area) - areaOrder(fb.area) || (fa.order || 0) - (fb.order || 0) || (a.order || 0) - (b.order || 0)
+      })
   }
 
   function render() {
-    // Overall progress
-    var live = state.items.filter(function (i) { return i.status !== 'parked' })
-    var done = live.filter(function (i) { return i.status === 'done' }).length
-    var doing = live.filter(function (i) { return i.status === 'now' }).length
-    $('overall-n').textContent = live.length ? done + ' of ' + live.length + ' done' : '–'
-    $('bar-d').style.width = live.length ? (done / live.length * 100) + '%' : '0'
-    $('bar-n').style.width = live.length ? (doing / live.length * 100) + '%' : '0'
+    var total = S.steps.length, done = S.steps.filter(function (s) { return s.done }).length
+    var fDone = S.features.filter(function (f) { return statusOf(f) === 'done' }).length
+    $('ov-feat').textContent = S.features.length ? fDone + ' of ' + S.features.length + ' features done' : (db ? 'Nothing yet' : 'Loading…')
+    $('ov-steps').textContent = total ? done + '/' + total + ' steps' : ''
+    $('ov-bar').style.width = total ? (done / total * 100) + '%' : '0'
 
-    // Pick up here
-    var r = state.resume
-    $('leftoff').textContent = r && r.leftOff ? r.leftOff : (db ? 'No note yet. Add one with “Edit note”.' : 'Loading the roadmap…')
-    $('leftoff-meta').textContent = r && r.updatedAt ? 'Updated ' + fmt(r.updatedAt) + (r.by ? ' · ' + r.by : '') : ''
-    var nexts = $('nexts'); nexts.textContent = ''
-    var trackOrder = {}; state.tracks.forEach(function (t, i) { trackOrder[t.key] = i })
-    var up = state.items.filter(function (i) { return i.status === 'now' || i.status === 'next' })
-      .sort(function (a, b) { return RANK[a.status] - RANK[b.status] || (trackOrder[a.track] - trackOrder[b.track]) || (a.order || 0) - (b.order || 0) })
-      .slice(0, 4)
-    if (!up.length) nexts.appendChild(el('p', { text: db ? 'Nothing marked Now or Next. Pick something below.' : '…', style: 'opacity:.8' }))
-    up.forEach(function (i) {
-      nexts.appendChild(el('div', { class: 'nx' }, [
-        el('span', { class: 'k', text: STATUS[i.status] }),
-        el('div', {}, [el('b', { text: i.title }), i.next ? el('small', { text: i.next }) : null]),
+    // Start here
+    var r = S.resume
+    $('lo').textContent = r && r.leftOff ? r.leftOff : (db ? 'No note yet. Add one with “Edit note”.' : 'Loading the roadmap…')
+    $('lo-meta').textContent = r && r.updatedAt ? 'Updated ' + fmt(r.updatedAt) + (r.by ? ' · ' + r.by : '') : ''
+    var mine = openSteps('harry'), mineUl = $('mine'); mineUl.textContent = ''
+    $('mine-n').textContent = mine.length ? String(mine.length) : ''
+    if (!mine.length) mineUl.appendChild(el('li', { text: db ? 'Nothing waiting on you right now.' : '…', style: 'font-size:14px;opacity:.85' }))
+    mine.slice(0, 6).forEach(function (s) {
+      var f = featById(s.feature)
+      mineUl.appendChild(el('li', { class: 'todo' }, [
+        el('button', { type: 'button', class: 'box', 'aria-label': 'Mark done: ' + s.text, disabled: !db || !canWrite, onclick: function () { tick(s) } }),
+        el('span', {}, [s.text, el('small', { text: f.title + (s.owner === 'team' ? ' · Harry or Ben' : '') })]),
       ]))
     })
+    if (mine.length > 6) mineUl.appendChild(el('li', {}, [el('button', { type: 'button', class: 'btn link', style: 'color:var(--on-green)', text: 'See all ' + mine.length, onclick: function () { setView('harry') } })]))
+    var cl = openSteps('claude'), clUl = $('claude-now'); clUl.textContent = ''
+    var nowF = S.features.filter(function (f) { return statusOf(f) === 'now' && stepsOf(f.id).some(function (s) { return !s.done && s.owner === 'claude' }) })
+      .sort(function (a, b) { return areaOrder(a.area) - areaOrder(b.area) })[0]
+    var nextCl = nowF ? stepsOf(nowF.id).filter(function (s) { return !s.done && s.owner === 'claude' }) : cl.slice(0, 3)
+    $('cl-n').textContent = cl.length ? cl.length + ' to do' : ''
+    if (nowF) clUl.appendChild(el('li', { style: 'font-size:14px' }, [el('b', { text: nowF.title }), el('div', { style: 'font-size:12px;color:var(--on-green-2)', text: nowF.what || '' })]))
+    if (!nextCl.length) clUl.appendChild(el('li', { text: db ? 'Nothing in progress. Pick what’s next below.' : '…', style: 'font-size:14px;opacity:.85' }))
+    nextCl.slice(0, 4).forEach(function (s) { clUl.appendChild(el('li', { class: 'todo' }, [el('span', { class: 'box', 'aria-hidden': 'true', style: 'opacity:.6' }), el('span', { text: s.text })])) })
 
-    // Filters
-    document.querySelectorAll('[data-filter]').forEach(function (b) { b.setAttribute('aria-pressed', String(b.getAttribute('data-filter') === state.filter)) })
+    // Views
+    var vs = $('views'); vs.textContent = ''
+    VIEWS.forEach(function (v) {
+      var n = v[0] === 'all' ? null : v[0] === 'done' ? S.features.filter(function (f) { return statusOf(f) === 'done' }).length : openSteps(v[0]).length
+      vs.appendChild(el('button', { type: 'button', 'aria-pressed': String(S.view === v[0]), onclick: function () { setView(v[0]) } }, [v[1], n != null ? el('span', { class: 'n', text: String(n) }) : null]))
+    })
 
-    // Tracks
-    var host = $('tracks'); host.textContent = ''
+    // Areas
+    var host = $('areas'); host.textContent = ''
     var jump = $('jump'); jump.textContent = ''
-    if (!state.tracks.length) { host.appendChild($('empty') || el('div', { class: 'empty', id: 'empty', text: 'Nothing on the roadmap yet. Add the first goal below.' })); }
-    state.tracks.forEach(function (t) {
-      var all = sortedItems(t.key)
-      var shown = all.filter(function (i) {
-        return state.filter === 'all' ? true : state.filter === 'done' ? i.status === 'done' : i.status !== 'done'
+    if (!S.areas.length) host.appendChild(el('div', { class: 'empty', text: db ? 'Nothing on the roadmap yet. Add the first feature below.' : 'The roadmap loads here. If it stays empty, open this page in claude.ai while signed in.' }))
+    S.areas.forEach(function (a) {
+      var feats = S.features.filter(function (f) { return f.area === a.key })
+        .sort(function (x, y) { return (x.order || 0) - (y.order || 0) })
+      var shown = feats.filter(function (f) {
+        var st = statusOf(f)
+        if (S.view === 'all') return true
+        if (S.view === 'done') return st === 'done'
+        return st !== 'parked' && stepsOf(f.id).some(function (s) { return !s.done && isMine(s.owner, S.view) })
       })
-      var tl = all.filter(function (i) { return i.status !== 'parked' })
-      var td = tl.filter(function (i) { return i.status === 'done' }).length
-      jump.appendChild(el('a', { href: '#t-' + t.key, text: t.label }))
-      var sec = el('section', { class: 'track', id: 't-' + t.key, 'aria-labelledby': 'th-' + t.key }, [
-        el('div', { class: 'track-h' }, [
-          el('h2', { id: 'th-' + t.key, text: t.label }),
-          el('span', { class: 'mono', text: tl.length ? td + '/' + tl.length + ' done' : 'nothing yet' }),
-          t.blurb ? el('p', { text: t.blurb }) : null,
-        ]),
-        el('div', { class: 'bar', 'aria-hidden': 'true' }, [
-          el('span', { class: 'd', style: 'width:' + (tl.length ? td / tl.length * 100 : 0) + '%' }),
+      if (S.view !== 'all' && !shown.length) return
+      var fd = feats.filter(function (f) { return statusOf(f) === 'done' }).length
+      jump.appendChild(el('a', { href: '#a-' + a.key, text: a.label }))
+      var sec = el('section', { class: 'area', id: 'a-' + a.key, 'aria-labelledby': 'ah-' + a.key }, [
+        el('div', { class: 'area-h' }, [
+          el('div', { class: 'r' }, [el('h2', { id: 'ah-' + a.key, text: a.label }), el('span', { class: 'mono', text: feats.length ? fd + ' of ' + feats.length + ' features done' : 'nothing yet' })]),
+          a.blurb ? el('p', { text: a.blurb }) : null,
         ]),
       ])
-      if (!shown.length) {
-        sec.appendChild(el('p', { class: 'note', text: state.filter === 'done' ? 'Nothing ticked off here yet.' : all.length ? 'All done here.' : 'No goals yet. Add one below or ask Claude.' }))
-      } else {
-        var ol = el('ol', { class: 'route' })
-        shown.forEach(function (i) { ol.appendChild(stop(i)) })
-        sec.appendChild(ol)
-      }
+      if (!shown.length) sec.appendChild(el('p', { class: 'note', text: 'No features here yet. Add one below, or tell Claude.' }))
+      shown.forEach(function (f) { sec.appendChild(feature(f)) })
       host.appendChild(sec)
     })
 
-    // Add form tracks
-    var sel = $('add-track'), cur = sel.value
-    sel.textContent = ''
-    state.tracks.forEach(function (t) { sel.appendChild(el('option', { value: t.key, text: t.label })) })
-    sel.appendChild(el('option', { value: '__new', text: 'New track…' }))
+    // Add form
+    var sel = $('af-area'), cur = sel.value; sel.textContent = ''
+    S.areas.forEach(function (a) { sel.appendChild(el('option', { value: a.key, text: a.label })) })
+    sel.appendChild(el('option', { value: '__new', text: 'New area…' }))
     if (cur && [].some.call(sel.options, function (o) { return o.value === cur })) sel.value = cur
-    $('add-newtrack-l').hidden = sel.value !== '__new'
+    $('af-newarea-l').hidden = sel.value !== '__new'
     document.querySelectorAll('#add-form input, #add-form select, #add-form textarea, #add-form button').forEach(function (n) { n.disabled = !db || !canWrite })
-    $('edit-leftoff').disabled = !db || !canWrite
+    $('lo-edit-btn').disabled = !db || !canWrite
   }
 
-  function stop(i) {
-    var isOpen = !!state.open[i.id]
-    var li = el('li', { class: 'stop', 'data-status': i.status })
-    li.appendChild(el('button', {
-      type: 'button', class: 'tick', 'aria-pressed': String(i.status === 'done'),
-      'aria-label': (i.status === 'done' ? 'Mark not done: ' : 'Mark done: ') + i.title,
-      disabled: !db || !canWrite ? 'disabled' : null,
-      onclick: function () { toggleDone(i) },
-    }, [el('i', { 'aria-hidden': 'true' })]))
-    var link = safeUrl(i.link)
-    var card = el('div', { class: 'card' }, [
-      el('div', { class: 'card-h' }, [
-        el('button', { type: 'button', class: 't', 'aria-expanded': String(isOpen), text: i.title, onclick: function () { state.open[i.id] = !isOpen; render() } }),
-        el('span', { class: 'pill ' + i.status, text: STATUS[i.status] || i.status }),
+  function feature(f) {
+    var st = statusOf(f), steps = stepsOf(f.id)
+    var dn = steps.filter(function (s) { return s.done }).length
+    var isOpen = S.open[f.id] != null ? S.open[f.id] : (st === 'now')
+    var openBy = {}
+    steps.forEach(function (s) { if (!s.done) openBy[s.owner] = (openBy[s.owner] || 0) + 1 })
+    var card = el('article', { class: 'feat' + (isOpen ? ' open' : ''), 'data-status': st })
+    card.appendChild(el('button', { type: 'button', class: 'feat-h', 'aria-expanded': String(isOpen), onclick: function () { S.open[f.id] = !isOpen; remember(); render() } }, [
+      el('div', { class: 'fh-main' }, [
+        el('div', { class: 'fh-title' }, [el('span', { class: 'chev', 'aria-hidden': 'true', text: '▸' }), el('b', { text: f.title }), el('span', { class: 'pill ' + st, text: STATUS[st] })]),
+        f.what ? el('div', { class: 'fh-what', text: f.what }) : null,
       ]),
-      i.next ? el('div', { class: 'next-step' }, [el('b', { text: 'NEXT' }), i.next]) : null,
-      (i.status === 'done' && (i.doneAt || link)) ? el('div', { class: 'meta' }, [
-        i.doneAt ? 'Done ' + fmt(i.doneAt) : '',
-        link ? (i.doneAt ? ' · ' : '') : '',
-        link ? el('a', { href: link, target: '_blank', rel: 'noopener noreferrer', text: i.linkLabel || 'View' }) : null,
-      ]) : null,
-    ])
-    if (isOpen) card.appendChild(editor(i))
-    li.appendChild(card)
-    return li
-  }
-
-  function editor(i) {
-    var box = el('div', { class: 'detail' })
-    if (i.detail) box.appendChild(el('p', { text: i.detail }))
-    var link = safeUrl(i.link)
-    if (link && i.status !== 'done') box.appendChild(el('div', { class: 'meta' }, [el('a', { href: link, target: '_blank', rel: 'noopener noreferrer', text: i.linkLabel || 'View' })]))
-    if (!db || !canWrite) return box
-    var idp = 'e-' + i.id
-    var status = el('select', { id: idp + '-s' })
-    Object.keys(STATUS).forEach(function (k) { var o = el('option', { value: k, text: STATUS[k] }); if (k === i.status) o.selected = true; status.appendChild(o) })
-    var next = el('input', { id: idp + '-n', maxlength: '300', value: i.next || '' })
-    var det = el('textarea', { id: idp + '-d', rows: '3', maxlength: '2000' }); det.value = i.detail || ''
-    var confirmDel = false
-    var del = el('button', { type: 'button', class: 'btn small danger', text: 'Remove', onclick: function () {
-      if (!confirmDel) { confirmDel = true; del.textContent = 'Tap again to remove'; return }
-      db.doc('items/' + i.id).delete().then(function () { toast('Removed.') }).catch(fail)
-    } })
-    box.appendChild(el('div', { class: 'edit' }, [
-      el('div', { class: 'row2' }, [
-        el('label', { class: 'f', for: idp + '-s' }, ['Status', status]),
-        el('label', { class: 'f', for: idp + '-n' }, ['Next step', next]),
-      ]),
-      el('label', { class: 'f', for: idp + '-d' }, ['Notes', det]),
-      el('div', { class: 'edit-acts' }, [
-        del,
-        el('button', { type: 'button', class: 'btn small gold', text: 'Save', onclick: function () {
-          var s = status.value
-          var patch = { status: s, next: next.value.trim(), detail: det.value.trim(), updatedAt: new Date().toISOString() }
-          if (s === 'done' && i.status !== 'done') patch.doneAt = patch.updatedAt
-          if (s !== 'done') patch.was = s
-          db.doc('items/' + i.id).update(patch).then(function () { toast('Saved.'); state.open[i.id] = false; render() }).catch(fail)
-        } }),
+      el('div', { class: 'fh-side' }, [
+        steps.length ? el('div', { class: 'prog' }, [el('div', { class: 'bar', 'aria-hidden': 'true' }, [el('span', { style: 'width:' + (dn / steps.length * 100) + '%' })]), dn + '/' + steps.length]) : el('div', { class: 'prog', text: 'no steps yet' }),
+        st !== 'done' ? el('div', { class: 'who' }, OWNERS.filter(function (o) { return openBy[o] }).map(function (o) { return el('span', { class: 'tag ' + o, text: OWNER[o] + ' ' + openBy[o] }) })) : null,
       ]),
     ]))
-    return box
+    if (!isOpen) return card
+
+    var body = el('div', { class: 'feat-b' })
+    var facts = []
+    if (f.who) facts.push(el('div', {}, [el('b', { text: 'Who it’s for: ' }), f.who]))
+    if (f.where) {
+      var u = safeUrl(f.whereUrl)
+      facts.push(el('div', {}, [el('b', { text: 'Where to find it: ' }), u ? el('a', { href: u, target: '_blank', rel: 'noopener noreferrer', text: f.where }) : f.where]))
+    }
+    if (f.notes) facts.push(el('div', { style: 'white-space:pre-wrap' }, [el('b', { text: 'Notes: ' }), f.notes]))
+    var link = safeUrl(f.link)
+    if (link) facts.push(el('div', {}, [el('b', { text: 'Shipped in: ' }), el('a', { href: link, target: '_blank', rel: 'noopener noreferrer', text: f.linkLabel || 'View' })]))
+    if (facts.length) body.appendChild(el('div', { class: 'facts' }, facts))
+
+    var ol = el('ol', { class: 'steps', 'aria-label': 'Steps for ' + f.title })
+    steps.forEach(function (s) {
+      var confirmDel = false
+      var del = el('button', { type: 'button', class: 'del', 'aria-label': 'Remove step', title: 'Remove step', text: '×', disabled: !db || !canWrite, onclick: function () {
+        if (!confirmDel) { confirmDel = true; del.textContent = 'Remove?'; del.style.fontSize = '12px'; return }
+        db.doc('steps/' + s.id).delete().then(function () { toast('Step removed.') }).catch(fail)
+      } })
+      ol.appendChild(el('li', { class: 'step' + (s.done ? ' done' : '') }, [
+        el('button', { type: 'button', class: 'box', 'aria-pressed': String(!!s.done), 'aria-label': (s.done ? 'Mark not done: ' : 'Mark done: ') + s.text, disabled: !db || !canWrite, onclick: function () { tick(s) } }),
+        el('span', { class: 'txt', text: s.text }),
+        el('span', { class: 'side' }, [
+          s.done && s.doneAt ? el('span', { class: 'when', text: fmt(s.doneAt) }) : null,
+          el('button', { type: 'button', class: 'tag ' + (s.owner || 'team'), title: 'Change who owns this', disabled: !db || !canWrite, text: OWNER[s.owner] || 'Anyone', onclick: function () {
+            var next = OWNERS[(OWNERS.indexOf(s.owner) + 1) % OWNERS.length]
+            db.doc('steps/' + s.id).update({ owner: next }).catch(fail)
+          } }),
+          del,
+        ]),
+      ]))
+    })
+    if (!steps.length) ol.appendChild(el('li', { class: 'note', text: 'No steps yet. Add the first one below.' }))
+    body.appendChild(ol)
+
+    if (db && canWrite) {
+      var inp = el('input', { 'aria-label': 'New step for ' + f.title, maxlength: '200', placeholder: 'Add a step…' })
+      var own = el('select', { 'aria-label': 'Owner' })
+      OWNERS.forEach(function (o) { own.appendChild(el('option', { value: o, text: OWNER[o] })) })
+      var addStep = function () {
+        var t = inp.value.trim(); if (!t) { inp.focus(); return }
+        var max = steps.reduce(function (m, s) { return Math.max(m, s.order || 0) }, 0)
+        db.collection('steps').add({ feature: f.id, text: t, owner: own.value, done: false, order: max + 10, createdAt: new Date().toISOString() })
+          .then(function () { toast('Step added.') }).catch(fail)
+        inp.value = ''
+      }
+      inp.addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); addStep() } })
+      body.appendChild(el('div', { class: 'add-step' }, [inp, own, el('button', { type: 'button', class: 'btn small', text: 'Add', onclick: addStep })]))
+
+      var status = el('select', { 'aria-label': 'Feature status' })
+      ;['now', 'next', 'later', 'parked'].forEach(function (k) { var o = el('option', { value: k, text: STATUS[k] }); if (k === (f.status || 'next')) o.selected = true; status.appendChild(o) })
+      status.addEventListener('change', function () { db.doc('features/' + f.id).update({ status: status.value, updatedAt: new Date().toISOString() }).then(function () { toast('Status updated.') }).catch(fail) })
+      var confirmF = false
+      var delF = el('button', { type: 'button', class: 'btn small link danger', text: 'Remove feature', onclick: function () {
+        if (!confirmF) { confirmF = true; delF.textContent = 'Tap again to remove it and its steps'; return }
+        Promise.all(steps.map(function (s) { return db.doc('steps/' + s.id).delete() })).then(function () { return db.doc('features/' + f.id).delete() })
+          .then(function () { toast('Feature removed.') }).catch(fail)
+      } })
+      body.appendChild(el('div', { class: 'feat-acts' }, [el('label', {}, ['Status when not finished', status]), delF]))
+    }
+    card.appendChild(body)
+    return card
   }
 
-  function toggleDone(i) {
-    var now = new Date().toISOString()
-    var patch = i.status === 'done'
-      ? { status: i.was && i.was !== 'done' ? i.was : 'next', updatedAt: now }
-      : { status: 'done', was: i.status, doneAt: now, updatedAt: now }
-    db.doc('items/' + i.id).update(patch).then(function () { toast(patch.status === 'done' ? 'Ticked off.' : 'Back on the list.') }).catch(fail)
+  function tick(s) {
+    db.doc('steps/' + s.id).update(s.done ? { done: false, doneAt: null } : { done: true, doneAt: new Date().toISOString() })
+      .then(function () { toast(s.done ? 'Back on the list.' : 'Ticked off.') }).catch(fail)
   }
-
+  function setView(v) { S.view = v; remember(); render(); window.scrollTo({ top: document.querySelector('.tools').offsetTop - 8, behavior: 'smooth' }) }
   function fail(e) {
     if (e && e.code === 'invalid_argument') { canWrite = false; render(); toast('You can view this roadmap but not change it.') }
     else toast('That didn’t save. Try again in a moment.')
   }
 
-  // Pick-up note
-  $('edit-leftoff').addEventListener('click', function () {
-    $('leftoff-input').value = state.resume && state.resume.leftOff || ''
-    $('leftoff-view').hidden = true; $('leftoff-edit').hidden = false
-    $('edit-leftoff').hidden = true; $('save-leftoff').hidden = false
-    $('leftoff-input').focus()
+  // Note
+  $('lo-edit-btn').addEventListener('click', function () {
+    $('lo-input').value = S.resume && S.resume.leftOff || ''
+    $('lo-view').hidden = true; $('lo-edit').hidden = false; $('lo-edit-btn').hidden = true; $('lo-save').hidden = false; $('lo-input').focus()
   })
-  $('save-leftoff').addEventListener('click', function () {
-    var v = $('leftoff-input').value.trim()
-    db.doc('meta/resume').set({ leftOff: v, updatedAt: new Date().toISOString(), by: 'Edited on the page' }).then(function () {
-      $('leftoff-view').hidden = false; $('leftoff-edit').hidden = true
-      $('edit-leftoff').hidden = false; $('save-leftoff').hidden = true
-      toast('Note saved.')
+  $('lo-save').addEventListener('click', function () {
+    db.doc('meta/resume').set({ leftOff: $('lo-input').value.trim(), updatedAt: new Date().toISOString(), by: 'Edited on the page' }).then(function () {
+      $('lo-view').hidden = false; $('lo-edit').hidden = true; $('lo-edit-btn').hidden = false; $('lo-save').hidden = true; toast('Note saved.')
     }).catch(fail)
   })
 
-  // Prompt to paste into Claude when picking things back up
-  $('copy-prompt').addEventListener('click', function () {
-    var up = state.items.filter(function (i) { return i.status === 'now' || i.status === 'next' })
-      .sort(function (a, b) { return RANK[a.status] - RANK[b.status] }).slice(0, 3)
+  // Prompt for a fresh Claude chat
+  $('copy').addEventListener('click', function () {
+    var cl = openSteps('claude').slice(0, 4), mine = openSteps('harry').slice(0, 4)
     var text = 'Picking the Franchise Foundry build back up. Read the Foundry Roadmap artifact and claude/foundry-build1-plan.md in franchisefoundry/website first.\n\n' +
-      (state.resume && state.resume.leftOff ? 'Where we left off: ' + state.resume.leftOff + '\n\n' : '') +
-      (up.length ? 'Next up:\n' + up.map(function (i) { return '- ' + i.title + (i.next ? ': ' + i.next : '') }).join('\n') + '\n\n' : '') +
-      'Start with the first one, and tick it off on the roadmap when it ships.'
-    var done = function () { toast('Copied. Paste it into a new Claude chat.') }
-    try {
-      navigator.clipboard.writeText(text).then(done, function () { fallback(text) })
-    } catch (e) { fallback(text) }
+      (S.resume && S.resume.leftOff ? 'Where we left off: ' + S.resume.leftOff + '\n\n' : '') +
+      (cl.length ? 'Claude’s next steps:\n' + cl.map(function (s) { return '- ' + featById(s.feature).title + ': ' + s.text }).join('\n') + '\n\n' : '') +
+      (mine.length ? 'Waiting on me:\n' + mine.map(function (s) { return '- ' + featById(s.feature).title + ': ' + s.text }).join('\n') + '\n\n' : '') +
+      'Start with Claude’s first step, and tick steps off on the roadmap as they ship.'
+    try { navigator.clipboard.writeText(text).then(function () { toast('Copied. Paste it into a new Claude chat.') }, function () { fallback(text) }) } catch (e) { fallback(text) }
   })
   function fallback(text) {
-    $('leftoff-input').value = text
-    $('leftoff-view').hidden = true; $('leftoff-edit').hidden = false
-    $('leftoff-input').select()
+    $('lo-input').value = text; $('lo-view').hidden = true; $('lo-edit').hidden = false; $('lo-input').select()
     toast('Copy didn’t work here. The prompt is selected in the box: copy it from there.')
-    $('save-leftoff').hidden = true; $('edit-leftoff').hidden = false
   }
 
-  // Filters
-  document.querySelectorAll('[data-filter]').forEach(function (b) {
-    b.addEventListener('click', function () {
-      state.filter = b.getAttribute('data-filter')
-      try { localStorage.setItem('rm_filter', state.filter) } catch (e) {}
-      render()
-    })
-  })
-
-  // Add goal
-  $('add-track').addEventListener('change', function () { $('add-newtrack-l').hidden = this.value !== '__new' })
+  // Add feature
+  $('af-area').addEventListener('change', function () { $('af-newarea-l').hidden = this.value !== '__new' })
   $('add-form').addEventListener('submit', function (e) {
     e.preventDefault()
-    var title = $('add-title').value.trim()
-    if (!title) { toast('Give the goal a name.'); $('add-title').focus(); return }
-    var track = $('add-track').value, p = Promise.resolve()
-    if (track === '__new') {
-      var name = $('add-newtrack').value.trim()
-      if (!name) { toast('Name the new track.'); $('add-newtrack').focus(); return }
-      track = slug(name)
-      var maxT = state.tracks.reduce(function (m, t) { return Math.max(m, t.order || 0) }, 0)
-      if (!state.tracks.some(function (t) { return t.key === track })) p = db.doc('tracks/' + track).set({ label: name, blurb: '', order: maxT + 10 })
+    var title = $('af-title').value.trim()
+    if (!title) { toast('Name the feature.'); $('af-title').focus(); return }
+    var area = $('af-area').value, p = Promise.resolve(), now = new Date().toISOString()
+    if (area === '__new') {
+      var name = $('af-newarea').value.trim()
+      if (!name) { toast('Name the new area.'); $('af-newarea').focus(); return }
+      area = slug(name)
+      var maxA = S.areas.reduce(function (m, a) { return Math.max(m, a.order || 0) }, 0)
+      if (!S.areas.some(function (a) { return a.key === area })) p = db.doc('areas/' + area).set({ label: name, blurb: '', order: maxA + 10 })
     }
-    var maxO = state.items.filter(function (i) { return i.track === track }).reduce(function (m, i) { return Math.max(m, i.order || 0) }, 0)
-    var now = new Date().toISOString()
+    var maxF = S.features.filter(function (f) { return f.area === area }).reduce(function (m, f) { return Math.max(m, f.order || 0) }, 0)
+    var lines = $('af-steps').value.split('\n').map(function (l) { return l.trim() }).filter(Boolean).slice(0, 30)
+    var owner = $('af-owner').value
     p.then(function () {
-      return db.collection('items').add({
-        track: track, title: title, status: $('add-status').value, next: $('add-next').value.trim(),
-        detail: $('add-detail').value.trim(), order: maxO + 10, createdAt: now, updatedAt: now, source: 'page',
-      })
-    }).then(function () {
-      $('add-form').reset(); $('add-newtrack-l').hidden = true
-      toast('Added to the roadmap.')
-    }).catch(fail)
+      return db.collection('features').add({ area: area, title: title, what: $('af-what').value.trim(), status: $('af-status').value, order: maxF + 10, createdAt: now, updatedAt: now, source: 'page' })
+    }).then(function (ref) {
+      S.open[ref.id] = true; remember()
+      return lines.reduce(function (q, t, i) { return q.then(function () { return db.collection('steps').add({ feature: ref.id, text: t, owner: owner, done: false, order: (i + 1) * 10, createdAt: now }) }) }, Promise.resolve())
+    }).then(function () { $('add-form').reset(); $('af-newarea-l').hidden = true; toast('Feature added.') }).catch(fail)
   })
 
   render()
 
-  // Live data
   var use = function (n) { return window.claude && window.claude.use ? window.claude.use(n) : Promise.resolve(null) }
   use('db').then(function (d) {
     db = d
-    if (!db) { $('leftoff').textContent = 'Open this page in claude.ai while signed in to see the roadmap.'; render(); return }
-    use('user').then(function (u) {
-      if (u && typeof u.can === 'function') {
-        Promise.resolve(u.can('data.write')).then(function (ok) { if (ok === false) { canWrite = false; render() } })
-      }
-    })
-    db.collection('tracks').onSnapshot(function (s) {
-      state.tracks = s.docs.map(function (d) { var x = d.data(); return { key: d.id, label: x.label || d.id, blurb: x.blurb || '', order: x.order || 0 } })
-        .sort(function (a, b) { return a.order - b.order })
+    if (!db) { $('lo').textContent = 'Open this page in claude.ai while signed in to see the roadmap.'; render(); return }
+    use('user').then(function (u) { if (u && typeof u.can === 'function') Promise.resolve(u.can('data.write')).then(function (ok) { if (ok === false) { canWrite = false; render() } }) })
+    db.collection('areas').onSnapshot(function (s) {
+      S.areas = s.docs.map(function (d) { var x = d.data(); return { key: d.id, label: x.label || d.id, blurb: x.blurb || '', order: x.order || 0 } }).sort(function (a, b) { return a.order - b.order })
       render()
     }, function () { toast('Lost the live connection. Reload the page.') })
-    db.collection('items').onSnapshot(function (s) {
-      state.items = s.docs.map(function (d) { var x = d.data(); return Object.assign({ id: d.id }, x) })
-      render()
-    }, function () {})
-    db.doc('meta/resume').onSnapshot(function (s) { state.resume = s.exists ? s.data() : null; render() }, function () {})
+    db.collection('features').onSnapshot(function (s) { S.features = s.docs.map(function (d) { return Object.assign({ id: d.id }, d.data()) }); render() }, function () {})
+    db.collection('steps').onSnapshot(function (s) { S.steps = s.docs.map(function (d) { return Object.assign({ id: d.id }, d.data()) }); render() }, function () {})
+    db.doc('meta/resume').onSnapshot(function (s) { S.resume = s.exists ? s.data() : null; render() }, function () {})
   })
 })()
 </script>
