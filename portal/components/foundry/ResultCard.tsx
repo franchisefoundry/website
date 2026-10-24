@@ -6,7 +6,8 @@ import type { ScoredPartner } from '@/lib/foundry/types'
 import { TrustBadge, DealTag, Monogram } from './bits'
 import { useIntroList } from './IntroList'
 
-export function ResultCard({ p, searchId, strongBg = true }: { p: ScoredPartner; searchId: string | null; strongBg?: boolean }) {
+/** `compact` keeps the stacked phone layout at every width (for narrow columns like the editor preview). */
+export function ResultCard({ p, searchId, strongBg = true, compact = false }: { p: ScoredPartner; searchId: string | null; strongBg?: boolean; compact?: boolean }) {
   const list = useIntroList()
   const inList = list.has(p.id)
   const strong = p.fit >= 85
@@ -16,7 +17,7 @@ export function ResultCard({ p, searchId, strongBg = true }: { p: ScoredPartner;
     <article
       className={cn(
         'grid gap-4 rounded-2xl border p-4 sm:p-5 transition-colors',
-        'grid-cols-[56px_1fr] md:grid-cols-[72px_1fr_210px] md:items-center',
+        compact ? 'grid-cols-[56px_1fr]' : 'grid-cols-[56px_1fr] md:grid-cols-[72px_1fr_210px] md:items-center',
         strong && strongBg ? 'bg-surface' : 'bg-surface-2',
         inList ? 'border-ff-green ring-1 ring-ff-green' : 'border-line',
       )}
@@ -47,7 +48,7 @@ export function ResultCard({ p, searchId, strongBg = true }: { p: ScoredPartner;
         )}
       </div>
 
-      <div className="col-span-2 md:col-span-1 flex flex-col gap-2">
+      <div className={cn('col-span-2 flex flex-col gap-2', !compact && 'md:col-span-1')}>
         {p.deal && <DealTag>{p.deal}</DealTag>}
         <button
           type="button"
