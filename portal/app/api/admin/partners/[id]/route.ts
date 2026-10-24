@@ -1,6 +1,7 @@
 import { NextResponse, type NextRequest } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
+import { triggerWebsiteBuild } from '@/lib/foundry/website-build'
 
 async function requireAdmin() {
   const supabase = await createClient()
@@ -29,6 +30,7 @@ export async function PUT(
   }
   const { data, error } = await admin.from('partners').update(body).eq('id', id).select().single()
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+  if (data?.status === 'live' || typeof body?.status === 'string') await triggerWebsiteBuild(`${data?.name ?? 'Partner'} changed in the directory`)
   return NextResponse.json(data)
 }
 

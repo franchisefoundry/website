@@ -18,6 +18,7 @@
   <nav class="f-nav" aria-label="The Foundry">
     <a href="/">Find a franchise</a>
     <a href="/foundry/">Foundry Search</a>
+    <a href="/foundry/partners/">Partners</a>
     <a href="/foundry/track.html">Track my intros</a>
     <a href="https://portal.franchisefoundry.co.uk/login">Members</a>
   </nav>
@@ -27,50 +28,21 @@
 <main class="wrap"><div id="profile"><div class="skeleton" style="margin-top:24px"></div></div></main>
 <footer class="footer">Free for franchisees. Partners are vetted by Franchise Foundry. <a href="/foundry/apply.html">Become a partner</a> · <a href="/terms.html">Terms</a> · <a href="https://portal.franchisefoundry.co.uk/privacy">Privacy</a></footer>
 <script src="/foundry/foundry.js"></script>
+<script src="/foundry/render.js"></script>
 <script>
 (function () {
-  var F = Foundry, esc = F.esc, slug = F.qs('s')
-  var NEED = { funding: 'Funding', property: 'Property & fit-out', legal: 'Legal', accounting: 'Accounting', technology: 'Tech & EPOS', insurance: 'Insurance', marketing: 'Marketing', recruitment: 'Recruitment & HR' }
-  var REGION = { nw: 'North West', ne: 'North East', yh: 'Yorkshire', em: 'East Midlands', wm: 'West Midlands', ee: 'East of England', lon: 'London', se: 'South East', sw: 'South West', wal: 'Wales', scot: 'Scotland', ni: 'Northern Ireland' }
-  function k(n) { return n >= 1e6 ? '£' + (n / 1e6) + 'm' : '£' + Math.round(n / 1000) + 'k' }
+  var F = Foundry, R = FoundryRender
+  // /foundry/partners/<slug>/ (falls back here until the page is built) or the old ?s=<slug>
+  var m = location.pathname.match(/^\/foundry\/partners\/([a-z0-9-]{1,80})\/?$/)
+  var slug = m ? m[1] : F.qs('s')
   if (!/^[a-z0-9-]{1,80}$/.test(slug)) { location.href = '/foundry/'; return }
   F.gate().then(function (ok) { if (ok) return F.api('/api/foundry/partners/' + slug).then(show) })
   function show(r) {
     if (!r.ok) { document.getElementById('profile').innerHTML = '<div class="soon"><h1>Partner not found<span class="accent">.</span></h1><p><a href="/foundry/">Back to Foundry Search</a></p></div>'; return }
     var p = r.data
     document.title = p.name + ' · The Foundry'
-    var cat = NEED[p.category] || p.category
-    var cover = p.regions.indexOf('uk') >= 0 ? 'UK-wide' : p.regions.map(function (x) { return REGION[x] || x }).join(', ')
-    var facts = (p.features || []).map(function (f) { return [f.label, f.value] })
-    if (p.budget_min_gbp && p.budget_max_gbp && !facts.length) facts.push(['Range', k(p.budget_min_gbp) + '–' + k(p.budget_max_gbp)])
-    if (p.reply_hours) facts.push(['Usually replies', '~' + p.reply_hours + ' hours'])
-    if (p.client_count) facts.push(['Franchise clients', p.client_count + '+'])
-    facts.push(['Covers', cover])
-    var inList = F.inList(p.id)
-    document.getElementById('profile').innerHTML =
-      '<p style="margin-top:20px;font-size:13px;color:var(--ink-3)"><a href="/foundry/">The Foundry</a> / ' + esc(cat) + '</p>' +
-      '<div class="profile"><div style="display:grid;gap:20px;min-width:0">' +
-        '<header class="panel"><div style="display:flex;gap:14px;align-items:center;flex-wrap:wrap"><span class="mono-badge" style="width:48px;height:48px;font-size:20px;border-radius:12px" aria-hidden="true">' + esc(p.name.charAt(0)) + '</span>' +
-          '<div><h1 style="font-size:clamp(28px,4vw,40px);font-weight:800;letter-spacing:-0.03em">' + esc(p.name) + '<span class="accent">.</span></h1><p style="color:var(--ink-2)">' + esc(p.tagline || '') + '</p></div></div>' +
-          '<div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:14px;font-size:13px">' + F.trust(p.trust_level) + '<span class="trust listed">' + esc(cat) + '</span>' + (p.base_location ? '<span class="trust listed">Based in ' + esc(p.base_location) + '</span>' : '') + '</div>' +
-          '<dl class="facts-grid">' + facts.slice(0, 5).map(function (f) { return '<div><dt>' + esc(f[0]) + '</dt><dd>' + esc(f[1]) + '</dd></div>' }).join('') + '</dl></header>' +
-        (p.our_take ? '<section class="take"><h2>OUR TAKE</h2><p>' + esc(p.our_take) + '</p><p style="font-size:12px;color:rgba(255,255,255,.75);margin-top:10px">Vetted by Franchise Foundry: company checks, insurance and franchise client references.</p></section>' : '') +
-        ((p.services || []).length || p.description ? '<section class="panel"><h2 style="font-size:18px">What they do</h2>' + (p.description ? '<p style="color:var(--ink-2);margin-top:6px">' + esc(p.description) + '</p>' : '') +
-          '<ul class="svc">' + (p.services || []).map(function (s) { return '<li><span><b>' + esc(s.title) + '</b>' + (s.description ? '<br><span style="color:var(--ink-2);font-size:14px">' + esc(s.description) + '</span>' : '') + '</span>' + (s.price ? '<span class="mono">' + esc(s.price) + '</span>' : '') + '</li>' }).join('') + '</ul></section>' : '') +
-        ((p.faqs || []).length ? '<section class="panel"><h2 style="font-size:18px">Questions people ask</h2>' + p.faqs.map(function (f, i) { return '<details class="faq"' + (i === 0 ? ' open' : '') + '><summary>' + esc(f.q) + '</summary><p style="color:var(--ink-2)">' + esc(f.a) + '</p></details>' }).join('') + '</section>' : '') +
-      '</div><aside><div class="panel">' +
-        (p.offer_text ? '<div class="mono" style="font-size:11px;letter-spacing:.1em;color:var(--gold-ink)">MEMBER DEAL</div><div class="deal" style="margin-top:8px">' + esc(p.offer_text) + '</div>' + (p.deal_terms ? '<p style="font-size:12px;color:var(--ink-3);margin-top:8px">' + esc(p.deal_terms) + '</p>' : '') : '') +
-        '<button type="button" class="btn btn-gold btn-block" id="req" style="margin-top:16px;min-height:52px">Request intro →</button>' +
-        '<button type="button" class="btn btn-outline btn-block" id="add" style="margin-top:8px" aria-pressed="' + inList + '">' + (inList ? '✓ In your intro list' : '+ Add to intro list') + '</button>' +
-        '<p style="font-size:12px;color:var(--ink-2);margin-top:14px;padding-top:12px;border-top:1px solid var(--line)">We brief them on what you need first' + (p.reply_hours ? ', and they usually reply within ' + esc(p.reply_hours) + ' hours' : '') + '. Free for you.</p>' +
-      '</div></aside></div>'
-    var item = { id: p.id, slug: p.slug, name: p.name, categoryLabel: cat, deal: p.offer_text }
-    F.api('/api/foundry/events', { method: 'POST', body: { kind: 'profile_view', partnerId: p.id } })
-    document.getElementById('req').addEventListener('click', function () { F.openIntroDialog([item], {}) })
-    document.getElementById('add').addEventListener('click', function () {
-      F.toggleList(item); var on = F.inList(p.id)
-      this.setAttribute('aria-pressed', String(on)); this.textContent = on ? '✓ In your intro list' : '+ Add to intro list'
-    })
+    document.getElementById('profile').innerHTML = R.profile(p, { inList: F.inList(p.id) })
+    F.bindProfile(p)
   }
 })()
 </script>

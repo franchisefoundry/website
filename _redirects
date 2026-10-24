@@ -1,2 +1,7 @@
 /find-match    https://portal.franchisefoundry.co.uk/get-matched    301
 /find-match/*  https://portal.franchisefoundry.co.uk/get-matched    301
+# The Foundry: partner pages are pre-built at deploy (build-foundry.mjs). Until a
+# page exists (just gone live, or the build is off) the live template renders it.
+# Netlify skips these rules whenever a built file is at the path.
+/foundry/partners/:slug/  /foundry/partner.html  200
+/foundry/partners/:slug   /foundry/partner.html  200

@@ -80,7 +80,14 @@ and automations are decided here. UK English throughout.
 - `/admin/foundry/partners/new` and `/[id]`: every Foundry field (card, profile, services, FAQs, key facts, matching, status and trust, logo upload, contacts). Live preview runs the real ranking against a test search. Go live is blocked until tagline, description, regions and a contact are in.
 - Approving an application now always creates a draft and opens it in the editor.
 - `POST /api/admin/foundry/partners`, `PUT /api/admin/foundry/partners/[id]`, validated server-side (`lib/foundry/partner-input.ts`, tested).
-- Still to do from the plan: website build hook and generated profile pages, portal Browse, agents.
+
+**Pre-built partner pages, done:**
+- `build-foundry.mjs` runs after the articles build on every website deploy. It reads `GET /api/foundry/export` on the portal (Bearer `FOUNDRY_BUILD_TOKEN`, set on both sites) and writes `/foundry/partners/<slug>/` and the Browse page `/foundry/partners/`, with titles, descriptions, canonical links and breadcrumbs. Markup comes from `foundry/render.js`, shared with the live template.
+- Off: nothing. Preview: demo partners only, noindex. Live: real partners only, indexable, added to sitemap.xml, `/foundry/` opened in robots.txt, Search and Become a partner indexable. Going live is the env switch plus a website deploy.
+- `_redirects` falls back to the live template for any partner without a built page yet. Old `partner.html?s=` links still work.
+- The portal pings `FOUNDRY_WEBSITE_BUILD_HOOK` when a live partner is saved, paused or taken down (set it on ffportal to the website's build hook).
+- Generated pages are gitignored (`foundry/partners/`). The build never fails the deploy.
+- Still to do from the plan: portal Browse, agents.
 
 ---
 

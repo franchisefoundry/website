@@ -3,3 +3,6 @@
 .DS_Store
 
 node_modules
+
+# Generated at deploy by build-foundry.mjs
+foundry/partners/

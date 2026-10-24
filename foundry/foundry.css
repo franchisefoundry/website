@@ -208,3 +208,8 @@ details.faq summary { min-height: 44px; display: flex; align-items: center; font
 .file label.btn { cursor: pointer; }
 .file input { position: absolute; width: 1px; height: 1px; opacity: 0; }
 .file input:focus-visible + label { outline: 3px solid var(--gold); outline-offset: 2px; }
+
+/* Browse */
+.browse-grid { display: grid; gap: 12px; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
+.browse-card { display: grid; gap: 10px; align-content: start; text-decoration: none; color: var(--ink); transition: border-color .15s; }
+.browse-card:hover { border-color: var(--green); }

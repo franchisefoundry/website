@@ -18,6 +18,7 @@
   <nav class="f-nav" aria-label="The Foundry">
     <a href="/">Find a franchise</a>
     <a href="/foundry/">Foundry Search</a>
+    <a href="/foundry/partners/">Partners</a>
     <a href="/foundry/track.html" aria-current="page">Track my intros</a>
     <a href="https://portal.franchisefoundry.co.uk/login">Members</a>
   </nav>
@@ -58,7 +59,7 @@
         var st = i.status
         return '<article class="track-item" data-id="' + esc(i.id) + '">' +
           '<div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between"><div style="display:flex;gap:10px;align-items:center">' + F.monogram(i.partner.name) +
-          '<div>' + (i.partner.slug ? '<a href="/foundry/partner.html?s=' + encodeURIComponent(i.partner.slug) + '" style="font-weight:700;color:var(--ink);text-decoration:none">' + esc(i.partner.name) + '</a>' : '<b>' + esc(i.partner.name) + '</b>') + '<div class="cat">' + esc(i.partner.categoryLabel) + '</div></div></div>' +
+          '<div>' + (i.partner.slug ? '<a href="' + F.partnerHref(i.partner.slug) + '" style="font-weight:700;color:var(--ink);text-decoration:none">' + esc(i.partner.name) + '</a>' : '<b>' + esc(i.partner.name) + '</b>') + '<div class="cat">' + esc(i.partner.categoryLabel) + '</div></div></div>' +
           '<span style="font-size:13px;font-weight:600;color:' + (st.tone === 'good' ? 'var(--ok)' : st.tone === 'progress' ? 'var(--gold-ink)' : 'var(--ink-3)') + '">' + esc(st.status) + '</span></div>' +
           '<div class="bars" aria-hidden="true">' + STEPS.map(function (s, n) { return '<div class="' + (n < st.step ? 'on' : '') + '"><i></i><small>' + s + '</small></div>' }).join('') + '</div>' +
           (st.next ? '<p style="margin-top:10px;font-size:14px;color:var(--ink-2)">' + esc(st.next) + '</p>' : '') +
