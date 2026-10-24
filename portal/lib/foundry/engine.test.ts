@@ -232,3 +232,33 @@ test('applications: slugs and regions', async () => {
   assert.equal(slugify('!!!'), 'partner')
   assert.equal(APPLY_REGIONS[0][0], 'uk')
 })
+
+test('partner editor: cleaning and live checks', async () => {
+  const { cleanPartnerInput, parseMoney, profileGaps } = await import('./partner-input.ts')
+  assert.equal(parseMoney('£25k'), 25000)
+  assert.equal(parseMoney('120,000'), 120000)
+  assert.equal(parseMoney(''), null)
+  assert.equal(parseMoney('lots'), 'bad')
+
+  const bad = cleanPartnerInput({ name: '', category: 'nope', budget_min_gbp: '50k', budget_max_gbp: '10k', website: 'not a site' })
+  assert.ok(bad.errors.name && bad.errors.category && bad.errors.budget_max_gbp && bad.errors.website)
+
+  const ok = cleanPartnerInput({
+    name: 'Hartley & Bloom', category: 'legal', status: 'live', tagline: 'Franchise law', description: 'Fixed-fee reviews.',
+    regions: ['uk', 'mars'], sectors: ['coffee', 'nope'], keywords: 'Solicitor, agreement , solicitor',
+    services: [{ title: 'Review', price: '£450' }, { title: '' }], faqs: [{ q: 'How long?', a: '' }], website: 'hartley.co.uk',
+  })
+  assert.deepEqual(ok.errors, {})
+  assert.equal(ok.row.slug, 'hartley-and-bloom')
+  assert.equal(ok.row.is_active, true)
+  assert.deepEqual(ok.row.regions, ['uk'])
+  assert.deepEqual(ok.row.sectors, ['coffee'])
+  assert.deepEqual(ok.row.keywords, ['solicitor', 'agreement'])
+  assert.equal((ok.row.services as unknown[]).length, 1)
+  assert.equal((ok.row.faqs as unknown[]).length, 0)
+  assert.equal(ok.row.website, 'https://hartley.co.uk')
+
+  const live = cleanPartnerInput({ name: 'X', category: 'legal', status: 'live' })
+  assert.match(live.errors.status ?? '', /tagline/)
+  assert.ok(profileGaps(ok.row, 0).includes('a contact to brief'))
+})

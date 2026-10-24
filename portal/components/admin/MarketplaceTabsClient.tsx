@@ -12,9 +12,9 @@ export function MarketplaceTabsClient({ tabs }: { tabs: { href: string; label: s
         {tabs.map(({ href, label, badge }) => (
           <Link key={href} href={href}
             className={cn('whitespace-nowrap rounded-lg px-4 py-2 text-sm font-medium transition-colors',
-              path === href ? 'bg-ff-green text-white' : 'text-ink-2 hover:text-ink')}>
+              path === href || path.startsWith(href + '/') ? 'bg-ff-green text-white' : 'text-ink-2 hover:text-ink')}>
             {label}
-            {!!badge && <span className={cn('ml-1.5 rounded-full px-1.5 font-mono text-[11px]', path === href ? 'bg-white/20' : 'bg-ff-gold/20 text-[#8a5f26]')}>{badge}</span>}
+            {!!badge && <span className={cn('ml-1.5 rounded-full px-1.5 font-mono text-[11px]', path === href || path.startsWith(href + '/') ? 'bg-white/20' : 'bg-ff-gold/20 text-[#8a5f26]')}>{badge}</span>}
           </Link>
         ))}
       </div>

@@ -220,11 +220,11 @@ function Detail({ a, declineDraft, now }: { a: ApplicationCard; declineDraft: st
         {open && !declining && (
           <div className="space-y-2 border-t border-line pt-4">
             <button type="button" disabled={!!busy}
-              onClick={async () => { const r = await act('approve', {}, undefined); if (r) toast(r.live ? `${a.company} is live.` : `${a.company} approved. Finish their profile in Partners to go live.`) }}
+              onClick={async () => { const r = await act('approve', {}, undefined, false); if (r?.partnerId) { toast(`${a.company} approved. Build their profile, then go live.`); router.push(`/admin/foundry/partners/${r.partnerId}`) } }}
               className={cn(btn, 'w-full', all ? 'bg-ff-green text-white hover:brightness-110' : 'border border-ff-green text-ff-green hover:bg-surface-2')}>
-              {busy === 'approve' ? 'Approving…' : all ? 'Approve and go live' : `Approve as draft (${done}/${CHECKS.length} checks)`}
+              {busy === 'approve' ? 'Approving…' : all ? 'Approve and build profile' : `Approve anyway (${done}/${CHECKS.length} checks)`}
             </button>
-            {!all && <p className="text-xs text-ink-3">With every check done they go straight live. Otherwise we create a draft partner you finish in Partners.</p>}
+            <p className="text-xs text-ink-3">Creates a draft partner with them as the contact we brief, and opens the editor so you can write their profile and go live.</p>
             <button type="button" onClick={() => setDeclining(true)} className={cn(btn, 'w-full border border-line text-ink hover:bg-surface-2')}>Decline</button>
           </div>
         )}
@@ -246,7 +246,7 @@ function Detail({ a, declineDraft, now }: { a: ApplicationCard; declineDraft: st
 
         {a.status === 'approved' && a.partner && (
           <div className="border-t border-line pt-4 text-sm">
-            <Link href="/admin/partners" className="font-semibold text-ff-green hover:underline">
+            <Link href={`/admin/foundry/partners/${a.partner.id}`} className="font-semibold text-ff-green hover:underline">
               {a.partner.status === 'live' ? 'Live in Partners →' : 'Finish their profile in Partners →'}
             </Link>
           </div>

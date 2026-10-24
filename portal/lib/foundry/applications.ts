@@ -13,7 +13,7 @@ import { notifyFoundryTeam } from './notify'
 export const BUCKET = 'partner-applications'
 
 export { CHECKS, TRUST_LEVELS, APPLY_REGIONS, type CheckKey, type TrustLevel } from './applications-shared.ts'
-import { CHECKS, APPLY_REGIONS, slugify, type CheckKey, type TrustLevel } from './applications-shared.ts'
+import { APPLY_REGIONS, slugify, type CheckKey, type TrustLevel } from './applications-shared.ts'
 
 const MAX_FILE = 3 * 1024 * 1024 // base64 in JSON must stay under Netlify's 6MB body limit
 const FILE_TYPES: Record<string, string> = { 'application/pdf': 'pdf', 'image/jpeg': 'jpg', 'image/png': 'png', 'image/webp': 'webp' }
@@ -259,10 +259,9 @@ export async function performApplicationAction(
     }
     case 'approve': {
       if (!open) return { error: 'This application is already decided.' }
-      const checks = (a.checks ?? {}) as Record<string, boolean>
-      const done = CHECKS.filter(c => checks[c.k]).length
-      // All six checks: straight to live. Otherwise a draft to finish in Partners.
-      const live = done === CHECKS.length
+      // Always a draft: an application has no profile copy yet. Admin finishes it
+      // in the partner editor and switches it live there.
+      const live = false
       const slug = await freeSlug(admin, slugify(a.company_name))
       const { data: p, error } = await admin.from('partners').insert({
         name: a.company_name, slug, category: a.category, website: a.website, offer_text: a.deal,
