@@ -13,6 +13,8 @@ and automations are decided here. UK English throughout.
 
 ## Progress
 
+**Roadmap (tick-off tracker):** https://claude.ai/artifact/E8uyrVoe8nJjaoGWrRoWQJ. Source page in `claude/roadmap/foundry-roadmap.html`; items live in the artifact's database. When something ships, tick it off there and update "Where we left off".
+
 **Phase 1 foundations, done on `claude/zen-tesla-mzg1ki`:**
 - Admin intro-requests query fixed (`partners(name, category)`).
 - Preview switch: `portal/lib/foundry/access.ts` (`FOUNDRY_MODE`, `FOUNDRY_PREVIEW_EMAILS`, `FOUNDRY_PREVIEW_SECRET`, `FOUNDRY_ALLOWED_ORIGINS`). Default is off.
