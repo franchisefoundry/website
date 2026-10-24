@@ -1,0 +1,489 @@
+<title>Foundry Roadmap</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* Layout: one column route map. A "pick up here" panel, then each track as a line of stations you tick off. */
+:root {
+  --bg: #f4f6f3; --surface: #ffffff; --surface-2: #eef2ee; --line: #d9e0da;
+  --ink: #161a16; --ink-2: #4d564d; --ink-3: #6f786f;
+  --green: #3a4a3a; --green-soft: #e3ebe3; --on-green: #ffffff; --on-green-2: #c9d6c9;
+  --gold: #c8924a; --gold-ink: #8a5f26; --gold-soft: #f6ead8;
+  --ok: #2f7a4a; --crit: #b23a2e; --crit-soft: #f8e3df;
+  --display: "Sora", "Segoe UI", system-ui, sans-serif;
+  --body: "Sora", "Segoe UI", system-ui, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #121612; --surface: #1a201a; --surface-2: #222a22; --line: #313b31;
+  --ink: #eef2ee; --ink-2: #bcc6bc; --ink-3: #8f9a8f;
+  --green: #9fbf9a; --green-soft: #243024; --on-green: #121612; --on-green-2: #2c3a2c;
+  --gold: #d9a865; --gold-ink: #e2b878; --gold-soft: #33291b;
+  --ok: #7cc79a; --crit: #ec8a7e; --crit-soft: #3a2220; color-scheme: dark;
+} }
+:root[data-theme="dark"] {
+  --bg: #121612; --surface: #1a201a; --surface-2: #222a22; --line: #313b31;
+  --ink: #eef2ee; --ink-2: #bcc6bc; --ink-3: #8f9a8f;
+  --green: #9fbf9a; --green-soft: #243024; --on-green: #121612; --on-green-2: #2c3a2c;
+  --gold: #d9a865; --gold-ink: #e2b878; --gold-soft: #33291b;
+  --ok: #7cc79a; --crit: #ec8a7e; --crit-soft: #3a2220; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 15px; line-height: 1.55; }
+.wrap { max-width: 920px; margin: 0 auto; padding-block: 28px 64px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: grid; gap: 28px; }
+h1, h2, h3 { font-family: var(--display); text-wrap: balance; margin: 0; }
+p { margin: 0; }
+button, input, select, textarea { font: inherit; color: inherit; }
+button { cursor: pointer; }
+:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
+.eyebrow { font-family: var(--mono); font-size: 11px; letter-spacing: .1em; color: var(--ink-3); text-transform: uppercase; }
+.mono { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+
+/* Header */
+.top { display: flex; flex-wrap: wrap; gap: 16px; align-items: end; justify-content: space-between; }
+.top h1 { font-size: clamp(30px, 5vw, 44px); font-weight: 800; letter-spacing: -0.035em; line-height: 1.02; }
+.top h1 i { font-style: normal; color: var(--gold); }
+.overall { display: grid; gap: 6px; min-width: 220px; flex: 0 1 300px; }
+.overall .row { display: flex; justify-content: space-between; font-size: 13px; color: var(--ink-2); }
+.bar { height: 8px; border-radius: 99px; background: var(--surface-2); overflow: hidden; display: flex; }
+.bar span { display: block; height: 100%; }
+.bar .d { background: var(--green); }
+.bar .n { background: var(--gold); }
+
+/* Pick up here */
+.pickup { background: var(--green); color: var(--on-green); border-radius: 20px; padding: 22px; display: grid; gap: 18px; }
+.pickup .eyebrow { color: var(--on-green-2); }
+:root .pickup { --pk-soft: rgba(255,255,255,.1); }
+.pickup h2 { font-size: 22px; font-weight: 800; letter-spacing: -0.02em; }
+.left-off { font-size: 15px; white-space: pre-wrap; }
+.left-off-meta { font-family: var(--mono); font-size: 11px; color: var(--on-green-2); margin-top: 6px; }
+.nexts { display: grid; gap: 8px; }
+.nx { display: grid; grid-template-columns: auto 1fr; gap: 12px; align-items: start; padding: 12px 14px; border-radius: 12px; background: var(--pk-soft, rgba(255,255,255,.1)); }
+.nx .k { font-family: var(--mono); font-size: 11px; padding: 2px 8px; border-radius: 99px; background: var(--gold); color: #161a16; font-weight: 600; margin-top: 2px; }
+.nx b { display: block; }
+.nx small { display: block; font-size: 13px; opacity: .85; }
+.pk-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.btn { min-height: 40px; padding: 0 14px; border-radius: 10px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); font-weight: 600; font-size: 14px; display: inline-flex; align-items: center; gap: 8px; }
+.btn.gold { background: var(--gold); border-color: var(--gold); color: #161a16; }
+.btn.ghost { background: transparent; border-color: var(--on-green-2); color: var(--on-green); }
+.btn.small { min-height: 32px; font-size: 13px; padding: 0 10px; }
+.btn:disabled { opacity: .5; cursor: default; }
+.pickup textarea { width: 100%; min-height: 90px; border-radius: 10px; border: 0; padding: 10px 12px; background: var(--surface); color: var(--ink); }
+
+/* Filters */
+.tools { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between; }
+.seg { display: inline-flex; gap: 4px; padding: 4px; background: var(--surface-2); border-radius: 12px; }
+.seg button { border: 0; background: transparent; padding: 6px 12px; border-radius: 8px; font-size: 13px; color: var(--ink-2); font-weight: 600; }
+.seg button[aria-pressed="true"] { background: var(--surface); color: var(--ink); box-shadow: 0 1px 2px rgba(0,0,0,.08); }
+.jump { display: flex; flex-wrap: wrap; gap: 6px; }
+.jump a { font-size: 12px; color: var(--ink-2); text-decoration: none; padding: 4px 10px; border: 1px solid var(--line); border-radius: 99px; background: var(--surface); }
+
+/* Tracks */
+.track { display: grid; gap: 12px; scroll-margin-top: 16px; }
+.track-h { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: baseline; justify-content: space-between; }
+.track-h h2 { font-size: 20px; font-weight: 800; letter-spacing: -0.02em; }
+.track-h p { color: var(--ink-2); font-size: 14px; flex-basis: 100%; }
+.track-h .mono { font-size: 12px; color: var(--ink-3); }
+.route { list-style: none; margin: 0; padding: 0; position: relative; display: grid; gap: 6px; }
+.route::before { content: ""; position: absolute; left: 19px; top: 18px; bottom: 18px; width: 2px; background: var(--line); }
+.stop { position: relative; display: grid; grid-template-columns: 40px minmax(0, 1fr); gap: 10px; align-items: start; }
+.tick { width: 40px; height: 40px; border-radius: 50%; border: 0; background: transparent; display: grid; place-items: center; position: relative; z-index: 1; padding: 0; }
+.tick i { width: 22px; height: 22px; border-radius: 50%; border: 2px solid var(--line); background: var(--bg); display: grid; place-items: center; transition: background .15s, border-color .15s; }
+.tick:hover i { border-color: var(--green); }
+.stop[data-status="done"] .tick i { background: var(--green); border-color: var(--green); }
+.stop[data-status="done"] .tick i::after { content: ""; width: 9px; height: 5px; border-left: 2px solid var(--on-green); border-bottom: 2px solid var(--on-green); transform: rotate(-45deg) translate(1px, -1px); }
+.stop[data-status="now"] .tick i { border-color: var(--gold); box-shadow: 0 0 0 4px var(--gold-soft); }
+.stop[data-status="parked"] .tick i { border-style: dashed; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 12px 14px; min-width: 0; }
+.stop[data-status="now"] .card { border-color: var(--gold); }
+.stop[data-status="done"] .card { background: transparent; border-color: transparent; padding-block: 8px; }
+.card-h { display: flex; gap: 10px; align-items: baseline; justify-content: space-between; }
+.card-h button.t { border: 0; background: none; padding: 0; text-align: left; font-weight: 700; color: var(--ink); min-width: 0; overflow-wrap: anywhere; }
+.stop[data-status="done"] .card-h button.t { font-weight: 600; color: var(--ink-2); }
+.pill { flex: 0 0 auto; font-family: var(--mono); font-size: 11px; padding: 2px 8px; border-radius: 99px; border: 1px solid var(--line); color: var(--ink-2); white-space: nowrap; }
+.pill.now { background: var(--gold); border-color: var(--gold); color: #161a16; font-weight: 600; }
+.pill.next { border-color: var(--gold); color: var(--gold-ink); }
+.pill.done { border-color: transparent; color: var(--ok); }
+.pill.parked { border-style: dashed; color: var(--ink-3); }
+.next-step { margin-top: 4px; font-size: 13px; color: var(--ink-2); }
+.next-step b { font-family: var(--mono); font-size: 11px; letter-spacing: .06em; color: var(--gold-ink); font-weight: 600; margin-right: 6px; }
+.stop[data-status="done"] .next-step { display: none; }
+.meta { margin-top: 4px; font-family: var(--mono); font-size: 11px; color: var(--ink-3); }
+.meta a { color: var(--ink-2); }
+.detail { margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--line); display: grid; gap: 10px; font-size: 14px; color: var(--ink-2); }
+.detail p { white-space: pre-wrap; }
+.edit { display: grid; gap: 8px; }
+.edit .row2 { display: grid; grid-template-columns: 1fr; gap: 8px; }
+@media (min-width: 620px) { .edit .row2 { grid-template-columns: 160px 1fr; } }
+label.f { display: grid; gap: 4px; font-size: 12px; font-weight: 600; color: var(--ink-2); }
+.f input, .f select, .f textarea { width: 100%; padding: 8px 10px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); color: var(--ink); font-weight: 400; font-size: 14px; }
+.edit-acts { display: flex; flex-wrap: wrap; gap: 8px; justify-content: space-between; }
+.danger { color: var(--crit); border-color: transparent; background: transparent; }
+
+/* Add goal */
+.add { background: var(--surface); border: 1px dashed var(--line); border-radius: 16px; padding: 18px; display: grid; gap: 12px; }
+.add h2 { font-size: 18px; font-weight: 800; }
+.add .grid { display: grid; gap: 10px; }
+@media (min-width: 620px) { .add .grid { grid-template-columns: 1fr 1fr; } }
+.add .wide { grid-column: 1 / -1; }
+
+.empty { padding: 40px 20px; text-align: center; color: var(--ink-3); border: 1px dashed var(--line); border-radius: 16px; background: var(--surface); }
+.note { font-size: 12px; color: var(--ink-3); }
+.toast { position: fixed; left: 50%; bottom: calc(20px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); background: var(--ink); color: var(--bg); padding: 10px 16px; border-radius: 10px; font-size: 14px; z-index: 20; max-width: calc(100% - 32px); }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <div>
+      <div class="eyebrow">Franchise Foundry · build roadmap</div>
+      <h1>Foundry Roadmap<i>.</i></h1>
+    </div>
+    <div class="overall" id="overall" aria-live="polite">
+      <div class="row"><span>Overall</span><span class="mono" id="overall-n">–</span></div>
+      <div class="bar" aria-hidden="true"><span class="d" id="bar-d" style="width:0"></span><span class="n" id="bar-n" style="width:0"></span></div>
+    </div>
+  </header>
+
+  <section class="pickup" aria-labelledby="pk-h">
+    <div>
+      <div class="eyebrow">Pick up here</div>
+      <h2 id="pk-h">Where we left off</h2>
+    </div>
+    <div id="leftoff-view">
+      <p class="left-off" id="leftoff">Loading the roadmap…</p>
+      <div class="left-off-meta" id="leftoff-meta"></div>
+    </div>
+    <div id="leftoff-edit" hidden>
+      <label class="sr" for="leftoff-input" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Where we left off</label>
+      <textarea id="leftoff-input" maxlength="2000"></textarea>
+    </div>
+    <div>
+      <div class="eyebrow" style="margin-bottom:8px">Next steps</div>
+      <div class="nexts" id="nexts"></div>
+    </div>
+    <div class="pk-actions">
+      <button type="button" class="btn gold" id="copy-prompt">Copy prompt for Claude</button>
+      <button type="button" class="btn ghost" id="edit-leftoff">Edit note</button>
+      <button type="button" class="btn ghost" id="save-leftoff" hidden>Save note</button>
+    </div>
+  </section>
+
+  <div class="tools">
+    <div class="seg" role="group" aria-label="Show">
+      <button type="button" data-filter="open" aria-pressed="true">To do</button>
+      <button type="button" data-filter="all" aria-pressed="false">Everything</button>
+      <button type="button" data-filter="done" aria-pressed="false">Done</button>
+    </div>
+    <nav class="jump" id="jump" aria-label="Tracks"></nav>
+  </div>
+
+  <main id="tracks">
+    <div class="empty" id="empty">The roadmap loads here: every track, what’s done, and the next step on each. If it stays empty, open this page in claude.ai while signed in.</div>
+  </main>
+
+  <section class="add" aria-labelledby="add-h" id="add-box">
+    <h2 id="add-h">Add a goal</h2>
+    <form id="add-form" class="grid" novalidate>
+      <label class="f wide" for="add-title">Goal<input id="add-title" maxlength="160" placeholder="e.g. Partner self-serve login" required></label>
+      <label class="f" for="add-track">Track<select id="add-track"></select></label>
+      <label class="f" for="add-status">Status<select id="add-status">
+        <option value="next">Next</option><option value="now">Now</option><option value="later">Later</option><option value="parked">Parked</option>
+      </select></label>
+      <label class="f wide" for="add-newtrack" id="add-newtrack-l" hidden>New track name<input id="add-newtrack" maxlength="60" placeholder="e.g. Investor portal"></label>
+      <label class="f wide" for="add-next">Next step<input id="add-next" maxlength="300" placeholder="The first thing to do when you pick this up"></label>
+      <label class="f wide" for="add-detail">Notes <span style="font-weight:400;color:var(--ink-3)">(optional)</span><textarea id="add-detail" rows="2" maxlength="2000"></textarea></label>
+      <div class="wide" style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between">
+        <span class="note">Or just tell Claude in chat and it’ll add it here.</span>
+        <button type="submit" class="btn gold">Add goal</button>
+      </div>
+    </form>
+  </section>
+</div>
+<div class="toast" id="toast" role="status" hidden></div>
+
+<script>
+(function () {
+  'use strict'
+  var STATUS = { now: 'Now', next: 'Next', later: 'Later', parked: 'Parked', done: 'Done' }
+  var RANK = { now: 0, next: 1, later: 2, parked: 3, done: 4 }
+  var state = { tracks: [], items: [], resume: null, filter: 'open', open: {} }
+  var db = null, canWrite = true
+  var $ = function (id) { return document.getElementById(id) }
+
+  try { var f = localStorage.getItem('rm_filter'); if (f) state.filter = f } catch (e) {}
+
+  function toast(msg) {
+    var t = $('toast'); t.textContent = msg; t.hidden = false
+    clearTimeout(toast.t); toast.t = setTimeout(function () { t.hidden = true }, 2400)
+  }
+  function fmt(iso) {
+    if (!iso) return ''
+    try { return new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) } catch (e) { return '' }
+  }
+  function el(tag, attrs, kids) {
+    var n = document.createElement(tag)
+    for (var k in (attrs || {})) {
+      if (k === 'text') n.textContent = attrs[k]
+      else if (k === 'class') n.className = attrs[k]
+      else if (k.slice(0, 2) === 'on') n.addEventListener(k.slice(2), attrs[k])
+      else if (attrs[k] != null && attrs[k] !== false) n.setAttribute(k, attrs[k])
+    }
+    ;(kids || []).forEach(function (c) { if (c != null) n.appendChild(typeof c === 'string' ? document.createTextNode(c) : c) })
+    return n
+  }
+  function slug(s) { return String(s).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 40) || 'track' }
+  function safeUrl(u) { return /^https:\/\//.test(u || '') ? u : null }
+
+  function sortedItems(trackKey) {
+    return state.items.filter(function (i) { return i.track === trackKey })
+      .sort(function (a, b) { return (a.order || 0) - (b.order || 0) || String(a.title).localeCompare(String(b.title)) })
+  }
+
+  function render() {
+    // Overall progress
+    var live = state.items.filter(function (i) { return i.status !== 'parked' })
+    var done = live.filter(function (i) { return i.status === 'done' }).length
+    var doing = live.filter(function (i) { return i.status === 'now' }).length
+    $('overall-n').textContent = live.length ? done + ' of ' + live.length + ' done' : '–'
+    $('bar-d').style.width = live.length ? (done / live.length * 100) + '%' : '0'
+    $('bar-n').style.width = live.length ? (doing / live.length * 100) + '%' : '0'
+
+    // Pick up here
+    var r = state.resume
+    $('leftoff').textContent = r && r.leftOff ? r.leftOff : (db ? 'No note yet. Add one with “Edit note”.' : 'Loading the roadmap…')
+    $('leftoff-meta').textContent = r && r.updatedAt ? 'Updated ' + fmt(r.updatedAt) + (r.by ? ' · ' + r.by : '') : ''
+    var nexts = $('nexts'); nexts.textContent = ''
+    var trackOrder = {}; state.tracks.forEach(function (t, i) { trackOrder[t.key] = i })
+    var up = state.items.filter(function (i) { return i.status === 'now' || i.status === 'next' })
+      .sort(function (a, b) { return RANK[a.status] - RANK[b.status] || (trackOrder[a.track] - trackOrder[b.track]) || (a.order || 0) - (b.order || 0) })
+      .slice(0, 4)
+    if (!up.length) nexts.appendChild(el('p', { text: db ? 'Nothing marked Now or Next. Pick something below.' : '…', style: 'opacity:.8' }))
+    up.forEach(function (i) {
+      nexts.appendChild(el('div', { class: 'nx' }, [
+        el('span', { class: 'k', text: STATUS[i.status] }),
+        el('div', {}, [el('b', { text: i.title }), i.next ? el('small', { text: i.next }) : null]),
+      ]))
+    })
+
+    // Filters
+    document.querySelectorAll('[data-filter]').forEach(function (b) { b.setAttribute('aria-pressed', String(b.getAttribute('data-filter') === state.filter)) })
+
+    // Tracks
+    var host = $('tracks'); host.textContent = ''
+    var jump = $('jump'); jump.textContent = ''
+    if (!state.tracks.length) { host.appendChild($('empty') || el('div', { class: 'empty', id: 'empty', text: 'Nothing on the roadmap yet. Add the first goal below.' })); }
+    state.tracks.forEach(function (t) {
+      var all = sortedItems(t.key)
+      var shown = all.filter(function (i) {
+        return state.filter === 'all' ? true : state.filter === 'done' ? i.status === 'done' : i.status !== 'done'
+      })
+      var tl = all.filter(function (i) { return i.status !== 'parked' })
+      var td = tl.filter(function (i) { return i.status === 'done' }).length
+      jump.appendChild(el('a', { href: '#t-' + t.key, text: t.label }))
+      var sec = el('section', { class: 'track', id: 't-' + t.key, 'aria-labelledby': 'th-' + t.key }, [
+        el('div', { class: 'track-h' }, [
+          el('h2', { id: 'th-' + t.key, text: t.label }),
+          el('span', { class: 'mono', text: tl.length ? td + '/' + tl.length + ' done' : 'nothing yet' }),
+          t.blurb ? el('p', { text: t.blurb }) : null,
+        ]),
+        el('div', { class: 'bar', 'aria-hidden': 'true' }, [
+          el('span', { class: 'd', style: 'width:' + (tl.length ? td / tl.length * 100 : 0) + '%' }),
+        ]),
+      ])
+      if (!shown.length) {
+        sec.appendChild(el('p', { class: 'note', text: state.filter === 'done' ? 'Nothing ticked off here yet.' : all.length ? 'All done here.' : 'No goals yet. Add one below or ask Claude.' }))
+      } else {
+        var ol = el('ol', { class: 'route' })
+        shown.forEach(function (i) { ol.appendChild(stop(i)) })
+        sec.appendChild(ol)
+      }
+      host.appendChild(sec)
+    })
+
+    // Add form tracks
+    var sel = $('add-track'), cur = sel.value
+    sel.textContent = ''
+    state.tracks.forEach(function (t) { sel.appendChild(el('option', { value: t.key, text: t.label })) })
+    sel.appendChild(el('option', { value: '__new', text: 'New track…' }))
+    if (cur && [].some.call(sel.options, function (o) { return o.value === cur })) sel.value = cur
+    $('add-newtrack-l').hidden = sel.value !== '__new'
+    document.querySelectorAll('#add-form input, #add-form select, #add-form textarea, #add-form button').forEach(function (n) { n.disabled = !db || !canWrite })
+    $('edit-leftoff').disabled = !db || !canWrite
+  }
+
+  function stop(i) {
+    var isOpen = !!state.open[i.id]
+    var li = el('li', { class: 'stop', 'data-status': i.status })
+    li.appendChild(el('button', {
+      type: 'button', class: 'tick', 'aria-pressed': String(i.status === 'done'),
+      'aria-label': (i.status === 'done' ? 'Mark not done: ' : 'Mark done: ') + i.title,
+      disabled: !db || !canWrite ? 'disabled' : null,
+      onclick: function () { toggleDone(i) },
+    }, [el('i', { 'aria-hidden': 'true' })]))
+    var link = safeUrl(i.link)
+    var card = el('div', { class: 'card' }, [
+      el('div', { class: 'card-h' }, [
+        el('button', { type: 'button', class: 't', 'aria-expanded': String(isOpen), text: i.title, onclick: function () { state.open[i.id] = !isOpen; render() } }),
+        el('span', { class: 'pill ' + i.status, text: STATUS[i.status] || i.status }),
+      ]),
+      i.next ? el('div', { class: 'next-step' }, [el('b', { text: 'NEXT' }), i.next]) : null,
+      (i.status === 'done' && (i.doneAt || link)) ? el('div', { class: 'meta' }, [
+        i.doneAt ? 'Done ' + fmt(i.doneAt) : '',
+        link ? (i.doneAt ? ' · ' : '') : '',
+        link ? el('a', { href: link, target: '_blank', rel: 'noopener noreferrer', text: i.linkLabel || 'View' }) : null,
+      ]) : null,
+    ])
+    if (isOpen) card.appendChild(editor(i))
+    li.appendChild(card)
+    return li
+  }
+
+  function editor(i) {
+    var box = el('div', { class: 'detail' })
+    if (i.detail) box.appendChild(el('p', { text: i.detail }))
+    var link = safeUrl(i.link)
+    if (link && i.status !== 'done') box.appendChild(el('div', { class: 'meta' }, [el('a', { href: link, target: '_blank', rel: 'noopener noreferrer', text: i.linkLabel || 'View' })]))
+    if (!db || !canWrite) return box
+    var idp = 'e-' + i.id
+    var status = el('select', { id: idp + '-s' })
+    Object.keys(STATUS).forEach(function (k) { var o = el('option', { value: k, text: STATUS[k] }); if (k === i.status) o.selected = true; status.appendChild(o) })
+    var next = el('input', { id: idp + '-n', maxlength: '300', value: i.next || '' })
+    var det = el('textarea', { id: idp + '-d', rows: '3', maxlength: '2000' }); det.value = i.detail || ''
+    var confirmDel = false
+    var del = el('button', { type: 'button', class: 'btn small danger', text: 'Remove', onclick: function () {
+      if (!confirmDel) { confirmDel = true; del.textContent = 'Tap again to remove'; return }
+      db.doc('items/' + i.id).delete().then(function () { toast('Removed.') }).catch(fail)
+    } })
+    box.appendChild(el('div', { class: 'edit' }, [
+      el('div', { class: 'row2' }, [
+        el('label', { class: 'f', for: idp + '-s' }, ['Status', status]),
+        el('label', { class: 'f', for: idp + '-n' }, ['Next step', next]),
+      ]),
+      el('label', { class: 'f', for: idp + '-d' }, ['Notes', det]),
+      el('div', { class: 'edit-acts' }, [
+        del,
+        el('button', { type: 'button', class: 'btn small gold', text: 'Save', onclick: function () {
+          var s = status.value
+          var patch = { status: s, next: next.value.trim(), detail: det.value.trim(), updatedAt: new Date().toISOString() }
+          if (s === 'done' && i.status !== 'done') patch.doneAt = patch.updatedAt
+          if (s !== 'done') patch.was = s
+          db.doc('items/' + i.id).update(patch).then(function () { toast('Saved.'); state.open[i.id] = false; render() }).catch(fail)
+        } }),
+      ]),
+    ]))
+    return box
+  }
+
+  function toggleDone(i) {
+    var now = new Date().toISOString()
+    var patch = i.status === 'done'
+      ? { status: i.was && i.was !== 'done' ? i.was : 'next', updatedAt: now }
+      : { status: 'done', was: i.status, doneAt: now, updatedAt: now }
+    db.doc('items/' + i.id).update(patch).then(function () { toast(patch.status === 'done' ? 'Ticked off.' : 'Back on the list.') }).catch(fail)
+  }
+
+  function fail(e) {
+    if (e && e.code === 'invalid_argument') { canWrite = false; render(); toast('You can view this roadmap but not change it.') }
+    else toast('That didn’t save. Try again in a moment.')
+  }
+
+  // Pick-up note
+  $('edit-leftoff').addEventListener('click', function () {
+    $('leftoff-input').value = state.resume && state.resume.leftOff || ''
+    $('leftoff-view').hidden = true; $('leftoff-edit').hidden = false
+    $('edit-leftoff').hidden = true; $('save-leftoff').hidden = false
+    $('leftoff-input').focus()
+  })
+  $('save-leftoff').addEventListener('click', function () {
+    var v = $('leftoff-input').value.trim()
+    db.doc('meta/resume').set({ leftOff: v, updatedAt: new Date().toISOString(), by: 'Edited on the page' }).then(function () {
+      $('leftoff-view').hidden = false; $('leftoff-edit').hidden = true
+      $('edit-leftoff').hidden = false; $('save-leftoff').hidden = true
+      toast('Note saved.')
+    }).catch(fail)
+  })
+
+  // Prompt to paste into Claude when picking things back up
+  $('copy-prompt').addEventListener('click', function () {
+    var up = state.items.filter(function (i) { return i.status === 'now' || i.status === 'next' })
+      .sort(function (a, b) { return RANK[a.status] - RANK[b.status] }).slice(0, 3)
+    var text = 'Picking the Franchise Foundry build back up. Read the Foundry Roadmap artifact and claude/foundry-build1-plan.md in franchisefoundry/website first.\n\n' +
+      (state.resume && state.resume.leftOff ? 'Where we left off: ' + state.resume.leftOff + '\n\n' : '') +
+      (up.length ? 'Next up:\n' + up.map(function (i) { return '- ' + i.title + (i.next ? ': ' + i.next : '') }).join('\n') + '\n\n' : '') +
+      'Start with the first one, and tick it off on the roadmap when it ships.'
+    var done = function () { toast('Copied. Paste it into a new Claude chat.') }
+    try {
+      navigator.clipboard.writeText(text).then(done, function () { fallback(text) })
+    } catch (e) { fallback(text) }
+  })
+  function fallback(text) {
+    $('leftoff-input').value = text
+    $('leftoff-view').hidden = true; $('leftoff-edit').hidden = false
+    $('leftoff-input').select()
+    toast('Copy didn’t work here. The prompt is selected in the box: copy it from there.')
+    $('save-leftoff').hidden = true; $('edit-leftoff').hidden = false
+  }
+
+  // Filters
+  document.querySelectorAll('[data-filter]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      state.filter = b.getAttribute('data-filter')
+      try { localStorage.setItem('rm_filter', state.filter) } catch (e) {}
+      render()
+    })
+  })
+
+  // Add goal
+  $('add-track').addEventListener('change', function () { $('add-newtrack-l').hidden = this.value !== '__new' })
+  $('add-form').addEventListener('submit', function (e) {
+    e.preventDefault()
+    var title = $('add-title').value.trim()
+    if (!title) { toast('Give the goal a name.'); $('add-title').focus(); return }
+    var track = $('add-track').value, p = Promise.resolve()
+    if (track === '__new') {
+      var name = $('add-newtrack').value.trim()
+      if (!name) { toast('Name the new track.'); $('add-newtrack').focus(); return }
+      track = slug(name)
+      var maxT = state.tracks.reduce(function (m, t) { return Math.max(m, t.order || 0) }, 0)
+      if (!state.tracks.some(function (t) { return t.key === track })) p = db.doc('tracks/' + track).set({ label: name, blurb: '', order: maxT + 10 })
+    }
+    var maxO = state.items.filter(function (i) { return i.track === track }).reduce(function (m, i) { return Math.max(m, i.order || 0) }, 0)
+    var now = new Date().toISOString()
+    p.then(function () {
+      return db.collection('items').add({
+        track: track, title: title, status: $('add-status').value, next: $('add-next').value.trim(),
+        detail: $('add-detail').value.trim(), order: maxO + 10, createdAt: now, updatedAt: now, source: 'page',
+      })
+    }).then(function () {
+      $('add-form').reset(); $('add-newtrack-l').hidden = true
+      toast('Added to the roadmap.')
+    }).catch(fail)
+  })
+
+  render()
+
+  // Live data
+  var use = function (n) { return window.claude && window.claude.use ? window.claude.use(n) : Promise.resolve(null) }
+  use('db').then(function (d) {
+    db = d
+    if (!db) { $('leftoff').textContent = 'Open this page in claude.ai while signed in to see the roadmap.'; render(); return }
+    use('user').then(function (u) {
+      if (u && typeof u.can === 'function') {
+        Promise.resolve(u.can('data.write')).then(function (ok) { if (ok === false) { canWrite = false; render() } })
+      }
+    })
+    db.collection('tracks').onSnapshot(function (s) {
+      state.tracks = s.docs.map(function (d) { var x = d.data(); return { key: d.id, label: x.label || d.id, blurb: x.blurb || '', order: x.order || 0 } })
+        .sort(function (a, b) { return a.order - b.order })
+      render()
+    }, function () { toast('Lost the live connection. Reload the page.') })
+    db.collection('items').onSnapshot(function (s) {
+      state.items = s.docs.map(function (d) { var x = d.data(); return Object.assign({ id: d.id }, x) })
+      render()
+    }, function () {})
+    db.doc('meta/resume').onSnapshot(function (s) { state.resume = s.exists ? s.data() : null; render() }, function () {})
+  })
+})()
+</script>

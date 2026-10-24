@@ -7,11 +7,12 @@ import { MarketplaceTabsClient } from './MarketplaceTabsClient'
  * Foundry visible it adds Applications and Search insights.
  */
 export async function MarketplaceTabs() {
+  const foundry = await canSeeFoundry()
   const tabs: { href: string; label: string; badge?: number }[] = [
-    { href: '/admin/partners', label: 'Directory' },
+    foundry ? { href: '/admin/foundry/partners', label: 'Partners' } : { href: '/admin/partners', label: 'Directory' },
     { href: '/admin/intro-requests', label: 'Requests' },
   ]
-  if (await canSeeFoundry()) {
+  if (foundry) {
     let q = createAdminClient().from('partner_applications').select('id', { count: 'exact', head: true }).in('status', ['new', 'vetting'])
     if (foundryMode() !== 'preview') q = q.eq('is_demo', false)
     const { count } = await q

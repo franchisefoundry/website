@@ -129,7 +129,7 @@ export default async function Page({ searchParams }: { searchParams: Promise<{ d
       <section className={cn(card, 'mt-5')} aria-labelledby="perf-h">
         <div className="flex items-baseline justify-between">
           <h2 id="perf-h" className={h}>Partner performance</h2>
-          <Link href="/admin/partners" className="text-sm font-semibold text-ff-green hover:underline">All partners →</Link>
+          <Link href="/admin/foundry/partners" className="text-sm font-semibold text-ff-green hover:underline">All partners →</Link>
         </div>
         <div className="mt-3 overflow-x-auto">
           <table className="w-full min-w-[560px] text-sm">
@@ -142,7 +142,7 @@ export default async function Page({ searchParams }: { searchParams: Promise<{ d
             <tbody className="divide-y divide-line">
               {ins.partners.map(p => (
                 <tr key={p.id}>
-                  <td className="py-2.5"><Link href={`/admin/foundry/${p.slug}`} className="font-semibold text-ink hover:underline">{p.name}</Link></td>
+                  <td className="py-2.5"><Link href={`/admin/foundry/partners/${p.id}`} className="font-semibold text-ink hover:underline">{p.name}</Link></td>
                   <td className="py-2.5 text-right font-mono">{p.views}</td>
                   <td className="py-2.5 text-right font-mono">{p.intros}</td>
                   <td className="py-2.5 text-right font-mono">{p.won}</td>
