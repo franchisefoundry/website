@@ -33,8 +33,9 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   const badges: Record<string, number> = {}
   if (newLeads) badges['/admin/leads'] = newLeads
   if (pendingReview) badges['/admin/franchisors'] = pendingReview
-  if (pendingIntros) badges['/admin/partners'] = pendingIntros   // Marketplace group
   const foundry = await canSeeFoundry()
+  // With The Foundry on, intro requests live in its sidebar group.
+  if (pendingIntros) badges[foundry ? '/admin/intro-requests' : '/admin/partners'] = pendingIntros
   if (foundry) {
     const n = await countOpenIntros(admin, user.id, { includeDemo: foundryMode() === 'preview' })
     if (n) badges['/admin/foundry/intros'] = n

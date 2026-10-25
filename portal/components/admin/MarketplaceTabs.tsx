@@ -8,11 +8,12 @@ import { MarketplaceTabsClient } from './MarketplaceTabsClient'
  */
 export async function MarketplaceTabs() {
   const foundry = await canSeeFoundry()
-  const tabs: { href: string; label: string; badge?: number }[] = [
+  const tabs: { href: string; label: string; badge?: number; exact?: boolean }[] = [
     foundry ? { href: '/admin/foundry/partners', label: 'Partners' } : { href: '/admin/partners', label: 'Directory' },
     { href: '/admin/intro-requests', label: 'Requests' },
   ]
   if (foundry) {
+    tabs.unshift({ href: '/admin/foundry', label: 'Marketplace', exact: true })
     let q = createAdminClient().from('partner_applications').select('id', { count: 'exact', head: true }).in('status', ['new', 'vetting'])
     if (foundryMode() !== 'preview') q = q.eq('is_demo', false)
     const { count } = await q

@@ -117,6 +117,8 @@ export function cleanPartnerInput(b: any): CleanResult {
   const name = clip(b?.name, 120)
   if (!name) errors.name = 'Add the partner’s name.'
   const slug = slugify(clip(b?.slug, 60) ?? name ?? '')
+  // These are page names inside The Foundry, so a partner can't use them.
+  if (['browse', 'search', 'intros', 'partners', 'applications', 'insights', 'new'].includes(slug)) errors.slug = 'That web address is reserved. Try another.'
   const category = NEEDS.includes(b?.category) ? b.category : null
   if (!category) errors.category = 'Pick a category.'
   const audience = ['franchisee', 'franchisor', 'both'].includes(b?.audience) ? b.audience : 'franchisee'
