@@ -70,6 +70,7 @@ export default async function FranchisorsPage({ searchParams }: { searchParams: 
           <div className="flex flex-wrap gap-2 items-center">
             <ViewToggle current={current} basePath="/admin/franchisors" />
             <Link href="/admin/questionnaires" className="text-sm font-medium text-ink-2 border border-line hover:border-[#cdd2c8] px-4 py-2 rounded-lg transition-colors">Questionnaires</Link>
+            <Link href="/admin/franchisors/matching-tool" className="text-sm font-medium text-ink-2 border border-line hover:border-[#cdd2c8] px-4 py-2 rounded-lg transition-colors">Matching tool</Link>
             <SeedFranchisorsButton />
             <Link href="/admin/franchisors/new" className="bg-ff-green hover:bg-ff-green-deep text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors">Add brand</Link>
             <InviteFranchisorButton />
