@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { isValidPhone } from '@/lib/phone'
 
 interface QuizData {
   bmin: number | null
@@ -46,6 +47,7 @@ export default function UnlockForm({ quizData, matchCount }: { quizData: QuizDat
     if (!form.full_name.trim()) { setError('Please enter your full name.'); return }
     if (!form.email.trim() || !form.email.includes('@')) { setError('Please enter a valid email address.'); return }
     if (!form.phone.trim()) { setError('Please enter your phone number.'); return }
+    if (!isValidPhone(form.phone)) { setError('Please enter a valid phone number (e.g. 07700 900123).'); return }
     if (!terms) { setError('Please agree to the Terms of Engagement to continue.'); return }
 
     setLoading(true)

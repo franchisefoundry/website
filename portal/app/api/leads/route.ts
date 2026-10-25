@@ -4,6 +4,7 @@ import { scoreMatch } from '@/lib/matching'
 import { sendLeadNotificationToTeam, sendLeadConfirmationToFranchisee } from '@/lib/email'
 import { notifyAdmins, notify } from '@/lib/notifications'
 import { resolveReferral } from '@/lib/referral'
+import { isValidPhone } from '@/lib/phone'
 import type { FranchiseeProfile, FranchisorProfile } from '@/lib/supabase/types'
 
 // Simple email format check (server-side, belt-and-braces)
@@ -43,6 +44,7 @@ export async function POST(request: NextRequest) {
     if (!isValidEmail(emailClean)) return NextResponse.json({ error: 'Please enter a valid email address.' }, { status: 400 })
     if (!phoneClean) return NextResponse.json({ error: 'Phone number is required.' }, { status: 400 })
     if (phoneClean.length > 30) return NextResponse.json({ error: 'Phone number is too long.' }, { status: 400 })
+    if (!isValidPhone(phoneClean)) return NextResponse.json({ error: 'Please enter a valid phone number.' }, { status: 400 })
 
     // ── Sanitise enum fields — reject unexpected values ────────────────────────
     const safeOperatorModel = ALLOWED_OPERATOR_MODELS.has(operator_model) ? operator_model : null
