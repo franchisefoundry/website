@@ -18,6 +18,7 @@ import { MyIntrosView } from './MyIntrosView'
 import { loadMyIntros, countOpenIntros } from '@/lib/foundry/my-intros'
 import { PartnerProfile } from './PartnerProfile'
 import { Accent } from './bits'
+import { BrowseView } from './BrowseView'
 
 export async function FoundryShell({ role, children }: { role: FoundryRole; children: React.ReactNode }) {
   const ctx = await foundryContext(role)
@@ -29,6 +30,7 @@ export async function FoundryShell({ role, children }: { role: FoundryRole; chil
           Only people on the preview list can see The Foundry. Partners shown are demo data.
         </div>
       )}
+      {ctx.viewer.role === 'admin' && <AdminViewBar role={role} base={ctx.base} preview={ctx.preview} />}
       {children}
     </IntroListProvider>
   )
@@ -67,7 +69,10 @@ export async function AskPage({ role }: { role: FoundryRole }) {
         </Link>
       )}
 
-      <h2 className="mb-3 mt-10 font-mono text-xs tracking-[0.1em] text-ink-3">OR BROWSE BY NEED</h2>
+      <div className="mb-3 mt-10 flex flex-wrap items-baseline justify-between gap-2">
+        <h2 className="font-mono text-xs tracking-[0.1em] text-ink-3">OR BROWSE BY NEED</h2>
+        <Link href={`${ctx.base}/browse`} className="text-sm font-bold text-ff-green hover:underline">See every partner →</Link>
+      </div>
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
         {NEEDS.map(n => {
           const meta = PARTNER_CATEGORIES.find(c => c.value === n)
@@ -119,4 +124,37 @@ export async function IntrosPage({ role }: { role: FoundryRole }) {
   const intros = await loadMyIntros(createAdminClient(), ctx.viewer.id, { includeDemo: ctx.preview })
   // Members message the team on their own thread; admins have no client thread.
   return <MyIntrosView intros={intros} base={ctx.base} canMessage={ctx.viewer.role !== 'admin'} />
+}
+
+export async function BrowsePage({ role }: { role: FoundryRole }) {
+  const ctx = await foundryContext(role)
+  const partners = ctx.partners.filter(p => ctx.plan.audience === 'any' || p.audience === 'both' || p.audience === ctx.plan.audience)
+  return <BrowseView partners={partners} base={ctx.base} plan={ctx.plan} />
+}
+
+/** For admins: what you're looking at, a one-click switch to the member views and the website, and the tools. */
+function AdminViewBar({ role, base, preview }: { role: FoundryRole; base: string; preview: boolean }) {
+  const site = (process.env.FOUNDRY_WEBSITE_URL ?? 'https://franchisefoundry.co.uk').replace(/\/$/, '')
+  const secret = process.env.FOUNDRY_PREVIEW_SECRET
+  const website = `${site}/foundry/${preview && secret ? `?preview=${encodeURIComponent(secret)}` : ''}`
+  const views: [string, string][] = [['/admin/foundry', 'Everything (admin)'], ['/franchisee/foundry', 'As a franchisee'], ['/franchisor/foundry', 'As a franchisor']]
+  const tab = (on: boolean) => `rounded-lg px-3 py-1.5 text-xs font-semibold ${on ? 'bg-ff-green text-white' : 'text-ink-2 hover:bg-surface-2 hover:text-ink'}`
+  return (
+    <div className="mb-5 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-line bg-surface px-3 py-2">
+      <div className="flex flex-wrap items-center gap-1">
+        <span className="mr-1 font-mono text-[11px] tracking-[0.08em] text-ink-3">VIEW</span>
+        {views.map(([href, label]) => <Link key={href} href={href} className={tab(base === href)}>{label}</Link>)}
+        <a href={website} target="_blank" rel="noopener noreferrer" className={tab(false)}>On the website ↗</a>
+      </div>
+      {role === 'admin'
+        ? <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs">
+            <span className="text-ink-3">Run it:</span>
+            <Link href="/admin/intro-requests" className="font-semibold text-ff-green hover:underline">Requests</Link>
+            <Link href="/admin/foundry/partners" className="font-semibold text-ff-green hover:underline">Partners</Link>
+            <Link href="/admin/foundry/applications" className="font-semibold text-ff-green hover:underline">Applications</Link>
+            <Link href="/admin/foundry/insights" className="font-semibold text-ff-green hover:underline">Insights</Link>
+          </div>
+        : <span className="text-xs text-ink-3">Showing only the partners a {role} would see.</span>}
+    </div>
+  )
 }

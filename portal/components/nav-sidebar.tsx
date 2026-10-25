@@ -102,14 +102,24 @@ function navForRole(role: string): NavItem[] {
   return []
 }
 
-/** Swap the member "Marketplace" item for The Foundry; admins get it alongside Marketplace. */
+/**
+ * Swap the member "Marketplace" item for The Foundry. Admins get one group:
+ * the marketplace itself first (same as members, every partner), then the tools to run it.
+ */
 function withFoundry(items: NavItem[], role: string): NavItem[] {
   const intros: NavLeaf = { label: 'My intros', href: `/${role}/foundry/intros`, icon: <SendIcon className="w-4 h-4" /> }
   if (role === 'admin') {
-    return items.flatMap(item =>
-      !isDivider(item) && !isGroup(item) && item.href === '/admin/partners'
-        ? [item, { label: 'The Foundry', href: '/admin/foundry', icon: <SearchIcon className="w-4 h-4" /> }, intros]
-        : [item])
+    const group: NavGroup = { label: 'The Foundry', icon: <MarketplaceIcon className="w-4 h-4" />, children: [
+      { label: 'Marketplace', href: '/admin/foundry', icon: <SearchIcon className="w-4 h-4" /> },
+      { label: 'All partners', href: '/admin/foundry/browse', icon: <MarketplaceIcon className="w-4 h-4" /> },
+      { label: 'My intros', href: '/admin/foundry/intros', icon: <SendIcon className="w-4 h-4" /> },
+      { label: 'Intro requests', href: '/admin/intro-requests', icon: <BoltIcon className="w-4 h-4" /> },
+      { label: 'Manage partners', href: '/admin/foundry/partners', icon: <SettingsIcon className="w-4 h-4" /> },
+      { label: 'Applications', href: '/admin/foundry/applications', icon: <AgreementIcon className="w-4 h-4" /> },
+      { label: 'Search insights', href: '/admin/foundry/insights', icon: <ChartIcon className="w-4 h-4" /> },
+      { label: 'Resales', href: '/admin/resales', icon: <WalletIcon className="w-4 h-4" /> },
+    ] }
+    return items.map(item => (!isDivider(item) && !isGroup(item) && item.href === '/admin/partners' ? group : item))
   }
   return items.flatMap((item): NavItem[] => {
     if (isDivider(item)) return [item]
@@ -139,10 +149,12 @@ function NavGroupItem({
   group,
   pathname,
   onClose,
+  badges,
 }: {
   group: NavGroup
   pathname: string
   onClose: () => void
+  badges?: Record<string, number>
 }) {
   // Pick only the single most-specific (longest-prefix) matching child, so a
   // nested route like /admin/franchisors/invites doesn't also light up the
@@ -152,6 +164,7 @@ function NavGroupItem({
     .sort((a, b) => b.href.length - a.href.length)[0]?.href
 
   const anyChildActive = activeChildHref !== undefined
+  const groupBadge = group.children.reduce((n, c) => n + (badges?.[c.href] ?? 0), 0)
   const [open, setOpen] = useState(anyChildActive)
 
   useEffect(() => {
@@ -172,6 +185,9 @@ function NavGroupItem({
         <div className="flex items-center gap-2.5">
           {group.icon && <span className="flex-shrink-0 opacity-70">{group.icon}</span>}
           {group.label}
+          {!open && groupBadge > 0 && (
+            <span className="text-[10px] font-bold bg-ff-gold text-[#2b382b] rounded-full min-w-[18px] h-[18px] grid place-items-center px-1.5 tabular-nums">{groupBadge}</span>
+          )}
         </div>
         <svg
           className={cn('w-3.5 h-3.5 opacity-50 transition-transform flex-shrink-0', open ? 'rotate-180' : '')}
@@ -199,6 +215,11 @@ function NavGroupItem({
               >
                 {child.icon && <span className="flex-shrink-0 opacity-60">{child.icon}</span>}
                 {child.label}
+                {badges?.[child.href] ? (
+                  <span className="ml-auto text-[10px] font-bold bg-ff-gold text-[#2b382b] rounded-full min-w-[18px] h-[18px] grid place-items-center px-1.5 tabular-nums">
+                    {badges[child.href]}
+                  </span>
+                ) : null}
               </Link>
             )
           })}
@@ -358,6 +379,7 @@ export function NavSidebar({ profile, brands, activeBrandId, badges, adminPrevie
                   group={item}
                   pathname={pathname}
                   onClose={() => setMobileOpen(false)}
+                  badges={badges}
                 />
               )
             }
