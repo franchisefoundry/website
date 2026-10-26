@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Your matches · Franchise Foundry</title>
+<meta name="description" content="Your franchise shortlist, explained in plain English. Brand names come on a free 20-minute call.">
+<meta property="og:title" content="Your matches · Franchise Foundry">
+<meta property="og:description" content="Your franchise shortlist, explained in plain English. Brand names come on a free 20-minute call.">
+<meta property="og:type" content="website">
+<link rel="icon" type="image/png" href="/images/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/v2/assets/v2.css">
+
+<script src="/v2/assets/v2.js" defer></script>
+<script src="/v2/assets/results.js" defer></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<div class="v2-strip"><div class="wrap"><span><b>V2 PREVIEW</b> · Not live and hidden from search. The current site is unchanged.</span><span><a href="/v2/preview/">All v2 pages</a> · <a href="/">Current site</a></span></div></div>
+<header class="app-h">
+  <a class="brand" href="/v2/"><svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="8" height="15" rx="1" fill="#8FA38F"/><rect x="12.5" y="3" width="8.5" height="18" rx="1" fill="#3A4A3A"/></svg><b>Franchise Foundry</b><span class="mono xs label" style="margin-left:8px">/ your matches</span></a>
+  <div class="row" style="gap:8px;font-size:13px">
+    <a class="btn btn-outline" style="min-height:40px;padding:0 12px;border-radius:8px;font-size:13px" href="/v2/match/">Edit my story</a>
+    <a class="btn btn-outline" style="min-height:40px;padding:0 12px;border-radius:8px;font-size:13px" href="/v2/login/">Open my portal</a>
+  </div>
+</header>
+
+<main id="main">
+  <section class="gridbg rule-b" style="background-size:40px 40px">
+    <div class="row" style="max-width:1376px;margin:0 auto;padding:36px clamp(16px,3vw,32px);gap:24px 48px;align-items:flex-start">
+      <div style="flex:1 1 360px">
+        <div class="row mono xs" style="gap:8px;color:var(--green)"><span style="width:7px;height:7px;border-radius:50%;background:var(--gold)"></span>7 BRANDS · 9 SIGNALS · CHECKED BY HARRY, 25 OCT</div>
+        <h1 style="margin-top:10px;font-size:clamp(38px,4.4vw,52px);line-height:1;letter-spacing:-.045em;font-weight:700">3 strong matches.</h1>
+        <div class="row mono mt-16" id="brief-chips" style="gap:6px;font-size:11px">
+          <span class="brief-chip">£100k–£150k</span><span class="brief-chip">Manchester</span><span class="brief-chip">Hands-on, then manager</span><span class="brief-chip">2–3 sites</span>
+        </div>
+      </div>
+      <div style="flex:2 1 560px;padding:20px 22px;border-radius:16px;background:#fff;border:1px solid var(--line-2);box-shadow:0 10px 30px rgba(22,26,22,.06)">
+        <div class="kicker green">YOUR SHORTLIST, IN PLAIN ENGLISH</div>
+        <p style="margin-top:8px;font-size:17px;line-height:1.55">You suit food-led brands that let you work the floor in year one, then hand over to a manager. All three sit inside your budget with room left for working capital, and all have territory open around Manchester. <b>One thing to sort before your call:</b> confirm how much is ready now, so we can line up the right lender.</p>
+        <div class="row xs label mt-12" style="gap:8px;flex-wrap:nowrap"><span class="avatar" style="--s:22px;font-size:10px">H</span>Drafted by our matching model from your story. Read and signed off by Harry.</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="row" style="max-width:1376px;margin:0 auto;padding:28px clamp(16px,3vw,32px) 48px;gap:24px;align-items:flex-start">
+    <div class="stack" style="flex:999 1 640px;min-width:0;--gap:18px">
+      <div class="auto" style="--min:240px;--gap:12px" role="radiogroup" aria-label="Your matches" id="cards"></div>
+
+      <section class="card" style="overflow:hidden" aria-live="polite">
+        <div class="between" style="align-items:center;gap:12px;padding:16px 20px;border-bottom:1px solid var(--tint)">
+          <div><span class="mono label" style="font-size:11px" id="sel-k"></span><h2 id="sel-sector" style="margin-top:2px;font-size:22px;letter-spacing:-.02em;font-weight:700"></h2></div>
+          <div style="text-align:right"><div class="mono" id="sel-s" style="font-size:34px;font-weight:600;line-height:1;color:var(--green)"></div><div class="mono label" style="font-size:10px">FIT SCORE</div></div>
+        </div>
+        <div class="auto" style="--min:300px;--gap:0">
+          <div style="padding:18px 20px;border-right:1px solid var(--tint)">
+            <div class="mono label" style="font-size:10px;letter-spacing:.08em;margin-bottom:8px">HOW IT SCORED</div>
+            <div id="factors"></div>
+          </div>
+          <div class="stack" style="padding:18px 20px;--gap:14px">
+            <div><div class="mono" style="font-size:10px;letter-spacing:.08em;color:var(--green);margin-bottom:4px">WHY IT FITS</div><div id="why"></div></div>
+            <div><div class="mono" style="font-size:10px;letter-spacing:.08em;color:var(--gold-ink);margin-bottom:4px">WATCH OUT FOR</div><div id="watch" style="padding:10px 12px;background:var(--cream);border-radius:8px;font-size:13px;color:var(--cream-ink)"></div></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="stack" style="--gap:14px;border:1px solid var(--line);border-radius:16px;padding:20px;background:var(--surface)">
+        <div class="between" style="align-items:baseline;gap:8px">
+          <h2 style="font-size:20px;letter-spacing:-.02em;font-weight:700">Ask about your matches</h2>
+          <span class="mono label" style="font-size:11px"><span id="ask-left">2</span> OF 3 QUICK QUESTIONS LEFT · DEEPER ONES GO TO YOUR CALL</span>
+        </div>
+        <div class="row" id="asks" style="gap:8px"></div>
+        <div id="answer" class="stack" style="--gap:10px" aria-live="polite"></div>
+        <div id="ask-box">
+          <form class="row" id="ask-form" style="gap:8px;flex-wrap:nowrap;padding:6px 6px 6px 14px;border:1px solid var(--line-3);border-radius:12px;background:#fff">
+            <input type="text" id="ask-input" aria-label="Your question" placeholder="Ask a quick question about your shortlist" maxlength="200" style="flex:1;min-width:0;min-height:40px;border:0;font-size:14px;background:transparent;outline-offset:4px">
+            <button type="submit" class="btn btn-primary" style="min-height:40px;padding:0 14px;border-radius:8px;font-size:13px">Ask</button>
+          </form>
+          <div class="xs label" style="margin-top:8px">Quick, general answers only. Brand names, exact numbers and advice come from Harry on your call.</div>
+        </div>
+        <div id="asked-out" hidden class="between" style="align-items:center;gap:12px;padding:14px 16px;border-radius:12px;background:var(--deep);color:#fff">
+          <span style="font-size:14px"><b>That’s your 3 questions.</b> <span style="color:var(--on-dark)">Harry has them all, and will go deeper on your call.</span></span>
+          <a class="btn btn-gold btn-sm" href="#book">Book my call</a>
+        </div>
+      </section>
+
+      <div class="dash" style="padding:14px 18px;font-size:13px;color:var(--muted)">
+        <div class="between" style="align-items:center;gap:12px">
+          <span><b style="color:var(--ink)">4 more scored lower.</b> C is over budget, F needs you on the floor long term, D and E are single-site models.</span>
+          <button type="button" class="link" style="min-height:40px;border:0;background:none;padding:0" aria-expanded="false" aria-controls="lower" id="lower-btn">Show them ↓</button>
+        </div>
+        <ul id="lower" hidden style="list-style:none;margin:12px 0 0;padding:0;display:grid;gap:6px">
+          <li class="row" style="gap:10px;flex-wrap:nowrap"><span class="mono" style="width:28px">C</span><span style="flex:1">Asian dining · over your budget</span><span class="mono">58</span></li>
+          <li class="row" style="gap:10px;flex-wrap:nowrap"><span class="mono" style="width:28px">F</span><span style="flex:1">Quick service · owner on the floor long term</span><span class="mono">61</span></li>
+          <li class="row" style="gap:10px;flex-wrap:nowrap"><span class="mono" style="width:28px">D</span><span style="flex:1">Coffee & drinks · single-site model</span><span class="mono">64</span></li>
+          <li class="row" style="gap:10px;flex-wrap:nowrap"><span class="mono" style="width:28px">E</span><span style="flex:1">Desserts · single-site model</span><span class="mono">66</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <aside id="book" class="stack" style="flex:1 1 340px;max-width:420px;--gap:12px">
+      <div class="card" style="overflow:hidden">
+        <div class="row" style="padding:18px;border-bottom:1px solid var(--tint);gap:12px;flex-wrap:nowrap">
+          <span class="avatar mono" style="--s:52px;background:var(--green-2);color:#DCE6DC;font-size:9px;font-weight:400">[PHOTO]</span>
+          <div><div class="mono label" style="font-size:10px;letter-spacing:.08em">NEXT STEP · FREE · 20 MIN</div><div style="font-size:18px;font-weight:700;letter-spacing:-.02em">Your match call with Harry</div></div>
+        </div>
+        <div class="stack" style="padding:18px;--gap:10px">
+          <div class="mono label" style="font-size:11px">NEXT AVAILABLE · EUROPE/LONDON</div>
+          <div class="stack" id="slots" style="--gap:10px" role="group" aria-label="Call times"></div>
+          <a href="mailto:connect@franchisefoundry.co.uk?subject=Match%20call" class="small" style="font-weight:600;color:var(--green)">More times</a>
+          <button type="button" class="btn btn-primary btn-lg" id="book-btn" style="font-size:15px"></button>
+          <div class="xs label">Harry gets your story and questions first, so you won’t repeat yourself.</div>
+          <div class="xs" style="color:var(--gold-ink)">[Booking tool to connect: Cal.com or other]</div>
+        </div>
+      </div>
+      <div class="card" style="padding:18px">
+        <div class="mono label" style="font-size:10px;letter-spacing:.08em;margin-bottom:10px">BEFORE YOUR CALL</div>
+        <ol class="before">
+          <li><span class="tick on">✓</span><span>Story and answers saved to your portal</span></li>
+          <li><span class="tick on" id="q-tick">✓</span><span>Questions for Harry <span class="label">(<span id="q-count">1</span> saved)</span></span></li>
+          <li><span class="tick gold"></span><span>Check what you could borrow<a href="/foundry/?q=lender+pre-check">Lender pre-check in The Foundry ↗</a></span></li>
+        </ol>
+      </div>
+    </aside>
+  </div>
+</main>
+</body>
+</html>

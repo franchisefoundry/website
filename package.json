@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "build": "node build-articles.mjs && node build-foundry.mjs"
+    "build": "node build-articles.mjs && node build-foundry.mjs && node build-v2.mjs",
+    "build:v2": "node build-v2.mjs"
   },
   "dependencies": {
     "gray-matter": "^4.0.3",

@@ -3,5 +3,8 @@ Allow: /
 Disallow: /admin/
 # The Foundry is in private preview: remove this line at launch
 Disallow: /foundry/
+# Website v2 preview: remove at launch
+Disallow: /v2/
+Disallow: /v2-src/
 
 Sitemap: https://franchisefoundry.co.uk/sitemap.xml
