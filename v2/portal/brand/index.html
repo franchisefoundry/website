@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Candidates · Brand portal · Franchise Foundry</title>
+<meta name="description" content="Brand portal preview: candidate briefs, verified checks, accept or pass.">
+<meta property="og:title" content="Candidates · Brand portal · Franchise Foundry">
+<meta property="og:description" content="Brand portal preview: candidate briefs, verified checks, accept or pass.">
+<meta property="og:type" content="website">
+<link rel="icon" type="image/png" href="/images/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/v2/assets/v2.css">
+
+<script src="/v2/assets/v2.js" defer></script>
+<script src="/v2/assets/inbox.js" defer></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<div class="v2-strip"><div class="wrap"><span><b>V2 PREVIEW</b> · Not live and hidden from search. The current site is unchanged.</span><span><a href="/v2/preview/">All v2 pages</a> · <a href="/">Current site</a></span></div></div>
+<header class="app-h dark" style="border-bottom:0">
+  <span class="row" style="gap:10px">
+    <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="8" height="15" rx="1" fill="#A9C2A3"/><rect x="12.5" y="3" width="8.5" height="18" rx="1" fill="#FFFFFF"/></svg>
+    <b style="font-weight:700;font-size:15px;letter-spacing:-.02em">Franchise Foundry</b>
+    <span class="mono" style="margin-left:6px;padding:3px 8px;border-radius:6px;background:rgba(255,255,255,.12);font-size:11px;color:var(--gold-soft)">BRAND PORTAL · [BRAND NAME]</span>
+  </span>
+  <nav aria-label="Portal" class="row portal-nav" style="gap:4px 22px;font-size:14px">
+    <a href="#" aria-current="page">Candidates</a><a href="#">Pipeline</a><a href="#">Territories</a><a href="#">Your profile</a>
+  </nav>
+</header>
+
+<main id="main" class="inbox">
+  <aside class="inbox-list">
+    <div class="between" style="align-items:baseline;gap:8px"><h1 style="font-size:20px;letter-spacing:-.02em;font-weight:700">Candidates</h1><span class="mono label" style="font-size:11px">3 READY · 1 PREPPING</span></div>
+    <div class="stack" id="list" style="--gap:10px"></div>
+  </aside>
+
+  <div class="inbox-main" aria-live="polite">
+    <div class="between" style="align-items:flex-start;gap:16px">
+      <div>
+        <div class="mono" style="font-size:11px;letter-spacing:.08em;color:var(--green)">CANDIDATE BRIEF · INTRODUCED BY HARRY</div>
+        <h2 id="c-t" style="margin-top:6px;font-size:clamp(28px,3vw,36px);line-height:1.05;letter-spacing:-.04em;font-weight:700"></h2>
+        <div id="c-d" class="muted" style="margin-top:4px"></div>
+      </div>
+      <div style="padding:10px 14px;border:1px solid var(--line);border-radius:12px;text-align:right"><div class="mono" id="c-fit" style="font-size:30px;font-weight:600;line-height:1;color:var(--green)"></div><div class="mono label" style="font-size:10px">FIT TO YOUR PROFILE</div></div>
+    </div>
+
+    <div class="auto" id="checks" style="--min:180px;--gap:8px"></div>
+
+    <section style="padding:20px 22px;border-radius:16px;border:1px solid var(--line-2)">
+      <div class="kicker green">THE SHORT VERSION</div>
+      <p id="c-brief" style="margin-top:8px;font-size:16px;line-height:1.6"></p>
+      <div class="xs label mt-12">Written from their story and a 20 min call with Harry. Read and signed off by Harry before it reached you.</div>
+    </section>
+
+    <div class="auto" style="--min:300px;--gap:14px">
+      <section style="padding:18px 20px;border-radius:16px;background:var(--surface)">
+        <div class="mono" style="font-size:10px;letter-spacing:.08em;color:var(--green);margin-bottom:6px">WHY THEY FIT YOU</div>
+        <div id="c-why"></div>
+      </section>
+      <section style="padding:18px 20px;border-radius:16px;background:var(--cream)">
+        <div class="mono" style="font-size:10px;letter-spacing:.08em;color:var(--gold-ink);margin-bottom:6px">THEY’LL ASK YOU ABOUT</div>
+        <div id="c-asks"></div>
+      </section>
+    </div>
+
+    <section class="stack" style="--gap:14px;padding:20px 22px;border-radius:16px;border:1px solid var(--line)">
+      <div id="undecided" class="row" style="gap:10px">
+        <button type="button" class="btn btn-primary btn-lg" style="flex:1 1 220px;font-size:15px" data-mode="accept">Accept intro and book discovery call</button>
+        <button type="button" class="btn btn-outline btn-lg" style="font-size:15px" data-mode="pass">Pass</button>
+      </div>
+      <div id="accepted" hidden class="between" style="align-items:center;gap:10px;padding:14px 16px;border-radius:12px;background:var(--tint)"><span><b>Intro accepted.</b> Harry will send both sides a time within 24 hours.</span><button type="button" class="btn btn-outline" style="min-height:40px;padding:0 14px;border-radius:8px" data-mode="none">Undo</button></div>
+      <div id="passing" hidden class="stack" style="--gap:10px">
+        <div style="font-weight:700">What wasn’t right? <span class="label" style="font-weight:400">It sharpens who we send you next.</span></div>
+        <div class="row" id="reasons" style="gap:8px" role="group" aria-label="Reasons"></div>
+        <div class="row" style="gap:8px"><button type="button" class="btn btn-outline btn-sm" data-mode="none">Cancel</button><button type="button" class="btn btn-sm" style="background:var(--ink);color:#fff" data-mode="none">Pass and update my profile</button></div>
+      </div>
+      <div class="xs label">Contact details unlock when you accept. 24-month candidate protection applies from this introduction.</div>
+    </section>
+  </div>
+</main>
+</body>
+</html>

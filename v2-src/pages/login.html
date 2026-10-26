@@ -1,0 +1,57 @@
+<!--meta {"title": "Log in · Franchise Foundry", "description": "Log in to your Franchise Foundry portal: franchisee, brand or Foundry partner.", "active": "none"} -->
+<main id="main" class="login">
+  <div class="login-main">
+    <div>
+      <div class="eyebrow"><span class="d">◆</span> Log in</div>
+      <h1 class="mt-10" style="font-size:clamp(38px,4.4vw,52px);line-height:1;letter-spacing:-.045em;font-weight:700">Welcome back.</h1>
+    </div>
+    <div class="auto" style="--min:160px;--gap:10px" role="radiogroup" aria-label="I am a" data-seg data-panels="[data-role-panel]" data-param="role">
+      <button type="button" class="role" role="radio" aria-checked="true" data-value="franchisee"><span class="k">FRANCHISEE</span><span class="t">Find and launch</span><span class="d">Matches, calls, launch plan</span></button>
+      <button type="button" class="role" role="radio" aria-checked="false" data-value="brand"><span class="k">BRAND</span><span class="t">Recruit</span><span class="d">Candidate inbox, intros</span></button>
+      <button type="button" class="role" role="radio" aria-checked="false" data-value="partner"><span class="k">PARTNER</span><span class="t">The Foundry</span><span class="d">Intro requests, listing</span></button>
+    </div>
+    <form class="stack" style="--gap:12px" action="https://portal.franchisefoundry.co.uk/login" method="get" id="login-form">
+      <label class="field" style="gap:6px">Email<input type="email" placeholder="you@example.com" autocomplete="email" style="min-height:52px;padding:0 14px;border-radius:12px;font-size:16px"></label>
+      <button class="btn btn-primary btn-lg" type="submit" style="font-size:16px">Email me a login link</button>
+      <div class="small label">No passwords. We email you a link that logs you straight in.</div>
+      <div class="xs" style="padding:10px 12px;border-radius:10px;background:var(--cream);color:var(--cream-ink)">Login links arrive with the new portal. For now this button takes you to the current portal log in.</div>
+    </form>
+    <div class="rule-t" style="padding-top:18px;font-size:14px;color:var(--muted)">
+      <span data-role-panel>New here? <a href="/v2/match/" class="link" style="min-height:0;display:inline">Start matching, it’s free</a></span>
+      <span data-role-panel hidden>Not working with us yet? <a href="/v2/for-brands/" class="link" style="min-height:0;display:inline">Tell us about your brand</a></span>
+      <span data-role-panel hidden>Not listed yet? <a href="/v2/for-partners/" class="link" style="min-height:0;display:inline">Apply to The Foundry</a></span>
+    </div>
+  </div>
+
+  <aside class="dark login-aside" aria-label="Inside your portal">
+    <div class="eyebrow">◆ Inside your portal</div>
+    <div data-role-panel class="stack" style="--gap:16px">
+      <div class="pv-title">Your matches, your call and your launch plan in one place.</div>
+      <div class="stack" style="--gap:10px">
+        <div class="pv light"><div class="k"><span>MATCHES</span><span>SAVED</span></div><b>3 strong matches</b><div class="d">Brand names revealed on your call</div></div>
+        <div class="pv"><div class="k"><span>NEXT CALL</span></div><b>Thu 15 Oct, 11:00</b><div class="d">With Harry · 20 min video</div></div>
+        <div class="pv"><div class="k"><span>LAUNCH PLAN</span></div><b>Step 2 of 7 · Funding</b><div class="d">Next: request a lender intro</div></div>
+        <div class="pv"><div class="k"><span>THE FOUNDRY</span></div><b>2 intros in progress</b><div class="d">Finance · Shopfit</div></div>
+      </div>
+    </div>
+    <div data-role-panel class="stack" style="--gap:16px" hidden>
+      <div class="pv-title">Candidates who are ready, and where every intro stands.</div>
+      <div class="stack" style="--gap:10px">
+        <div class="pv light"><div class="k"><span>NEW CANDIDATE</span><span>READY</span></div><b>Manchester · Fit 92</b><div class="d">Funds verified · briefed on your model</div></div>
+        <div class="pv"><div class="k"><span>PIPELINE</span></div><b>[X] intros this quarter</b><div class="d">Accepted, met, discovery day, awarded</div></div>
+        <div class="pv"><div class="k"><span>TERRITORIES</span></div><b>[Areas] open</b><div class="d">Update what you’re recruiting for</div></div>
+        <div class="pv"><div class="k"><span>YOUR SUPPLIERS</span></div><b>Listed in The Foundry</b><div class="d">Shared with every new franchisee</div></div>
+      </div>
+    </div>
+    <div data-role-panel class="stack" style="--gap:16px" hidden>
+      <div class="pv-title">Intro requests from franchisees who have just signed.</div>
+      <div class="stack" style="--gap:10px">
+        <div class="pv light"><div class="k"><span>NEW REQUEST</span><span>NEW</span></div><b>Leeds · Quick service</b><div class="d">Shopfit quote for a [X] sq ft unit</div></div>
+        <div class="pv"><div class="k"><span>YOUR LISTING</span></div><b>Shopfit · North</b><div class="d">Edit services, areas and deal</div></div>
+        <div class="pv"><div class="k"><span>INTROS</span></div><b>[X] accepted this month</b><div class="d">Track each one through to work won</div></div>
+        <div class="pv"><div class="k"><span>FOUNDRY DEAL</span></div><b>[Your member offer]</b><div class="d">Shown to every franchisee</div></div>
+      </div>
+    </div>
+    <a class="xs" style="color:var(--on-dark-2);margin-top:auto" href="/v2/portal/brand/">Preview the brand portal ↗</a>
+  </aside>
+</main>
