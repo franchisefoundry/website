@@ -104,7 +104,7 @@
     })
     $('ask-form').addEventListener('submit', function (e) {
       e.preventDefault()
-      var q = $('ask-input').value.trim(); if (!q || used() >= MAX) return
+      var q = $('ask-input').value.trim(); if ($('ask-input').disabled || !q || used() >= MAX) return
       st.custom.push(q)
       st.ask = { q: q, a: 'Good one. That needs the detail we go through on your call, so I’ve passed it straight to Harry rather than guess.', src: ['SAVED FOR YOUR CALL'] }
       $('ask-input').value = ''; render()

@@ -1,27 +1,202 @@
-<!--meta {"title": "V2 preview · every page · Franchise Foundry", "description": "Every page in the v2 website preview, its planned URL and the page it replaces.", "active": "none"} -->
-<main id="main" class="wrap" style="padding-top:56px;padding-bottom:88px">
-  <div class="eyebrow"><span class="d">◆</span> Website v2 · preview</div>
-  <h1 class="h2 mt-10">Every page, and where it leads.</h1>
-  <p class="lede mt-12 mw-720">Built from the v2 design canvas. Nothing here is live: every page is noindex, /v2/ is blocked in robots.txt, and the current site is unchanged. Anything in [brackets] is content we still need to supply.</p>
+<!--meta {"title": "Review website v2 · Franchise Foundry", "description": "Review every page of the v2 website preview, tick them off and send feedback.", "active": "none", "scripts": ["/v2/assets/review.js"]} -->
+<main id="main">
+  <section class="gridbg rule-b">
+    <div class="wrap split" style="--min:460px;--align:end;padding-top:64px;padding-bottom:48px">
+      <div>
+        <div class="eyebrow"><span class="d">◆</span> Website v2 · review</div>
+        <h1 class="h1 mt-12">Click through it. Tell us what’s off.</h1>
+      </div>
+      <div class="stack" style="--gap:16px">
+        <p class="lede">Nothing here is live. Every page is hidden from search and the current site is unchanged. Anything in [brackets] is content we still need to supply.</p>
+        <div class="review-progress" aria-live="polite">
+          <div class="between" style="align-items:baseline;gap:8px"><span class="kicker green">YOUR PROGRESS</span><span class="mono small"><b id="done-n">0</b> of <span id="total-n">13</span> pages reviewed</span></div>
+          <div class="bar mt-8" style="height:8px;border-radius:4px"><span id="done-bar" style="width:0;height:8px;border-radius:4px;transition:width .3s"></span></div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-  <div class="table-box mt-32">
-    <table class="table">
-      <thead><tr><th scope="col">PAGE</th><th scope="col">PREVIEW</th><th scope="col">PLANNED URL AT LAUNCH</th><th scope="col">REPLACES</th><th scope="col">NOTES</th></tr></thead>
-      <tbody>
-        <tr><td><b>Home</b></td><td><a href="/v2/">/v2/</a></td><td class="mono">/</td><td class="mono">/index.html</td><td class="muted">Hero matches are labelled examples</td></tr>
-        <tr><td><b>Who we work with</b></td><td><a href="/v2/brands/">/v2/brands/</a></td><td class="mono">/brands/</td><td class="mono">new</td><td class="muted">Signed partners only, swap in logo files</td></tr>
-        <tr><td><b>Brand spotlight</b></td><td><a href="/v2/brands/oakberry/">/v2/brands/oakberry/</a></td><td class="mono">/brands/[slug]/</td><td class="mono">new</td><td class="muted">Template. OakBerry copy needs sign-off</td></tr>
-        <tr><td><b>Sector page</b></td><td><a href="/v2/franchises/coffee/">/v2/franchises/coffee/</a></td><td class="mono">/franchises/[sector]/</td><td class="mono">new</td><td class="muted">Template. Budget and area pages reuse it</td></tr>
-        <tr><td><b>Guides hub</b></td><td><a href="/v2/guides/">/v2/guides/</a></td><td class="mono">/guides/</td><td class="mono">/blog.html</td><td class="muted">Topic filter works</td></tr>
-        <tr><td><b>Guide article</b></td><td><a href="/v2/guides/how-to-buy-a-franchise/">/v2/guides/how-to-buy-a-franchise/</a></td><td class="mono">/guides/[slug]/</td><td class="mono">/articles/*</td><td class="muted">Template with Article and FAQ schema</td></tr>
-        <tr><td><b>For brands</b></td><td><a href="/v2/for-brands/">/v2/for-brands/</a></td><td class="mono">/for-brands/</td><td class="mono">/for-brands.html</td><td class="muted">Restyled into the v2 system. Form posts to brand-enquiry</td></tr>
-        <tr><td><b>For partners</b></td><td><a href="/v2/for-partners/">/v2/for-partners/</a></td><td class="mono">/for-partners/</td><td class="mono">new</td><td class="muted">Form posts to partner-apply</td></tr>
-        <tr><td><b>About and contact</b></td><td><a href="/v2/about/">/v2/about/</a></td><td class="mono">/about/</td><td class="mono">/about.html, /contact.html</td><td class="muted">Form posts to contact</td></tr>
-        <tr><td><b>Log in</b></td><td><a href="/v2/login/">/v2/login/</a></td><td class="mono">app…/login</td><td class="mono">portal /login</td><td class="muted">Hands over to the current portal log in</td></tr>
-        <tr><td><b>Matching</b></td><td><a href="/v2/match/">/v2/match/</a></td><td class="mono">app…/match</td><td class="mono">portal /get-matched</td><td class="muted">Questions route live. Assistant is a rules-based stand-in</td></tr>
-        <tr><td><b>Results and booking</b></td><td><a href="/v2/match/results/">/v2/match/results/</a></td><td class="mono">app…/results</td><td class="mono">portal results</td><td class="muted">Example shortlist. Booking tool not connected</td></tr>
-        <tr><td><b>Brand portal</b></td><td><a href="/v2/portal/brand/">/v2/portal/brand/</a></td><td class="mono">app…/brand</td><td class="mono">new</td><td class="muted">Phase 3 preview, example candidates</td></tr>
-      </tbody>
-    </table>
+  <div id="sent" hidden class="wrap" style="padding-top:24px">
+    <div class="row" style="gap:12px;padding:14px 18px;border-radius:12px;background:var(--tint)"><span class="tick on" aria-hidden="true">✓</span><span><b>Feedback sent.</b> It’s gone to connect@franchisefoundry.co.uk. Keep going.</span></div>
   </div>
+
+  <section class="wrap" style="padding-top:56px;padding-bottom:24px">
+    <ol class="steps3 auto" style="--min:260px">
+      <li><span class="mono" style="font-size:13px;color:var(--gold-ink)">01</span><div class="t">Open a page</div><div class="muted">Check it on your phone too. Most visitors will see it there first.</div></li>
+      <li><span class="mono" style="font-size:13px;color:var(--gold-ink)">02</span><div class="t">Check the list</div><div class="muted">Each card says what to look at. Tick it off when you’re happy.</div></li>
+      <li><span class="mono" style="font-size:13px;color:var(--gold-ink)">03</span><div class="t">Send feedback</div><div class="muted">One note per change. It lands in the shared inbox.</div></li>
+    </ol>
+  </section>
+
+  <section class="wrap" style="padding-top:32px;padding-bottom:72px">
+    <div class="between mb-24" style="align-items:baseline">
+      <h2 class="h3">Pages</h2>
+      <div class="row" style="gap:8px" role="group" aria-label="Filter pages" data-review-filter>
+        <button type="button" class="pill" data-key="all" aria-pressed="true">All</button>
+        <button type="button" class="pill" data-key="site" aria-pressed="false">Marketing site</button>
+        <button type="button" class="pill" data-key="app" aria-pressed="false">Matching and portal</button>
+        <button type="button" class="pill" data-key="todo" aria-pressed="false">Not reviewed yet</button>
+      </div>
+    </div>
+    <div class="auto" style="--min:360px" id="review-cards">
+
+      <article class="card review-card" data-page="Home" data-kind="site">
+        <div class="top"><span class="kicker green">/v2/ · REPLACES /index.html</span><span class="state ready">READY</span></div>
+        <h3>Home</h3>
+        <ul><li>Hero: diagonal slab widens when you hover The Foundry side</li><li>Example matches are clearly labelled as examples</li><li>FAQ answers: anything you wouldn’t say on a call?</li></ul>
+        <div class="acts"><a class="btn btn-primary btn-sm" href="/v2/">Open page ↗</a><button type="button" class="btn btn-outline btn-sm" data-feedback>Feedback</button><label class="done"><input type="checkbox"> Reviewed</label></div>
+      </article>
+
+      <article class="card review-card" data-page="Who we work with" data-kind="site">
+        <div class="top"><span class="kicker green">/v2/brands/ · NEW</span><span class="state content">NEEDS CONTENT</span></div>
+        <h3>Who we work with</h3>
+        <ul><li>Is the partner list right and signed off?</li><li>“Why we back them” line per brand</li><li>Logo and venue photo per brand</li></ul>
+        <div class="acts"><a class="btn btn-primary btn-sm" href="/v2/brands/">Open page ↗</a><button type="button" class="btn btn-outline btn-sm" data-feedback>Feedback</button><label class="done"><input type="checkbox"> Reviewed</label></div>
+      </article>
+
+      <article class="card review-card" data-page="Brand spotlight (OakBerry)" data-kind="site">
+        <div class="top"><span class="kicker green">/v2/brands/oakberry/ · TEMPLATE</span><span class="state content">NEEDS CONTENT</span></div>
+        <h3>Brand spotlight</h3>
+        <ul><li>Shows who, holds back how much: does that feel right?</li><li>Investment band and regions to confirm with OakBerry</li><li>No direct contact route to the brand</li></ul>
+        <div class="acts"><a class="btn btn-primary btn-sm" href="/v2/brands/oakberry/">Open page ↗</a><button type="button" class="btn btn-outline btn-sm" data-feedback>Feedback</button><label class="done"><input type="checkbox"> Reviewed</label></div>
+      </article>
+
+      <article class="card review-card" data-page="Sector page (coffee)" data-kind="site">
+        <div class="top"><span class="kicker green">/v2/franchises/coffee/ · TEMPLATE</span><span class="state content">NEEDS CONTENT</span></div>
+        <h3>Sector page</h3>
+        <ul><li>Sector cost ranges and format table figures</li><li>Ben’s three points: right for coffee?</li><li>Budget and area pages will reuse this layout</li></ul>
+        <div class="acts"><a class="btn btn-primary btn-sm" href="/v2/franchises/coffee/">Open page ↗</a><button type="button" class="btn btn-outline btn-sm" data-feedback>Feedback</button><label class="done"><input type="checkbox"> Reviewed</label></div>
+      </article>
+
+      <article class="card review-card" data-page="Guides hub" data-kind="site">
+        <div class="top"><span class="kicker green">/v2/guides/ · REPLACES /blog.html</span><span class="state ready">READY</span></div>
+        <h3>Guides hub</h3>
+        <ul><li>Topic filter</li><li>Which three guides do we write for launch?</li><li>Existing articles still need moving across</li></ul>
+        <div class="acts"><a class="btn btn-primary btn-sm" href="/v2/guides/">Open page ↗</a><button type="button" class="btn btn-outline btn-sm" data-feedback>Feedback</button><label class="done"><input type="checkbox"> Reviewed</label></div>
+      </article>
+
+      <article class="card review-card" data-page="Guide article" data-kind="site">
+        <div class="top"><span class="kicker green">/v2/guides/how-to-buy-a-franchise/</span><span class="state content">NEEDS CONTENT</span></div>
+        <h3>Guide article</h3>
+        <ul><li>Byline, updated date and author box</li><li>Inline matching and Foundry prompts: too pushy?</li><li>[Bracketed] bits for Ben to write</li></ul>
+        <div class="acts"><a class="btn btn-primary btn-sm" href="/v2/guides/how-to-buy-a-franchise/">Open page ↗</a><button type="button" class="btn btn-outline btn-sm" data-feedback>Feedback</button><label class="done"><input type="checkbox"> Reviewed</label></div>
+      </article>
+
+      <article class="card review-card" data-page="For brands" data-kind="site">
+        <div class="top"><span class="kicker green">/v2/for-brands/ · REPLACES /for-brands.html</span><span class="state ready">READY</span></div>
+        <h3>For brands</h3>
+        <ul><li>Fee calculator: 20%, £5k minimum, on award</li><li>24-month protection and 48h reply: happy to promise both?</li><li>Form posts to the existing brand enquiry email</li></ul>
+        <div class="acts"><a class="btn btn-primary btn-sm" href="/v2/for-brands/">Open page ↗</a><button type="button" class="btn btn-outline btn-sm" data-feedback>Feedback</button><label class="done"><input type="checkbox"> Reviewed</label></div>
+      </article>
+
+      <article class="card review-card" data-page="For partners" data-kind="site">
+        <div class="top"><span class="kicker green">/v2/for-partners/ · NEW</span><span class="state content">NEEDS CONTENT</span></div>
+        <h3>For partners</h3>
+        <ul><li>Partner fee model, stated plainly</li><li>Reply time for applications</li><li>Applications now email the shared inbox</li></ul>
+        <div class="acts"><a class="btn btn-primary btn-sm" href="/v2/for-partners/">Open page ↗</a><button type="button" class="btn btn-outline btn-sm" data-feedback>Feedback</button><label class="done"><input type="checkbox"> Reviewed</label></div>
+      </article>
+
+      <article class="card review-card" data-page="About and contact" data-kind="site">
+        <div class="top"><span class="kicker green">/v2/about/ · REPLACES ABOUT + CONTACT</span><span class="state content">NEEDS CONTENT</span></div>
+        <h3>About and contact</h3>
+        <ul><li>Photos, two-line bios and “been there” chips for Harry and Ben</li><li>LinkedIn links</li><li>Phone numbers on show: OK?</li></ul>
+        <div class="acts"><a class="btn btn-primary btn-sm" href="/v2/about/">Open page ↗</a><button type="button" class="btn btn-outline btn-sm" data-feedback>Feedback</button><label class="done"><input type="checkbox"> Reviewed</label></div>
+      </article>
+
+      <article class="card review-card" data-page="Matching" data-kind="app">
+        <div class="top"><span class="kicker green">/v2/match/ · REPLACES PORTAL MATCHER</span><span class="state proto">PROTOTYPE</span></div>
+        <h3>Matching</h3>
+        <ul><li>Nine questions, one per screen, all skippable</li><li>Live scores are placeholder weights until you set them</li><li>AI assistant shows “coming soon”</li></ul>
+        <div class="acts"><a class="btn btn-primary btn-sm" href="/v2/match/">Open page ↗</a><button type="button" class="btn btn-outline btn-sm" data-feedback>Feedback</button><label class="done"><input type="checkbox"> Reviewed</label></div>
+      </article>
+
+      <article class="card review-card" data-page="Results and booking" data-kind="app">
+        <div class="top"><span class="kicker green">/v2/match/results/</span><span class="state proto">PROTOTYPE</span></div>
+        <h3>Results and booking</h3>
+        <ul><li>Example shortlist, not real scores yet</li><li>Booking isn’t connected to a calendar</li><li>Typing your own question shows “coming soon”</li></ul>
+        <div class="acts"><a class="btn btn-primary btn-sm" href="/v2/match/results/">Open page ↗</a><button type="button" class="btn btn-outline btn-sm" data-feedback>Feedback</button><label class="done"><input type="checkbox"> Reviewed</label></div>
+      </article>
+
+      <article class="card review-card" data-page="Log in" data-kind="app">
+        <div class="top"><span class="kicker green">/v2/login/</span><span class="state proto">PROTOTYPE</span></div>
+        <h3>Log in</h3>
+        <ul><li>Three roles, preview of each portal</li><li>Hands over to the current portal log in for now</li></ul>
+        <div class="acts"><a class="btn btn-primary btn-sm" href="/v2/login/">Open page ↗</a><button type="button" class="btn btn-outline btn-sm" data-feedback>Feedback</button><label class="done"><input type="checkbox"> Reviewed</label></div>
+      </article>
+
+      <article class="card review-card" data-page="Brand portal" data-kind="app">
+        <div class="top"><span class="kicker green">/v2/portal/brand/ · PHASE 3</span><span class="state proto">PROTOTYPE</span></div>
+        <h3>Brand portal</h3>
+        <ul><li>Candidate brief, checks, accept or pass</li><li>Would a brand want anything else before accepting?</li><li>Example candidates only</li></ul>
+        <div class="acts"><a class="btn btn-primary btn-sm" href="/v2/portal/brand/">Open page ↗</a><button type="button" class="btn btn-outline btn-sm" data-feedback>Feedback</button><label class="done"><input type="checkbox"> Reviewed</label></div>
+      </article>
+    </div>
+  </section>
+
+  <section class="surface">
+    <div class="wrap auto" style="--min:300px;--gap:16px;padding-top:72px;padding-bottom:72px">
+      <div class="card pad">
+        <div class="kicker gold">SWITCHED OFF FOR NOW</div>
+        <ul class="plain">
+          <li>The Foundry search box on the home page: coming soon</li>
+          <li>The AI matching assistant: coming soon</li>
+          <li>Typing your own question on results: coming soon</li>
+          <li>Call booking: needs a booking tool</li>
+        </ul>
+      </div>
+      <div class="card pad">
+        <div class="kicker green">CONTENT WE STILL NEED</div>
+        <ul class="plain">
+          <li>Partner logos and signed-off spotlight copy</li>
+          <li>Venue, product and team photos per partner</li>
+          <li>Harry and Ben photos and two-line bios</li>
+          <li>Investment bands and regions per partner</li>
+          <li>Sector cost ranges and format figures</li>
+          <li>Three launch guides plus FAQ answers</li>
+          <li>Foundry partner fee model</li>
+          <li>Company number and registered address</li>
+        </ul>
+      </div>
+      <div class="card pad">
+        <div class="kicker gold">DECISIONS STILL OPEN</div>
+        <ul class="plain">
+          <li>Booking tool and CRM</li>
+          <li>AI provider and monthly budget</li>
+          <li>Results summary: hold until approved, or show as “being checked”</li>
+          <li>Scoring weights per signal</li>
+          <li>Portal scope for phase 2</li>
+          <li>Contract wording for spotlight-led direct enquiries</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section id="feedback" style="background:var(--tint)">
+    <div class="wrap row" style="gap:48px;align-items:flex-start;padding-top:80px;padding-bottom:80px">
+      <div style="flex:1 1 360px">
+        <h2 class="h2" style="margin-bottom:12px">Send feedback.</h2>
+        <p class="muted" style="max-width:420px">One change per note is easiest to act on. It goes to connect@franchisefoundry.co.uk and is kept in Netlify Forms.</p>
+      </div>
+      <form class="form-card" style="flex:1 1 480px" name="v2-feedback" method="POST" data-netlify="true" netlify-honeypot="bot-field" action="/v2/preview/?sent=1">
+        <input type="hidden" name="form-name" value="v2-feedback">
+        <p class="hp"><label>Don’t fill this out: <input name="bot-field"></label></p>
+        <div class="auto" style="--min:200px;--gap:12px">
+          <label class="field">Your name<input type="text" name="reviewer" id="reviewer" required autocomplete="name"></label>
+          <label class="field">Page<select name="page" id="fb-page">
+            <option>General</option><option>Home</option><option>Who we work with</option><option>Brand spotlight (OakBerry)</option><option>Sector page (coffee)</option><option>Guides hub</option><option>Guide article</option><option>For brands</option><option>For partners</option><option>About and contact</option><option>Matching</option><option>Results and booking</option><option>Log in</option><option>Brand portal</option><option>Header and footer</option>
+          </select></label>
+        </div>
+        <fieldset class="field" style="border:0;margin:0;padding:0">
+          <legend style="margin-bottom:6px">Priority</legend>
+          <div class="choice">
+            <label><input type="radio" name="priority" value="Must fix before launch"><span>Must fix</span></label>
+            <label><input type="radio" name="priority" value="Should change" checked><span>Should</span></label>
+            <label><input type="radio" name="priority" value="Nice to have"><span>Nice to have</span></label>
+          </div>
+        </fieldset>
+        <label class="field">What should change?<textarea name="feedback" id="fb-text" rows="5" required placeholder="e.g. Home hero: lead with ‘free for franchisees’ before the form"></textarea></label>
+        <button class="btn btn-primary btn-lg" type="submit" style="font-size:16px">Send feedback →</button>
+      </form>
+    </div>
+  </section>
 </main>

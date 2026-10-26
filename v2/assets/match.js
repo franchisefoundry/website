@@ -3,7 +3,8 @@
 // anonymous brand profiles; weights are placeholders until Harry confirms them.
 // The assistant is a rules-based stand-in for the server-side LLM (phase 2):
 // it only fills the six brief fields and parks brand, fee and "which is best"
-// questions for the call. Answers are kept in sessionStorage for the results page.
+// questions for the call. It is off until the page has #ai-form (the panel says
+// "coming soon" for now); the brief-complete handover still shows either way. Answers are kept in sessionStorage for the results page.
 (function () {
   'use strict'
   var $ = function (id) { return document.getElementById(id) }
@@ -112,7 +113,7 @@
     } else reply = aiReply(n, newly)
     var msgs = st.msgs.concat([{ r: 'me', t: text }, reply])
     if (usedOf(msgs) >= MAX && missingBrief(n).length) msgs.push({ r: 'ai', t: 'That’s enough for me to work with. Tap the last few on the left if you like, or bring them to your call.' })
-    $('ai-input').value = ''
+    if ($('ai-input')) $('ai-input').value = ''
     set({ ans: n, src: src, msgs: msgs, notes: notes, q: firstOpen(n), last: newly.length ? 'ai' : st.last })
   }
 
@@ -227,24 +228,27 @@
       return '<button type="button" class="ans-chip' + (lab ? ' has' : '') + '" data-go="' + i + '"><span class="m" aria-hidden="true">' + (lab ? '✓' : '○') + '</span>' + esc(lab || q.title.replace('?', '')) + (lab && st.src[q.id] === 'ai' ? '<span class="mono" style="font-size:9px;color:var(--gold-ink)">AI</span>' : '') + '</button>'
     }).join('')
 
-    // Assistant
+    // Assistant (off until the page has the chat form)
     var used = usedOf(st.msgs), miss = missingBrief(A), closed = !miss.length || used >= MAX
-    $('used').textContent = used
-    $('use-dots').innerHTML = [0, 1, 2, 3, 4, 5].map(function (i) { return '<span style="width:8px;height:4px;border-radius:2px;background:' + (i < used ? '#C8924A' : '#2F3A30') + '"></span>' }).join('')
-    var lastMsg = st.msgs[st.msgs.length - 1], qrQ = lastMsg && lastMsg.qr && !closed ? qOf(lastMsg.qr) : null
-    var log = $('log')
-    log.innerHTML = st.msgs.map(function (m) {
-      return '<div class="msg ' + (m.r === 'me' ? 'me' : 'ai') + '"><span>' + esc(m.t) + '</span>' + (m.chips && m.chips.length ? '<span class="chips">' + m.chips.map(function (c) { return '<span>✓ ' + esc(c) + '</span>' }).join('') + '</span>' : '') + '</div>'
-    }).join('') + (qrQ ? '<div class="row" style="gap:6px">' + qrQ.opts.map(function (o, oi) { return '<button type="button" class="qr" data-qr="' + oi + '">' + esc(o[0]) + '</button>' }).join('') + '</div>' : '')
-    log.scrollTop = log.scrollHeight
-
-    var notes = $('notes')
-    notes.hidden = !st.notes.length
-    notes.innerHTML = '<div class="mono" style="font-size:10px;letter-spacing:.08em;color:var(--gold-soft);margin-bottom:4px">SAVED FOR YOUR CALL · ' + st.notes.length + (st.notes.length === 1 ? ' QUESTION' : ' QUESTIONS') + '</div>' +
-      st.notes.map(function (n) { return '<div class="xs" style="color:var(--on-dark-2)">“' + esc(n) + '”</div>' }).join('')
-    $('chat').hidden = closed
-    $('starters').hidden = st.msgs.length > 1
+    if (!AI) closed = !miss.length
     $('handover').hidden = !closed
+    if (AI) {
+      $('used').textContent = used
+      $('use-dots').innerHTML = [0, 1, 2, 3, 4, 5].map(function (i) { return '<span style="width:8px;height:4px;border-radius:2px;background:' + (i < used ? '#C8924A' : '#2F3A30') + '"></span>' }).join('')
+      var lastMsg = st.msgs[st.msgs.length - 1], qrQ = lastMsg && lastMsg.qr && !closed ? qOf(lastMsg.qr) : null
+      var log = $('log')
+      log.innerHTML = st.msgs.map(function (m) {
+        return '<div class="msg ' + (m.r === 'me' ? 'me' : 'ai') + '"><span>' + esc(m.t) + '</span>' + (m.chips && m.chips.length ? '<span class="chips">' + m.chips.map(function (c) { return '<span>✓ ' + esc(c) + '</span>' }).join('') + '</span>' : '') + '</div>'
+      }).join('') + (qrQ ? '<div class="row" style="gap:6px">' + qrQ.opts.map(function (o, oi) { return '<button type="button" class="qr" data-qr="' + oi + '">' + esc(o[0]) + '</button>' }).join('') + '</div>' : '')
+      log.scrollTop = log.scrollHeight
+
+      var notes = $('notes')
+      notes.hidden = !st.notes.length
+      notes.innerHTML = '<div class="mono" style="font-size:10px;letter-spacing:.08em;color:var(--gold-soft);margin-bottom:4px">SAVED FOR YOUR CALL · ' + st.notes.length + (st.notes.length === 1 ? ' QUESTION' : ' QUESTIONS') + '</div>' +
+        st.notes.map(function (n) { return '<div class="xs" style="color:var(--on-dark-2)">“' + esc(n) + '”</div>' }).join('')
+      $('chat').hidden = closed
+      $('starters').hidden = st.msgs.length > 1
+    }
     $('hand-kicker').textContent = !miss.length ? 'BRIEF COMPLETE · NEXT STEP' : 'NEXT STEP'
     $('hand-title').textContent = !miss.length ? 'Your brief is ready. Let’s talk it through.' : 'Over to a human from here.'
     $('hand-body').textContent = 'A free 20-minute call with Harry: your matches by name, the real numbers' + (st.notes.length ? ', and answers to your ' + st.notes.length + ' saved question' + (st.notes.length > 1 ? 's' : '') : '') + '.'
@@ -252,8 +256,10 @@
 
   function focusTitle() { var t = $('q-title'); if (t) t.focus({ preventScroll: true }) }
 
+  var AI = false
   document.addEventListener('DOMContentLoaded', function () {
-    $('starters').innerHTML = STARTERS.map(function (s, i) { return '<button type="button" class="starter" data-start="' + i + '">' + esc(s[0]) + '</button>' }).join('')
+    AI = !!$('ai-form')
+    if (AI) $('starters').innerHTML = STARTERS.map(function (s, i) { return '<button type="button" class="starter" data-start="' + i + '">' + esc(s[0]) + '</button>' }).join('')
     render()
 
     $('q-area').addEventListener('click', function (e) {
@@ -285,15 +291,15 @@
       var b = e.target.closest('[data-go]'); if (!b) return
       set({ q: Number(b.getAttribute('data-go')) }); focusTitle()
     })
-    $('log').addEventListener('click', function (e) {
+    if (AI) $('log').addEventListener('click', function (e) {
       var b = e.target.closest('[data-qr]'); if (!b) return
       var qrQ = qOf(st.msgs[st.msgs.length - 1].qr), oi = Number(b.getAttribute('data-qr'))
       var n = copy(st.ans), src = copy(st.src); n[qrQ.id] = oi; src[qrQ.id] = 'ai'
       set({ ans: n, src: src, last: qrQ.id, q: firstOpen(n), msgs: st.msgs.concat([{ r: 'me', t: qrQ.opts[oi][0] }, aiReply(n, [qrQ.id])]) })
     })
-    $('starters').addEventListener('click', function (e) {
+    if (AI) $('starters').addEventListener('click', function (e) {
       var b = e.target.closest('[data-start]'); if (b) sendText(STARTERS[Number(b.getAttribute('data-start'))][1])
     })
-    $('ai-form').addEventListener('submit', function (e) { e.preventDefault(); sendText($('ai-input').value) })
+    if (AI) $('ai-form').addEventListener('submit', function (e) { e.preventDefault(); sendText($('ai-input').value) })
   })
 })()

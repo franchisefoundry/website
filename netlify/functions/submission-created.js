@@ -355,6 +355,52 @@ function buildContactEmail(data) {
   };
 }
 
+// Website v2 preview forms. Values are escaped: they go straight into the email HTML.
+function esc(value) {
+  return safe(value).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+function buildPartnerEmail(data) {
+  const name = esc(data.name);
+  const bodyHtml = `
+    <table width="100%" cellpadding="0" cellspacing="0">
+      ${sectionHeading('Foundry partner application')}
+      ${row('Company', esc(data.company))}
+      ${row('Category', esc(data.category))}
+      ${row('Areas covered', esc(data.areas))}
+      ${row('Name', name)}
+      ${row('Email', esc(data.email))}
+    </table>
+
+    ${replyButton(esc(data.email), name)}
+  `;
+  return {
+    subject: `New Foundry partner application from ${esc(data.company)}`,
+    html: emailWrap('New Foundry Partner Application', bodyHtml)
+  };
+}
+
+function buildV2FeedbackEmail(data) {
+  const bodyHtml = `
+    <table width="100%" cellpadding="0" cellspacing="0">
+      ${sectionHeading('Website v2 feedback')}
+      ${row('From', esc(data.reviewer))}
+      ${row('Page', esc(data.page))}
+      ${row('Priority', esc(data.priority))}
+      ${sectionHeading('Feedback')}
+      <tr>
+        <td colspan="2" style="padding:12px 0;">
+          <div style="background:#f7f8f5;border-radius:8px;padding:16px;font-size:14px;color:#161a16;line-height:1.6;white-space:pre-wrap;">${esc(data.feedback)}</div>
+        </td>
+      </tr>
+    </table>
+  `;
+  return {
+    subject: `v2 feedback: ${esc(data.page)} (${esc(data.priority)})`,
+    html: emailWrap('Website v2 Feedback', bodyHtml)
+  };
+}
+
 // ── Handler ───────────────────────────────────────────────────────────────────
 
 exports.handler = async (event) => {
@@ -371,6 +417,10 @@ exports.handler = async (event) => {
       emailContent = buildBrandEmail(data);
     } else if (formName === 'contact') {
       emailContent = buildContactEmail(data);
+    } else if (formName === 'partner-apply') {
+      emailContent = buildPartnerEmail(data);
+    } else if (formName === 'v2-feedback') {
+      emailContent = buildV2FeedbackEmail(data);
     } else {
       // Unknown form — ignore gracefully
       console.log('submission-created: unknown form', formName);

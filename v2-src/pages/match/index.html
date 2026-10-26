@@ -43,22 +43,16 @@
       <div style="padding:20px 22px;border-bottom:1px solid #2A332B">
         <div class="between" style="align-items:center;gap:8px">
           <span class="row mono" style="gap:8px;font-size:11px;letter-spacing:.08em;color:var(--gold-soft)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#C8924A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 4.7L18.5 9.5l-4.7 1.8L12 16l-1.8-4.7L5.5 9.5l4.7-1.8z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/></svg>AI MATCHING ASSISTANT</span>
-          <span class="row mono" style="gap:6px;font-size:10px;color:#8E988F"><span id="used">0</span> OF 6 MESSAGES <span class="row" id="use-dots" style="gap:2px;flex-wrap:nowrap" aria-hidden="true"></span></span>
+          <span class="soon">COMING SOON</span>
         </div>
         <div style="margin-top:8px;font-size:20px;line-height:1.25;font-weight:600;letter-spacing:-.02em;color:#fff">Explain exactly what you want, and it fills in the answers for you.</div>
         <div style="margin-top:6px;font-size:13px;color:#A9B5AA">It builds your brief in a few messages. Brand names, numbers and advice come from Harry or Ben on your call.</div>
       </div>
-      <div class="ai-log" id="log" role="log" aria-live="polite"></div>
-      <div style="padding:14px 16px 18px;border-top:1px solid #2A332B" class="stack" id="ai-foot">
-        <div id="notes" hidden style="padding:10px 12px;border-radius:10px;background:#1E241F;border:1px dashed #46564A"></div>
-        <div id="chat" class="stack" style="--gap:10px">
-          <div class="row" id="starters" style="gap:6px"></div>
-          <form class="ai-input" id="ai-form">
-            <input type="text" id="ai-input" aria-label="Message the AI assistant" placeholder="e.g. £120k, near Manchester, ran a pub kitchen…" autocomplete="off" maxlength="500">
-            <button type="submit" aria-label="Send"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#161A16" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
-          </form>
-          <div style="font-size:11px;color:#8E988F">Your words are only used to match you. Never shared with a brand until you say so.</div>
-        </div>
+      <div class="stack ai-soon" style="--gap:14px">
+        <div class="ai-input" aria-hidden="true"><input type="text" tabindex="-1" disabled placeholder="e.g. £120k, near Manchester, ran a pub kitchen…"><span class="soon">COMING SOON</span></div>
+        <p style="font-size:14px;color:var(--on-dark-2)">The assistant isn’t switched on yet. For now, answer the questions on the left. They take about three minutes, and anything you’d have typed here you can tell Harry or Ben on your call.</p>
+      </div>
+      <div style="padding:14px 16px 18px;border-top:1px solid #2A332B;margin-top:auto" class="stack" id="ai-foot">
         <div id="handover" hidden class="stack" style="--gap:10px;padding:16px;border-radius:14px;background:var(--gold);color:var(--ink)">
           <div class="mono" id="hand-kicker" style="font-size:10px;letter-spacing:.08em">NEXT STEP</div>
           <div id="hand-title" style="font-size:18px;font-weight:700;line-height:1.25">Over to a human from here.</div>

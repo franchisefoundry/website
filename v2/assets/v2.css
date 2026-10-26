@@ -485,3 +485,27 @@ a.card:hover { border-color: var(--green); }
 .cand { display: flex; flex-direction: column; gap: 4px; padding: 14px; border-radius: 12px; border: 1px solid var(--line); background: transparent; text-align: left; }
 .cand[aria-pressed="true"] { border-color: var(--green); background: #fff; }
 .table a { color: var(--green); font-weight: 600; }
+
+/* Coming soon (AI search boxes until the assistant is switched on) */
+.soon { flex: 0 0 auto; display: inline-flex; align-items: center; min-height: 28px; padding: 0 10px; border-radius: 999px; background: var(--gold); color: var(--ink); font-family: var(--mono); font-size: 10px; font-weight: 600; letter-spacing: .08em; white-space: nowrap; }
+.soon.light { background: var(--cream); color: #6B4A1E; }
+.f-search input:disabled, .ai-input input:disabled { cursor: not-allowed; }
+#ask-input:disabled { cursor: not-allowed; }
+.ai-soon { flex: 1; padding: 18px 22px; }
+
+/* Review page */
+.review-progress { padding: 16px 18px; border-radius: 14px; background: #fff; border: 1px solid var(--line); }
+.review-card { display: flex; flex-direction: column; gap: 12px; padding: 20px; }
+.review-card .top { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+.review-card .top .kicker { font-size: 10px; letter-spacing: .06em; overflow-wrap: anywhere; }
+.review-card h3 { font-size: 22px; font-weight: 700; letter-spacing: -.02em; }
+.review-card ul { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 4px; font-size: 14px; color: var(--muted); }
+.review-card .acts { margin-top: auto; padding-top: 6px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.review-card .done { margin-left: auto; display: inline-flex; align-items: center; gap: 8px; min-height: 44px; font-size: 14px; font-weight: 600; cursor: pointer; }
+.review-card .done input { width: 20px; height: 20px; accent-color: var(--green); }
+.review-card.is-done { border-color: var(--green); background: #FAFBFA; }
+.state { flex: 0 0 auto; padding: 3px 8px; border-radius: 6px; font-family: var(--mono); font-size: 10px; font-weight: 600; letter-spacing: .06em; }
+.state.ready { background: var(--tint); color: var(--ok); }
+.state.content { background: var(--cream); color: #6B4A1E; }
+.state.proto { background: var(--ink); color: var(--gold-soft); }
+.plain { margin: 10px 0 0; padding-left: 18px; display: flex; flex-direction: column; gap: 5px; font-size: 14px; }
