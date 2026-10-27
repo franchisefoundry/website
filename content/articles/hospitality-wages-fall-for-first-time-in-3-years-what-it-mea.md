@@ -1,6 +1,6 @@
 ---
 title: 'Hospitality Wages Fall for First Time in 3 Years: What It Means'
-status: Draft
+status: Published
 featured: true
 date: 2026-10-27T08:00:00
 category: Market Analysis
