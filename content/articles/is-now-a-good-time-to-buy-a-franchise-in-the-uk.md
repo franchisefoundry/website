@@ -1,11 +1,12 @@
 ---
-title: "Is Now a Good Time to Buy a Franchise in the UK?"
-category: "Franchise Advice"
-author: "Franchise Foundry"
-date: 2026-11-10T09:44:07.659Z
-excerpt: "UK market pressures are real, but that doesn't mean good franchise opportunities don't exist. The question isn't timing—it's finding the right fit for you."
-status: "Draft"
-featured: false
+title: Is Now a Good Time to Buy a Franchise in the UK?
+status: Draft
+featured: true
+date: 2026-11-26T09:00:00
+category: Franchise Advice
+author: Franchise Foundry
+excerpt: UK market pressures are real, but that doesn't mean good franchise opportunities don't exist. The question isn't timing—it's finding the right fit for you.
+coverImage: ''
 ---
 
 ## The honest answer: it depends on the opportunity, not the timing
