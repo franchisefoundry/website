@@ -1,11 +1,12 @@
 ---
-title: "The Real Cost of Buying a Hospitality Franchise in 2027"
-category: "Franchise Advice"
-author: "Franchise Foundry"
-date: 2026-11-10T09:41:55.290Z
-excerpt: "The franchise fee is just the start. Learn what hidden costs, staffing expenses and ongoing fees you really need to budget for before investing in a hospitality franchise."
-status: "Draft"
-featured: false
+title: The Real Cost of Buying a Hospitality Franchise in 2027
+status: Draft
+featured: true
+date: 2026-11-19T09:00:00
+category: Franchise Advice
+author: Franchise Foundry
+excerpt: The franchise fee is just the start. Learn what hidden costs, staffing expenses and ongoing fees you really need to budget for before investing in a hospitality franchise.
+coverImage: ''
 ---
 
 A franchise investment involves far more than the initial franchise fee. With operating costs continuing to challenge the UK hospitality sector, prospective franchisees need to understand the full financial commitment before taking the plunge.
