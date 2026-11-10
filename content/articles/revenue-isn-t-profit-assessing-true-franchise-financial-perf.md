@@ -1,11 +1,12 @@
 ---
 title: "Revenue Isn't Profit: Assessing True Franchise Financial Performance"
-category: "Franchise Advice"
-author: "Franchise Foundry"
-date: 2026-11-10T09:45:12.706Z
-excerpt: "A £1 million turnover sounds impressive, but how much actually reaches your pocket? Learn to distinguish between revenue, profit and cash flow before investing in a franchise."
-status: "Draft"
-featured: false
+status: Draft
+featured: true
+date: 2026-12-03T09:00:00
+category: Franchise Advice
+author: Franchise Foundry
+excerpt: A £1 million turnover sounds impressive, but how much actually reaches your pocket? Learn to distinguish between revenue, profit and cash flow before investing in a franchise.
+coverImage: ''
 ---
 
 A franchise turning over £1 million might sound like an attractive investment. But here's the crucial question: how much of that revenue actually makes its way to the bottom line?
