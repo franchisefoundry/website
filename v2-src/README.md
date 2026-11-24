@@ -7,7 +7,7 @@ Built from the "Franchise Foundry: Website v2" design canvas. Lives at `/v2/` al
 - Guides come from the CMS: every Published article in `content/articles/` becomes `/v2/guides/<slug>/`, and the guides hub and home page list them (`<!--guides:...-->` markers in the page source). The current blog keeps building from the same files. `v2-src/guide-redirects.txt` lists each old `/articles/` address and its new guide, ready for `_redirects` at launch.
 - `v2/assets/`: `v2.css` (the design system), `v2.js` (header, FAQ, filters, toggles), `match.js`, `results.js`, `inbox.js`.
 - Every page is `noindex`, and `/v2/` is disallowed in `robots.txt`. A dark strip on every page says it's a preview.
-- Forms post to the existing Netlify forms (`contact`, `brand-enquiry`) so the notification emails keep working. `partner-apply` is new: it's stored in Netlify but `submission-created.js` doesn't email it yet.
+- Forms post to the existing Netlify forms (`contact`, `brand-enquiry`) so the notification emails keep working. `partner-apply` and `v2-feedback` are new; `submission-created.js` emails both to connect@.
 
 Index of every page: `/v2/preview/`.
 
