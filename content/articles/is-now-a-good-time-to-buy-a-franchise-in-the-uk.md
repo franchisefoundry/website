@@ -1,6 +1,6 @@
 ---
 title: Is Now a Good Time to Buy a Franchise in the UK?
-status: Draft
+status: Published
 featured: true
 date: 2026-11-26T09:00:00
 category: Franchise Advice
