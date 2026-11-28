@@ -3,10 +3,15 @@
 // comment: <!--meta {"title": "...", "description": "...", "active": "work"} -->
 // This wraps it in the shared head, header and footer and writes
 // /v2/<route>/index.html, so the header and footer are written once.
+// Guides come from the same CMS articles as the current blog (content/articles,
+// Published only): each gets /v2/guides/<slug>/, and the guides hub and home page
+// list them where the page source has a <!--guides:...--> marker.
 // Every v2 page is noindex and /v2/ is disallowed in robots.txt until launch.
 // Plain file work, no network: safe to run on every deploy.
-import { readFileSync, writeFileSync, mkdirSync, readdirSync, statSync } from 'node:fs'
+import { readFileSync, writeFileSync, mkdirSync, readdirSync, statSync, existsSync } from 'node:fs'
 import { join, relative, dirname } from 'node:path'
+import matter from 'gray-matter'
+import { marked } from 'marked'
 
 const ROOT = process.cwd()
 const SRC = join(ROOT, 'v2-src', 'pages')
@@ -17,7 +22,7 @@ const log = (...a) => console.log('[build-v2]', ...a)
 
 const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
 const json = o => JSON.stringify(o).replace(/</g, '\\u003c')
-const strip = s => s.replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim()
+const strip = s => s.replace(/<[^>]+>/g, '').replace(/&(#39|#x27|quot|amp|lt|gt|nbsp);/g, (m, e) => ({ '#39': "'", '#x27': "'", quot: '"', amp: '&', lt: '<', gt: '>', nbsp: ' ' })[e]).replace(/\s+/g, ' ').trim()
 
 // Only one sector page and one guide are built so far: their links point at the templates.
 const SECTOR = '/v2/franchises/coffee/'
@@ -110,7 +115,10 @@ function schema(meta, body, url) {
     const items = [...crumb[1].matchAll(/<(?:a href="([^"]*)"|span aria-current="page")[^>]*>([^<]*)</g)]
     out.push({ '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: items.map((m, i) => ({ '@type': 'ListItem', position: i + 1, name: strip(m[2]), item: SITE + (m[1] || url) })) })
   }
-  if (meta.article) out.push({ '@context': 'https://schema.org', '@type': 'Article', headline: meta.title.split(' · ')[0], author: { '@type': 'Person', name: meta.article.author, url: SITE + '/v2/about/' }, dateModified: meta.article.modified, publisher: { '@type': 'Organization', name: 'Franchise Foundry' } })
+  if (meta.article) {
+    const a = meta.article, org = a.author === 'Franchise Foundry'
+    out.push({ '@context': 'https://schema.org', '@type': 'Article', headline: meta.title.split(' · ')[0], author: org ? { '@type': 'Organization', name: a.author, url: SITE + '/' } : { '@type': 'Person', name: a.author, url: SITE + '/v2/about/' }, ...(a.published ? { datePublished: a.published } : {}), dateModified: a.modified, publisher: { '@type': 'Organization', name: 'Franchise Foundry' } })
+  }
   return out.map(o => `<script type="application/ld+json">${json(o)}</script>`).join('\n')
 }
 
@@ -152,6 +160,120 @@ function walk(dir) {
   })
 }
 
+// ── Guides from the CMS ─────────────────────────────────────────────────────
+const ARTICLES = join(ROOT, 'content', 'articles')
+const ukDate = d => new Date(d).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
+const iso = d => new Date(d).toISOString()
+const slugify = t => {
+  const full = String(t).toLowerCase().replace(/[’']/g, '').replace(/&/g, ' and ').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
+  if (full.length <= 64) return full
+  const cut = full.slice(0, 65)
+  return cut.slice(0, cut.lastIndexOf('-'))
+}
+const topicKey = c => slugify(c || 'Guides')
+const initials = n => n === 'Franchise Foundry' ? 'FF' : String(n).trim().charAt(0).toUpperCase()
+
+function loadGuides() {
+  if (!existsSync(ARTICLES)) return []
+  const out = []
+  for (const f of readdirSync(ARTICLES).filter(f => f.endsWith('.md'))) {
+    const { data, content } = matter(readFileSync(join(ARTICLES, f), 'utf8'))
+    const status = data.status || (data.draft ? 'Draft' : 'Published')
+    if (String(status).toLowerCase() !== 'published') continue
+    const title = data.title || 'Untitled'
+    out.push({
+      file: f, title, content,
+      slug: data.slug ? slugify(data.slug) : slugify(title),
+      oldUrl: '/articles/' + (data.slug || f.replace(/\.md$/, '')).toLowerCase().replace(/[^a-z0-9-]/g, '-') + '.html',
+      excerpt: data.excerpt || data.description || '',
+      category: data.category || 'Guides',
+      author: data.author || 'Franchise Foundry',
+      date: data.date || new Date().toISOString(),
+      featured: data.featured === true,
+      minutes: Math.max(1, Math.round(content.trim().split(/\s+/).length / 200)),
+    })
+  }
+  out.sort((a, b) => new Date(b.date) - new Date(a.date))
+  const seen = new Set()
+  for (const g of out) { while (seen.has(g.slug) || g.slug === 'how-to-buy-a-franchise') g.slug += '-2'; seen.add(g.slug) }
+  return out
+}
+
+const byline = (g, dark) => `<span class="by"><span class="avatar" style="--s:26px;font-size:${g.author === 'Franchise Foundry' ? 9 : 11}px${dark ? ';background:var(--gold);color:var(--ink)' : ''}">${esc(initials(g.author))}</span>${esc(g.author)} · ${esc(ukDate(g.date))}</span>`
+const guideCard = g => `<a class="card stack guide-card sm" data-topic="${topicKey(g.category)}" href="/v2/guides/${g.slug}/"><span class="kicker green">${esc(g.category.toUpperCase())} · ${g.minutes} MIN</span><span class="gt">${esc(g.title)}</span>${byline(g)}</a>`
+
+function guidePage(g, all) {
+  // Body: CMS markdown, h2s get ids for the contents list, and the matching prompt sits halfway down.
+  let html = marked.parse(g.content)
+  const toc = []
+  html = html.replace(/<h2>([\s\S]*?)<\/h2>/g, (_, inner) => {
+    const id = 's' + (toc.length + 1)
+    toc.push({ id, text: strip(inner) })
+    return `<h2 id="${id}">${inner}</h2>`
+  })
+  const cta = `<a class="dark between inline-cta" href="/v2/match/"><span><span class="kicker" style="display:block">◆ FREE · ABOUT 4 MINUTES</span><span style="display:block;margin-top:4px;font-size:19px;font-weight:700">See which franchises fit your budget and area</span></span><span class="btn btn-gold btn-sm" style="min-height:46px">Start matching ↗</span></a>`
+  if (toc.length >= 3) {
+    const at = html.indexOf(`<h2 id="s${Math.ceil(toc.length / 2) + 1}">`)
+    html = html.slice(0, at) + cta + '\n' + html.slice(at)
+  } else html += cta
+  const next = all.filter(x => x !== g && x.category === g.category).concat(all.filter(x => x !== g && x.category !== g.category)).slice(0, 3)
+  const body = `<main id="main" style="font-size:16px;line-height:1.65">
+  <header class="rule-b">
+    <div class="wrap-narrow" style="padding-top:24px;padding-bottom:48px">
+      <nav aria-label="Breadcrumb" class="crumb"><a href="/v2/">Home</a><span aria-hidden="true">/</span><a href="/v2/guides/">Guides</a><span aria-hidden="true">/</span><span aria-current="page">${esc(g.category)}</span></nav>
+      <h1 style="margin-top:28px;font-size:clamp(34px,4.6vw,56px);line-height:1.02;letter-spacing:-.045em;font-weight:700;max-width:860px">${esc(g.title)}</h1>
+      ${g.excerpt ? `<p class="muted" style="margin-top:18px;font-size:20px;line-height:1.5;max-width:760px">${esc(g.excerpt)}</p>` : ''}
+      <div class="row mt-24" style="gap:12px 20px">
+        <span class="row" style="gap:10px;flex-wrap:nowrap"><span class="avatar" style="font-size:${g.author === 'Franchise Foundry' ? 11 : 13}px">${esc(initials(g.author))}</span><b style="font-size:15px">${esc(g.author)}</b></span>
+        <span class="mono xs label">${esc(ukDate(g.date).toUpperCase())} · ${g.minutes} MIN READ</span>
+      </div>
+    </div>
+  </header>
+  <div class="wrap-narrow guide-body">
+    ${toc.length >= 3 ? `<nav aria-label="On this page" class="toc"><div class="kicker" style="margin-bottom:10px">ON THIS PAGE</div><ol>${toc.map((t, i) => `<li><a href="#${t.id}"><span>${String(i + 1).padStart(2, '0')}</span>${esc(t.text)}</a></li>`).join('')}</ol></nav>` : ''}
+    <article class="prose cms">
+${html}
+      <div class="card row" style="margin-top:48px;gap:16px;padding:22px;border-radius:18px">
+        <span class="avatar" style="--s:56px;font-size:15px">${esc(initials(g.author))}</span>
+        <div style="flex:1 1 280px"><b>Written by ${esc(g.author)}</b><div class="muted" style="font-size:14px">Built by hospitality operators. Free advice and matching for franchisees: brands pay us only when someone signs.</div></div>
+        <a class="btn btn-tint btn-sm" href="/v2/about/">About us</a>
+      </div>
+    </article>
+  </div>
+  ${next.length ? `<section class="surface" style="border-bottom:0"><div class="wrap-narrow" style="padding-top:56px;padding-bottom:72px"><h2 style="font-size:26px;letter-spacing:-.03em;font-weight:700;margin-bottom:18px">Read next</h2><div class="auto" style="--min:300px;--gap:14px">${next.map(x => `<a class="card stack" style="--gap:8px;padding:20px;border-radius:14px" href="/v2/guides/${x.slug}/"><span class="kicker green">${esc(x.category.toUpperCase())}</span><b style="font-size:18px;line-height:1.25">${esc(x.title)}</b></a>`).join('')}</div></div></section>` : ''}
+</main>`
+  return page({ title: `${g.title} · Franchise Foundry`, description: g.excerpt || g.title, active: 'guides', article: { author: g.author, published: iso(g.date), modified: iso(g.date) } }, body, `/v2/guides/${g.slug}/`)
+}
+
+const GUIDES = loadGuides()
+const FEATURED = GUIDES.find(g => g.featured) || GUIDES[0]
+const TOPICS = [...new Set(GUIDES.map(g => g.category))]
+const MARKERS = {
+  'guides:filters': () => ['<button type="button" class="pill" data-key="all" aria-pressed="true">All</button>'].concat(TOPICS.map(t => `<button type="button" class="pill" data-key="${topicKey(t)}" aria-pressed="false">${esc(t)}</button>`)).join('\n        '),
+  'guides:feature': () => FEATURED ? `<a class="dark feature" href="/v2/guides/${FEATURED.slug}/">
+      <span class="ph" style="min-height:280px;border-radius:0;padding:18px">[PHOTO: A REAL SITE OR DISCOVERY DAY]</span>
+      <span class="stack" style="--gap:14px;padding:36px;justify-content:center">
+        <span class="kicker">FEATURED · ${esc(FEATURED.category.toUpperCase())}</span>
+        <span style="font-size:clamp(28px,3.2vw,38px);line-height:1.08;font-weight:700;letter-spacing:-.04em">${esc(FEATURED.title)}</span>
+        ${FEATURED.excerpt ? `<span style="color:var(--on-dark);font-size:16px">${esc(FEATURED.excerpt)}</span>` : ''}
+        <span style="font-size:13px;color:var(--on-dark-2)">${byline(FEATURED, true)}</span>
+      </span>
+    </a>` : '',
+  'guides:list': () => GUIDES.filter(g => g !== FEATURED).map(guideCard).join('\n      '),
+  'guides:count': () => `${GUIDES.length - (FEATURED ? 1 : 0)} GUIDES`,
+  'guides:latest': () => GUIDES.slice(0, 3).map(g => guideCard(g).replace(' sm"', '"')).join('\n      '),
+}
+const fill = src => src.replace(/<!--(guides:[a-z]+)-->/g, (m, k) => MARKERS[k] ? MARKERS[k]() : m)
+
+for (const g of GUIDES) {
+  const dest = join(OUT, 'guides', g.slug, 'index.html')
+  mkdirSync(dirname(dest), { recursive: true })
+  writeFileSync(dest, guidePage(g, GUIDES))
+}
+// Old blog address → new guide address, for the redirects at launch.
+writeFileSync(join(ROOT, 'v2-src', 'guide-redirects.txt'), '# /articles/ pages and their v2 guide, for _redirects at launch (generated by build-v2.mjs)\n' + GUIDES.map(g => `${g.oldUrl}  /guides/${g.slug}/  301`).join('\n') + '\n')
+log(`wrote ${GUIDES.length} guides from content/articles`)
+
 let n = 0
 for (const file of walk(SRC)) {
   const src = readFileSync(file, 'utf8')
@@ -162,7 +284,7 @@ for (const file of walk(SRC)) {
   const url = '/v2/' + (route ? route + '/' : '')
   const dest = join(OUT, route, 'index.html')
   mkdirSync(dirname(dest), { recursive: true })
-  writeFileSync(dest, page(meta, src.slice(m[0].length), url))
+  writeFileSync(dest, page(meta, fill(src.slice(m[0].length)), url))
   n++
 }
 log(`wrote ${n} pages to /v2/`)

@@ -509,3 +509,15 @@ a.card:hover { border-color: var(--green); }
 .state.content { background: var(--cream); color: #6B4A1E; }
 .state.proto { background: var(--ink); color: var(--gold-soft); }
 .plain { margin: 10px 0 0; padding-left: 18px; display: flex; flex-direction: column; gap: 5px; font-size: 14px; }
+
+/* CMS guide bodies (markdown from content/articles) */
+.prose.cms h3 { margin: 28px 0 8px; font-size: 21px; line-height: 1.25; letter-spacing: -.02em; font-weight: 700; }
+.prose.cms ul, .prose.cms ol { margin: 0 0 16px; padding-left: 22px; color: var(--ink-2); display: flex; flex-direction: column; gap: 6px; }
+.prose.cms a:not(.btn):not(.inline-cta) { color: var(--green); font-weight: 600; }
+.prose.cms blockquote { margin: 0 0 16px; padding: 16px 18px; border-radius: 12px; background: var(--cream); color: var(--cream-ink); }
+.prose.cms blockquote p { margin: 0; color: inherit; }
+.prose.cms img { border-radius: 14px; margin: 8px 0 16px; height: auto; }
+.prose.cms table { width: 100%; border-collapse: collapse; font-size: 14px; margin: 0 0 16px; display: block; overflow-x: auto; }
+.prose.cms th, .prose.cms td { padding: 10px 12px; border-bottom: 1px solid var(--line); text-align: left; }
+.prose.cms hr { border: 0; border-top: 1px solid var(--line); margin: 32px 0; }
+.prose.cms .inline-cta { margin: 28px 0 8px; }

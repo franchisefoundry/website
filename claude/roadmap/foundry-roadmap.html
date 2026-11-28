@@ -57,6 +57,21 @@ button { cursor: pointer; }
 .bar span { display: block; height: 100%; background: var(--green); border-radius: 99px; }
 :root .pickup .bar { background: var(--on-green-soft); }
 
+/* Full journey: the build as numbered parts, in the order we're doing them */
+.journey { display: grid; gap: 10px; }
+.journey .jh { display: flex; flex-wrap: wrap; gap: 4px 14px; align-items: baseline; justify-content: space-between; }
+.journey h2 { font-size: 18px; font-weight: 800; letter-spacing: -0.02em; }
+.journey ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; grid-template-columns: repeat(auto-fit, minmax(min(170px, 100%), 1fr)); }
+.part { min-width: 0; }
+.part a { height: 100%; display: grid; gap: 6px; align-content: start; padding: 12px 14px; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); color: var(--ink); text-decoration: none; }
+.part a:hover { border-color: var(--green); }
+.part .k { font-family: var(--mono); font-size: 11px; letter-spacing: .08em; color: var(--ink-3); text-transform: uppercase; display: flex; justify-content: space-between; gap: 6px; }
+.part b { font-size: 15px; line-height: 1.25; }
+.part small { font-size: 12px; color: var(--ink-2); }
+.part .prog .bar { flex: 1; width: auto; }
+.part.now a { border-color: var(--gold); box-shadow: 0 0 0 3px var(--gold-soft); }
+.part.now .k { color: var(--gold-ink); font-weight: 600; }
+
 /* Start here */
 .pickup { background: var(--green); color: var(--on-green); border-radius: 20px; padding: 22px; display: grid; gap: 20px; }
 .pickup .eyebrow { color: var(--on-green-2); }
@@ -175,6 +190,11 @@ label.f { display: grid; gap: 4px; font-size: 12px; font-weight: 600; color: var
     </div>
   </header>
 
+  <section class="journey" aria-labelledby="jr-h" id="journey" hidden>
+    <div class="jh"><h2 id="jr-h">The full journey</h2><span class="note">In the order we’re building it. Tap a part to jump to it.</span></div>
+    <ol id="parts"></ol>
+  </section>
+
   <section class="pickup" aria-labelledby="pk-h">
     <div>
       <div class="eyebrow">Start here</div>
@@ -225,7 +245,7 @@ label.f { display: grid; gap: 4px; font-size: 12px; font-weight: 600; color: var
   var OWNER = { harry: 'Harry', ben: 'Ben', team: 'Harry or Ben', claude: 'Claude' }
   var OWNERS = ['claude', 'harry', 'ben', 'team']
   var VIEWS = [['all', 'Everything'], ['harry', 'Waiting on Harry'], ['ben', 'Waiting on Ben'], ['claude', 'Waiting on Claude'], ['done', 'Done']]
-  var S = { areas: [], features: [], steps: [], resume: null, view: 'all', open: {} }
+  var S = { areas: [], features: [], steps: [], resume: null, journey: null, view: 'all', open: {} }
   var db = null, canWrite = true
   var $ = function (id) { return document.getElementById(id) }
   try { S.view = localStorage.getItem('rm_view') || 'all'; S.open = JSON.parse(localStorage.getItem('rm_open') || '{}') } catch (e) {}
@@ -269,6 +289,22 @@ label.f { display: grid; gap: 4px; font-size: 12px; font-weight: 600; color: var
     $('ov-feat').textContent = S.features.length ? fDone + ' of ' + S.features.length + ' features done' : (db ? 'Nothing yet' : 'Loading…')
     $('ov-steps').textContent = total ? done + '/' + total + ' steps' : ''
     $('ov-bar').style.width = total ? (done / total * 100) + '%' : '0'
+
+    // Full journey
+    var parts = S.journey && S.journey.parts || [], pl = $('parts'); pl.textContent = ''
+    $('journey').hidden = !parts.length
+    parts.forEach(function (p, i) {
+      var areas = p.areas || [], feats = S.features.filter(function (f) { return areas.indexOf(f.area) >= 0 })
+      var fd = feats.filter(function (f) { return statusOf(f) === 'done' }).length
+      pl.appendChild(el('li', { class: 'part' + (p.now ? ' now' : '') }, [
+        el('a', { href: '#a-' + (areas[0] || '') }, [
+          el('span', { class: 'k' }, [el('span', { text: 'Part ' + (i + 1) }), p.now ? el('span', { text: 'Priority now' }) : null]),
+          el('b', { text: p.title }),
+          p.blurb ? el('small', { text: p.blurb }) : null,
+          el('div', { class: 'prog' }, [el('div', { class: 'bar', 'aria-hidden': 'true' }, [el('span', { style: 'width:' + (feats.length ? fd / feats.length * 100 : 0) + '%' })]), fd + '/' + feats.length]),
+        ]),
+      ]))
+    })
 
     // Start here
     var r = S.resume
@@ -445,7 +481,7 @@ label.f { display: grid; gap: 4px; font-size: 12px; font-weight: 600; color: var
   // Prompt for a fresh Claude chat
   $('copy').addEventListener('click', function () {
     var cl = openSteps('claude').slice(0, 4), mine = openSteps('harry').slice(0, 4)
-    var text = 'Picking the Franchise Foundry build back up. Read the Foundry Roadmap artifact and claude/foundry-build1-plan.md in franchisefoundry/website first.\n\n' +
+    var text = 'Picking the Franchise Foundry build back up. Read the Foundry Roadmap artifact, claude/foundry-build1-plan.md and v2-src/README.md in franchisefoundry/website first.\n\n' +
       (S.resume && S.resume.leftOff ? 'Where we left off: ' + S.resume.leftOff + '\n\n' : '') +
       (cl.length ? 'Claude’s next steps:\n' + cl.map(function (s) { return '- ' + featById(s.feature).title + ': ' + s.text }).join('\n') + '\n\n' : '') +
       (mine.length ? 'Waiting on me:\n' + mine.map(function (s) { return '- ' + featById(s.feature).title + ': ' + s.text }).join('\n') + '\n\n' : '') +
@@ -496,6 +532,7 @@ label.f { display: grid; gap: 4px; font-size: 12px; font-weight: 600; color: var
     db.collection('features').onSnapshot(function (s) { S.features = s.docs.map(function (d) { return Object.assign({ id: d.id }, d.data()) }); render() }, function () {})
     db.collection('steps').onSnapshot(function (s) { S.steps = s.docs.map(function (d) { return Object.assign({ id: d.id }, d.data()) }); render() }, function () {})
     db.doc('meta/resume').onSnapshot(function (s) { S.resume = s.exists ? s.data() : null; render() }, function () {})
+    db.doc('meta/journey').onSnapshot(function (s) { S.journey = s.exists ? s.data() : null; render() }, function () {})
   })
 })()
 </script>
